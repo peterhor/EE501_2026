@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PC Lab 2 — Energy Balance Model — Tasks &amp; questions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #faf9f5;
+    --fg: #1b1b1b;
+    --muted: #6b6b6b;
+    --card-bg: #ffffff;
+    --card-border: #e5e2da;
+    --accent: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171a;
+      --fg: #ececec;
+      --muted: #9a9a9a;
+      --card-bg: #1d2024;
+      --card-border: #2c2f34;
+      --accent: #e0a458;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 2.5rem 1rem 4rem;
+  }
+  main { max-width: 760px; margin: 0 auto; }
+  a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  a.back:hover { text-decoration: underline; }
+  h1 { font-size: 1.5rem; margin: 1rem 0 0.25rem; }
+  p.subtitle { color: var(--muted); margin-top: 0; margin-bottom: 2rem; }
+  a.open-lab {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  a.open-lab:hover { opacity: 0.9; }
+  section.ex {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  section.intro { background: transparent; border: none; padding: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; margin: 0 0 0.6rem; }
+  h2 .tag { color: var(--accent); font-weight: 700; margin-right: 0.5rem; }
+  p.prompt { margin: 0 0 0.85rem; color: var(--fg); font-size: 0.92rem; line-height: 1.55; }
+  ol.qs { margin: 0; padding-left: 1.3rem; }
+  ol.qs li { margin-bottom: 0.5rem; font-size: 0.92rem; line-height: 1.5; }
+  ol.qs li:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">&larr; EE501 course labs</a>
+  <h1>PC Lab 2 — Energy Balance Model</h1>
+  <p class="subtitle">Tasks and report questions for every exercise. Work through them using the interactive lab, then write up your answers for the report.</p>
+  <a class="open-lab" href="./">Open the interactive lab &rarr;</a>
+
+  <section class="ex intro">
+    <h2><span class="tag">Intro</span>One planet, one balance</h2>
+    <p class="prompt">The simplest climate model of the Earth: absorbed sunlight ¼(1−αp)·S0 must equal outgoing infrared radiation at the top of the atmosphere. A single atmospheric layer absorbs a fraction εa of the infrared emitted by the surface and re-emits it — half upward to space, half back down. That returned half is the greenhouse effect. Drag the sliders and watch the flux diagram, the equations and the plots respond — then work through the exercises below.</p>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E1</span>A grey atmosphere</h2>
+    <p class="prompt">In the provided version of the model the atmospheric emissivity εa is fixed at 0.5, the planetary albedo αp at 0.30 and the solar constant S0 at 1361 W/m². The flux diagram shows how the surface infrared σTs⁴ is split: a fraction (1−εa) escapes directly to space, a fraction εa is absorbed by the atmosphere and re-emitted as εa·σTa⁴, both up and down.</p>
+    <ol class="qs">
+      <li>What does this value of εa = 0.5 mean?</li>
+      <li>Is this value representative for the present-day Earth? Explain your answer.</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E2</span>Varying the emissivity</h2>
+    <p class="prompt">Instead of keeping εa fixed at 0.5, sweep it from 0.0 to 1.0 in steps of 0.025 (the spreadsheet columns C to AQ). The εa tab plots surface temperature Ts_C and greenhouse effect GHE against εa — the marker follows your εa slider. Use these two curves to answer the questions.</p>
+    <ol class="qs">
+      <li>What is the likely value of the atmospheric emissivity εa for the present-day Earth, and why?</li>
+      <li>What does a value of εa = 0.0 mean?</li>
+      <li>What does a value of εa = 1.0 mean?</li>
+      <li>A doubling of atmospheric CO₂ relative to preindustrial corresponds to εa ≈ 0.82. What global warming of the Earth surface does this model then predict for 2×CO₂?</li>
+      <li>In the case of global warming, is the basic assumption behind an EBM (incoming shortwave = outgoing longwave) valid? Explain your answer.</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E3</span>What drives the greenhouse effect</h2>
+    <p class="prompt">The greenhouse effect is given by εa·σ(Ts⁴ − Ta⁴): it depends on the emissivity of the atmosphere and on the temperature difference between the surface and the atmosphere. Define Tdiff = Ts − Ta (the spreadsheet asks you to add this as a new row below GHE). The Tdiff tab traces Tdiff against GHE along the same εa sweep of 0.0 → 1.0.</p>
+    <ol class="qs">
+      <li>How does Tdiff vary with different values of GHE? When is the GHE largest, and how do you explain this?</li>
+      <li>Where in the atmosphere (at what height) is the greenhouse effect of CO₂ and other greenhouse gases most effective? Explain your answer.</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E4</span>Planetary albedo</h2>
+    <p class="prompt">Reset εa in all columns to the value you found for the present-day Earth in exercise 2a (preloaded here as 0.78 — adjust it if your answer differs). Now vary the planetary albedo αp from 0.0 to 1.0 in steps of 0.025. The albedo tab plots Ts_C against αp; the dashed green line marks the present-day 15 °C for reference.</p>
+    <ol class="qs">
+      <li>Consider a "Snowball Earth", as likely occurred 650 million years ago (change only the albedo). What would the planetary albedo αp be, and what would be the impact on Ts_C?</li>
+      <li>Assume the Earth were totally covered by dark coniferous forest. What would αp be, and what would be the impact on Ts_C?</li>
+      <li>Consider present-day global warming. How is it affecting the planetary albedo, what changes in albedo would you expect in the 21st century, and what does the EBM suggest the impact on Ts_C would be?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E5</span>A variable sun</h2>
+    <p class="prompt">Reset αp to 0.30 in all columns, keeping the present-day εa. The solar "constant" is not really constant: satellites show the 11-yr sunspot cycle varies total solar irradiance by ±0.08% around 1361 W/m². Use the fine buttons under the S0 control to set exact values, and the sunspot-zoom on the S0 tab to read off tiny temperature changes.</p>
+    <ol class="qs">
+      <li>Vary S0 to include the ±0.08% variations of the 11-yr sunspot cycle. What variations in surface temperature Ts_C does the EBM suggest?</li>
+      <li>During the Maunder sunspot minimum (1645–1715 AD), which roughly coincided with the Little Ice Age, S0 may have been up to 0.18% lower than today. What reduction in Ts_C does the EBM suggest?</li>
+      <li>4.5 billion years ago the sun was much weaker: total solar irradiance is estimated at 70% of its present-day value. What would the mean surface temperature be, with all other boundary conditions at modern values?</li>
+      <li>And what would Ts_C be if you adjust the planetary albedo to a value more appropriate for your answer to 5c?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E6</span>Other planets</h2>
+    <p class="prompt">The same energy balance works elsewhere in the solar system. Mercury, the closest planet to the sun, has virtually no atmosphere (εa ≈ 0), an albedo of 0.10 and S0 = 9160 W/m². Mars has a very thin atmosphere, an albedo of 0.25 and S0 = 580 W/m². Use the planet presets, then adjust single parameters to answer the questions. The albedo tab (Ts vs αp at the current S0) is useful for 6b.</p>
+    <ol class="qs">
+      <li>What is the approximate average surface temperature of Mercury?</li>
+      <li>By how much would the albedo of Mercury have to increase to produce a mean surface temperature Ts_C similar to present-day Earth?</li>
+      <li>What is the approximate average surface temperature Ts_C of Mars?</li>
+      <li>If the emissivity of Mars' atmosphere increased to 1.0, would this make the planet suitable for life as we know it on Earth? Explain your answer.</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>

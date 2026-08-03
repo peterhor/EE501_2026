@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PC Lab 1 — Daisyworld — Tasks &amp; questions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #faf9f5;
+    --fg: #1b1b1b;
+    --muted: #6b6b6b;
+    --card-bg: #ffffff;
+    --card-border: #e5e2da;
+    --accent: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171a;
+      --fg: #ececec;
+      --muted: #9a9a9a;
+      --card-bg: #1d2024;
+      --card-border: #2c2f34;
+      --accent: #e0a458;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 2.5rem 1rem 4rem;
+  }
+  main { max-width: 760px; margin: 0 auto; }
+  a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  a.back:hover { text-decoration: underline; }
+  h1 { font-size: 1.5rem; margin: 1rem 0 0.25rem; }
+  p.subtitle { color: var(--muted); margin-top: 0; margin-bottom: 2rem; }
+  a.open-lab {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  a.open-lab:hover { opacity: 0.9; }
+  section.ex {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  section.intro { background: transparent; border: none; padding: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; margin: 0 0 0.6rem; }
+  h2 .tag { color: var(--accent); font-weight: 700; margin-right: 0.5rem; }
+  p.prompt { margin: 0 0 0.85rem; color: var(--fg); font-size: 0.92rem; line-height: 1.55; }
+  ol.qs { margin: 0; padding-left: 1.3rem; }
+  ol.qs li { margin-bottom: 0.5rem; font-size: 0.92rem; line-height: 1.5; }
+  ol.qs li:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">&larr; EE501 course labs</a>
+  <h1>PC Lab 1 — Daisyworld</h1>
+  <p class="subtitle">Tasks and report questions for every exercise. Work through them using the interactive lab, then write up your answers for the report.</p>
+  <a class="open-lab" href="./">Open the interactive lab &rarr;</a>
+
+  <section class="ex intro">
+    <h2><span class="tag">Intro</span>A world of daisies</h2>
+    <p class="prompt">A cloudless grey planet, seeded with light and dark daisies, orbits a slowly brightening sun. Dark daisies warm their surroundings; light daisies cool them. Grab the luminosity slider and watch life and climate co-evolve — then work through the exercises below.</p>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E1</span>Growth rate vs. temperature</h2>
+    <p class="prompt">Daisies grow fastest at a preferred temperature and not at all when it is too cold or too hot. The Growth-curve tab plots the parabolic growth rate β against local temperature Tₗ (eq. 3 of the paper). The dots mark the current local temperatures of each daisy type.</p>
+    <ol class="qs">
+      <li>What does the curve tell you about the relation between daisy growth and temperature?</li>
+      <li>What is the optimal temperature for growth?</li>
+      <li>What are the lower and upper temperature limits for growth?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E2</span>A brightening sun</h2>
+    <p class="prompt">In the model the sun slowly brightens: luminosity L rises by 0.025 every time step. The Dynamics-vs-time tab shows this forcing as luminosity against time.</p>
+    <ol class="qs">
+      <li>What does this steady increase in luminosity represent physically?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E3</span>A bare planet</h2>
+    <p class="prompt">Switch off both daisy populations to get a lifeless planet whose temperature is set purely by luminosity and the fixed bare-ground albedo. Sample Te at several luminosities and build the Te-vs-L curve yourself.</p>
+    <ol class="qs">
+      <li>For which luminosity values would the planet be habitable for daisies (use your viable temperature range from E1)?</li>
+      <li>What is the global average temperature Te at L = 1.0?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E4</span>Black daisies only</h2>
+    <p class="prompt">Now allow only black (dark, low-albedo) daisies. Sample the planet across luminosity and compare your Te-vs-L points with the bare planet of E3. Watch the black-daisy area too.</p>
+    <ol class="qs">
+      <li>How have the temperature conditions changed, e.g. at L = 1.0?</li>
+      <li>What caused the difference compared with the bare planet (E3)?</li>
+      <li>At which luminosity does the black-daisy area peak, and what is that peak area?</li>
+      <li>Compare Te with the local black-daisy temperature Tb — why do they differ?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E5</span>White daisies only</h2>
+    <p class="prompt">Reset and allow only white (bright, high-albedo) daisies. Sample temperature and the white-daisy area across luminosity.</p>
+    <ol class="qs">
+      <li>Compared with E3 and E4, what happens to the temperature?</li>
+      <li>How does the area covered by daisies change with luminosity?</li>
+      <li>How do you explain the differences with the bare planet (E3) and the black-daisy world (E4)?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E6</span>Both daisies together</h2>
+    <p class="prompt">Let both species compete. Sample Te across the full luminosity range and see how the global temperature responds. Local temperatures Tw and Tb appear when you reveal.</p>
+    <ol class="qs">
+      <li>What happens to the global temperature when both black and white daisies are present?</li>
+      <li>Which conditions are most favourable for black daisies?</li>
+      <li>How do Tb and Tw differ from Te, and why?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E7</span>Stronger albedo contrast</h2>
+    <p class="prompt">Increase the contrast between the daisies — start from white albedo 0.85, black albedo 0.15 — and repeat the two-species run of E6. Then experiment with the albedo sliders.</p>
+    <ol class="qs">
+      <li>What has changed for the temperatures Te, Tw and Tb?</li>
+      <li>What has changed for the areas of black and white daisies?</li>
+      <li>How do you explain the difference with E6?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E8</span>A lower death rate</h2>
+    <p class="prompt">Return the albedos to reference values and lower the death rate γ from 0.3 to 0.2. Sample the daisy areas across luminosity and compare with the reference two-species run (E6).</p>
+    <ol class="qs">
+      <li>What has changed in the daisy areas?</li>
+      <li>How do you explain the difference?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E9</span>Daisyworld &amp; global change</h2>
+    <p class="prompt">Step back and interpret the model. The sun really does brighten with age — about 10% every 1.1 billion years — while Earth has stayed habitable for billions of years.</p>
+    <ol class="qs">
+      <li>If our Sun brightens ~10% per 1.1 Gyr, roughly how much time does one model step (ΔL = 0.025) represent?</li>
+      <li>What is the relevance of the Daisyworld model for studies of present-day global change?</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>

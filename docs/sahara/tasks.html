@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PC Lab 3 — Abrupt Vegetation Change — Tasks &amp; questions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #faf9f5;
+    --fg: #1b1b1b;
+    --muted: #6b6b6b;
+    --card-bg: #ffffff;
+    --card-border: #e5e2da;
+    --accent: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171a;
+      --fg: #ececec;
+      --muted: #9a9a9a;
+      --card-bg: #1d2024;
+      --card-border: #2c2f34;
+      --accent: #e0a458;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 2.5rem 1rem 4rem;
+  }
+  main { max-width: 760px; margin: 0 auto; }
+  a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  a.back:hover { text-decoration: underline; }
+  h1 { font-size: 1.5rem; margin: 1rem 0 0.25rem; }
+  p.subtitle { color: var(--muted); margin-top: 0; margin-bottom: 2rem; }
+  a.open-lab {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  a.open-lab:hover { opacity: 0.9; }
+  section.ex {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  section.intro { background: transparent; border: none; padding: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; margin: 0 0 0.6rem; }
+  h2 .tag { color: var(--accent); font-weight: 700; margin-right: 0.5rem; }
+  p.prompt { margin: 0 0 0.85rem; color: var(--fg); font-size: 0.92rem; line-height: 1.55; }
+  ol.qs { margin: 0; padding-left: 1.3rem; }
+  ol.qs li { margin-bottom: 0.5rem; font-size: 0.92rem; line-height: 1.5; }
+  ol.qs li:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">&larr; EE501 course labs</a>
+  <h1>PC Lab 3 — Abrupt Vegetation Change</h1>
+  <p class="subtitle">Tasks and report questions for every exercise. Work through them using the interactive lab, then write up your answers for the report.</p>
+  <a class="open-lab" href="./">Open the interactive lab &rarr;</a>
+
+  <section class="ex intro">
+    <h2><span class="tag">Intro</span>The green Sahara</h2>
+    <p class="prompt">Between roughly 10 000 and 5 500 years ago the Sahara was a grassland dotted with lakes, hippos and people. Then, within a few centuries, it turned to desert. This conceptual model of Liu et al. (2006) has just two variables — annual rainfall P and vegetation cover V — coupled by one feedback. Drag the model-year scrubber to run through the mid-Holocene, then work through the exercises below.</p>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E1</span>No stochastic forcing</h2>
+    <p class="prompt">Start with the stochastic rainfall forcing switched off (Stoch = 0), exactly as in tab 1_No_Stochastic. Plot annual rainfall P(Vt) against time, then switch to the Vegetation tab and plot V against time.</p>
+    <ol class="qs">
+      <li>What do the numbers on the time axis mean?</li>
+      <li>How does the rainfall vary with time? What climate forcing is represented by the long-term decline in rainfall?</li>
+      <li>What does it mean for the rainfall variability that the stochastic forcing is switched off?</li>
+      <li>What causes the sudden reduction in rainfall about 815 years after the start?</li>
+      <li>Plot the vegetation cover V against time. Describe what happens to it.</li>
+      <li>Why does the major shift in vegetation cover happen, and why does it happen at that moment in time?</li>
+      <li>What is the impact of the vegetation shift on P(Vt)? Describe the feedback between V and P(Vt).</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E2</span>Stochastic rainfall forcing</h2>
+    <p class="prompt">Switch to model version 2 (tab 2_Stochastic): the same long-term forcing, but each year now receives a random rainfall anomaly drawn uniformly between 0 and Stoch. Note that the background rainfall Pd0 is halved to 150 mm/yr so the long-term mean rainfall is unchanged.</p>
+    <ol class="qs">
+      <li>Compare the rainfall with E1. What is the impact of the stochastic forcing on the interannual variability of P(Vt)?</li>
+      <li>Compare V with your result without stochastic forcing. What are the three most important differences?</li>
+      <li>What happened to the feedback between V and P(Vt) — is it stronger or weaker? Explain.</li>
+      <li>Set Stoch from 300 to 200 and plot again. What has changed in the annual rainfall P(Vt)?</li>
+      <li>What has changed in the vegetation cover V? Explain the difference with Stoch = 300.</li>
+      <li>Which model version do you consider more realistic, 1 or 2, and why?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E3</span>Filtered stochastic forcing</h2>
+    <p class="prompt">Switch to model version 3 (tab 3_Stochastic_filtered). The same random forcing is used, but filtered with a 10-year running mean before it enters the rainfall. Start on the Forcing tab to see both the raw and the filtered series.</p>
+    <ol class="qs">
+      <li>Plot both stochastic forcings (raw and filtered) against time. What is the main effect of the filtering on the values of the rainfall forcing?</li>
+      <li>Plot P(Vt) and V against time. What is the impact of the filtered forcing on the vegetation cover V?</li>
+      <li>How do you explain the difference between the results of versions 2_Stochastic and 3_Stochastic_filtered?</li>
+      <li>What happened to the feedback between V and P(Vt) — stronger or weaker than without filtering? Explain.</li>
+      <li>Change the vegetation feedback coefficient DB from 150 to 50 and plot again. What has changed in P(Vt)?</li>
+      <li>What has changed in the vegetation cover V? Explain the difference with DB = 150.</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E4</span>Unstable vs. stable collapse</h2>
+    <p class="prompt">Liu et al. (2006) distinguish several types of vegetation decline. In an unstable collapse (UC) the system crosses a bifurcation and the feedback drives it, unforced, to the other state; in a stable collapse (SC) the transition follows the forcing and the noise, without a runaway. The Compare tab overlays the vegetation cover of all three model versions run with your current parameters.</p>
+    <ol class="qs">
+      <li>In which experiment and figure(s) did you find an unstable collapse (UC)?</li>
+      <li>And a stable collapse (SC)?</li>
+      <li>What is the difference between the two types of collapse?</li>
+      <li>Which of the two do you consider more likely to have occurred in North Africa during the Holocene, and why?</li>
+    </ol>
+  </section>
+
+  <section class="ex">
+    <h2><span class="tag">E5</span>The Sahel under global change</h2>
+    <p class="prompt">Some climate projections suggest that rainfall in the Sahel/Sahara region will increase under an enhanced greenhouse effect — the forcing runs the other way, and much faster. Use the model to think about that, keeping its assumptions in mind.</p>
+    <ol class="qs">
+      <li>Discuss the relevance of the Sahara model for the future vegetation cover of the Sahel/Sahara region. Can the model be used for this purpose?</li>
+      <li>What climatic processes would you suggest adding to the model to make it more realistic?</li>
+      <li>What is the main difference between the conditions 6500 years ago and those at the end of the 21st century?</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>
