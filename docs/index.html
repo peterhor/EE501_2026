@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EE501 — PC Labs</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #faf9f5;
+    --fg: #1b1b1b;
+    --muted: #6b6b6b;
+    --card-bg: #ffffff;
+    --card-border: #e5e2da;
+    --accent: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171a;
+      --fg: #ececec;
+      --muted: #9a9a9a;
+      --card-bg: #1d2024;
+      --card-border: #2c2f34;
+      --accent: #e0a458;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  main { max-width: 780px; width: 100%; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  p.subtitle { color: var(--muted); margin-top: 0; margin-bottom: 2rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  a.card {
+    display: block;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  a.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  a.card .num { color: var(--accent); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  a.card h2 { font-size: 1.1rem; margin: 0.35rem 0 0.35rem; }
+  a.card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>EE501 — Computer Practical Labs</h1>
+  <p class="subtitle">Interactive labs for the course. Open a lab below.</p>
+  <div class="grid">
+    <a class="card" href="daisyworld/">
+      <div class="num">PC Lab 1</div>
+      <h2>Daisyworld</h2>
+      <p>Planetary self-regulation, after Watson &amp; Lovelock (1983).</p>
+    </a>
+    <a class="card" href="ebm/">
+      <div class="num">PC Lab 2</div>
+      <h2>Energy Balance Model</h2>
+      <p>Zero-dimensional energy balance climate model.</p>
+    </a>
+    <a class="card" href="sahara/">
+      <div class="num">PC Lab 3</div>
+      <h2>Abrupt Vegetation Change</h2>
+      <p>Vegetation–precipitation feedback in the Sahara.</p>
+    </a>
+  </div>
+</main>
+</body>
+</html>

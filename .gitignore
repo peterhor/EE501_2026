@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+*/.thumbnail
+
+# Source materials not meant for the public site (exercises, slides,
+# playsheets, copyrighted references) — distributed to students via Canvas.
+*/uploads
+
+# Report/solution figures, not used by the interactive labs themselves.
+*/figures
+
+# Answer keys / worked solutions — never for students.
+*Report*.docx
+*Report*.dc.html
+*FASIT*
+*reportHR*
+
+# Instructor-only lab variants (answer-key mode of the interactive labs).
+*Teacher*.html
+*Teacher*.dc.html
+
+# Lightweight ".dc.html" preview variants and their runtime — these need
+# support.js/doc-page.js to render and duplicate the self-contained
+# "(Student)" bundles used for the public site. Kept out to avoid confusion.
+*.dc.html
+doc-page.js
+support.js
