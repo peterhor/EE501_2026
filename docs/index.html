@@ -36,7 +36,7 @@
     justify-content: center;
     padding: 2rem 1rem;
   }
-  main { max-width: 780px; width: 100%; }
+  main { max-width: 960px; width: 100%; }
   h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
   p.subtitle { color: var(--muted); margin-top: 0; margin-bottom: 2rem; }
   .grid {
@@ -58,13 +58,48 @@
   a.card .num { color: var(--accent); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
   a.card h2 { font-size: 1.1rem; margin: 0.35rem 0 0.35rem; }
   a.card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  .links-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  a.canvas-link {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  a.canvas-link:hover { opacity: 0.9; }
+  h2.section-title { font-size: 1.1rem; margin: 2.5rem 0 0.75rem; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--card-border); border-radius: 12px; }
+  table.schedule { border-collapse: collapse; width: 100%; font-size: 0.83rem; }
+  table.schedule th, table.schedule td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--card-border);
+  }
+  table.schedule th {
+    background: var(--card-bg);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    position: sticky;
+    top: 0;
+  }
+  table.schedule tbody tr:last-child td { border-bottom: none; }
+  table.schedule tr.lab td { font-weight: 600; color: var(--accent); }
   footer.credit { margin-top: 2.5rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
 </style>
 </head>
 <body>
 <main>
-  <h1>EE501 — Computer Practical Labs</h1>
+  <h1>EE501 — Climate Change and Ecology - Computer Practical Labs</h1>
   <p class="subtitle">Interactive labs for the course. Open a lab below.</p>
+  <div class="links-row">
+    <a class="canvas-link" href="#" target="_blank" rel="noopener">Course page on Canvas ↗</a>
+  </div>
   <div class="grid">
     <a class="card" href="daisyworld/">
       <div class="num">PC Lab 1</div>
@@ -82,6 +117,42 @@
       <p>Vegetation–precipitation feedback in the Sahara.</p>
     </a>
   </div>
+
+  <h2 class="section-title">Schedule</h2>
+  <div class="table-wrap">
+    <table class="schedule">
+      <thead>
+        <tr><th>Week</th><th>Date</th><th>Time</th><th>Room</th><th>Lecturer</th><th>Topic</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>33</td><td>Wed 12 Aug</td><td>10.15–12</td><td>4-311C</td><td>Lærke Stewart</td><td>Climate Change and Arctic Vegetation</td></tr>
+        <tr><td>33</td><td>Thu 13 Aug</td><td>10.15–12</td><td>4-311C</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>33</td><td>Fri 14 Aug</td><td>10.15–12</td><td>4-311C</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>34</td><td>Mon 17 Aug</td><td>10.15–12</td><td>Gullbring</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>34</td><td>Tue 18 Aug</td><td>10.15–12</td><td>4-311C</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>34</td><td>Thu 20 Aug</td><td>10.15–12</td><td>4-311B</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>35</td><td>Mon 24 Aug</td><td>10.15–12</td><td>5-115</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>35</td><td>Tue 25 Aug</td><td>10.15–12</td><td>4-311C</td><td>To be announced</td><td>Case Study</td></tr>
+        <tr><td>37</td><td>Mon 7 Sep</td><td>10.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Components of the Climate System</td></tr>
+        <tr><td>37</td><td>Mon 7 Sep</td><td>12.15–16</td><td>2-129</td><td>Peter Horvath</td><td>Components of the Climate System / The Earth's Energy Budget</td></tr>
+        <tr><td>37</td><td>Tue 8 Sep</td><td>08.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>The Earth's Energy Budget</td></tr>
+        <tr><td>37</td><td>Tue 8 Sep</td><td>12.15–16</td><td>2-133</td><td>Peter Horvath</td><td>Climate at a Local Scale</td></tr>
+        <tr><td>37</td><td>Wed 9 Sep</td><td>08.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Global Cycles: Water and Carbon</td></tr>
+        <tr class="lab"><td>37</td><td>Wed 9 Sep</td><td>12.15–16</td><td>2-132</td><td>Peter Horvath</td><td>PC Lab 1: Daisy World Simulations</td></tr>
+        <tr><td>37</td><td>Thu 10 Sep</td><td>08.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Modelling the Climate System</td></tr>
+        <tr class="lab"><td>37</td><td>Thu 10 Sep</td><td>12.15–16</td><td>2-132</td><td>Peter Horvath</td><td>PC Lab 1: Daisy World Simulations</td></tr>
+        <tr><td>38</td><td>Mon 14 Sep</td><td>10.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Modelling the Climate System</td></tr>
+        <tr class="lab"><td>38</td><td>Mon 14 Sep</td><td>12.15–16</td><td>2-129</td><td>Peter Horvath</td><td>PC Lab 2: Energy Balance Model</td></tr>
+        <tr><td>38</td><td>Tue 15 Sep</td><td>08.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Response of the Climate System to Perturbations</td></tr>
+        <tr class="lab"><td>38</td><td>Tue 15 Sep</td><td>12.15–16</td><td>2-133</td><td>Peter Horvath</td><td>PC Lab 2: Energy Balance Model</td></tr>
+        <tr><td>38</td><td>Wed 16 Sep</td><td>08.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Climate Change: the Past and Present</td></tr>
+        <tr class="lab"><td>38</td><td>Wed 16 Sep</td><td>12.15–16</td><td>2-132</td><td>Peter Horvath</td><td>PC Lab 3: Abrupt Vegetation Collapse</td></tr>
+        <tr><td>38</td><td>Thu 17 Sep</td><td>08.15–12</td><td>4-311B</td><td>Peter Horvath</td><td>Climate Change: the Future</td></tr>
+        <tr class="lab"><td>38</td><td>Thu 17 Sep</td><td>12.15–16</td><td>2-132</td><td>Peter Horvath</td><td>PC Lab 3: Abrupt Vegetation Collapse</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <footer class="credit">EE501 · Course materials originally developed by Hans Renssen, former course coordinator.</footer>
 </main>
 </body>
