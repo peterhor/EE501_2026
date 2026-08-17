@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EE501 — Important Equations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,400;0,500;0,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: #efece4; }
+a { color: #1f6b6b; text-decoration: none; }
+a:hover { color: #14403f; }
+.katex { font-size: 1.06em; }
+.katex-display { margin: 0; }
+a.back { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: #6d6858; margin: 0 4px; }
+a.back:hover { color: #14403f; }
+</style>
+</head>
+<body>
+<div style="font-family: Newsreader, Georgia, serif; color: #17160f; background: #efece4; padding: 32px 24px 96px; display: flex; flex-direction: column; align-items: center; gap: 28px;">
+
+  <div style="width: 100%; max-width: 1060px;">
+    <a class="back" href="../">&larr; EE501 course labs</a>
+  </div>
+
+  <div style="width: 100%; max-width: 1060px; background: #faf8f3; border: 1px solid #ddd8cb; padding: 56px 60px 40px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #6d6858;">
+      <span>EE 501 · Climate Change &amp; Ecology</span>
+      <span>Goosse et al. — Climate Dynamics</span>
+    </div>
+    <h1 style="margin: 0; font-size: 62px; font-weight: 400; line-height: 1.02; letter-spacing: -0.02em;">Important Equations</h1>
+    <p style="margin: 0; max-width: 62ch; font-size: 19px; line-height: 1.55; color: #4a4638; text-wrap: pretty;">A working reference for the energy balance, surface heat fluxes, the carbon cycle, and radiative forcing. Each entry gives the equation as printed in the text, what it is for, and what every symbol means.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb; margin-top: 8px;">
+      <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART I</span><span style="font-size: 17px;">Energy balance</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">2.1 – 2.13</span></div>
+      <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART II</span><span style="font-size: 17px;">Surface fluxes</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">2.34 – 2.37</span></div>
+      <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART III</span><span style="font-size: 17px;">Carbon cycle</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">2.40 – 2.49</span></div>
+      <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART IV</span><span style="font-size: 17px;">Radiative forcing</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">4.1 – 4.3</span></div>
+    </div>
+  </div>
+
+  <!-- PART I -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART I</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">The Earth's energy budget</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">2.1 – 2.13</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">Two ideas run through this block: the planet must radiate away exactly what it absorbs, and an infrared-absorbing atmosphere forces the surface to sit hotter than that balance temperature.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.1</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Stefan–Boltzmann law</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$A^{\uparrow} = \sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Energy radiated per square metre by a black body. Applied to Earth it <em>defines</em> the effective emission temperature <span style="white-space: nowrap;">\(T_e\)</span> — a bookkeeping temperature, not one you can measure anywhere.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">A↑ — emitted flux, W m⁻²<br />σ — 5.67×10⁻⁸ W m⁻² K⁻⁴<br />T<sub>e</sub> — effective emission temp., K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.2</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Planetary equilibrium</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\pi R^{2} S_0 \left(1 - \alpha_p\right) = 4\pi R^{2}\,\sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Absorbed solar radiation equals emitted terrestrial radiation. Sunlight is intercepted over a disc \(\pi R^2\); emission leaves the whole sphere \(4\pi R^2\).</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">S₀ — solar constant, 1368 W m⁻²<br />α<sub>p</sub> — planetary albedo ≈ 0.3<br />R — Earth radius, 6371 km</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.3</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Balance per unit surface</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\tfrac{1}{4} S_0 \left(1 - \alpha_p\right) = \sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The same statement divided by the Earth's surface area. The factor ¼ is pure geometry — disc over sphere — and gives the familiar 342 W m⁻² of incoming solar radiation.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">¼S₀ ≈ 342 W m⁻²<br />absorbed ≈ 239 W m⁻²</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.4</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Effective emission temperature</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T_e = \left[\frac{S_0\left(1-\alpha_p\right)}{4\sigma}\right]^{1/4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Solving 2.3 for temperature gives <strong>255 K (−18 °C)</strong>. The 33 K gap to the observed 288 K surface mean is the greenhouse effect.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>e</sub> = 255 K = −18 °C<br />observed T<sub>s</sub> = 288 K = 15 °C</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.5</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">One opaque layer — top of atmosphere</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\sigma T_a^{4} = \tfrac{1}{4} S_0\left(1-\alpha_p\right) = \sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Slab model: the atmosphere is transparent to sunlight, opaque to infrared. Everything leaving to space comes from the slab, so \(T_a = T_e\).</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>a</sub> — atmospheric layer temp., K<br />⇒ T<sub>a</sub> = T<sub>e</sub> = 255 K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.6</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">One opaque layer — surface</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\sigma T_s^{4} = \tfrac{1}{4} S_0\left(1-\alpha_p\right) + \sigma T_a^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The surface receives sunlight <em>and</em> the downward infrared emission of the atmosphere — the second term is the greenhouse contribution.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>s</sub> — surface temperature, K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.7</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Doubling of surface emission</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\sigma T_s^{4} = \sigma T_e^{4} + \sigma T_e^{4} = 2\,\sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Combining 2.5 and 2.6: an opaque slab makes the surface emit exactly twice what the planet loses to space.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">each extra opaque layer adds one T<sub>e</sub>⁴ of surface emission</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.8</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Blackbody-slab surface temperature</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T_s = 2^{1/4}\,T_e = 1.19\,T_e$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Gives 303 K (30 °C) — <em>above</em> the observed 288 K, because a single perfectly opaque layer overstates the trapping.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>s</sub> = 303 K = 30 °C</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.9</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Grey atmosphere — surface balance</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\sigma T_s^{4} = \tfrac{1}{4} S_0\left(1-\alpha_p\right) + \varepsilon\,\sigma T_a^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">More realistic: the atmosphere emits (and absorbs) only a fraction \(\varepsilon\) of blackbody radiation.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ε — infrared emissivity, 0 ≤ ε ≤ 1<br />= fraction absorbed (Kirchhoff)</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.10</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Grey atmosphere — top of atmosphere</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\tfrac{1}{4} S_0\left(1-\alpha_p\right) = \varepsilon\,\sigma T_a^{4} + \left(1-\varepsilon\right)\sigma T_s^{4} = \sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Space sees two contributions: the atmosphere's own emission, plus the surface radiation transmitted through it, \(1-\varepsilon\).</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">(1−ε) — transmitted fraction</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.11</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Solving the grey model</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\sigma T_s^{4} = \frac{2}{2-\varepsilon}\cdot\frac{S_0\left(1-\alpha_p\right)}{4} = \frac{2}{2-\varepsilon}\,\sigma T_e^{4}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Eliminate \(T_a\) between 2.9 and 2.10. The whole greenhouse effect sits in the factor \(2/(2-\varepsilon)\).</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ε = 0 → no greenhouse<br />ε = 1 → recovers Eq. 2.7</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.12</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Surface temperature vs. emissivity</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T_s = \left(\frac{2}{2-\varepsilon}\right)^{1/4} T_e$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">With a typical \(\varepsilon = 0.97\): \(T_s = 1.18\,T_e = 301\) K (28 °C). Setting \(\varepsilon = 0\) returns \(T_s = T_e\), the no-atmosphere case.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ε = 0.97 → T<sub>s</sub> = 301 K<br />ε = 0 → T<sub>s</sub> = T<sub>e</sub> = 255 K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.13</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Atmospheric temperature</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T_a = \left(\frac{1}{2-\varepsilon}\right)^{1/4} T_e = \left(\frac{1}{2}\right)^{1/4} T_s$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The slab is always colder than the surface by the fixed ratio \(2^{-1/4} \approx 0.84\) — the vertical temperature contrast the greenhouse effect requires.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>a</sub> / T<sub>s</sub> = 0.84 always</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PART II -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART II</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">Heat balance at the surface</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">2.34 – 2.37</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">Turbulent exchange between surface and air, and the full budget that a model actually solves to obtain the surface temperature \(T_s\).</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.34</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Latent heat flux — bulk formula</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$F_{LE} = L_v\,\rho_a\,c_L\,U_a\left(q_s - q_a\right)$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Evaporation cools the surface in proportion to wind speed and the humidity deficit. Its companion is the sensible heat flux (Eq. 2.33), \(F_{SH} = \rho_a c_p c_h U_a (T_s - T_a)\). Because \(q_s\) follows Clausius–Clapeyron, \(F_{LE}\) is far larger in the tropics.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">L<sub>v</sub> — latent heat of vaporisation<br />ρ<sub>a</sub> — air density<br />c<sub>L</sub>, c<sub>h</sub> — bulk coefficients, 5×10⁻⁵–1×10⁻³<br />U<sub>a</sub>, T<sub>a</sub>, q<sub>a</sub> — at 2 or 10 m<br />q<sub>s</sub> — surface specific humidity</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.35</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Bowen ratio</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$B_o = \frac{F_{SH}}{F_{LE}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">How the surface splits its turbulent heat loss. \(B_o \ll 1\) over warm ocean, \(B_o \gg 1\) over dry land where water availability limits evaporation.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">B<sub>o</sub> ≈ 1 — high-latitude ocean<br />B<sub>o</sub> &gt; 1 — arid land</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.36</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Full surface heat balance</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\begin{aligned}\rho\,c_p\,h_{su}\frac{\partial T_s}{\partial t} =\;& \left(1-\alpha\right)F_{sol} + F_{IR}^{\downarrow} + F_{IR}^{\uparrow} \\ &+ F_{SE} + F_{LE} + F_{cond}\end{aligned}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Heat storage in a thin surface layer of thickness \(h_{su}\) equals the sum of all fluxes. This is how \(T_s\) is obtained in practice. Over snow or ice it holds only while \(T_s\) is below freezing; at the melting point a latent-heat-of-fusion term is added instead.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">F<sub>sol</sub> — incoming solar at surface<br />α — surface albedo<br />F<sub>IR</sub>↓ — downward longwave, 333 W m⁻²<br />F<sub>IR</sub>↑ — upward longwave (Stefan–Boltzmann), 396 W m⁻²<br />F<sub>cond</sub> — conduction from below (Fourier)<br />h<sub>su</sub> — surface layer thickness</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.37</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Oxidation of methane</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{CH_4} + 2\,\mathrm{O_2} \;\longrightarrow\; \mathrm{CO_2} + 2\,\mathrm{H_2O}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Methane is far more reactive than CO₂ and is removed by oxidation — which is why its atmospheric lifetime is short but its end product is another greenhouse gas.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">CH₄: 725 → 1780 ppb in 150 yr<br />CO₂: 280 (1800) → 384 ppm (2007)</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PART III -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART III</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">The carbon cycle</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">2.40 – 2.49</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">The carbonate chemistry that lets the ocean hold far more carbon than the atmosphere, the biological pumps that move it downward, and the million-year rock loop that closes the budget.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.40<br />2.41</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Dissociation of carbonic acid</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto; display: flex; flex-direction: column; gap: 12px;">
+            <div>$$\mathrm{H_2CO_3} \;\rightleftharpoons\; \mathrm{H^{+}} + \mathrm{HCO_3^{-}}$$</div>
+            <div>$$\mathrm{HCO_3^{-}} \;\rightleftharpoons\; \mathrm{H^{+}} + \mathrm{CO_3^{2-}}$$</div>
+          </div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Following dissolution (Eq. 2.39), carbonic acid dissociates twice, releasing H⁺ — this is ocean acidification. The reactions are fast enough to be treated as always in equilibrium.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">at equilibrium in seawater:<br />HCO₃⁻ ≈ 90 % of DIC<br />CO₃²⁻ ≈ 10 %<br />H₂CO₃ ≈ 0.5 %</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.42</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Dissolved Inorganic Carbon</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{DIC} = \left[\mathrm{H_2CO_3}\right] + \left[\mathrm{HCO_3^{-}}\right] + \left[\mathrm{CO_3^{2-}}\right]$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Atmospheric CO₂ must balance the whole DIC pool, not just H₂CO₃ — the reason the ocean stores far more carbon than gases of similar solubility such as O₂.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">DIC is ~15 % higher at depth<br />than at the surface</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.43</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Solubility of CO₂</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$K_H = \frac{\left[\mathrm{H_2CO_3}\right]}{p\mathrm{CO_2}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Links dissolved carbonic acid to the partial pressure of CO₂, so the air–sea flux (Eq. 2.38) can be written in terms of concentrations. \(K_H\) rises as water cools — cold water takes up CO₂, warm water releases it.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Eq. 2.38: Φ<sub>CO₂</sub> = k<sub>CO₂</sub>(p<sup>W</sup> − p<sup>A</sup>)<br />k — wind-dependent transfer coeff.</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.44</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Carbonate buffering</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{H_2CO_3} + \mathrm{CO_3^{2-}} \;\rightleftharpoons\; 2\,\mathrm{HCO_3^{-}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Only about 1 CO₂ molecule in 20 entering the ocean stays as H₂CO₃; the rest is buffered into bicarbonate. This slows equilibration to roughly 6 months — 20× longer than without the reaction.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">uptake depends on CO₃²⁻ availability<br />equilibration time ≈ 6 months</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.45</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Alkalinity</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\begin{aligned}\mathrm{Alk} =\;& \left[\mathrm{HCO_3^{-}}\right] + 2\left[\mathrm{CO_3^{2-}}\right] + \left[\mathrm{OH^{-}}\right] \\ &- \left[\mathrm{H^{+}}\right] + \left[\mathrm{B(OH)_4^{-}}\right] + \text{minor bases}\end{aligned}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The excess of bases over acids, dominated by bicarbonate and carbonate. A 1 % drop in Alk raises oceanic \(p\mathrm{CO_2}\) by about 10 %, weakening the ocean's uptake.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">−1 % Alk → +10 % pCO₂<br />B(OH)₄⁻ — borate ion</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.46</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Photosynthesis / respiration</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$6\,\mathrm{CO_2} + 6\,\mathrm{H_2O} \;\rightleftharpoons\; \mathrm{C_6H_{12}O_6} + 6\,\mathrm{O_2}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Read left to right it is photosynthesis; right to left, respiration and remineralisation. Sinking organic matter drives the <strong>soft tissue pump</strong>, the largest contributor to the vertical DIC gradient. Nutrients (nitrate, phosphate, iron) usually limit production.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">three ocean pumps:<br />soft tissue · carbonate · solubility</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.47</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Calcium carbonate formation</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{Ca^{2+}} + \mathrm{CO_3^{2-}} \;\rightleftharpoons\; \mathrm{CaCO_3}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Shell building consumes CO₃²⁻, lowering alkalinity — so, counter-intuitively, it <em>raises</em> oceanic \(p\mathrm{CO_2}\) and reduces uptake. Sinking shells form the <strong>carbonate pump</strong>.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">calcite undersaturated below<br />~4500 m Atlantic · ~800 m Pacific</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.48</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Metamorphism (subduction)</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{CaCO_3} + \mathrm{SiO_2} \;\longrightarrow\; \mathrm{CaSiO_3} + \mathrm{CO_2}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Buried limestone is carried down at plate boundaries and cooked into calcium silicate, releasing CO₂ that returns to the atmosphere through volcanism. A <em>source</em> of atmospheric CO₂.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">&gt;50×10⁶ GtC stored in the crust<br />~1000× the ocean stock</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">2.49</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Silicate weathering</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{CaSiO_3} + \mathrm{H_2CO_3} \;\longrightarrow\; \mathrm{CaCO_3} + \mathrm{SiO_2} + \mathrm{H_2O}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Uplifted silicate rock reacts with carbonic acid in rainwater. Products travel by river to the sea, so weathering is a CO₂ <em>sink</em>. With 2.48 it closes the long-term inorganic carbon cycle over millions of years.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">weathering → CO₂, → alkalinity<br />metamorphism + sedimentation → CO₂</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PART IV -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART IV</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">Radiative forcing</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">4.1 – 4.3</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">Radiative forcing \(\Delta Q\) is the net change in the radiative budget at the tropopause, with stratospheric temperatures allowed to re-equilibrate but the surface and troposphere held fixed. Reference values for 1750: CO₂ 278 ppm, CH₄ 715 ppb, N₂O 270 ppb.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.1</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Carbon dioxide forcing</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta Q = 5.4 \ln\!\left(\frac{\left[\mathrm{CO_2}\right]}{\left[\mathrm{CO_2}\right]_r}\right)$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Logarithmic, not linear: each <em>doubling</em> adds the same ~3.7 W m⁻². Concentrations in ppm. Gives ≈ 1.7 W m⁻² for 1750–2005, the largest single anthropogenic forcing.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔQ — radiative forcing, W m⁻²<br />[ ]<sub>r</sub> — reference period<br />CO₂ 1750–2005: +1.7 W m⁻²</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.2</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Methane forcing</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta Q = 0.036\left(\sqrt{\left[\mathrm{CH_4}\right]} - \sqrt{\left[\mathrm{CH_4}\right]_r}\right)$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Square-root dependence, concentrations in ppb. Reference \(\left[\mathrm{CH_4}\right]_r = 715\) ppb.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">concentrations in ppb<br />CH₄ ref. 715 ppb (1750)</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.3</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Nitrous oxide forcing</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta Q = 0.12\left(\sqrt{\left[\mathrm{N_2O}\right]} - \sqrt{\left[\mathrm{N_2O}\right]_r}\right)$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Same form as 4.2, in ppb, with \(\left[\mathrm{N_2O}\right]_r = 270\) ppb. For halocarbons a linear expression is adequate.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">N₂O ref. 270 ppb (1750)<br />halocarbons — linear in concentration</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="width: 100%; max-width: 1060px; margin-top: 32px; background: #faf8f3; border: 1px solid #ddd8cb; padding: 36px 40px; display: flex; flex-direction: column; gap: 18px;">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #b0431f;">Notes on scope</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; font-size: 16.5px; line-height: 1.6; color: #4a4638;">
+      <p style="margin: 0;">The Chapter 3 PDF supplied ends at Eq. 3.30 (RMS error metric for model validation), so Eqs. 3.42–3.43 are not in it. Chapter 2 likewise ends at Eq. 2.49 — Part III covers 2.40 through 2.49. Send the missing pages and they'll be added here.</p>
+      <p style="margin: 0;">Equations 4.2 and 4.3 are written with square roots, the standard IPCC form for CH₄ and N₂O; the text layer of the PDF drops radical symbols. All numerical values are as printed in Goosse et al. (2010).</p>
+    </div>
+  </div>
+
+  <div style="width: 100%; max-width: 1060px; display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8a8574; padding: 8px 4px 0;">
+    <span>EE 501 — equation summary</span>
+    <span>Goosse H., Barriat P.Y., Lefebvre W., Loutre M.F., Zunz V. (2010)</span>
+  </div>
+
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    }
+  });
+</script>
+</body>
+</html>
