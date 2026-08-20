@@ -5,6 +5,7 @@
 # Source materials not meant for the public site (exercises, slides,
 # playsheets, copyrighted references) — distributed to students via Canvas.
 */uploads
+*/screenshots
 
 # Report/solution figures, not used by the interactive labs themselves.
 */figures
@@ -23,5 +24,6 @@
 # support.js/doc-page.js to render and duplicate the self-contained
 # "(Student)" bundles used for the public site. Kept out to avoid confusion.
 *.dc.html
+!insolation/Earth Insolation v2.dc.html
 doc-page.js
 support.js
