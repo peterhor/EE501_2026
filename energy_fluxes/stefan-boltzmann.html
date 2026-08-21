@@ -233,9 +233,67 @@
   </div>
 </section>
 
-<!-- ───────────── 2. T^4 PLAYGROUND ───────────── -->
+<!-- ───────────── 2. OPTICAL PROPERTIES ───────────── -->
 <section>
-  <h2>2 · Feel the fourth power</h2>
+  <h2>2 · Where the energy goes: ψ + α + ζ = 1</h2>
+  <div class="card">
+    <h3>Every interface splits radiation three ways</h3>
+    <p>Hit any surface or medium with a beam of radiation and it has exactly three possible fates: some passes
+    straight through, some bounces back, and some is absorbed and turned into heat. The three fractions — each
+    between 0 and 1, and each generally a function of wavelength — always add up to the whole beam:</p>
+
+    <div class="eq">
+      ψ + α + ζ = 1
+      <small>ψ transmissivity · α reflectivity · ζ absorptivity — all dimensionless, all functions of λ</small>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 700 260" role="img" aria-label="Diagram of a beam of radiation hitting a medium and splitting into a reflected fraction, an absorbed fraction, and a transmitted fraction">
+        <defs>
+          <marker id="arOpt1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--sun)"/>
+          </marker>
+          <marker id="arOpt2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--sun-deep)"/>
+          </marker>
+        </defs>
+        <text x="300" y="14" text-anchor="middle" font-size="12.5" fill="var(--text-secondary)">incident, I</text>
+        <line x1="300" y1="20" x2="300" y2="90" stroke="var(--sun)" stroke-width="3" marker-end="url(#arOpt1)"/>
+        <rect x="60" y="90" width="580" height="60" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.3"/>
+        <text x="480" y="142" text-anchor="middle" font-size="12" fill="var(--text-muted)">medium (atmosphere, glass, water, a leaf …)</text>
+        <line x1="300" y1="90" x2="210" y2="22" stroke="var(--sun-deep)" stroke-width="2.4" marker-end="url(#arOpt2)"/>
+        <text x="150" y="30" text-anchor="middle" font-size="12.5" fill="var(--sun-deep)" font-weight="600">reflected αI</text>
+        <path d="M300,90 L309,101 L291,112 L309,123 L291,134 L300,145 L300,150" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <circle cx="300" cy="150" r="4" fill="var(--accent)"/>
+        <text x="322" y="112" text-anchor="start" font-size="12.5" fill="var(--accent)" font-weight="600">absorbed ζI</text>
+        <line x1="300" y1="150" x2="300" y2="225" stroke="var(--sun)" stroke-width="1.8" opacity=".55" marker-end="url(#arOpt1)"/>
+        <text x="300" y="244" text-anchor="middle" font-size="12.5" fill="var(--text-secondary)">transmitted ψI</text>
+      </svg>
+      <figcaption>A beam of intensity I splits at the medium: a fraction α reflects straight back, a fraction ζ
+      is absorbed and eventually re-emitted as heat, and the remaining fraction ψ = 1 − α − ζ is transmitted
+      through.</figcaption>
+    </figure>
+
+    <div class="defs">
+      <div class="def"><b>ψ</b> transmissivity — fraction of I that passes through</div>
+      <div class="def"><b>α</b> reflectivity — fraction of I bounced back</div>
+      <div class="def"><b>ζ</b> absorptivity — fraction of I absorbed and converted to heat</div>
+    </div>
+
+    <div class="callout">
+      <b>Two things this connects to, later on this page.</b> First, <strong>Kirchhoff's law</strong>: at thermal
+      equilibrium a body's absorptivity equals its emissivity at the same wavelength, ζ(λ) = ε(λ) — the same
+      ε from Section 1's Stefan–Boltzmann law. Second, the planetary albedo α<sub>p</sub> used from Section 6
+      onward is exactly this α, integrated over the solar spectrum and averaged over the whole Earth–atmosphere
+      system (α<sub>p</sub> ≈ 0.30). For an opaque surface, ψ = 0, so ζ = 1 − α there — "absorbed" and
+      "not reflected" mean the same thing.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 3. T^4 PLAYGROUND ───────────── -->
+<section>
+  <h2>3 · Feel the fourth power</h2>
   <div class="card">
     <h3>Drag the temperature</h3>
     <p>Flux per square metre of surface, ε = 1. Watch how brutally non-linear it is.</p>
@@ -272,9 +330,9 @@
   </div>
 </section>
 
-<!-- ───────────── 3. THE SUN ───────────── -->
+<!-- ───────────── 4. THE SUN ───────────── -->
 <section>
-  <h2>3 · Worked example — the Sun and the Earth</h2>
+  <h2>4 · Worked example — the Sun and the Earth</h2>
   <div class="card">
     <h3>Total solar luminosity, from two numbers</h3>
     <p>The Sun's photosphere has an effective temperature of <strong>5772 K</strong> and a radius of
@@ -359,16 +417,16 @@
 
     <div class="callout">
       <b>Same law, 2.6 × 10⁵ times weaker per square metre.</b> P⊕ = 1.22 × 10¹⁷ W is the same number that
-      appears in Section 6's power ladder as "heat radiated by Earth" — identical, by construction, to the
-      sunlight Earth absorbs (Section 4). Unlike the Sun, Earth has no internal power source of this size:
+      appears in Section 7's power ladder as "heat radiated by Earth" — identical, by construction, to the
+      sunlight Earth absorbs (Section 5). Unlike the Sun, Earth has no internal power source of this size:
       it only re-emits what it receives.
     </div>
   </div>
 </section>
 
-<!-- ───────────── 4. INVERSE SQUARE ───────────── -->
+<!-- ───────────── 5. INVERSE SQUARE ───────────── -->
 <section>
-  <h2>4 · Getting from the Sun to the Earth</h2>
+  <h2>5 · Getting from the Sun to the Earth</h2>
   <div class="card">
     <h3>The same power, spread over a much bigger sphere</h3>
     <p>Energy is conserved as light travels, but the area it is spread over grows as 4πr². At Earth's orbit
@@ -406,9 +464,9 @@
   </div>
 </section>
 
-<!-- ───────────── 5. FACTOR OF FOUR ───────────── -->
+<!-- ───────────── 6. FACTOR OF FOUR ───────────── -->
 <section>
-  <h2>5 · Earth's energy balance</h2>
+  <h2>6 · Earth's energy balance</h2>
   <div class="card">
     <h3>Absorbs on a disc, emits from a sphere</h3>
     <p>This is the single step students most often get wrong. Earth <em>intercepts</em> sunlight over its
@@ -472,9 +530,9 @@
   </div>
 </section>
 
-<!-- ───────────── 6. SUN vs EARTH ───────────── -->
+<!-- ───────────── 7. SUN vs EARTH ───────────── -->
 <section>
-  <h2>6 · Sun vs Earth, side by side</h2>
+  <h2>7 · Sun vs Earth, side by side</h2>
   <div class="two">
     <div class="tile sunv"><div class="lab">Sun — total radiated power</div><div class="val">3.83 × 10²⁶ W</div>
       <div class="note">4πR☉² × σ(5772 K)⁴ · powered by fusion</div></div>
@@ -516,9 +574,9 @@
   </div>
 </section>
 
-<!-- ───────────── 7. SPECTRA ───────────── -->
+<!-- ───────────── 8. SPECTRA ───────────── -->
 <section>
-  <h2>7 · Not just how much — where</h2>
+  <h2>8 · Not just how much — where</h2>
   <div class="card">
     <h3>The same law, resolved by wavelength</h3>
     <p>σT⁴ is the <em>area</em> under a Planck curve. Since Wien's law puts the peak at
@@ -546,9 +604,9 @@
   </div>
 </section>
 
-<!-- ───────────── 8. CAVEATS ───────────── -->
+<!-- ───────────── 9. CAVEATS ───────────── -->
 <section>
-  <h2>8 · The fine print</h2>
+  <h2>9 · The fine print</h2>
   <div class="card">
     <ul>
       <li><strong>ε is rarely exactly 1.</strong> Earth's surface runs ε ≈ 0.95–0.99 in the thermal infrared;
