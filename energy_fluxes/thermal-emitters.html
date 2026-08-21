@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four thermal emitters — heater, fire, skin, Sun</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+    --vis:#78776f;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --vis:#94938a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h2{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+  svg{display:block;width:100%;height:auto}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 10px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  th.raw{text-transform:none;font-size:12.5px;letter-spacing:.02em}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);white-space:nowrap}
+  td.nm{color:var(--text-primary);font-weight:600;white-space:nowrap}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:baseline}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .tt{position:fixed;pointer-events:none;opacity:0;transition:opacity .1s;background:var(--surface-1);
+    border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:13px;color:var(--text-primary);
+    box-shadow:0 6px 20px rgba(0,0,0,.15);z-index:50;max-width:230px}
+  .tt .s{display:block;color:var(--text-secondary);font-size:12px;margin-top:2px}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Four things that glow — and how little of it you can see</h1>
+    <p class="sub">A heater element, a wood fire, your own skin and the Sun are all doing the same thing:
+    radiating because they are warm. Temperature alone decides <em>where</em> on the spectrum the energy comes out
+    and <em>how much</em> there is.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h2>Where each one radiates</h2>
+  <p class="cap">Blackbody spectra, each curve scaled to the same height so the shapes can be compared.
+  The grey band is the only part your eye can detect.</p>
+  <div class="legend" id="leg"></div>
+  <svg id="spec" viewBox="0 0 880 400" role="img" aria-label="Normalised blackbody spectra for skin at 306 K, a heater element at 1100 K, a wood flame at 1300 to 1500 K and the Sun at 5772 K, on a logarithmic wavelength axis"></svg>
+</div>
+
+<div class="two">
+  <div class="card">
+    <h2>How much energy, in total</h2>
+    <p class="cap">σT⁴ per square metre of emitting surface. Log scale — each gridline is ×10.</p>
+    <svg id="pow" viewBox="0 0 430 260" role="img" aria-label="Total radiated flux for each source on a logarithmic scale from 0.1 to 100000 kilowatts per square metre"></svg>
+  </div>
+  <div class="card">
+    <h2>How much of it is visible</h2>
+    <p class="cap">Share of the radiated energy falling between 0.4 and 0.7 µm. Log scale.</p>
+    <svg id="vis" viewBox="0 0 430 260" role="img" aria-label="Visible share of radiated energy for each source on a logarithmic scale"></svg>
+  </div>
+</div>
+
+<div class="card">
+  <h2>The numbers</h2>
+  <table>
+    <thead><tr><th>Source</th><th class="num">T</th><th class="num raw">λ<sub>max</sub></th>
+      <th class="num raw">σT⁴</th><th class="num">Visible share</th><th>Seen as</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <p class="note"><b>Read the three panels together.</b> Going from the heater to the flame raises the temperature
+  by only about 30 %, which barely moves λ<sub>max</sub> — both stay deep in the infrared. But it multiplies the
+  total power by ~3.5 (Wien is 1/T, Stefan–Boltzmann is T⁴), and it multiplies the <em>visible</em> output by
+  ~50, because the visible band sits far out on the steep short-wavelength tail. That is why a fire looks so much
+  brighter and yellower than a heater that is not much cooler.</p>
+  <p class="note"><b>And the glow is almost nothing.</b> For the heater, roughly 1 watt in 110 000 is light you
+  can see; for the flame, 1 in 2 000–10 000. The warmth you feel across the room is the other 99.99 % —
+  invisible infrared, sitting in the same part of the chart as the heat radiating off your own skin.
+  Only the Sun, at 5772 K, gets its peak into the visible at all.</p>
+</div>
+
+<p class="foot">σ = 5.670374419 × 10⁻⁸ W m⁻² K⁻⁴ · λ<sub>max</sub> = 2898 µm·K / T (Wien) · visible band taken as
+400–700 nm · shares obtained by numerically integrating Planck's law, assuming ε = 1. Real emitters have ε &lt; 1
+and flames also radiate selectively from soot and hot gases, so treat these as order-of-magnitude teaching values.</p>
+
+</div>
+<div class="tt" id="tt"></div>
+
+<script>
+(function(){
+  const h=6.62607015e-34, c=2.99792458e8, kB=1.380649e-23, SIG=5.670374419e-8;
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const sup=n=>String(n).split('').map(ch=>({'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'}[ch]||ch)).join('');
+
+  const SRC=[
+    {k:'heater', name:'Heater element',  T:1100, Trange:null,        col:'--s1',
+     lmax:'2.6 µm',      pow:83.02,  powR:null,          vis:9.082e-6, seen:'dull orange glow'},
+    {k:'flame',  name:'Wood flame',      T:1400, Trange:[1300,1500], col:'--s2',
+     lmax:'1.9–2.2 µm',  pow:162,    powR:[162,287.1],   vis:1.005e-4, visR:[1.005e-4,5.555e-4], seen:'bright yellow-orange'},
+    {k:'skin',   name:'Human skin',      T:306,  Trange:null,        col:'--s3',
+     lmax:'9.5 µm',      pow:0.4972, powR:null,          vis:3.282e-25, seen:'nothing at all'},
+    {k:'sun',    name:'Sun',             T:5772, Trange:null,        col:'--s4',
+     lmax:'0.50 µm',     pow:62940,  powR:null,          vis:0.3663,   seen:'white daylight'}
+  ];
+  const LBL={heater:'~1100 K', flame:'~1300–1500 K', skin:'306 K', sun:'5772 K'};
+  const POWTXT={heater:'83 kW/m²', flame:'160–290 kW/m²', skin:'0.50 kW/m²', sun:'63 000 kW/m²'};
+  const VISTXT={heater:'0.001 %', flame:'0.01–0.06 %', skin:'≈ 0', sun:'37 %'};
+  const VISNOTE={heater:'1 watt in 110 000', flame:'1 watt in 2 000 – 10 000', skin:'3 × 10⁻²³ % — off this scale', sun:'1 watt in 2.7'};
+
+  /* legend */
+  $('leg').innerHTML = SRC.map(s=>'<span class="chip"><span class="dot" style="background:var('+s.col+')"></span>'
+    + s.name + ' · ' + LBL[s.k] + '</span>').join('')
+    + '<span class="chip"><span class="dot" style="background:var(--vis);opacity:.3"></span>visible band</span>';
+
+  /* table */
+  $('tbody').innerHTML = SRC.map(s=>
+    '<tr><td class="nm"><span class="sw" style="background:var('+s.col+')"></span>'+s.name+'</td>'+
+    '<td class="num">'+LBL[s.k]+'</td><td class="num">'+s.lmax+'</td>'+
+    '<td class="num">'+POWTXT[s.k]+'</td><td class="num">'+VISTXT[s.k]+'</td>'+
+    '<td>'+s.seen+'</td></tr>').join('');
+
+  const tt=$('tt');
+  const show=(e,html)=>{tt.innerHTML=html;tt.style.opacity=1;
+    tt.style.left=Math.min(e.clientX+14,innerWidth-244)+'px';tt.style.top=(e.clientY-8)+'px';};
+  const hide=()=>tt.style.opacity=0;
+
+  function planck(lam_um,T){
+    const l=lam_um*1e-6, x=h*c/(l*kB*T);
+    if(x>700) return 0;
+    return (2*h*c*c)/(Math.pow(l,5)*(Math.exp(x)-1));
+  }
+
+  /* ─────────── spectrum ─────────── */
+  function drawSpec(){
+    const s=$('spec'); s.innerHTML='';
+    const L=58,R=856,T=42,B=318;
+    const lo=Math.log10(0.2), hi=Math.log10(60);
+    const x=l=>L+(Math.log10(l)-lo)/(hi-lo)*(R-L);
+
+    // visible band
+    s.appendChild(el('rect',{x:x(0.4),y:T,width:x(0.7)-x(0.4),height:B-T,fill:'var(--vis)',opacity:.16}));
+    const vl=el('text',{x:(x(0.4)+x(0.7))/2,y:T-20,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'});
+    vl.textContent='visible'; s.appendChild(vl);
+    const vl2=el('text',{x:(x(0.4)+x(0.7))/2,y:T-7,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'});
+    vl2.textContent='0.4–0.7 µm'; s.appendChild(vl2);
+
+    // grid + ticks
+    [0.2,0.5,1,2,5,10,20,50].forEach(l=>{
+      s.appendChild(el('line',{x1:x(l),x2:x(l),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1}));
+      const t=el('text',{x:x(l),y:B+20,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'});
+      t.textContent=l+' µm'; s.appendChild(t);
+    });
+    s.appendChild(el('line',{x1:L,x2:R,y1:B,y2:B,stroke:'var(--line)','stroke-width':1}));
+    const ax=el('text',{x:(L+R)/2,y:B+46,'text-anchor':'middle','font-size':12.5,fill:'var(--text-secondary)'});
+    ax.textContent='Wavelength (logarithmic)'; s.appendChild(ax);
+    const ay=el('text',{x:18,y:(T+B)/2,'font-size':12.5,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 18 '+((T+B)/2)+')'});
+    ay.textContent='Emission (each curve normalised)'; s.appendChild(ay);
+    // IR / UV side notes
+    const ir=el('text',{x:R-4,y:T+16,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'});
+    ir.textContent='← longer wavelength, cooler'; s.appendChild(ir);
+
+    const curve=(T_K)=>{
+      let pts=[],max=0;
+      for(let i=0;i<=460;i++){
+        const l=Math.pow(10,lo+(hi-lo)*i/460), v=planck(l,T_K)*l;
+        pts.push([l,v]); if(v>max)max=v;
+      }
+      return pts.map(([l,v])=>[x(l), B-(v/max)*(B-T-14)]);
+    };
+    const pathOf=p=>p.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join('');
+
+    SRC.forEach(sr=>{
+      const col='var('+sr.col+')';
+      if(sr.Trange){
+        const a=curve(sr.Trange[0]), b=curve(sr.Trange[1]);
+        s.appendChild(el('path',{d:pathOf(a)+'L'+b.slice().reverse().map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z',
+          fill:col,opacity:.22}));
+        s.appendChild(el('path',{d:pathOf(a),fill:'none',stroke:col,'stroke-width':2,'stroke-linejoin':'round'}));
+        s.appendChild(el('path',{d:pathOf(b),fill:'none',stroke:col,'stroke-width':2,'stroke-linejoin':'round'}));
+      }else{
+        const p=curve(sr.T);
+        s.appendChild(el('path',{d:pathOf(p)+'L'+p[p.length-1][0].toFixed(1)+' '+B+'L'+p[0][0].toFixed(1)+' '+B+'Z',
+          fill:col,opacity:.12}));
+        s.appendChild(el('path',{d:pathOf(p),fill:'none',stroke:col,'stroke-width':2,'stroke-linejoin':'round'}));
+      }
+      // lambda_max marker(s)
+      const peaks = sr.Trange ? [2897.771955/sr.Trange[1], 2897.771955/sr.Trange[0]] : [2897.771955/sr.T];
+      peaks.forEach(pk=>{
+        s.appendChild(el('circle',{cx:x(pk),cy:T+14,r:4.5,fill:col,stroke:'var(--surface-1)','stroke-width':2}));
+        s.appendChild(el('line',{x1:x(pk),x2:x(pk),y1:T+19,y2:T+30,stroke:col,'stroke-width':1.5,opacity:.6}));
+      });
+      // direct label
+      const POS = {sun:[x(0.62),'start',T+58], flame:[x(1.75),'end',T+118],
+                   heater:[x(3.4),'start',T+58], skin:[x(9.5),'start',T+58]};
+      const lx=POS[sr.k][0], anchor=POS[sr.k][1], ly=POS[sr.k][2];
+      const t=el('text',{x: lx + (anchor==='end' ? -8 : 8), y:ly,'font-size':13,'font-weight':600,fill:col,'text-anchor':anchor});
+      t.textContent=sr.name; s.appendChild(t);
+      const t2=el('text',{x: lx + (anchor==='end' ? -8 : 8), y:ly+15,'font-size':11.5,fill:'var(--text-muted)','text-anchor':anchor});
+      t2.textContent='λmax '+sr.lmax; s.appendChild(t2);
+    });
+
+    const cap=el('text',{x:L,y:B+46,'font-size':11.5,fill:'var(--text-muted)'});
+    cap.textContent='dots = λmax'; s.appendChild(cap);
+
+    // hover crosshair
+    const cross=el('line',{x1:0,x2:0,y1:T,y2:B,stroke:'var(--text-muted)','stroke-width':1,'stroke-dasharray':'3 3',opacity:0});
+    s.appendChild(cross);
+    const hit=el('rect',{x:L,y:T,width:R-L,height:B-T,fill:'transparent',style:'cursor:crosshair'});
+    hit.addEventListener('mousemove',e=>{
+      const bb=s.getBoundingClientRect();
+      const px=(e.clientX-bb.left)/bb.width*880;
+      const lam=Math.pow(10, lo+(px-L)/(R-L)*(hi-lo));
+      cross.setAttribute('x1',px); cross.setAttribute('x2',px); cross.setAttribute('opacity',.7);
+      const band = lam<0.4?'ultraviolet':(lam<=0.7?'VISIBLE — your eye works here':'infrared — felt as warmth, not seen');
+      show(e,'<b>'+(lam<1?(lam*1000).toFixed(0)+' nm':lam.toFixed(2)+' µm')+'</b><span class="s">'+band+'</span>');
+    });
+    hit.addEventListener('mouseleave',()=>{cross.setAttribute('opacity',0);hide();});
+    s.appendChild(hit);
+  }
+
+  /* ─────────── generic log dot plot ─────────── */
+  function logDots(svgId, opts){
+    const s=$(svgId); s.innerHTML='';
+    const L=opts.L||18, R=412, T=16, B=196;
+    const x=v=>L+(Math.log10(v)-opts.lo)/(opts.hi-opts.lo)*(R-L);
+    for(let e=Math.ceil(opts.lo);e<=opts.hi;e+=(opts.step||1)){
+      const xx=x(Math.pow(10,e));
+      s.appendChild(el('line',{x1:xx,x2:xx,y1:T,y2:B,stroke:'var(--grid)','stroke-width':1}));
+      const t=el('text',{x:xx,y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'});
+      t.textContent = (e===0?'1':'10'+sup(e)); s.appendChild(t);
+    }
+    s.appendChild(el('line',{x1:L,x2:R,y1:B,y2:B,stroke:'var(--line)'}));
+    const ax=el('text',{x:(L+R)/2,y:B+42,'text-anchor':'middle','font-size':12,fill:'var(--text-secondary)'});
+    ax.textContent=opts.axis; s.appendChild(ax);
+
+    opts.rows.forEach((r,i)=>{
+      const y=T+18+i*((B-T-34)/(opts.rows.length-1));
+      const col='var('+r.col+')';
+      if(r.off){
+        s.appendChild(el('path',{d:'M'+(L+16)+' '+y+'L'+(L+2)+' '+y,stroke:col,'stroke-width':2,
+          'marker-end':'', 'stroke-linecap':'round'}));
+        s.appendChild(el('path',{d:'M'+(L+2)+' '+y+'l7 -4 l0 8 z',fill:col}));
+        const t=el('text',{x:L+24,y:y+4,'font-size':12,fill:'var(--text-primary)'});
+        t.textContent=r.name; s.appendChild(t);
+        const t2=el('text',{x:L+24,y:y+18,'font-size':11,fill:'var(--text-muted)'});
+        t2.textContent=r.note; s.appendChild(t2);
+        return;
+      }
+      s.appendChild(el('line',{x1:L,x2:x(r.v),y1:y,y2:y,stroke:col,'stroke-width':1.5,opacity:.28,'stroke-linecap':'round'}));
+      if(r.range){
+        s.appendChild(el('line',{x1:x(r.range[0]),x2:x(r.range[1]),y1:y,y2:y,stroke:col,'stroke-width':5,
+          'stroke-linecap':'round',opacity:.55}));
+      }
+      const cx=r.range?x(r.range[1]):x(r.v);
+      s.appendChild(el('circle',{cx:cx,cy:y,r:6,fill:col,stroke:'var(--surface-1)','stroke-width':2}));
+      const right = cx>R-140;
+      const t=el('text',{x:right?cx-12:cx+12,y:y-1,'font-size':12,fill:'var(--text-primary)','text-anchor':right?'end':'start'});
+      t.textContent=r.name; s.appendChild(t);
+      const t2=el('text',{x:right?cx-12:cx+12,y:y+13,'font-size':11,fill:'var(--text-muted)','text-anchor':right?'end':'start'});
+      t2.textContent=r.note; s.appendChild(t2);
+      const hb=el('rect',{x:L,y:y-11,width:Math.max(cx-L,10)+16,height:22,fill:'transparent',style:'cursor:pointer'});
+      hb.addEventListener('mousemove',e=>show(e,'<b>'+r.name+'</b><span class="s">'+r.note+'</span>'));
+      hb.addEventListener('mouseleave',hide);
+      s.appendChild(hb);
+    });
+  }
+
+  function drawSmall(){
+    logDots('pow',{lo:-1,hi:5,axis:'Radiated flux (kW per m² of surface, log)',rows:[
+      {name:'Human skin',      v:0.4972, col:'--s3', note:'0.50 kW/m² · 306 K'},
+      {name:'Heater element',  v:83.02,  col:'--s1', note:'83 kW/m² · 1100 K'},
+      {name:'Wood flame',      v:287.1,  range:[162,287.1], col:'--s2', note:'160–290 kW/m² · 1300–1500 K'},
+      {name:'Sun',             v:62940,  col:'--s4', note:'63 000 kW/m² · 5772 K'}
+    ]});
+    logDots('vis',{lo:-6,hi:2,axis:'Share of energy in the visible band (%, log)',step:2,rows:[
+      {name:'Human skin',      off:true, col:'--s3', note:'3 × 10⁻²³ % — off this scale'},
+      {name:'Heater element',  v:9.082e-4, col:'--s1', note:'0.001 % · 1 watt in 110 000'},
+      {name:'Wood flame',      v:5.555e-2, range:[1.005e-2,5.555e-2], col:'--s2', note:'0.01–0.06 % · 1 in 2 000–10 000'},
+      {name:'Sun',             v:36.63,  col:'--s4', note:'37 % · 1 watt in 2.7'}
+    ]});
+  }
+
+  $('themeBtn').onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme',d?'light':'dark');
+    $('themeBtn').textContent=d?'Dark':'Light';
+    drawSpec(); drawSmall();
+  };
+
+  drawSpec(); drawSmall();
+})();
+</script>
+</body>
+</html>
