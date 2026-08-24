@@ -280,6 +280,38 @@
       <div class="def"><b>ζ</b> absorptivity — fraction of I absorbed and converted to heat</div>
     </div>
 
+    <p style="margin-top:18px"><strong>Worked example — a green leaf.</strong> Chlorophyll absorbs the visible
+    band hard, for photosynthesis; the leaf's internal cell structure scatters near-infrared light back out
+    almost unused. Same leaf, two wavebands, very different split:</p>
+
+    <div style="margin:4px 0 4px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <span style="min-width:180px;font-size:13px;color:var(--text-secondary)">Visible · 0.4–0.7 µm</span>
+        <div style="flex:1;display:flex;height:28px;border-radius:6px;overflow:hidden;border:1px solid var(--line-soft)">
+          <div style="width:5%;background:var(--sun);opacity:.55" title="ψ transmitted ≈ 5%"></div>
+          <div style="width:10%;background:var(--sun-deep)" title="α reflected ≈ 10%"></div>
+          <div style="width:85%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:600" title="ζ absorbed ≈ 85%">ζ ≈ 85%</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="min-width:180px;font-size:13px;color:var(--text-secondary)">Near-infrared · 0.7–1.3 µm</span>
+        <div style="flex:1;display:flex;height:28px;border-radius:6px;overflow:hidden;border:1px solid var(--line-soft)">
+          <div style="width:40%;background:var(--sun);opacity:.55;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:600" title="ψ transmitted ≈ 40%">ψ ≈ 40%</div>
+          <div style="width:40%;background:var(--sun-deep);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:600" title="α reflected ≈ 40%">α ≈ 40%</div>
+          <div style="width:20%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:600" title="ζ absorbed ≈ 20%">ζ ≈ 20%</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--text-muted)">
+        <span><span style="display:inline-block;width:9px;height:9px;background:var(--sun);opacity:.55;border-radius:2px;margin-right:5px;vertical-align:middle"></span>ψ transmitted</span>
+        <span><span style="display:inline-block;width:9px;height:9px;background:var(--sun-deep);border-radius:2px;margin-right:5px;vertical-align:middle"></span>α reflected</span>
+        <span><span style="display:inline-block;width:9px;height:9px;background:var(--accent);border-radius:2px;margin-right:5px;vertical-align:middle"></span>ζ absorbed</span>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">In the visible band ζ dominates — that's
+    photosynthesis at work. In the near-infrared, ζ stays well under 50 %: most of the beam is reflected or
+    scattered straight through the leaf's internal structure, not absorbed. That contrast — dark in the
+    visible, bright in the near-infrared — is exactly what vegetation indices like NDVI detect from satellites.</p>
+
     <div class="callout">
       <b>Two things this connects to, later on this page.</b> First, <strong>Kirchhoff's law</strong>: at thermal
       equilibrium a body's absorptivity equals its emissivity at the same wavelength, ζ(λ) = ε(λ) — the same
@@ -630,6 +662,9 @@
 <p class="foot">Constants: σ = 5.670374419 × 10⁻⁸ W m⁻² K⁻⁴ (exact, from the 2019 SI definitions of k<sub>B</sub>,
 h and c) · R☉ = 6.957 × 10⁸ m · T☉ = 5772 K · R⊕ = 6371 km · 1 AU = 1.495978707 × 10¹¹ m · α<sub>p</sub> = 0.30 ·
 S₀ (TSI) = 1361 W/m². All figures computed from these, not quoted.</p>
+
+<p class="foot">Continue to <a href="greenhouse-effect.html">Part 2 — why the surface is warmer than space:
+the greenhouse effect →</a></p>
 
 </div>
 <div class="tt" id="tt"></div>
