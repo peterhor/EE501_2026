@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why the surface is warmer than space: the greenhouse effect</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --sun:#eb6834; --sun-soft:#fdeae1; --sun-deep:#c14a1c;
+    --earth:#2a78d6; --earth-soft:#e2edfb; --earth-deep:#1c5cab;
+    --atmo:#3f9488; --atmo-soft:#e0f0ec; --atmo-deep:#2b7267;
+    --ground:#8a5a2e;
+    --accent:#4a3aa7; --good:#0ca30c;
+    --grid:#e6e5df;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --sun:#d95926; --sun-soft:#3a2318; --sun-deep:#eb6834;
+    --earth:#3987e5; --earth-soft:#152436; --earth-deep:#86b6ef;
+    --atmo:#4db3a4; --atmo-soft:#12302b; --atmo-deep:#7ad4c4;
+    --ground:#a06c39;
+    --accent:#9085e9; --good:#0ca30c;
+    --grid:#2e2e2b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--surface-0); color:var(--text-primary);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:34px 22px 90px}
+  header.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:10px}
+  h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:16px;max-width:64ch;margin:0}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  h2{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);
+     margin:0 0 14px;font-weight:600}
+  h3{font-size:18px;margin:0 0 8px;letter-spacing:-.01em}
+  section{margin:0 0 26px}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:22px 24px}
+  .card + .card{margin-top:14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p strong, li strong{color:var(--text-primary);font-weight:600}
+  ul{margin:0 0 12px;padding-left:20px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  .eq{background:var(--surface-2);border-radius:10px;padding:16px 18px;margin:14px 0;
+      font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+      font-size:21px;text-align:center;color:var(--text-primary);letter-spacing:.01em;overflow-x:auto}
+  .eq small{display:block;font-family:inherit;font-size:13px;color:var(--text-muted);margin-top:8px;letter-spacing:0}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 20px;margin:14px 0 4px}
+  .def{font-size:14px;color:var(--text-secondary)}
+  .def b{color:var(--text-primary);font-family:"Iowan Old Style",Georgia,serif;font-size:16px;margin-right:6px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr} .three{grid-template-columns:1fr}}
+  .tile{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:18px 20px}
+  .tile .lab{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+  .tile .val{font-size:27px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .tile .note{font-size:13px;color:var(--text-secondary);margin-top:6px}
+  .sunv .val{color:var(--sun-deep)} .earthv .val{color:var(--earth-deep)} .atmov .val{color:var(--atmo-deep)}
+  figure{margin:18px 0 6px}
+  figcaption{font-size:13px;color:var(--text-muted);margin-top:10px;text-align:center}
+  svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  .ctl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+  .ctl label{font-size:13px;color:var(--text-secondary);min-width:140px}
+  input[type=range]{flex:1;min-width:190px;accent-color:var(--atmo)}
+  .readout{font-variant-numeric:tabular-nums;font-weight:600;min-width:126px;text-align:right}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary)}
+  th{color:var(--text-muted);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--text-secondary)}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin:2px 0 10px}
+  .callout{border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:14px 0;font-size:15px;color:var(--text-secondary)}
+  .callout b{color:var(--text-primary)}
+  .callout.warn{border-left-color:var(--sun-deep)}
+  details{margin-top:10px}
+  summary{cursor:pointer;font-size:13px;color:var(--text-muted)}
+  summary:hover{color:var(--text-primary)}
+  .foot{color:var(--text-muted);font-size:13px;margin-top:34px;border-top:1px solid var(--line-soft);padding-top:16px}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:5px;font-size:13.5px}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">← EE501 course labs</a> &nbsp;·&nbsp; <a href="stefan-boltzmann.html">← Stefan–Boltzmann: how much energy the Sun and Earth radiate</a></p>
+
+<header class="top">
+  <div>
+    <h1>Why is the surface warmer than space?</h1>
+    <p class="sub">Part 2. Same law as before — A↑ = σT⁴ — applied to three progressively more realistic
+    pictures of the planet: a bare rock with no atmosphere, a blanket that blocks all infrared, and a
+    blanket that only partly blocks it. Each step adds one idea and one equation, following Goosse et al.
+    (2010), §2.1.1–2.1.2, Eq. 2.1–2.13.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="stepnav">
+  <a href="#s1">1 · No atmosphere</a>
+  <a href="#s2">2 · Opaque blanket</a>
+  <a href="#s3">3 · Leaky blanket (ε)</a>
+  <a href="#s4">4 · Compare</a>
+  <a href="#s5">5 · Real Earth</a>
+  <a href="#s6">6 · Limits</a>
+</div>
+
+<!-- ───────────── 1. NO ATMOSPHERE ───────────── -->
+<section id="s1">
+  <h2>1 · Baseline — a planet with no atmosphere at all</h2>
+  <div class="card">
+    <h3>One number: the effective emission temperature T<sub>e</sub></h3>
+    <p>Strip away the atmosphere entirely. The bare planet absorbs sunlight over its shadow disc πR² and
+    radiates as a blackbody from its whole sphere 4πR² (the same "factor of four" derived on the previous
+    page). Setting absorbed = emitted gives the planet's <strong>effective emission temperature</strong>:</p>
+
+    <div class="eq">
+      A↑ = σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.1)
+      <small>Stefan–Boltzmann for a blackbody (ε = 1) — this equation <em>defines</em> T<sub>e</sub></small>
+    </div>
+    <div class="eq">
+      πR²(1−α<sub>p</sub>)S₀ = 4πR²σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.2)
+      &nbsp;&nbsp;⟹&nbsp;&nbsp; T<sub>e</sub> = [ S₀(1−α<sub>p</sub>) / 4σ ]<sup>1/4</sup> &nbsp;&nbsp; (2.3–2.4)
+      <small>R cancels — T<sub>e</sub> does not depend on planet size, only on S₀, α<sub>p</sub> and σ</small>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 800 210" role="img" aria-label="A bare planet in radiative balance: absorbed sunlight on the left equals emitted infrared on the right">
+        <defs>
+          <marker id="arS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--sun)"/>
+          </marker>
+          <marker id="arE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--earth)"/>
+          </marker>
+        </defs>
+        <g stroke="var(--sun)" stroke-width="2.4" marker-end="url(#arS)" opacity=".9">
+          <line x1="40" y1="70"  x2="150" y2="70"/>
+          <line x1="40" y1="100" x2="150" y2="100"/>
+          <line x1="40" y1="130" x2="150" y2="130"/>
+        </g>
+        <text x="95" y="50" text-anchor="middle" font-size="12.5" fill="var(--sun-deep)" font-weight="600">S₀(1−α<tspan baseline-shift="sub" font-size="9">p</tspan>)/4</text>
+        <circle cx="230" cy="100" r="62" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width="2"/>
+        <text x="230" y="106" text-anchor="middle" font-size="14" fill="var(--earth-deep)" font-weight="600">T<tspan baseline-shift="sub" font-size="10">e</tspan> = 255 K</text>
+        <text x="230" y="185" text-anchor="middle" font-size="13" fill="var(--text-muted)">no atmosphere — bare blackbody surface</text>
+        <text x="400" y="104" text-anchor="middle" font-size="20" fill="var(--text-muted)">=</text>
+        <g stroke="var(--earth)" stroke-width="2" marker-end="url(#arE)" opacity=".85">
+          <line x1="500" y1="55"  x2="560" y2="15"/>
+          <line x1="500" y1="70"  x2="580" y2="55"/>
+          <line x1="500" y1="100" x2="590" y2="100"/>
+          <line x1="500" y1="130" x2="580" y2="145"/>
+          <line x1="500" y1="145" x2="560" y2="185"/>
+        </g>
+        <circle cx="470" cy="100" r="62" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width="2"/>
+        <text x="470" y="106" text-anchor="middle" font-size="13" fill="var(--earth-deep)" font-weight="600">σT<tspan baseline-shift="sub" font-size="10">e</tspan>⁴</text>
+        <text x="655" y="50" text-anchor="middle" font-size="12.5" fill="var(--earth-deep)" font-weight="600">239 W/m²</text>
+        <text x="655" y="185" text-anchor="middle" font-size="13" fill="var(--text-muted)">emitted in every direction</text>
+      </svg>
+      <figcaption>With S₀ = 1368 W/m² and α<sub>p</sub> = 0.30, the absorbed flux is 239 W/m² and Eq. 2.4
+      gives T<sub>e</sub> = 254.9 K ≈ 255 K (−18 °C).</figcaption>
+    </figure>
+
+    <div class="callout">
+      <b>T<sub>e</sub> is not a temperature you could measure anywhere.</b> It is the temperature a perfect
+      blackbody would need in order to radiate away exactly as much energy as the planet absorbs. It is also
+      the temperature the surface <em>would</em> have, uniformly, if there were no atmosphere at all
+      (Goosse et al. 2010, p. 27). Real measured surface temperature is 288 K — 33 K warmer. Explaining that
+      gap is the rest of this page.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 2. OPAQUE SINGLE-LAYER ───────────── -->
+<section id="s2">
+  <h2>2 · Add an atmosphere that blocks all infrared</h2>
+  <div class="card">
+    <h3>The simplest possible greenhouse model</h3>
+    <p>Now wrap the planet in a single, well-mixed atmospheric layer at temperature T<sub>a</sub>, with two
+    idealised properties: it is <strong>totally transparent to sunlight</strong> (shortwave) and
+    <strong>totally opaque to infrared</strong> (longwave). This is the textbook's first greenhouse model
+    (Goosse et al. 2010, §2.1.2, Fig. 2.4) — every photon the surface emits upward is absorbed by the layer.</p>
+
+    <p><strong>Top of atmosphere:</strong> because the layer is opaque, <em>all</em> the outgoing radiation
+    to space comes from the atmosphere itself, not from the surface. Balance at the top requires:</p>
+    <div class="eq">
+      σT<sub>a</sub><sup>4</sup> = ¼(1−α<sub>p</sub>)S₀ = σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.5)
+      <small>⟹ T<sub>a</sub> = T<sub>e</sub> = 255 K — the layer sits at exactly the planet's emission temperature</small>
+    </div>
+
+    <p><strong>At the surface:</strong> the ground absorbs both the sunlight coming through the transparent
+    atmosphere <em>and</em> the infrared radiated back down by the layer above it:</p>
+    <div class="eq">
+      σT<sub>s</sub><sup>4</sup> = ¼(1−α<sub>p</sub>)S₀ + σT<sub>a</sub><sup>4</sup> &nbsp;&nbsp; (2.6)
+    </div>
+    <p>Substituting Eq. 2.5 into Eq. 2.6 — both terms on the right are now σT<sub>e</sub><sup>4</sup>:</p>
+    <div class="eq">
+      σT<sub>s</sub><sup>4</sup> = σT<sub>e</sub><sup>4</sup> + σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.7)
+      &nbsp;&nbsp;⟹&nbsp;&nbsp; T<sub>s</sub> = 2<sup>1/4</sup>T<sub>e</sub> = 1.19 T<sub>e</sub> &nbsp;&nbsp; (2.8)
+    </div>
+
+    <figure>
+      <svg id="opaqueDiagram" viewBox="0 0 760 320" role="img" aria-label="Heat balance diagram with an opaque single-layer atmosphere: solar input passes through to the surface, the surface radiates upward and is fully absorbed by the atmosphere, which radiates both up to space and down to the surface"></svg>
+      <figcaption>Modified from Goosse et al. (2010), Fig. 2.4. Every arrow is a flux in W/m², global and
+      annual mean; arrow thickness is drawn to scale.</figcaption>
+    </figure>
+
+    <div class="callout warn">
+      <b>303 K is 15 K too warm.</b> The textbook attributes this to "some crude approximations in this
+      simple model," and it is worth being precise about which one dominates. Making the blanket leaky
+      (Section 3) helps only slightly — even a realistically leaky atmosphere still lands near 296–301 K.
+      The bigger omission is that this model moves energy away from the surface <em>only</em> by radiation,
+      when in reality convection and evaporation carry most of it. Section 5 quantifies that.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 3. EMISSIVITY MODEL ───────────── -->
+<section id="s3">
+  <h2>3 · A leaky blanket: giving the atmosphere an emissivity ε</h2>
+  <div class="card">
+    <h3>Let the atmosphere absorb only a fraction ε of the infrared</h3>
+    <p>Real greenhouse gases don't absorb every outgoing infrared photon. Give the single layer an
+    <strong>infrared emissivity ε</strong> (0 ≤ ε ≤ 1) — by Kirchhoff's law this is also its infrared
+    absorptivity. A fraction ε of the surface's upward radiation σT<sub>s</sub><sup>4</sup> is absorbed and
+    the remaining (1−ε) passes straight through to space. The layer, being a greybody at its own temperature
+    T<sub>a</sub>, emits εσT<sub>a</sub><sup>4</sup> upward <em>and</em> εσT<sub>a</sub><sup>4</sup> downward
+    (Goosse et al. 2010, §2.1.2, Fig. 2.5).</p>
+
+    <div class="eq">
+      σT<sub>s</sub><sup>4</sup> = ¼(1−α<sub>p</sub>)S₀ + εσT<sub>a</sub><sup>4</sup> &nbsp;&nbsp; (2.9)
+      <small>surface balance: absorbed sunlight, plus the layer's downward greybody emission</small>
+    </div>
+    <div class="eq">
+      ¼(1−α<sub>p</sub>)S₀ = εσT<sub>a</sub><sup>4</sup> + (1−ε)σT<sub>s</sub><sup>4</sup> = σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.10)
+      <small>top-of-atmosphere balance: what leaves to space is the layer's own emission <em>plus</em> the
+      surface radiation that escaped through the gap</small>
+    </div>
+
+    <p>Solving Eqs. 2.9–2.10 together (they share the unknowns T<sub>s</sub> and T<sub>a</sub>):</p>
+    <div class="eq">
+      T<sub>s</sub> = [ 2 / (2−ε) ]<sup>1/4</sup> T<sub>e</sub> &nbsp;&nbsp; (2.11–2.12)
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      T<sub>a</sub> = [ 1 / (2−ε) ]<sup>1/4</sup> T<sub>e</sub> &nbsp;&nbsp; (2.13)
+      <small>ε = 0 recovers Section 1 (T<sub>s</sub> = T<sub>e</sub>, no atmosphere); ε = 1 recovers
+      Section 2 (T<sub>s</sub> = 2<sup>1/4</sup>T<sub>e</sub>)</small>
+    </div>
+
+    <h3 style="margin-top:22px">Try it — drag the atmosphere's infrared emissivity</h3>
+    <div class="ctl">
+      <label for="epsSlider">Emissivity ε</label>
+      <input type="range" id="epsSlider" min="0" max="1" step="0.01" value="0.97">
+      <span class="readout" id="epsRead">0.97</span>
+    </div>
+
+    <figure>
+      <svg id="ghDiagram" viewBox="0 0 760 320" role="img" aria-label="Interactive heat balance diagram with an atmosphere of adjustable infrared emissivity"></svg>
+      <figcaption>Arrow thickness scales with flux. Drag the slider and watch the two arrows leaving to
+      space trade places — but their <em>sum</em> never budges from 239 W/m², whatever ε is.</figcaption>
+    </figure>
+
+    <div class="three">
+      <div class="tile atmov"><div class="lab">Atmosphere T<sub>a</sub></div><div class="val" id="taRead">253 K</div>
+        <div class="note" id="taNote">−20 °C</div></div>
+      <div class="tile earthv"><div class="lab">Surface T<sub>s</sub></div><div class="val" id="tsRead">301 K</div>
+        <div class="note" id="tsNote">28 °C</div></div>
+      <div class="tile"><div class="lab">Check: flux to space</div><div class="val" id="checkRead">239 W/m²</div>
+        <div class="note">(1−ε)σT<sub>s</sub>⁴ + εσT<sub>a</sub>⁴ — always equals σT<sub>e</sub>⁴</div></div>
+    </div>
+
+    <figure style="margin-top:22px">
+      <svg id="epsChart" viewBox="0 0 800 300" role="img" aria-label="Surface and atmosphere temperature as a function of emissivity, from 0 to 1"></svg>
+      <figcaption>T<sub>s</sub> and T<sub>a</sub> across the full range of ε; markers show ε = 0.97. Note the
+      T<sub>a</sub> curve is dashed as ε → 0: a perfectly transparent layer exchanges no radiation at all, so
+      the balance leaves its temperature undefined there (the derivation divides through by ε).</figcaption>
+    </figure>
+
+    <div class="callout">
+      <b>A typical value, ε ≈ 0.97, gives T<sub>s</sub> ≈ 301 K (28 °C).</b> Still 13 K above the observed
+      288 K — because a single well-mixed layer is itself a crude stand-in for a real atmosphere with a
+      temperature and humidity <em>profile</em>, convective heat transport, and latent heat exchange, none
+      of which this radiative-only model includes (Goosse et al. 2010, p. 29). See Section 5.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 4. COMPARISON ───────────── -->
+<section id="s4">
+  <h2>4 · Three models, one table</h2>
+  <div class="card">
+    <h3>Everything is one formula: T<sub>s</sub> = [2/(2−ε)]<sup>1/4</sup> T<sub>e</sub></h3>
+    <table>
+      <thead><tr><th>Model</th><th class="num">ε</th><th class="num">T<sub>a</sub> (K)</th>
+        <th class="num">T<sub>s</sub> (K)</th><th class="num">T<sub>s</sub> (°C)</th><th>Section</th></tr></thead>
+      <tbody>
+        <tr><td>No atmosphere</td><td class="num">0</td><td class="num">—</td><td class="num">255</td><td class="num">−18</td><td>§1</td></tr>
+        <tr><td>Leaky, as the observed window implies</td><td class="num">0.90</td><td class="num">249</td><td class="num">296</td><td class="num">23</td><td>§5</td></tr>
+        <tr><td>Leaky, textbook's typical value</td><td class="num">0.97</td><td class="num">253</td><td class="num">301</td><td class="num">28</td><td>§3</td></tr>
+        <tr><td>Fully opaque blanket</td><td class="num">1</td><td class="num">255</td><td class="num">303</td><td class="num">30</td><td>§2</td></tr>
+        <tr><td><strong>Observed Earth</strong></td><td class="num">—</td><td class="num">—</td><td class="num"><strong>288</strong></td><td class="num"><strong>15</strong></td><td>§5</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px">The model brackets reality, but note that <em>every</em> non-zero ε overshoots
+    the observed 288 K, and the observationally-motivated ε ≈ 0.90 still lands 8 K high. Tuning ε cannot
+    close the gap, which is the clue that something other than radiation is missing.</p>
+  </div>
+</section>
+
+<!-- ───────────── 5. REAL EARTH ───────────── -->
+<section id="s5">
+  <h2>5 · What the single layer leaves out</h2>
+  <div class="card">
+    <h3>The observed global energy budget</h3>
+    <p>Trenberth et al. (2009), reproduced as Goosse et al. (2010) Fig. 2.19, measured the actual global-
+    and annual-mean flows. They look like the single-layer diagram in shape, but with the numbers spread
+    across more pathways than ε alone can represent:</p>
+
+    <div class="defs">
+      <div class="def"><b>341</b> W/m² incoming solar (S₀/4)</div>
+      <div class="def"><b>102</b> W/m² reflected (α<sub>p</sub> ≈ 0.30 × 341)</div>
+      <div class="def"><b>161</b> W/m² solar absorbed at the surface</div>
+      <div class="def"><b>78</b> W/m² solar absorbed directly by the atmosphere</div>
+      <div class="def"><b>396</b> W/m² emitted upward by the surface, σT<sub>s</sub>⁴ at T<sub>s</sub> = 288 K</div>
+      <div class="def"><b>40</b> W/m² of that escapes straight to space (the "atmospheric window")</div>
+      <div class="def"><b>333</b> W/m² back-radiation returned to the surface</div>
+      <div class="def"><b>17 + 80</b> W/m² leave the surface as sensible + latent heat, not radiation</div>
+      <div class="def"><b>239</b> W/m² outgoing longwave at the top — balancing the 239 W/m² absorbed</div>
+    </div>
+
+    <div class="callout">
+      <b>Two things the ε-model cannot capture — and only one of them matters much.</b>
+      First, the window: 396 − 40 = <strong>356 W/m²</strong> of the surface's radiation is absorbed by the
+      atmosphere, i.e. an effective ε ≈ 0.90, not 0.97. But feeding ε = 0.90 back into Eq. 2.12 gives
+      T<sub>s</sub> = 296 K — better, still 8 K too warm. Second, and this is the real culprit:
+      of the 161 W/m² the surface must shed to balance its absorbed sunlight, <strong>97 W/m² (60%) leaves
+      as sensible heat (thermals) and evaporation</strong> — Eq. 2.33–2.34 — and only 63 W/m² as
+      <em>net</em> radiation. A radiation-only model has no such escape route, so it must raise
+      T<sub>s</sub> until σT<sub>s</sub>⁴ alone carries the whole load. Convection and evaporation cool the
+      surface for free, and that is most of the missing 8–13 K.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 6. FINE PRINT ───────────── -->
+<section id="s6">
+  <h2>6 · The fine print</h2>
+  <div class="card">
+    <ul>
+      <li><strong>"Emissivity" here is a single number standing in for a spectrum.</strong> Real greenhouse
+      gases absorb strongly in some infrared bands and barely at all in others (the atmospheric window,
+      ≈8–13 µm). Replacing the single ε with a wavelength-resolved, multi-level radiative transfer
+      calculation is the next step in realism, and is what climate models actually do.</li>
+      <li><strong>One layer means one atmospheric temperature.</strong> The real atmosphere cools with
+      altitude (the lapse rate, set mostly by convection, not radiation) and that vertical structure is
+      itself what makes the greenhouse effect work: the level that radiates to space is colder than the
+      surface precisely because it sits higher up.</li>
+      <li><strong>Sensible and latent heat fluxes are absent.</strong> Eq. 2.33–2.34 carry 97 of the
+      161 W/m² the surface must shed. Leaving them out is the single biggest reason the simple model
+      overshoots the observed T<sub>s</sub>.</li>
+      <li><strong>The chapter's Exercise 1 generalises this to n layers</strong>: stack n blackbody layers
+      in radiative equilibrium and T<sub>s</sub> keeps climbing with each one added — a crude but
+      instructive analogue of thickening the blanket. (Worth deriving; the ε = 1 case above is n = 1.)</li>
+      <li><strong>Balance still holds exactly at the top of the atmosphere</strong> — that is the "Check"
+      tile in Section 3, and it is why T<sub>e</sub> = 255 K is untouched by any of this. Warm the surface
+      as much as you like with a thicker blanket: the planet must still shed 239 W/m² to space on average,
+      or it is not in equilibrium.</li>
+    </ul>
+  </div>
+</section>
+
+<p class="foot">Constants used here: σ = 5.670374419 × 10⁻⁸ W m⁻² K⁻⁴ · α<sub>p</sub> = 0.30 ·
+<strong>S₀ = 1368 W/m²</strong>, the value used in Goosse et al. (2010), giving 239 W/m² absorbed and
+T<sub>e</sub> = 254.9 K. (Part 1 of this pair uses the modern TSI measurement, 1361 W/m², which gives
+238 W/m² and T<sub>e</sub> = 254.6 K — a 0.3 K difference, invisible at the precision of this model.)
+All temperatures on this page are computed from these numbers, not quoted. Model and figures follow
+Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to Climate Dynamics
+and Climate Modelling</em>, Chapter 2, §2.1.1–2.1.2, Eq. 2.1–2.13 (climate.be/textbook). Observed budget:
+Trenberth, Fasullo &amp; Kiehl (2009), reproduced as Fig. 2.19 in Goosse et al.</p>
+
+</div>
+
+<script>
+(function(){
+  const SIG = 5.670374419e-8, S0 = 1368, ALB = 0.30;
+  const Te = Math.pow(S0*(1-ALB)/(4*SIG), 0.25);
+  const Fe = SIG*Math.pow(Te, 4);              /* 239 W/m^2 */
+  const $ = id => document.getElementById(id);
+
+  const btn = $('themeBtn');
+  btn.onclick = () => {
+    const d = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', d ? 'light' : 'dark');
+    btn.textContent = d ? 'Dark' : 'Light';
+    drawOpaque(); drawDiagram(); drawEpsChart();
+  };
+
+  const svgEl = (t, a) => { const e = document.createElementNS('http://www.w3.org/2000/svg', t);
+    for (const k in a) e.setAttribute(k, a[k]); return e; };
+
+  /* text builder: parts are strings, or {t:'s'} for a subscript */
+  function txt(parent, attrs, parts){
+    const t = svgEl('text', attrs);
+    parts.forEach(p => {
+      if (typeof p === 'string') { t.appendChild(document.createTextNode(p)); }
+      else {
+        const ts = svgEl('tspan', {'baseline-shift': p.up ? 'super' : 'sub', 'font-size': p.fs || 9});
+        ts.textContent = p.t; t.appendChild(ts);
+      }
+    });
+    parent.appendChild(t); return t;
+  }
+
+  const TsOf = e => Math.pow(2/(2-e), 0.25) * Te;
+  const TaOf = e => Math.pow(1/(2-e), 0.25) * Te;
+
+  /* ── shared flux-diagram geometry ──────────────────────────────────────
+     Arrows are drawn as ONE filled polygon (stem + head), never as a
+     stroked line with a marker: SVG markers scale with stroke-width by
+     default, so a thick stem produces a huge head that overruns both the
+     stem and any nearby label. A polygon keeps the head strictly
+     proportional and always flush with the stem.                        */
+  const BOX = {x:56, w:500, top:60, bot:150, groundH:16};
+  const Y = {
+    topLabel: 18,        /* labels for fluxes escaping to space          */
+    spaceTip: 24,        /* where a to-space arrow points                */
+    spaceBase: 56,       /* where a to-space arrow starts                */
+    inBoxTip: 66,        /* tip of an arrow stopping inside the layer    */
+    surf: 149,           /* top face of the ground bar                   */
+    lab1: 190, lab2: 205,/* two label rows under the surface             */
+    rule: 232, sum1: 256, sum2: 276
+  };
+
+  /* vertical arrow as a single polygon; yTo is the tip */
+  function arrowV(parent, x, yFrom, yTo, width, color, opacity){
+    const dir = yTo > yFrom ? 1 : -1, len = Math.abs(yTo - yFrom);
+    let headLen = Math.min(Math.max(11, width*2.4), 22);
+    if (headLen > len*0.9) headLen = len*0.9;         /* very short arrows */
+    const headHalf = Math.min(Math.max(5.5, width*1.35), 13);
+    const st = width/2, yB = yTo - dir*headLen;
+    parent.appendChild(svgEl('path', {
+      d: 'M' + (x-st) + ' ' + yFrom + 'L' + (x-st) + ' ' + yB +
+         'L' + (x-headHalf) + ' ' + yB + 'L' + x + ' ' + yTo +
+         'L' + (x+headHalf) + ' ' + yB + 'L' + (x+st) + ' ' + yB +
+         'L' + (x+st) + ' ' + yFrom + 'Z',
+      fill: color, opacity: opacity == null ? 1 : opacity }));
+  }
+
+  const widthOf = f => Math.max(1.2, Math.min(9, 1.2 + 7*f/500));
+
+  /* the stage: space, atmosphere slab, ground bar, right-hand labels */
+  function drawStage(s, atmoLabel, extraLines){
+    s.appendChild(svgEl('rect', {x:BOX.x, y:BOX.top, width:BOX.w, height:BOX.bot-BOX.top,
+      fill:'var(--atmo-soft)', stroke:'var(--atmo)', 'stroke-width':1.6}));
+    s.appendChild(svgEl('rect', {x:BOX.x, y:BOX.bot, width:BOX.w, height:BOX.groundH,
+      fill:'var(--ground)'}));
+    const lx = BOX.x + BOX.w + 12;                    /* 568 — clear of the slab */
+    txt(s, {x:lx, y:32, 'font-size':13, fill:'var(--text-secondary)'}, ['Space']);
+    txt(s, {x:lx, y:100, 'font-size':13, fill:'var(--atmo-deep)', 'font-weight':600}, atmoLabel);
+    (extraLines || []).forEach((line, i) => {
+      txt(s, {x:lx, y:118 + i*15, 'font-size':11, fill:'var(--atmo-deep)', opacity:.85}, [line]);
+    });
+    txt(s, {x:lx, y:BOX.bot+13, 'font-size':13, fill:'var(--text-secondary)',
+      'font-weight':600}, ['Surface']);
+    s.appendChild(svgEl('line', {x1:BOX.x, x2:700, y1:Y.rule, y2:Y.rule,
+      stroke:'var(--line)', 'stroke-dasharray':'4 4'}));
+  }
+
+  /* two stacked captions under an arrow */
+  function underLabel(s, x, colour, parts, sub){
+    txt(s, {x, y:Y.lab1, 'text-anchor':'middle', 'font-size':12,
+      fill:colour, 'font-weight':600}, parts);
+    txt(s, {x, y:Y.lab2, 'text-anchor':'middle', 'font-size':11,
+      fill:'var(--text-muted)'}, [sub]);
+  }
+
+  /* ── Section 2: the fully opaque layer (ε = 1) ── */
+  function drawOpaque(){
+    const s = $('opaqueDiagram'); if (!s) return;
+    s.innerHTML = '';
+    const Ts = TsOf(1), Fs = SIG*Math.pow(Ts,4);
+    drawStage(s, ['Atmosphere, T', {t:'a'}], ['opaque to infrared', 'clear to sunlight']);
+
+    arrowV(s, 130, 22, Y.surf, widthOf(Fe), 'var(--sun)');
+    underLabel(s, 130, 'var(--sun-deep)', [Fe.toFixed(0) + ' W/m²'], 'absorbed solar');
+
+    arrowV(s, 255, Y.surf, Y.inBoxTip, widthOf(Fs), 'var(--earth)');
+    underLabel(s, 255, 'var(--earth-deep)', ['σT', {t:'s'}, '⁴ = ' + Fs.toFixed(0)],
+      'all of it absorbed');
+
+    arrowV(s, 390, Y.spaceBase, Y.spaceTip, widthOf(Fe), 'var(--atmo)');
+    txt(s, {x:390, y:Y.topLabel, 'text-anchor':'middle', 'font-size':11.5,
+      fill:'var(--atmo-deep)', 'font-weight':600},
+      ['σT', {t:'a'}, '⁴ = ' + Fe.toFixed(0) + ' to space']);
+
+    arrowV(s, 495, 116, Y.surf, widthOf(Fe), 'var(--atmo)');
+    underLabel(s, 495, 'var(--atmo-deep)', ['σT', {t:'a'}, '⁴ = ' + Fe.toFixed(0)],
+      'back radiation');
+
+    txt(s, {x:58, y:Y.sum1, 'font-size':13, fill:'var(--text-secondary)'},
+      ['T', {t:'a'}, ' = T', {t:'e'}, ' = ' + TaOf(1).toFixed(0) + ' K']);
+    txt(s, {x:58, y:Y.sum2, 'font-size':13, fill:'var(--text-secondary)', 'font-weight':600},
+      ['T', {t:'s'}, ' = 2', {t:'1/4', up:true}, ' T', {t:'e'}, ' = ' + Ts.toFixed(0) +
+       ' K (' + (Ts-273.15).toFixed(0) + ' °C)']);
+    txt(s, {x:340, y:Y.sum1, 'font-size':12.5, fill:'var(--text-muted)'},
+      ['The layer emits equally up and down, so']);
+    txt(s, {x:340, y:Y.sum2, 'font-size':12.5, fill:'var(--text-muted)'},
+      ['the surface is heated twice over.']);
+  }
+
+  /* ── Section 3: adjustable emissivity ── */
+  function drawDiagram(){
+    const eps = +$('epsSlider').value;
+    const Ts = TsOf(eps), Ta = TaOf(eps);
+    const Fs = SIG*Math.pow(Ts,4);            /* surface emission          */
+    const Fwin = (1-eps)*Fs;                  /* straight through to space */
+    const Fatm = eps*SIG*Math.pow(Ta,4);      /* layer emission, each way  */
+    const s = $('ghDiagram'); s.innerHTML = '';
+    drawStage(s, ['Atmosphere, ε = ' + eps.toFixed(2)]);
+
+    /* 1 · absorbed sunlight (constant, whatever ε does) */
+    arrowV(s, 100, 22, Y.surf, widthOf(Fe), 'var(--sun)');
+    underLabel(s, 100, 'var(--sun-deep)', [Fe.toFixed(0) + ' W/m²'], 'absorbed solar');
+
+    /* 2 · surface emission */
+    arrowV(s, 210, Y.surf, Y.inBoxTip, widthOf(Fs), 'var(--earth)');
+    underLabel(s, 210, 'var(--earth-deep)', ['σT', {t:'s'}, '⁴ = ' + Fs.toFixed(0)],
+      'surface emission');
+
+    /* 3 · the part that escapes through the window.
+       x = 290 not 300: at ε ≈ 0.5 both top labels are at their longest and
+       would otherwise close to within 2 px of each other. */
+    if (Fwin > 0.5) {
+      arrowV(s, 290, Y.surf, Y.spaceTip, widthOf(Fwin), 'var(--earth)', .6);
+      txt(s, {x:290, y:Y.topLabel, 'text-anchor':'middle', 'font-size':11.5,
+        fill:'var(--earth-deep)'}, ['(1−ε)σT', {t:'s'}, '⁴ = ' + Fwin.toFixed(0)]);
+    }
+
+    /* 4 and 5 · the layer's own emission, up to space and down to the ground */
+    if (Fatm > 0.5) {
+      arrowV(s, 400, Y.spaceBase, Y.spaceTip, widthOf(Fatm), 'var(--atmo)');
+      txt(s, {x:400, y:Y.topLabel, 'text-anchor':'middle', 'font-size':11.5,
+        fill:'var(--atmo-deep)', 'font-weight':600},
+        ['εσT', {t:'a'}, '⁴ = ' + Fatm.toFixed(0)]);
+
+      arrowV(s, 495, 116, Y.surf, widthOf(Fatm), 'var(--atmo)');
+      underLabel(s, 495, 'var(--atmo-deep)', ['εσT', {t:'a'}, '⁴ = ' + Fatm.toFixed(0)],
+        'back radiation');
+    }
+
+    txt(s, {x:58, y:Y.sum1, 'font-size':13, fill:'var(--text-secondary)'},
+      eps === 0 ? ['T', {t:'a'}, ' undefined (transparent layer)']
+                : ['T', {t:'a'}, ' = ' + Ta.toFixed(0) + ' K']);
+    txt(s, {x:58, y:Y.sum2, 'font-size':13, fill:'var(--text-secondary)', 'font-weight':600},
+      ['T', {t:'s'}, ' = ' + Ts.toFixed(0) + ' K (' + (Ts-273.15).toFixed(0) + ' °C)']);
+    txt(s, {x:340, y:Y.sum1, 'font-size':12.5, fill:'var(--text-muted)'}, ['leaving to space:']);
+    txt(s, {x:340, y:Y.sum2, 'font-size':12.5, fill:'var(--text-muted)'},
+      [Fwin.toFixed(0) + ' + ' + Fatm.toFixed(0) + ' = ' + (Fwin+Fatm).toFixed(0) +
+       ' W/m², always σT', {t:'e'}, '⁴']);
+  }
+
+  function updateEps(){
+    const eps = +$('epsSlider').value;
+    const Ts = TsOf(eps), Ta = TaOf(eps);
+    $('epsRead').textContent = eps.toFixed(2);
+    $('tsRead').textContent = Ts.toFixed(0) + ' K';
+    $('tsNote').textContent = (Ts-273.15).toFixed(0) + ' °C';
+    if (eps === 0) {
+      $('taRead').textContent = '—';
+      $('taNote').textContent = 'undefined: a transparent layer exchanges no radiation';
+    } else {
+      $('taRead').textContent = Ta.toFixed(0) + ' K';
+      $('taNote').textContent = (Ta-273.15).toFixed(0) + ' °C';
+    }
+    const check = (1-eps)*SIG*Math.pow(Ts,4) + eps*SIG*Math.pow(Ta,4);
+    $('checkRead').textContent = check.toFixed(0) + ' W/m²';
+    drawDiagram();
+  }
+  $('epsSlider').addEventListener('input', updateEps);
+
+  /* ── Ts and Ta versus epsilon ── */
+  function drawEpsChart(){
+    const s = $('epsChart'); s.innerHTML = '';
+    const L = 62, R = 776, T = 24, B = 250;
+    const Tmin = 210, Tmax = 310;
+    const x = e => L + e*(R-L);
+    const y = v => B - (v-Tmin)/(Tmax-Tmin)*(B-T);
+
+    for (let v = Tmin; v <= Tmax; v += 20) {
+      const yy = y(v);
+      s.appendChild(svgEl('line', {x1:L, x2:R, y1:yy, y2:yy, stroke:'var(--grid)', 'stroke-width':1}));
+      txt(s, {x:L-8, y:yy+4, 'text-anchor':'end', 'font-size':11, fill:'var(--text-muted)'}, [String(v)]);
+    }
+    for (let i = 0; i <= 5; i++) {
+      const e = i/5;
+      txt(s, {x:x(e), y:B+20, 'text-anchor':'middle', 'font-size':11, fill:'var(--text-muted)'},
+        [e.toFixed(1)]);
+    }
+    s.appendChild(svgEl('line', {x1:L, x2:R, y1:B, y2:B, stroke:'var(--line)'}));
+    txt(s, {x:(L+R)/2, y:B+44, 'text-anchor':'middle', 'font-size':12,
+      fill:'var(--text-secondary)'}, ['Emissivity ε']);
+    txt(s, {x:16, y:137, 'font-size':12, fill:'var(--text-secondary)',
+      transform:'rotate(-90 16 137)', 'text-anchor':'middle'}, ['Temperature (K)']);
+
+    /* 288 K reference */
+    s.appendChild(svgEl('line', {x1:L, x2:R, y1:y(288), y2:y(288),
+      stroke:'var(--text-muted)', 'stroke-width':1.2, 'stroke-dasharray':'6 4', opacity:.75}));
+    txt(s, {x:L+8, y:y(288)-7, 'font-size':11, fill:'var(--text-muted)'},
+      ['observed surface, 288 K']);
+
+    const path = (fn, from, to) => {
+      let d = '';
+      for (let i = 0; i <= 100; i++) {
+        const e = from + (to-from)*i/100;
+        d += (i ? 'L' : 'M') + x(e).toFixed(1) + ' ' + y(fn(e)).toFixed(1);
+      }
+      return d;
+    };
+    /* Ta is degenerate at eps = 0, so the low-eps end is dashed */
+    s.appendChild(svgEl('path', {d:path(TaOf, 0, 0.25), fill:'none',
+      stroke:'var(--atmo)', 'stroke-width':2.4, 'stroke-dasharray':'5 4', opacity:.75}));
+    s.appendChild(svgEl('path', {d:path(TaOf, 0.25, 1), fill:'none',
+      stroke:'var(--atmo)', 'stroke-width':2.4}));
+    s.appendChild(svgEl('path', {d:path(TsOf, 0, 1), fill:'none',
+      stroke:'var(--earth)', 'stroke-width':2.4}));
+
+    const em = 0.97;
+    s.appendChild(svgEl('line', {x1:x(em), x2:x(em), y1:T, y2:B,
+      stroke:'var(--line)', 'stroke-dasharray':'3 4'}));
+    s.appendChild(svgEl('circle', {cx:x(em), cy:y(TsOf(em)), r:5,
+      fill:'var(--earth)', stroke:'var(--surface-1)', 'stroke-width':1.6}));
+    s.appendChild(svgEl('circle', {cx:x(em), cy:y(TaOf(em)), r:5,
+      fill:'var(--atmo)', stroke:'var(--surface-1)', 'stroke-width':1.6}));
+
+    /* Legend, not inline curve labels: at ε near 1 the two curves run close
+       enough to the right edge that an anchored label lands on top of them. */
+    s.appendChild(svgEl('line', {x1:70, x2:92, y1:36, y2:36,
+      stroke:'var(--earth)', 'stroke-width':2.4}));
+    txt(s, {x:98, y:40, 'font-size':12, fill:'var(--earth-deep)', 'font-weight':600},
+      ['T', {t:'s'}, ' surface']);
+    s.appendChild(svgEl('line', {x1:196, x2:218, y1:36, y2:36,
+      stroke:'var(--atmo)', 'stroke-width':2.4}));
+    txt(s, {x:224, y:40, 'font-size':12, fill:'var(--atmo-deep)', 'font-weight':600},
+      ['T', {t:'a'}, ' atmosphere']);
+  }
+
+  drawOpaque(); updateEps(); drawEpsChart();
+})();
+</script>
+</body>
+</html>
