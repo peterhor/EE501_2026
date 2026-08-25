@@ -189,34 +189,54 @@ function MergedOrbitPanel({ nday, deltaDeg, exaggerateOrbit }) {
     return `M ${n[0]} ${n[1]} L ${bx + px} ${by + py} L ${bx - px} ${by - py} Z`;
   };
 
-  // one Earth sphere: night base + offset radial highlight sized by the depth component
-  const Sphere = ({ id, x, y, r, light, minLit }) => {
-    const litR = clamp(0.5 + 0.52 * light.lz, minLit || 0.04, 0.99);
-    const mag = Math.hypot(light.lx, light.ly);
-    const fx = 0.5 + (mag > 0 ? light.lx : 0) * 0.42;
-    const fy = 0.5 + (mag > 0 ? light.ly : 0) * 0.42;
+  // one Earth sphere: flat-colored day/night regions, but the terminator is the true
+  // projected boundary of a lit hemisphere on a 3-D sphere (an ellipse arc, not a straight
+  // cut) — so it reads as a globe, not a flat disk sliced in two. The arc's endpoints are
+  // fixed by the Sun's screen-space direction (lx,ly); how far it bulges toward or away
+  // from the Sun is set by lz, the depth (toward-viewer) component of that direction.
+  const Sphere = ({ x, y, r, light }) => {
+    const { lx, ly, lz } = light;
+    const m = Math.hypot(lx, ly);
+    if (m < 1e-4) {
+      // Sun direction is (nearly) straight along the view axis: the visible disk is
+      // uniformly lit or uniformly dark, no terminator to draw.
+      return (
+        <g>
+          <circle cx={x} cy={y} r={r} fill={lz >= 0 ? LIT : NIGHT_SIDE} />
+          <circle cx={x} cy={y} r={r} fill="none" stroke="#9fb2d8" strokeWidth={1} opacity={0.7} />
+        </g>
+      );
+    }
+    const ux = -ly / m, uy = lx / m;              // ±this = the two points where the terminator meets the limb
+    const vx = -lz * lx / m, vy = -lz * ly / m;    // the terminator's 3-D bulge, foreshortened into the screen
+    const sunAngle = Math.atan2(ly, lx);
+    const a1 = sunAngle - Math.PI / 2, a2 = sunAngle + Math.PI / 2;
+    const p1x = x + r * Math.cos(a1), p1y = y + r * Math.sin(a1);
+    const p2x = x + r * Math.cos(a2), p2y = y + r * Math.sin(a2);
+    const N = 24;
+    const termPts = [];
+    for (let i = 0; i <= N; i++) {
+      const t = (i / N) * Math.PI;
+      const px = Math.cos(t) * ux + Math.sin(t) * vx;
+      const py = Math.cos(t) * uy + Math.sin(t) * vy;
+      termPts.push(`${x + r * px} ${y + r * py}`);
+    }
+    const litPath = `M ${p1x} ${p1y} A ${r} ${r} 0 0 1 ${p2x} ${p2y} L ${termPts.join(' L ')} Z`;
     return (
       <g>
-        <defs>
-          <radialGradient id={id} cx={fx} cy={fy} r={litR} fx={fx} fy={fy}>
-            <stop offset="0%" stopColor={LIT} stopOpacity="1" />
-            <stop offset="62%" stopColor={LIT} stopOpacity="0.92" />
-            <stop offset="100%" stopColor={LIT} stopOpacity="0" />
-          </radialGradient>
-        </defs>
         <circle cx={x} cy={y} r={r} fill={NIGHT_SIDE} />
-        <circle cx={x} cy={y} r={r} fill={`url(#${id})`} />
+        <path d={litPath} fill={LIT} />
         <circle cx={x} cy={y} r={r} fill="none" stroke="#9fb2d8" strokeWidth={1} opacity={0.7} />
       </g>
     );
   };
 
-  const EarthGlyph = ({ id, x, y, r, light, showEquator, minLit, opacity }) => {
+  const EarthGlyph = ({ x, y, r, light, showEquator, opacity }) => {
     const ax = axisPts(x, y, r + 15);
     const eqx = Math.cos(AXIS_TILT * D2R) * r * 0.95, eqy = Math.sin(AXIS_TILT * D2R) * r * 0.95;
     return (
       <g opacity={opacity === undefined ? 1 : opacity}>
-        <Sphere id={id} x={x} y={y} r={r} light={light} minLit={minLit} />
+        <Sphere x={x} y={y} r={r} light={light} />
         {showEquator && (
           <line x1={x - eqx} y1={y - eqy} x2={x + eqx} y2={y + eqy} stroke="#dce6f7" strokeWidth={1} strokeDasharray="3 2" opacity={0.75} />
         )}
@@ -260,7 +280,7 @@ function MergedOrbitPanel({ nday, deltaDeg, exaggerateOrbit }) {
         return (
           <g key={i}>
             <circle cx={s.x} cy={s.y} r={5} fill="none" stroke={SPACE_GRID} strokeWidth={1.4} opacity={0.9} />
-            <EarthGlyph id={`st${i}`} x={s.x} y={s.y} r={27} light={s.light} showEquator opacity={0.55 * s.fade} />
+            <EarthGlyph x={s.x} y={s.y} r={27} light={s.light} showEquator opacity={0.55 * s.fade} />
             <g opacity={s.fade}>
               <text x={lx} y={ly} textAnchor="middle" fontFamily={SANS} fontSize={12} fontWeight={700} fill={SPACE_TEXT}>{s.label}</text>
               {s.sub && <text x={lx} y={ly + 15} textAnchor="middle" fontFamily={SANS} fontSize={11} fill={SPACE_DIM}>{s.sub}</text>}
@@ -271,7 +291,7 @@ function MergedOrbitPanel({ nday, deltaDeg, exaggerateOrbit }) {
 
       {/* Sun–Earth line and the live Earth */}
       <line x1={ocx} y1={ocy} x2={ex} y2={ey} stroke="#8fa2cc" strokeWidth={1} strokeDasharray="4 3" opacity={0.55} />
-      <EarthGlyph id="live" x={ex} y={ey} r={40} light={liveLight} showEquator minLit={0.3} />
+      <EarthGlyph x={ex} y={ey} r={40} light={liveLight} showEquator />
       <text x={ex} y={ey + 62} textAnchor="middle" fontFamily={SANS} fontSize={12.5} fontWeight={700} fill="#eaf1ff">Earth now</text>
 
       <text x={16} y={H - 16} fontFamily={SANS} fontSize={11.5} fill={SPACE_DIM}>
