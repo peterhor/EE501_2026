@@ -96,6 +96,33 @@ function StatCard({ label, value, sub, accent }) {
   );
 }
 
+// Every major figure is wrapped in one of these so it carries a stable, visible name —
+// "Panel 3 · Daily Insolation Curve" etc. — for talking about the layout later.
+function PanelFrame({ name, dark, style, bodyStyle, children }) {
+  const border = dark ? '#223056' : CARD_BORDER;
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', minHeight: 0, minWidth: 0,
+      background: dark ? SPACE_BG : CARD,
+      border: `1px solid ${border}`, borderRadius: 8, overflow: 'hidden',
+      ...style,
+    }}>
+      <div style={{
+        flex: '0 0 auto', padding: '7px 14px',
+        fontFamily: SANS, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+        color: dark ? SPACE_DIM : MUTED,
+        background: dark ? '#0e1730' : '#faf8f4',
+        borderBottom: `1px solid ${border}`,
+      }}>
+        {name}
+      </div>
+      <div style={{ flex: '1 1 0', minHeight: 0, minWidth: 0, ...bodyStyle }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function LatButton({ label, deg, active, onClick }) {
   return (
     <button
@@ -130,9 +157,14 @@ const NIGHT_SIDE = '#16223c';
 function MergedOrbitPanel({ nday, deltaDeg, exaggerateOrbit }) {
   const W = 640, H = 800;
   const ocx = W / 2, ocy = 430;
-  const rx = 266, ryBase = 190;
   const eccUsed = exaggerateOrbit ? 0.45 : ECC;
-  const sinE = ryBase / rx;                 // viewing elevation of the orbital plane
+  // rx/ryBase are "pixels per semi-major axis"; the orbit's farthest point (aphelion)
+  // sits at rf = 1+eccUsed. Scale rx/ryBase down as eccUsed grows so that farthest point
+  // always lands at the same fixed on-screen reach — the ellipse gets more visibly
+  // elongated at high (exaggerated) eccentricity without ever drawing outside the panel.
+  const APHELION_REACH_X = 266 * (1 + ECC), APHELION_REACH_Y = 190 * (1 + ECC);
+  const rx = APHELION_REACH_X / (1 + eccUsed), ryBase = APHELION_REACH_Y / (1 + eccUsed);
+  const sinE = ryBase / rx;                 // viewing elevation of the orbital plane (fixed by design, independent of eccUsed)
   const cosE = Math.sqrt(1 - sinE * sinE);
   const AXIS_TILT = 23.45;                  // fixed screen direction of the rotation axis
   const PERI_A = 90 + PERH + 180;           // screen angle of perihelion (v = A - PERI_A)
@@ -669,7 +701,7 @@ function heatColor(t) {
 }
 
 function HeatmapPanel({ nday, phiDeg }) {
-  const W = 1780, H = 300;
+  const W = 1780, H = 480;
   const ML = 74, MR = 120, MT = 34, MB = 46;
   const plotW = W - ML - MR, plotH = H - MT - MB;
 
@@ -957,10 +989,7 @@ function EquationsPanel() {
     ['2.26', 'S̄h = (S₀/π)[h₀ sinφ sinδ + cosφ cosδ sin h₀]', 'mean daily insolation'],
   ];
   return (
-    <div style={{ background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: '14px 20px', marginTop: 16 }}>
-      <div style={{ fontFamily: SANS, fontSize: 13, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.03em', marginBottom: 6 }}>
-        Equations — Goosse et al., §2.1.3
-      </div>
+    <div style={{ padding: '14px 20px' }}>
       {eqs.map(([n, tex, desc]) => (
         <div key={n} style={eqStyle}>
           <span style={numStyle}>({n})</span>
@@ -1135,8 +1164,8 @@ function InsolationScene(props) {
   ];
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: PAPER, fontFamily: SANS, color: INK, padding: '30px 60px' }}>
-      <div style={{ marginBottom: 14 }}>
+    <div style={{ position: 'absolute', inset: 0, background: PAPER, fontFamily: SANS, color: INK, padding: '30px 60px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: '0 0 auto', marginBottom: 14 }}>
         <div style={{ fontFamily: SERIF, fontSize: 38, fontWeight: 700, lineHeight: 1.1 }}>
           Present-Day Insolation at the Top of the Atmosphere
         </div>
@@ -1145,98 +1174,119 @@ function InsolationScene(props) {
         </div>
       </div>
 
-      <ControlBar
-        showOrbitView={showOrbitView} setShowOrbitView={setShowOrbitView}
-        exaggerateOrbit={exaggerateOrbit} setExaggerateOrbit={setExaggerateOrbit}
-        dayCycleSpeed={dayCycleSpeed} setDayCycleSpeed={setDayCycleSpeed}
-        showFig211={showFig211} setShowFig211={setShowFig211}
-        showAnnualTotal={showAnnualTotal} setShowAnnualTotal={setShowAnnualTotal}
-        showEquations={showEquations} setShowEquations={setShowEquations}
-        showSkyPath={showSkyPath} setShowSkyPath={setShowSkyPath}
-      />
+      <div style={{ flex: '0 0 auto' }}>
+        <ControlBar
+          showOrbitView={showOrbitView} setShowOrbitView={setShowOrbitView}
+          exaggerateOrbit={exaggerateOrbit} setExaggerateOrbit={setExaggerateOrbit}
+          dayCycleSpeed={dayCycleSpeed} setDayCycleSpeed={setDayCycleSpeed}
+          showFig211={showFig211} setShowFig211={setShowFig211}
+          showAnnualTotal={showAnnualTotal} setShowAnnualTotal={setShowAnnualTotal}
+          showEquations={showEquations} setShowEquations={setShowEquations}
+          showSkyPath={showSkyPath} setShowSkyPath={setShowSkyPath}
+        />
+      </div>
 
-      <div style={{ display: 'flex', gap: 24, height: 850 }}>
-        {showOrbitView && (
-          <div style={{ flex: '0 0 560px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ background: SPACE_BG, border: '1px solid #223056', borderRadius: 8, padding: 0, height: 736, overflow: 'hidden' }}>
-              <MergedOrbitPanel nday={nday} deltaDeg={deltaDeg} exaggerateOrbit={exaggerateOrbit} />
+      {/* Every row below shares the vertical space left after the header/control bar via
+          flex-grow weights (roughly matched to each row's old fixed pixel height), instead
+          of claiming a fixed height outright — so hidden rows free their space instead of
+          leaving a gap, and nothing can ever be pushed past the bottom of the page. */}
+      <div style={{ flex: '1 1 auto', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* row 1 — orbit view · geometry */}
+        <div style={{ flex: '850 850 0', minHeight: 0, display: 'flex', gap: 24 }}>
+          {showOrbitView && (
+            <div style={{ flex: '1 1 0', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <PanelFrame name="1 · Orbit View" dark style={{ flex: '1 1 0' }} bodyStyle={{ padding: 0 }}>
+                <MergedOrbitPanel nday={nday} deltaDeg={deltaDeg} exaggerateOrbit={exaggerateOrbit} />
+              </PanelFrame>
+              <div style={{ flex: '0 0 auto', background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: '12px 16px', fontFamily: SANS, fontSize: 14, color: MUTED }}>
+                {calendarDate(nday).month} — {seasonLabel(nday)} — the season is set by the fixed tilt of Earth's axis relative to its orbital position, not by any motion of the Sun.
+              </div>
             </div>
-            <div style={{ background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: '12px 16px', fontFamily: SANS, fontSize: 14, color: MUTED }}>
-              {calendarDate(nday).month} — {seasonLabel(nday)} — the season is set by the fixed tilt of Earth's axis relative to its orbital position, not by any motion of the Sun.
+          )}
+
+          {/* geometry column */}
+          <div style={{ flex: '1 1 0', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <PanelFrame name="2 · Geometry" style={{ flex: '1 1 0' }} bodyStyle={{ padding: 16 }}>
+              <DiagramPanel phiDeg={phiDeg} deltaDeg={deltaDeg} />
+            </PanelFrame>
+
+            <div style={{ flex: '0 0 auto', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {presets.map((p) => (
+                <LatButton key={p.deg} label={p.label} deg={p.deg} active={phiDeg === p.deg} onClick={() => setPhiDeg(p.deg)} />
+              ))}
             </div>
+
+            <div style={{ flex: '0 0 auto', display: 'flex', gap: 10 }}>
+              <StatCard label="Date" value={`${calendarDate(nday).monthShort} ${calendarDate(nday).dayOfMonth}`} sub={`day ${nday} of 365`} />
+              <StatCard label="Declination δ" value={`${deltaDeg.toFixed(1)}°`} accent={AMBER} sub="eq. 2.23" />
+              <StatCard label="Latitude φ" value={`${phiDeg}°N`} accent={BLUE} sub="pick a preset" />
+            </div>
+          </div>
+        </div>
+
+        {/* row 2 — daily curve · sky path (the curve always shows; sky path is optional) */}
+        <div style={{ flex: '560 560 0', minHeight: 0, display: 'flex', gap: 16 }}>
+          <PanelFrame name="3 · Daily Insolation Curve" style={{ flex: showSkyPath ? '1 1 0' : '1 1 100%' }} bodyStyle={{ padding: 16 }}>
+            <CurvePanel phiDeg={phiDeg} deltaDeg={deltaDeg} hourOfDay={hourOfDay} />
+          </PanelFrame>
+
+          {showSkyPath && (
+            <>
+              <PanelFrame name="4 · Sky Path (Sun Position)" style={{ flex: '1 1 0' }} bodyStyle={{ padding: 16 }}>
+                <SunPathPanel phiDeg={phiDeg} deltaDeg={deltaDeg} hourOfDay={hourOfDay} />
+              </PanelFrame>
+              <PanelFrame name="4b · Sky Path — Notes" style={{ flex: '0 0 320px' }} bodyStyle={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 10, overflow: 'auto' }}>
+                <div style={{ fontFamily: SERIF, fontSize: 17, fontWeight: 700 }}>Where the Sun is in the sky</div>
+                <div style={{ fontFamily: SANS, fontSize: 13, color: MUTED, lineHeight: 1.45, textWrap: 'pretty' }}>
+                  A polar (stereographic) projection of the sky dome for latitude {phiDeg}°N. The centre is the zenith; the outer circle is the horizon; the compass runs N–E–S–W around the edge.
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 2 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: SANS, fontSize: 12.5, color: INK }}>
+                    <span style={{ width: 20, borderTop: `3.5px solid ${BLUE}` }}></span> today&rsquo;s track (δ = {deltaDeg.toFixed(1)}°)
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: SANS, fontSize: 12.5, color: INK, flexWrap: 'wrap' }}>
+                    <span style={{ width: 20, borderTop: '2px dashed #d19a4e' }}></span> summer
+                    <span style={{ width: 20, borderTop: '2px dashed #9a9483' }}></span> equinox
+                    <span style={{ width: 20, borderTop: '2px dashed #7d8ba0' }}></span> winter
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: SANS, fontSize: 12.5, color: INK }}>
+                    <span style={{ width: 12, height: 12, borderRadius: '50%', background: AMBER, display: 'inline-block', flexShrink: 0 }}></span> Sun now — closer to centre means stronger insolation.
+                  </div>
+                </div>
+                <div style={{ fontFamily: SANS, fontSize: 12, color: MUTED, marginTop: 'auto' }}>
+                  Only within the tropics does the midday Sun ever pass through the centre.
+                </div>
+              </PanelFrame>
+            </>
+          )}
+        </div>
+
+        {/* row 3 — seasonal heatmap · annual total (given extra height now that row 1 lost a column) */}
+        {(showFig211 || showAnnualTotal) && (
+          <div style={{ flex: '460 460 0', minHeight: 0, display: 'flex', gap: 16 }}>
+            {showFig211 && (
+              <PanelFrame name="5 · Seasonal Heatmap (Fig. 2.11)" style={{ flex: showAnnualTotal ? '1 1 0' : '1 1 100%' }} bodyStyle={{ padding: 16 }}>
+                <HeatmapPanel nday={nday} phiDeg={phiDeg} />
+              </PanelFrame>
+            )}
+            {showAnnualTotal && (
+              <PanelFrame name="6 · Annual Total by Latitude" style={{ flex: showFig211 ? '0 0 460px' : '1 1 100%' }} bodyStyle={{ padding: 16 }}>
+                <AnnualTotalPanel phiDeg={phiDeg} />
+              </PanelFrame>
+            )}
           </div>
         )}
 
-        {/* geometry column */}
-        <div style={{ flex: '1 1 0', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: 16, height: 470 }}>
-            <DiagramPanel phiDeg={phiDeg} deltaDeg={deltaDeg} />
+        {/* row 4 — reference equations */}
+        {showEquations && (
+          <div style={{ flex: '260 260 0', minHeight: 0, display: 'flex' }}>
+            <PanelFrame name="7 · Key Equations — Goosse et al., §2.1.3" style={{ flex: '1 1 0' }} bodyStyle={{ overflow: 'auto' }}>
+              <EquationsPanel />
+            </PanelFrame>
           </div>
-
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            {presets.map((p) => (
-              <LatButton key={p.deg} label={p.label} deg={p.deg} active={phiDeg === p.deg} onClick={() => setPhiDeg(p.deg)} />
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: 10 }}>
-            <StatCard label="Date" value={`${calendarDate(nday).monthShort} ${calendarDate(nday).dayOfMonth}`} sub={`day ${nday} of 365`} />
-            <StatCard label="Declination δ" value={`${deltaDeg.toFixed(1)}°`} accent={AMBER} sub="eq. 2.23" />
-            <StatCard label="Latitude φ" value={`${phiDeg}°N`} accent={BLUE} sub="pick a preset" />
-          </div>
-        </div>
-
-        {/* curve column */}
-        <div style={{ flex: '1 1 0', background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: 16 }}>
-          <CurvePanel phiDeg={phiDeg} deltaDeg={deltaDeg} hourOfDay={hourOfDay} />
-        </div>
+        )}
       </div>
-
-      {showSkyPath && (
-        <div style={{ display: 'flex', gap: 16, marginTop: 16 }}>
-          <div style={{ flex: '0 0 560px', background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: 16, height: 560 }}>
-            <SunPathPanel phiDeg={phiDeg} deltaDeg={deltaDeg} hourOfDay={hourOfDay} />
-          </div>
-          <div style={{ flex: 1, background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: '20px 26px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 700 }}>Where the Sun is in the sky</div>
-            <div style={{ fontFamily: SANS, fontSize: 15, color: MUTED, lineHeight: 1.5, textWrap: 'pretty' }}>
-              A polar (stereographic) projection of the sky dome for latitude {phiDeg}°N. The centre is the zenith (Sun directly overhead), the outer circle is the horizon, and the compass runs N–E–S–W around the edge. The Sun&rsquo;s altitude and azimuth come from the same declination δ and hour angle h that drive the insolation curve, so the amber Sun tracks in lockstep with the animation.
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: SANS, fontSize: 14, color: INK }}>
-                <span style={{ width: 28, borderTop: `3.5px solid ${BLUE}` }}></span> current day&rsquo;s track (δ = {deltaDeg.toFixed(1)}°)
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: SANS, fontSize: 14, color: INK }}>
-                <span style={{ width: 28, borderTop: '2px dashed #d19a4e' }}></span> summer solstice
-                <span style={{ width: 28, borderTop: '2px dashed #9a9483' }}></span> equinox
-                <span style={{ width: 28, borderTop: '2px dashed #7d8ba0' }}></span> winter solstice
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: SANS, fontSize: 14, color: INK }}>
-                <span style={{ width: 16, height: 16, borderRadius: '50%', background: AMBER, display: 'inline-block' }}></span> Sun now — higher tracks (nearer the centre) mean a smaller zenith angle θs and stronger insolation.
-              </div>
-            </div>
-            <div style={{ fontFamily: SANS, fontSize: 13, color: MUTED, marginTop: 'auto' }}>
-              At Northern-Hemisphere latitudes the whole track bows toward the south; only within the tropics does the midday Sun ever pass overhead (through the centre).
-            </div>
-          </div>
-        </div>
-      )}
-
-      {(showFig211 || showAnnualTotal) && (
-        <div style={{ display: 'flex', gap: 16, marginTop: 16 }}>
-          {showFig211 && (
-            <div style={{ flex: showAnnualTotal ? '1 1 0' : '1 1 100%', background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: 16, height: 320 }}>
-              <HeatmapPanel nday={nday} phiDeg={phiDeg} />
-            </div>
-          )}
-          {showAnnualTotal && (
-            <div style={{ flex: showFig211 ? '0 0 460px' : '1 1 100%', background: CARD, border: `1px solid ${CARD_BORDER}`, borderRadius: 8, padding: 16, height: 320 }}>
-              <AnnualTotalPanel phiDeg={phiDeg} />
-            </div>
-          )}
-        </div>
-      )}
-      {showEquations && <EquationsPanel />}
     </div>
   );
 }
