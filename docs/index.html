@@ -60,6 +60,7 @@
   .card .card-links a { color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
   .card .card-links a:hover { text-decoration: underline; }
   .card .card-links a.tasks { color: var(--muted); }
+  .card .card-links span.pending { color: var(--muted); font-size: 0.85rem; font-style: italic; }
   .links-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
   a.canvas-link {
     display: inline-block;
@@ -97,11 +98,12 @@
 </head>
 <body>
 <main>
-  <h1>EE501 — Climate Change and Ecology - Computer Practical Labs</h1>
-  <p class="subtitle">Interactive labs for the course. Open a lab below.</p>
+  <h1>EE501 — Climate Change and Ecology </h1>
   <div class="links-row">
     <a class="canvas-link" href="https://usn.instructure.com/courses/37391" target="_blank" rel="noopener">Course page on Canvas ↗</a>
   </div>
+  <h2 class="section-title">Computer Practicals - Labs</h2>
+  <p class="subtitle">Interactive labs for the course. Open a lab below.</p>
   <div class="grid">
     <div class="card">
       <div class="num">PC Lab 1</div>
@@ -131,19 +133,11 @@
       </div>
     </div>
   </div>
-
   <h2 class="section-title">Lecture Materials</h2>
+  <p class="subtitle">Animations and explanations.</p>
   <div class="grid">
     <div class="card">
-      <div class="num">7&ndash;8 Sep &middot; Energy Budget</div>
-      <h2>Thermal Emitters</h2>
-      <p>Four thermal emitters compared: heater, fire, skin, Sun.</p>
-      <div class="card-links">
-        <a href="energy-budget/thermal-emitters.html">Open &rarr;</a>
-      </div>
-    </div>
-    <div class="card">
-      <div class="num">7&ndash;8 Sep &middot; Energy Budget</div>
+      <div class="num">Energy Budget</div>
       <h2>Stefan&ndash;Boltzmann</h2>
       <p>How much energy the Sun and the Earth radiate. Part 1 of 2.</p>
       <div class="card-links">
@@ -151,14 +145,37 @@
       </div>
     </div>
     <div class="card">
-      <div class="num">7&ndash;8 Sep &middot; Energy Budget</div>
+      <div class="num">Energy Budget</div>
       <h2>The Greenhouse Effect</h2>
       <p>Why the surface is warmer than space. Part 2 of 2.</p>
       <div class="card-links">
         <a href="energy-budget/greenhouse-effect.html">Open &rarr;</a>
       </div>
     </div>
-    
+    <div class="card">
+      <div class="num">Energy Budget</div>
+      <h2>Thermal Emitters</h2>
+      <p>Four thermal emitters compared: heater, fire, skin, Sun.</p>
+      <div class="card-links">
+        <a href="energy-budget/thermal-emitters.html">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Energy Budget</div>
+      <h2>Insolation</h2>
+      <p>Earth&rsquo;s orbit, declination and the daily/annual insolation curve.</p>
+      <div class="card-links">
+        <a href="insolation/">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Modelling the Climate System</div>
+      <h2>Atmospheric Equations</h2>
+      <p>The governing equations of the atmosphere.</p>
+      <div class="card-links">
+        <span class="pending">Coming soon &mdash; export pending</span>
+      </div>
+    </div>
   </div>
 
   <h2 class="section-title">Schedule</h2>

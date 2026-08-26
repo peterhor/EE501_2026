@@ -28,3 +28,8 @@ Goosse2010_textbook/*
 !insolation/Earth Insolation v2.dc.html
 doc-page.js
 support.js
+
+# ...except inside docs/ — that's the published site itself (see README), so
+# its own copy of the runtime is required, not a stray duplicate.
+!docs/**/doc-page.js
+!docs/**/support.js
