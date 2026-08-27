@@ -751,33 +751,33 @@ function BudgetReadout({ phiDeg, deltaDeg, hourOfDay, scenarioKey }) {
 const REAL_WORLD_EXAMPLES = {
   desert: {
     place: 'Sonoran Desert, Arizona, USA',
-    context: '32°N · late spring / early summer · around 14:00 local solar time',
-    description: 'On a clear desert afternoon, the Sun is high and shortwave radiation is strong. With a dry-soil albedo near 0.35, roughly one-third of the incoming solar energy is reflected, while the rest is absorbed by the hot ground. The ground then emits large upward longwave radiation, so F_NR becomes strongly positive during the day and falls toward zero or negative values after sunset.',
+    context: '32°N · late spring / early summer · 14:00 local time',
+    description: 'Clear desert air and high Sun give large F_solar. With albedo ~0.35, much of the incoming energy is absorbed, heating the ground and increasing F_IR↑. The surface gains energy strongly by day and loses it rapidly after sunset.',
   },
   oasis: {
-    place: 'An irrigated oasis in the Sahara or a semiarid basin',
-    context: '20–30°N · midday in summer',
-    description: 'Moist soil and vegetation keep the surface cooler than a dry desert because a larger fraction of absorbed energy is used for evaporation rather than heating the ground. That suppresses the daytime surface temperature and reduces the peak upward longwave flux, even though the incoming solar forcing remains strong.',
+    place: 'Irrigated oasis in a semiarid basin',
+    context: '20–30°N · summer midday',
+    description: 'Moist soil and vegetation use a larger share of absorbed energy for evaporation, so the surface stays cooler than dry bare ground. This lowers the daytime temperature and suppresses the peak in emitted longwave radiation.',
   },
   snow: {
-    place: 'High Arctic snow field, northern Greenland or Svalbard',
-    context: '70–80°N · spring or early summer · near the snowmelt season',
-    description: 'Snow reflects most solar radiation because its albedo is very high, often 0.7–0.9. Even under long daylight, the absorbed shortwave can remain small, so the surface stays cold and the net radiative balance can be close to zero or weakly negative for much of the day.',
+    place: 'High-latitude snow field, Greenland or Svalbard',
+    context: '70–80°N · spring / early summer',
+    description: 'Snow has very high albedo, so most incoming solar energy is reflected. Even with long daylight, the absorbed shortwave is small, keeping the surface cold and F_NR weak or negative for much of the day.',
   },
   crop: {
     place: 'Temperate grassland, e.g. central Europe or the Great Plains',
     context: '40–55°N · summer afternoon',
-    description: 'Grassland absorbs a moderate amount of solar energy and uses a significant fraction for transpiration. This keeps the canopy and soil cooler than a dry bare surface, reducing the daytime temperature rise and limiting the amplitude of the surface-energy cycle.',
+    description: 'Grass absorbs moderate solar energy but transfers much of it to transpiration. This reduces surface heating and smooths the daily temperature cycle relative to dry bare soil.',
   },
   forest: {
     place: 'Boreal conifer forest, northern Canada or Scandinavia',
-    context: '50–70°N · summer · midday',
-    description: 'Conifer canopies have low albedo and absorb a large fraction of incoming sunlight, but the energy is spread through the canopy and forest floor. The result is a smoother daily cycle with less extreme heating than bare dry land, because some absorbed energy is stored and transferred away by turbulent fluxes and evapotranspiration.',
+    context: '50–70°N · summer midday',
+    description: 'Low albedo and a deep canopy absorb much of the incoming radiation, but the energy is spread through the vegetation and soil. The result is a more gradual diurnal cycle than for bare ground.',
   },
   urban: {
-    place: 'Downtown pavement and building surfaces, e.g. Phoenix or Tokyo',
-    context: 'mid-latitude city · afternoon in summer',
-    description: 'Low-albedo asphalt and concrete absorb much of the incoming solar radiation, and the stored heat is released slowly after sunset. This creates a pronounced urban heat-island effect: the surface remains warm well into the evening, and longwave emission remains elevated even as solar forcing wanes.',
+    place: 'Dense urban pavement, e.g. Phoenix or Tokyo',
+    context: 'mid-latitude city · summer afternoon',
+    description: 'Low-albedo asphalt and concrete absorb large amounts of solar radiation and store heat. The stored energy is released slowly after sunset, keeping F_IR↑ elevated and reinforcing the urban heat-island effect.',
   },
 };
 
@@ -795,7 +795,7 @@ function RealWorldExamplePanel({ phiDeg, deltaDeg, hourOfDay, scenarioKey }) {
         {example.description}
       </div>
       <div style={{ fontFamily: SANS, fontSize: 11.5, color: MUTED, paddingTop: 6, borderTop: `1px solid ${CARD_BORDER}` }}>
-        At the current time, this simplified model gives F_NR ≈ {now.fNR.toFixed(0)} W/m², showing the instantaneous net radiation for this site and hour. This is a flux density, not a daily total; daily means are time averages over 24 h.
+        Instantaneous state: F_NR ≈ {now.fNR.toFixed(0)} W/m². This is a flux density at one moment; the 24 h mean is a separate time average over the full day.
       </div>
     </div>
   );
