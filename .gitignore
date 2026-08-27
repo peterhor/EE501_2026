@@ -27,6 +27,7 @@ Goosse2010_textbook/*
 *.dc.html
 !atmospheric_components/Governing Equations of the Atmosphere.dc.html
 !insolation/Earth Insolation v2.dc.html
+!local_energy_balance/explorer-standalone-src.dc.html
 doc-page.js
 support.js
 
