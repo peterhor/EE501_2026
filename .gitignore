@@ -25,6 +25,7 @@ Goosse2010_textbook/*
 # support.js/doc-page.js to render and duplicate the self-contained
 # "(Student)" bundles used for the public site. Kept out to avoid confusion.
 *.dc.html
+!atmospheric_components/Governing Equations of the Atmosphere.dc.html
 !insolation/Earth Insolation v2.dc.html
 doc-page.js
 support.js
