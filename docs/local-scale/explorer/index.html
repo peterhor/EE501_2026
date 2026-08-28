@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local energy balance explorer — EE501</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+    <rect width="200" height="200" fill="#faf7f0"/>
+    <line x1="20" y1="140" x2="180" y2="140" stroke="#2b2620" stroke-width="4"/>
+    <path d="M 46 40 L 46 128" stroke="#c8873a" stroke-width="13" stroke-linecap="butt"/>
+    <path d="M 36 116 L 46 136 L 56 116 Z" fill="#c8873a"/>
+    <path d="M 84 128 L 84 56" stroke="#c8873a" stroke-width="7"/>
+    <path d="M 76 66 L 84 48 L 92 66 Z" fill="#c8873a"/>
+    <path d="M 122 40 L 122 128" stroke="#b34a3f" stroke-width="10"/>
+    <path d="M 113 116 L 122 136 L 131 116 Z" fill="#b34a3f"/>
+    <path d="M 158 128 L 158 44" stroke="#b34a3f" stroke-width="14"/>
+    <path d="M 147 56 L 158 34 L 169 56 Z" fill="#b34a3f"/>
+  </svg>
+</template>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <meta name="ext-resource-dependency" content="./animations.jsx">
+  <meta name="ext-resource-dependency" content="./energy-balance-scene.jsx">
+  <style>
+    body { margin: 0; background: #111; }
+    a { color: #3d6e94; }
+    a:hover { color: #2f5776; }
+    #ee501-back {
+      position: fixed; top: 10px; left: 12px; z-index: 9999;
+      font: 12.5px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #c9c6bd; background: rgba(20,20,19,.72); border: 1px solid #3a3a37;
+      border-radius: 999px; padding: 7px 13px; text-decoration: none;
+      backdrop-filter: blur(4px);
+    }
+    #ee501-back:hover { color: #fff; border-color: #6b6a63; }
+  </style>
+</helmet>
+<div style="position:relative; width:100%; height:100vh; background:#0a0a0a;">
+  <a id="ee501-back" href="../../">&larr; EE501 course</a>
+  <x-import component-from-global-scope="Stage" from="./animations.jsx" width="1920" height="1560" duration="36.5" background="#faf7f0" loop="true" autoplay="true" hint-size="100%,100%">
+  <x-import component-from-global-scope="LocalEnergyBalanceScene" from="./energy-balance-scene.jsx" show-toa-curve="{{ showToaCurve }}" show-orbit-view="{{ showOrbitView }}" show-geometry="{{ showGeometry }}" exaggerate-orbit="{{ exaggerateOrbit }}" day-cycle-speed="{{ dayCycleSpeed }}" show-fig211="{{ showFig211 }}" show-equations="{{ showEquations }}" scenario="{{ scenario }}" hint-size="100%,100%"></x-import>
+  </x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;scenario&quot;: {&quot;editor&quot;: &quot;select&quot;, &quot;default&quot;: &quot;desert&quot;, &quot;options&quot;: [&quot;desert&quot;,&quot;oasis&quot;,&quot;snow&quot;,&quot;crop&quot;,&quot;forest&quot;,&quot;urban&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Surface&quot;},
+  &quot;showToaCurve&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;TOA curve&quot;},
+  &quot;showGeometry&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Geometry view&quot;},
+  &quot;showOrbitView&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Orbit view&quot;},
+  &quot;exaggerateOrbit&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Orbit view&quot;},
+  &quot;dayCycleSpeed&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 4, &quot;min&quot;: 1, &quot;max&quot;: 10, &quot;step&quot;: 0.5, &quot;unit&quot;: &quot;s&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Daily curve&quot;},
+  &quot;showFig211&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Fig. 2.11 heatmap&quot;},
+  &quot;showEquations&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Equations&quot;}
+}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      scenario: this.props.scenario ?? 'desert',
+      showToaCurve: this.props.showToaCurve ?? true,
+      showGeometry: this.props.showGeometry ?? true,
+      showOrbitView: this.props.showOrbitView ?? false,
+      exaggerateOrbit: this.props.exaggerateOrbit ?? false,
+      dayCycleSpeed: this.props.dayCycleSpeed ?? 4,
+      showFig211: this.props.showFig211 ?? false,
+      showEquations: this.props.showEquations ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>
