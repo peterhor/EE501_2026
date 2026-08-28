@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Land, rock and methane — the rest of the carbon cycle</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --wat:#2a78d6; --vap:#5aa9e6; --ice:#8ab6d6; --gw:#3f6f8f;
+    --carb:#1baf7a; --foss:#c8443a; --oce:#1f6fb2; --land:#6f9134;
+    --rock:#8a6b45; --meth:#9159b8; --warn:#d98324;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --wat:#3987e5; --vap:#69b4ee; --ice:#9cc4de; --gw:#5b8dad;
+    --carb:#199e70; --foss:#d9564c; --oce:#2f83c9; --land:#87a944;
+    --rock:#a08258; --meth:#a771cc; --warn:#e09a44;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .sites{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+  .sb{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;text-align:left;line-height:1.3;
+    font-family:inherit}
+  .sb:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .sb[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .sb small{display:block;font-size:11px;opacity:.72}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 16px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--carb);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  /* live demo controls */
+  .demo{border-color:var(--carb)}
+  .demo > h3::before{content:"Demonstration · ";color:var(--carb);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--carb);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .chk{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-secondary);
+    cursor:pointer;padding:6px 0}
+  .chk input{accent-color:var(--carb);width:16px;height:16px}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp; Global cycles: water and carbon &middot; 4 of 4 &nbsp;&middot;&nbsp; <a href="ocean-carbon.html">&larr; the ocean</a></p>
+
+<header>
+  <div>
+    <h1>Land, rock and methane</h1>
+    <p class="sub">Three reservoirs on three utterly different clocks. The land biosphere turns its carbon over
+    in years to centuries; the rocks in hundreds of thousands; and methane, the odd one out, in about nine.
+    Each of those numbers decides what kind of climate problem the reservoir presents.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<h2 class="sec">The terrestrial carbon cycle</h2>
+
+<div class="card">
+  <h3>From 123 down to 2, one subtraction at a time</h3>
+  <p class="cap">Land plants take up more carbon than all the phytoplankton in the ocean. Almost all of it goes
+  straight back. The chain of definitions below is how ecologists keep track of what is left at each stage
+  &mdash; and the terms are not interchangeable, which is why they are worth learning in order. PgC
+  yr<sup>&minus;1</sup>.</p>
+  <svg id="cascade" viewBox="0 0 880 350" role="img" aria-label="Waterfall chart from gross primary production down through net primary production and net ecosystem production to the net land carbon sink"></svg>
+  <div style="overflow-x:auto;margin-top:12px">
+  <table>
+    <thead><tr><th>Term</th><th class="num">PgC yr<sup>&minus;1</sup></th><th>Definition</th><th>What removes the next slice</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">GPP</td><td class="num">123</td><td>Gross primary production &mdash; total photosynthetic carbon fixation</td><td>Autotrophic respiration: the plant burns roughly half of it to stay alive</td></tr>
+      <tr><td class="nm">NPP</td><td class="num">63</td><td>Net primary production &mdash; what is actually built into plant tissue</td><td>Heterotrophic respiration: decomposers eating litter and soil organic matter</td></tr>
+      <tr><td class="nm">NEP</td><td class="num">8</td><td>Net ecosystem production &mdash; the balance of production and decomposition</td><td>Disturbance: fire, harvest, erosion, dissolved losses to rivers</td></tr>
+      <tr><td class="nm">NBP</td><td class="num">2.3</td><td>Net biome production &mdash; what the land actually keeps</td><td>Nothing. This is the terrestrial sink in the budget on <a href="carbon-budget.html">page 2</a>.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><b>The land sink is a residual of two enormous, nearly equal numbers.</b> 123 in, roughly 121
+  out. Two per cent of the gross flux survives to become a sink. That is a precarious way to run a planetary
+  service &mdash; a few per cent change in either respiration or production, and the sink turns into a source
+  without anything dramatic having happened. This is the mechanism behind almost every worrying carbon-cycle
+  feedback: warming raises respiration faster than it raises production.</p>
+  <p class="q"><b>Question.</b> A forest with high GPP is not necessarily a carbon sink. Give two ways a forest
+  could have very large GPP and an NBP of exactly zero &mdash; and say which of the four terms above you would
+  have to measure to tell them apart.</p>
+</div>
+
+<div class="card">
+  <h3>Where and when the land takes carbon up</h3>
+  <p class="cap">Zonal total net primary production through the year. Colour is production per degree of
+  latitude, so it already includes how much land there is at each latitude &mdash; this is the signal the
+  atmosphere actually sees. The equivalent of the satellite map in Fig. 2.28, opened out across all twelve
+  months instead of just June.</p>
+  <svg id="npp" viewBox="0 0 880 360" role="img" aria-label="Heat map of zonal total net primary production against latitude and month of year"></svg>
+  <p class="note"><b>Two things to notice.</b> The tropics are a broad, bright, permanent band &mdash; high
+  production all year, and almost no seasonality, so they contribute enormously to GPP and almost nothing to
+  the seasonal CO<sub>2</sub> wiggle. The northern mid- and high latitudes are the opposite: a fierce, short
+  pulse from May to September and effectively nothing for the rest of the year. That pulse is what carves the
+  sawtooth in the <a href="carbon-budget.html">Keeling curve</a>. The southern hemisphere has its own pulse six
+  months out of phase, but so much less land that it barely registers.</p>
+  <p class="note"><b>And this is why land-cover change is a climate issue twice over.</b> It changes the
+  albedo, roughness and evapotranspiration of the surface &mdash; the whole of the
+  <a href="../local-scale/energy-balance.html">local energy balance</a> &mdash; <em>and</em> it changes which
+  of these bands is taking carbon out of the atmosphere.</p>
+</div>
+
+<div class="card">
+  <h3>Soil: the slow half of the land carbon cycle</h3>
+  <p class="cap">Roughly three times as much carbon is stored in soils as in living vegetation, and much more
+  than in the atmosphere. It is not one pool but several, with turnover times spanning four orders of
+  magnitude.</p>
+  <svg id="soilc" viewBox="0 0 880 314" role="img" aria-label="Soil carbon pools plotted by stock and by turnover time"></svg>
+  <p class="note"><b>The slow pools are what make soil carbon dangerous.</b> Litter turns over in a year, so it
+  is in near-equilibrium with the climate at all times. Peat and permafrost carbon has been accumulating for
+  thousands of years because cold and waterlogging stop decomposition, not because the carbon is chemically
+  stable. Warm it or drain it and decomposition resumes &mdash; releasing carbon that took millennia to store
+  over decades. The permafrost pool alone is about twice the size of the entire atmosphere.</p>
+  <p class="q"><b>Question.</b> Peat accumulates where decomposition is slower than production. Two very
+  different climates &mdash; a Norwegian blanket bog and an Indonesian tropical peat swamp &mdash; both do it,
+  for different reasons. What is limiting decomposition in each case, and which of the two is more vulnerable
+  to being turned into a carbon source by human action?</p>
+</div>
+
+<div class="card">
+  <h3>Fire</h3>
+  <p class="cap">Decomposition is not the only way carbon leaves the biosphere. Fires return around
+  2.2 PgC yr<sup>&minus;1</sup> to the atmosphere &mdash; comparable to the entire land sink. Mean annual
+  emissions by region, Tg C yr<sup>&minus;1</sup>, after Randerson et al. (2018) &mdash; the update to
+  Fig. 2.29.</p>
+  <svg id="fire" viewBox="0 0 880 392" role="img" aria-label="Annual carbon emissions from fire by region"></svg>
+  <p class="note"><b>Half of the world&rsquo;s fire carbon comes from African savanna, and almost none of it
+  matters for the carbon budget.</b> Savanna burns most years and regrows within one; over a fire cycle the
+  emissions and the regrowth cancel, so it is a large gross flux and a near-zero net one. What does matter is
+  fire that is <em>not</em> followed by regrowth: tropical deforestation fires, and above all peat fires in
+  equatorial Asia, where the carbon burnt has been accumulating for thousands of years. The 1997 Indonesian
+  peat fires released somewhere between 0.8 and 2.6 PgC in a single season &mdash; up to a quarter of global
+  fossil fuel emissions that year, from one event.</p>
+  <p class="note"><b>Boreal fire is the one to watch.</b> It is a small term today and it is growing, it burns
+  deep organic soil rather than just the canopy, and the char and soot it deposits on snow and ice change the
+  albedo &mdash; a carbon-cycle process reaching directly into the energy balance.</p>
+</div>
+
+<h2 class="sec">Geological reservoirs</h2>
+
+<div class="card">
+  <h3>The long-term inorganic carbon cycle</h3>
+  <p class="cap">Everything so far has moved carbon between reservoirs that exchange in years to millennia.
+  There is one more loop, three orders of magnitude slower, and it is the loop that ultimately sets how much
+  carbon is in the ocean and atmosphere at all. Three reactions, Eq. 2.49&ndash;2.51 in the lecture.</p>
+  <svg id="geo" viewBox="0 0 880 420" role="img" aria-label="The long-term inorganic carbon cycle of sedimentation, metamorphism and weathering"></svg>
+  <div class="eq" style="text-align:left;line-height:2.2;margin-top:6px">
+    <b>1 &middot; Sedimentation</b> &nbsp; Ca<sup>2+</sup> + CO<sub>3</sub><sup>2&minus;</sup> &nbsp;&rarr;&nbsp; CaCO<sub>3</sub>&darr;
+      <span class="u">&nbsp; shells buried in shallow seas become limestone</span><br>
+    <b>2 &middot; Metamorphism</b> &nbsp; CaCO<sub>3</sub> + SiO<sub>2</sub> &nbsp;&rarr;&nbsp; CaSiO<sub>3</sub> + CO<sub>2</sub>&uarr;
+      <span class="u">&nbsp; limestone subducted and cooked; CO<sub>2</sub> returns via volcanoes</span><br>
+    <b>3 &middot; Weathering</b> &nbsp; CaSiO<sub>3</sub> + H<sub>2</sub>CO<sub>3</sub> &nbsp;&rarr;&nbsp; CaCO<sub>3</sub> + SiO<sub>2</sub> + H<sub>2</sub>O
+      <span class="u">&nbsp; uplifted silicate rock consumes carbonic acid from rain</span></div>
+  <p class="note"><b>The three reactions are a closed loop, and they very nearly cancel.</b> Each moves only
+  about 0.1&ndash;0.3 PgC yr<sup>&minus;1</sup> &mdash; a hundredth of what fossil fuel burning moves, and
+  utterly negligible on any human timescale. But run them for ten million years and they have cycled the
+  entire ocean&ndash;atmosphere carbon inventory several times over. On that timescale they are not negligible;
+  they are the only thing that matters.</p>
+  <p class="note"><b>And the weathering step is temperature-dependent, which turns the loop into a
+  thermostat.</b> Chemical weathering goes faster when it is warm and when it rains more. So if CO<sub>2</sub>
+  rises and the planet warms, weathering speeds up, consumes more CO<sub>2</sub>, and pulls it back down. If
+  the planet cools, weathering slows and volcanic CO<sub>2</sub> accumulates until it warms again. It is a
+  negative feedback with a response time of a few hundred thousand years &mdash; far too slow to help us, and
+  quite possibly the reason the Earth has kept liquid water for four billion years.</p>
+  <p class="q"><b>Question.</b> This is planetary self-regulation arising from ordinary physics and chemistry,
+  with no foresight and no purpose &mdash; exactly the argument of
+  <a href="../daisyworld/">Daisyworld</a> in PC Lab 1. Compare the two mechanisms. What plays the role of the
+  daisies here, what plays the role of albedo, and what is the equivalent of the range of solar luminosity
+  over which regulation works?</p>
+</div>
+
+<h2 class="sec">The methane cycle</h2>
+
+<div class="card">
+  <h3>A different kind of greenhouse gas</h3>
+  <p class="cap">Methane is present at about two parts per million &mdash; two hundred times less than
+  CO<sub>2</sub> &mdash; and still accounts for around a fifth of the anthropogenic greenhouse forcing. Two
+  properties make it behave completely differently: it absorbs far more strongly per molecule, and it is
+  destroyed.</p>
+  <div class="eq"><b>The sink</b> &nbsp;&nbsp; CH<sub>4</sub> + OH&middot; &nbsp;&rarr;&nbsp;
+    CH<sub>3</sub>&middot; + H<sub>2</sub>O
+    <span class="u">&nbsp;&nbsp; and onward to CO<sub>2</sub> through several steps</span></div>
+  <p class="note" style="margin-top:14px"><b>Carbon dioxide has no chemical sink in the atmosphere.</b> It can
+  only be removed by being transferred somewhere else &mdash; dissolved in the ocean, built into a plant &mdash;
+  and the ocean and the biosphere can and do give it back. Methane is different: the hydroxyl radical
+  <em>destroys</em> it, converting it into water and, eventually, CO<sub>2</sub>. Roughly 90 % of the methane
+  sink is this one reaction. Because the loss rate is proportional to the amount present, methane has a genuine
+  <b>lifetime</b> &mdash; about nine years &mdash; and therefore a genuine steady state.</p>
+  <div class="eq">dB/dt &nbsp;=&nbsp; S &minus; B/&tau;
+    <span class="u">&nbsp;&nbsp; at steady state, B* = S&tau;</span></div>
+  <p class="note" style="margin-top:14px">That one line is the entire difference between the two gases. Hold
+  methane emissions constant and the concentration <em>stops rising</em> and settles at S&tau;. Hold
+  CO<sub>2</sub> emissions constant and the concentration keeps climbing indefinitely. Stabilising methane
+  requires constant emissions; stabilising CO<sub>2</sub> requires <em>zero</em> emissions. That asymmetry is
+  the single most important thing to take away from this section.</p>
+</div>
+
+<div class="card demo">
+  <h3>The methane budget, and what happens if you change it</h3>
+  <p class="cap">Set the sources, and the model integrates dB/dt = S &minus; B/&tau; forward from today. The
+  right-hand panel shows where the concentration goes, and how long it takes to get there.</p>
+  <div class="rowbtns" style="margin-top:14px">
+    <span class="lbl">Scenario</span>
+    <div class="seg" id="scenSeg"></div>
+  </div>
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="mNat">Natural sources <b><span id="vNat"></span></b></label>
+      <input type="range" id="mNat" min="100" max="400" step="2">
+      <div class="hint">wetlands, freshwater, geological, termites &mdash; Tg CH<sub>4</sub> yr<sup>&minus;1</sup></div>
+    </div>
+    <div class="ctrl">
+      <label for="mFos">Fossil fuel production and use <b><span id="vFos"></span></b></label>
+      <input type="range" id="mFos" min="0" max="160" step="1">
+      <div class="hint">leaks from gas, oil and coal &mdash; the cheapest to cut</div>
+    </div>
+    <div class="ctrl">
+      <label for="mAgr">Livestock and rice <b><span id="vAgr"></span></b></label>
+      <input type="range" id="mAgr" min="0" max="200" step="1">
+      <div class="hint">enteric fermentation, manure, flooded paddies</div>
+    </div>
+    <div class="ctrl">
+      <label for="mWst">Landfills, waste and burning <b><span id="vWst"></span></b></label>
+      <input type="range" id="mWst" min="0" max="160" step="1">
+      <div class="hint">anaerobic decay in landfill, sewage, biomass burning</div>
+    </div>
+  </div>
+  <label class="chk" style="margin-top:6px"><input type="checkbox" id="ohfb" checked>
+    include the OH feedback &mdash; methane consumes the radical that destroys it, so more methane means a
+    longer lifetime</label>
+  <svg id="meth" viewBox="0 0 880 380" role="img" aria-label="Methane source and sink budget and the projected concentration trajectory"></svg>
+  <div class="kpis" id="mKpi"></div>
+  <div class="readout" id="mRead"></div>
+  <p class="warnbox"><b>What the model is.</b> A single well-mixed atmospheric box, integrated annually from
+  2024 with a burden of 5310 Tg (1930 ppb at 2.75 Tg per ppb). The base lifetime is 9.2 years, tuned so that
+  the AR5 top-down budget reproduces the near-zero growth observed in the 2000s. With the OH feedback on, the
+  lifetime scales as (B/B<sub>0</sub>)<sup>0.28</sup>, which reproduces the published perturbation lifetime of
+  about 12 years. Radiative forcing uses the simplified expression &Delta;F = 0.036(&radic;C &minus;
+  &radic;C<sub>0</sub>) relative to a pre-industrial 722 ppb, and the temperature figure applies a climate
+  sensitivity parameter of 0.8 K per W m<sup>&minus;2</sup>. It excludes methane&rsquo;s indirect effects
+  through tropospheric ozone and stratospheric water vapour, which add roughly 40 % more forcing, so the
+  temperature numbers here are conservative.</p>
+  <p class="q"><b>Question.</b> Load <b>Methane Pledge</b> and note how long the concentration takes to reach
+  its new plateau. Now imagine the equivalent cut applied to CO<sub>2</sub> emissions instead. Sketch both
+  concentration curves on the same axes out to 2100 and explain, in terms of the sink, why one flattens and
+  the other does not.</p>
+</div>
+
+<div class="card">
+  <h3>Where the methane comes from</h3>
+  <p class="cap">The 1999&ndash;2006 pause, and the renewed growth since 2007, are still not fully explained
+  &mdash; and the reason is that these categories are hard to measure and easy to confuse isotopically.</p>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Source</th><th class="num">Tg CH<sub>4</sub> yr<sup>&minus;1</sup></th><th>Natural or human</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Wetlands</td><td class="num">167</td><td>Natural</td><td>The largest single source, and the most climate-sensitive: emission rises steeply with soil temperature and with the extent of waterlogging</td></tr>
+      <tr><td class="nm">Fossil fuel production</td><td class="num">92</td><td>Human</td><td>Leaks from gas pipelines, oil wells and coal mines. Technically the easiest and cheapest methane to eliminate</td></tr>
+      <tr><td class="nm">Livestock</td><td class="num">88</td><td>Human</td><td>Enteric fermentation in ruminants, plus manure management</td></tr>
+      <tr><td class="nm">Landfills and waste</td><td class="num">70</td><td>Human</td><td>Anaerobic decay of organic matter in landfill and sewage</td></tr>
+      <tr><td class="nm">Freshwater and geological</td><td class="num">45</td><td>Natural</td><td>Lakes, rivers, reservoirs, natural seeps and mud volcanoes</td></tr>
+      <tr><td class="nm">Rice cultivation</td><td class="num">34</td><td>Human</td><td>Flooded paddies are, functionally, managed wetlands</td></tr>
+      <tr><td class="nm">Biomass and biofuel burning</td><td class="num">32</td><td>Human</td><td>Incomplete combustion, both wild and deliberate</td></tr>
+      <tr><td class="nm">Termites, wild animals, oceans, hydrates</td><td class="num">20</td><td>Natural</td><td>Hydrates are a very large stock with a currently small flux &mdash; the reason they attract attention</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><b>Notice what is missing from the anthropogenic list: combustion.</b> Almost every
+  anthropogenic methane source is either a leak or an <em>anaerobic</em> process &mdash; a stomach, a paddy, a
+  landfill, a bog. Methane is what carbon becomes when it decomposes without oxygen. That is a genuinely useful
+  organising idea: it tells you immediately why draining a wetland reduces methane and increases CO<sub>2</sub>,
+  and why flooding one does the reverse.</p>
+  <p class="note"><b>The feedback that worries people.</b> Wetlands are the biggest source and they are
+  temperature-sensitive; permafrost thaw creates new wetlands and exposes old carbon; and warming may reduce
+  the OH sink. All three point the same way. None of them is in the box model above, because the model treats
+  natural sources as a number you set rather than something the climate decides.</p>
+</div>
+
+<h2 class="sec">Pulling the four parts together</h2>
+
+<div class="card" style="border-color:var(--carb)">
+  <h3>What to take away</h3>
+  <ul style="margin:8px 0 0;padding-left:22px;color:var(--text-secondary);line-height:1.75">
+    <li><b>The same equation runs both cycles.</b> dS/dt = inputs &minus; outputs, applied to whatever box you
+      choose to draw. Everything else is bookkeeping and chemistry.</li>
+    <li><b>Reservoir size and residence time are independent, and both matter.</b> The ocean holds almost all
+      the water and responds to nothing; the atmosphere holds almost none and responds to everything.</li>
+    <li><b>Fresh water is scarce and unevenly distributed</b>, and the distribution is set by atmospheric
+      circulation, not by how much water there is. E &minus; P leaves its fingerprint in ocean salinity.</li>
+    <li><b>The carbon cycle is a near-perfect cancellation of huge fluxes.</b> The human perturbation is small
+      against the gross exchange and overwhelming against the residual.</li>
+    <li><b>About 45 % of emitted carbon stays in the air.</b> The ocean and the land absorb the rest, and both
+      are expected to become less efficient.</li>
+    <li><b>Carbonate chemistry, not solubility, is what lets the ocean hold carbon</b> &mdash; and the price of
+      that service is acidification and a falling carbonate ion concentration.</li>
+    <li><b>Three pumps keep the deep ocean carbon-rich</b>, and one of them &mdash; the carbonate pump &mdash;
+      works in the opposite direction to the other two.</li>
+    <li><b>Sedimentation, metamorphism and weathering close the budget over millions of years</b>, and give the
+      planet a slow thermostat.</li>
+    <li><b>Methane has a sink, so it has a steady state.</b> Stabilising methane needs constant emissions;
+      stabilising CO<sub>2</sub> needs zero emissions.</li>
+  </ul>
+  <p class="note" style="margin-top:18px"><b>Where this goes next.</b> The whole of this set has treated the
+  cycles as accounting. The modelling sessions turn the accounting into equations that can be integrated
+  forward &mdash; and <a href="../sahara/">PC Lab 3</a> takes one specific coupling, between vegetation and
+  precipitation, and shows what happens when a slowly-forced cycle crosses a threshold.</p>
+  <div class="res" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:18px">
+    <a href="water-balance.html" style="display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--text-primary)">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--carb);font-weight:700">Part 1</div>
+      <div style="font-size:14.5px;font-weight:600;margin:3px 0 2px">The global water balance</div>
+      <div style="font-size:12.5px;color:var(--text-muted)">Reservoirs, residence times, the soil bucket, E &minus; P</div></a>
+    <a href="carbon-budget.html" style="display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--text-primary)">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--carb);font-weight:700">Part 2</div>
+      <div style="font-size:14.5px;font-weight:600;margin:3px 0 2px">The global carbon budget</div>
+      <div style="font-size:12.5px;color:var(--text-muted)">Keeling curve, stocks and fluxes, the budget ledger</div></a>
+    <a href="ocean-carbon.html" style="display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--text-primary)">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--carb);font-weight:700">Part 3</div>
+      <div style="font-size:14.5px;font-weight:600;margin:3px 0 2px">The oceanic carbon cycle</div>
+      <div style="font-size:12.5px;color:var(--text-muted)">The carbonate solver, buffering, three pumps</div></a>
+    <a href="../equations/" style="display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--text-primary)">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--carb);font-weight:700">Reference</div>
+      <div style="font-size:14.5px;font-weight:600;margin:3px 0 2px">Equation summary</div>
+      <div style="font-size:12.5px;color:var(--text-muted)">Part III · the carbon cycle, Eq. 2.38&ndash;2.49</div></a>
+  </div>
+</div>
+
+<p class="foot">The GPP&ndash;NPP&ndash;NEP&ndash;NBP cascade uses representative global values consistent with
+Ciais et al. (2013): GPP 123, autotrophic respiration about half of it, and an NBP matching the residual land
+sink in the budget on page 2. Fire emissions by region follow the pattern of the Global Fire Emissions Database
+as presented by Randerson et al. (2018), the update to Fig. 2.29; regional totals are rounded and scaled to a
+global 2.2 PgC yr<sup>&minus;1</sup>. The methane budget is the AR5 top-down (atmospheric inversion) estimate
+for 2000&ndash;2009 from Ciais et al. (2013), Table 6.8, adjusted slightly so that the individual terms sum
+exactly to the published totals of 548 Tg yr<sup>&minus;1</sup> of sources and 540 of sinks &mdash; the
+published sub-terms have wide, overlapping ranges and do not sum. The NPP field is generated from a smooth
+function of latitude and season weighted by land fraction, so it reproduces the structure of Fig. 2.28 without
+being satellite data. The long-term inorganic cycle follows the lecture&rsquo;s Fig. 2.30 and its three
+reactions. &nbsp;&middot;&nbsp; Back to the <a href="../">course index</a>.</p>
+
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const put=(svg,tag,attrs,content,html)=>{const e=el(tag,attrs);
+    if(html!==undefined) e.innerHTML=html; else if(content!==undefined) e.textContent=content;
+    svg.appendChild(e); return e;};
+
+  /* ══════════════════════════════════════════════════════════════════
+     1 · THE PRODUCTION CASCADE
+     ══════════════════════════════════════════════════════════════════ */
+  const CAS=[
+    {n:'GPP',  v:123, kind:'level', sub:'photosynthesis'},
+    {n:'Autotrophic respiration', v:-60, kind:'sub', sub:'the plant itself'},
+    {n:'NPP',  v:63,  kind:'level', sub:'built into tissue'},
+    {n:'Heterotrophic respiration', v:-55, kind:'sub', sub:'decomposers'},
+    {n:'NEP',  v:8,   kind:'level', sub:'production − decay'},
+    {n:'Fire', v:-2.2,kind:'sub', sub:'combustion'},
+    {n:'Harvest, erosion, rivers', v:-3.5, kind:'sub', sub:'exported intact'},
+    {n:'NBP',  v:2.3, kind:'level', sub:'the land sink'}
+  ];
+  function drawCascade(){
+    const g=$('cascade'); g.innerHTML='';
+    const L=40,R=846,T=30,B=252;
+    const Y=v=>B-(B-T)*v/130;
+    const n=CAS.length, w=(R-L)/n*0.66, gap=(R-L)/n;
+    [0,25,50,75,100,125].forEach(v=>{
+      put(g,'line',{x1:L,x2:R,y1:Y(v),y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-6,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},String(v));
+    });
+    let run=0;
+    CAS.forEach((c,i)=>{
+      const x=L+gap*i+(gap-w)/2;
+      if(c.kind==='level'){
+        run=c.v;
+        put(g,'rect',{x:x,y:Y(run),width:w,height:B-Y(run),rx:3,fill:'var(--carb)',opacity:.88});
+        put(g,'text',{x:x+w/2,y:Y(run)-9,'text-anchor':'middle','font-size':15,
+          fill:'var(--text-primary)','font-weight':700,'font-variant-numeric':'tabular-nums'},
+          c.v.toFixed(c.v<10?1:0));
+      } else {
+        const top=run, bot=run+c.v;
+        put(g,'rect',{x:x,y:Y(top),width:w,height:Math.max(2,Y(bot)-Y(top)),rx:3,
+          fill:'var(--foss)',opacity:.72});
+        put(g,'text',{x:x+w/2,y:(Y(top)+Y(bot))/2+5,'text-anchor':'middle','font-size':12.5,
+          fill:'#fff','font-weight':600,'font-variant-numeric':'tabular-nums'},
+          '−'+Math.abs(c.v).toFixed(Math.abs(c.v)<10?1:0));
+        run=bot;
+        /* connector */
+        put(g,'line',{x1:x+w,x2:x+gap-(gap-w)/2,y1:Y(run),y2:Y(run),
+          stroke:'var(--text-muted)','stroke-width':1,'stroke-dasharray':'3 3'});
+      }
+      /* label, wrapped onto two lines */
+      const words=c.n.split(' ');
+      let l1=words[0], l2=words.slice(1).join(' ');
+      if(words.length>2){ l1=words.slice(0,2).join(' '); l2=words.slice(2).join(' '); }
+      put(g,'text',{x:x+w/2,y:B+18,'text-anchor':'middle','font-size':11.5,
+        fill:c.kind==='level'?'var(--text-primary)':'var(--text-secondary)',
+        'font-weight':c.kind==='level'?700:400},l1);
+      if(l2) put(g,'text',{x:x+w/2,y:B+33,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-secondary)'},l2);
+      put(g,'text',{x:x+w/2,y:B+51,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},c.sub);
+    });
+    put(g,'text',{x:L,y:T-12,'font-size':11.5,fill:'var(--text-muted)'},
+      'PgC yr⁻¹  ·  green = what is left at each stage, red = what is subtracted');
+    put(g,'text',{x:R,y:B+80,'text-anchor':'end','font-size':12,fill:'var(--text-secondary)'},
+      '98 % of the gross uptake is returned to the atmosphere within the year');
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     2 · NPP HEAT MAP
+     ══════════════════════════════════════════════════════════════════ */
+  const VEG={'-85':0.00,'-75':0.00,'-65':0.01,'-55':0.02,'-45':0.03,'-35':0.16,'-25':0.23,'-15':0.24,
+             '-5':0.24,'5':0.26,'15':0.30,'25':0.33,'35':0.42,'45':0.51,'55':0.57,'65':0.62,
+             '75':0.36,'85':0.05};
+  function nppAt(lat,mo){                                     /* mo 0..11 */
+    const veg=VEG[String(Math.floor(lat/10)*10+5)] || 0;
+    const base=3.6*Math.exp(-Math.pow(lat/48,2))+0.5*Math.exp(-Math.pow((Math.abs(lat)-45)/22,2));
+    const amp=Math.min(1.0,Math.abs(lat)/42);
+    const peak=lat>=0?6.4:0.4;                                /* July north, January south */
+    const s=1+amp*Math.cos(2*Math.PI*(mo-peak)/12);
+    const area=Math.cos(lat*Math.PI/180);
+    return Math.max(0, base*Math.max(0,s)*veg*area);
+  }
+  function drawNPP(){
+    const g=$('npp'); g.innerHTML='';
+    const L=70,R=760,T=26,B=286;
+    const mo=['J','F','M','A','M','J','J','A','S','O','N','D'];
+    const lats=[]; for(let l=85;l>=-85;l-=10) lats.push(l);
+    const cellH=(B-T)/lats.length, cellW=(R-L)/12;
+    let vmax=0;
+    lats.forEach(l=>{ for(let m=0;m<12;m++) vmax=Math.max(vmax,nppAt(l,m)); });
+    /* sequential ramp: pale → deep green */
+    const ramp=f=>{
+      const stops=[[248,247,240],[214,229,190],[160,205,140],[ 96,175,102],[ 40,138, 82],[ 12, 92, 58]];
+      const x=Math.max(0,Math.min(0.9999,f))*(stops.length-1), i=Math.floor(x), t=x-i;
+      const a=stops[i], b=stops[i+1];
+      return 'rgb('+Math.round(a[0]+(b[0]-a[0])*t)+','+Math.round(a[1]+(b[1]-a[1])*t)+','+
+             Math.round(a[2]+(b[2]-a[2])*t)+')';
+    };
+    lats.forEach((l,i)=>{
+      for(let m=0;m<12;m++){
+        const f=nppAt(l,m)/vmax;
+        put(g,'rect',{x:L+m*cellW,y:T+i*cellH,width:cellW+0.5,height:cellH+0.5,
+          fill:ramp(Math.pow(f,0.75))});
+      }
+      if(Math.abs(l)%30===5 || Math.abs(l)===85){
+        put(g,'text',{x:L-9,y:T+i*cellH+cellH/2+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},Math.abs(l)+'°'+(l>0?'N':'S'));
+      }
+    });
+    /* equator line */
+    const eq=T+lats.indexOf(5)*cellH+cellH;
+    put(g,'line',{x1:L,x2:R,y1:eq,y2:eq,stroke:'var(--text-primary)','stroke-width':1.4,opacity:.45});
+    put(g,'text',{x:R+8,y:eq+4,'font-size':11,fill:'var(--text-muted)'},'equator');
+    mo.forEach((m,i)=>put(g,'text',{x:L+i*cellW+cellW/2,y:B+19,'text-anchor':'middle',
+      'font-size':11,fill:'var(--text-muted)'},m));
+    put(g,'rect',{x:L,y:T,width:R-L,height:B-T,fill:'none',stroke:'var(--line)','stroke-width':1});
+    /* colour bar — vertical, because a horizontal one does not fit in the
+       112 px of margin left to the right of the map */
+    const CBX=R+30, CBT=T+170, CBH=80, NSEG=40;
+    for(let i=0;i<NSEG;i++)
+      put(g,'rect',{x:CBX,y:CBT+CBH-(i+1)*(CBH/NSEG),width:20,height:CBH/NSEG+0.5,
+        fill:ramp(Math.pow(i/(NSEG-1),0.75))});
+    put(g,'rect',{x:CBX,y:CBT,width:20,height:CBH,fill:'none',
+      stroke:'var(--line)','stroke-width':1});
+    put(g,'text',{x:CBX+26,y:CBT+8,'font-size':11,fill:'var(--text-muted)'},'high');
+    put(g,'text',{x:CBX+26,y:CBT+CBH,'font-size':11,fill:'var(--text-muted)'},'low');
+    put(g,'text',{x:R+8,y:CBT-12,'font-size':11,fill:'var(--text-muted)'},'zonal NPP');
+    /* the northern growing season, marked */
+    put(g,'rect',{x:L+4*cellW,y:T,width:5*cellW,height:(B-T)*0.30,fill:'none',
+      stroke:'var(--warn)','stroke-width':2,'stroke-dasharray':'5 4'});
+    put(g,'text',{x:(L+R)/2,y:B+42,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'month of year');
+    put(g,'rect',{x:L,y:B+56,width:14,height:3,fill:'var(--warn)'});
+    put(g,'text',{x:L+22,y:B+62,'font-size':12,fill:'var(--warn)','font-weight':600},
+      'the northern growing season — this box is the Keeling sawtooth');
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     3 · SOIL CARBON POOLS
+     ══════════════════════════════════════════════════════════════════ */
+  const POOLS=[
+    {n:'Fresh litter',      stock:70,   tau:1.2,  col:'land', dx:0,   dy:-1, an:'middle'},
+    {n:'Living vegetation', stock:550,  tau:9,    col:'carb', dx:-26, dy:0,  an:'end'},
+    {n:'Fast soil organic matter', stock:250, tau:14, col:'land', dx:20, dy:0, an:'start'},
+    {n:'Slow / humus',      stock:900,  tau:180,  col:'rock', dx:0,   dy:-1, an:'middle'},
+    {n:'Mineral-bound',     stock:700,  tau:1500, col:'rock', dx:0,   dy:-1, an:'middle'},
+    {n:'Peat',              stock:600,  tau:3200, col:'gw',   dx:0,   dy:1,  an:'middle'},
+    {n:'Permafrost',        stock:1700, tau:8000, col:'ice',  dx:0,   dy:1,  an:'middle'}
+  ];
+  function drawSoilC(){
+    const g=$('soilc'); g.innerHTML='';
+    const L=72,R=790,T=26,B=232;
+    const lx=Math.log10(0.8), hx=Math.log10(2e4);
+    const X=t=>L+(R-L)*(Math.log10(t)-lx)/(hx-lx);
+    const Y=s=>B-(B-T)*Math.min(1,s/1800);
+    [1,10,100,1000,10000].forEach(t=>{
+      put(g,'line',{x1:X(t),x2:X(t),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:X(t),y:B+19,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},
+        t>=1000?(t/1000)+'000 yr':t+' yr');
+    });
+    [0,500,1000,1500].forEach(s=>{
+      put(g,'line',{x1:L,x2:R,y1:Y(s),y2:Y(s),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-9,y:Y(s)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},String(s));
+    });
+    put(g,'text',{x:L-9,y:T-8,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'PgC');
+    /* atmosphere reference */
+    put(g,'line',{x1:L,x2:R,y1:Y(903),y2:Y(903),stroke:'var(--foss)','stroke-width':1.4,
+      'stroke-dasharray':'6 4'});
+    put(g,'text',{x:L+6,y:Y(903)-7,'font-size':11.5,
+      fill:'var(--foss)'},'the whole atmosphere, 903 PgC');
+    POOLS.forEach(p=>{
+      const r=8+16*Math.sqrt(p.stock/1800), cx=X(p.tau), cy=Y(p.stock);
+      put(g,'circle',{cx:cx,cy:cy,r:r,fill:'var(--'+p.col+')',opacity:.55,
+        stroke:'var(--'+p.col+')','stroke-width':2});
+      /* dy −1 = above the bubble, +1 = below, 0 = level with the centre */
+      const ny = p.dy<0 ? cy-r-21 : p.dy>0 ? cy+r+19 : cy-3;
+      put(g,'text',{x:cx+p.dx,y:ny,'text-anchor':p.an,'font-size':12,
+        fill:'var(--text-primary)','font-weight':600},p.n);
+      put(g,'text',{x:cx+p.dx,y:ny+15,'text-anchor':p.an,'font-size':11,
+        fill:'var(--text-muted)'},p.stock+' PgC');
+    });
+    put(g,'text',{x:(L+R)/2,y:B+42,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'turnover time  (logarithmic)   ·   bubble area ∝ stock');
+    put(g,'text',{x:L,y:B+66,'font-size':12,fill:'var(--text-secondary)'},
+      'Everything to the right of about a century has been accumulating since the last glaciation.');
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     4 · FIRE
+     ══════════════════════════════════════════════════════════════════ */
+  const FIRE=[
+    {n:'Africa — savanna and grassland', v:1050, k:'balanced'},
+    {n:'South America', v:250, k:'mixed'},
+    {n:'Equatorial Asia — peat', v:200, k:'net'},
+    {n:'Australia', v:180, k:'balanced'},
+    {n:'Southeast Asia', v:150, k:'mixed'},
+    {n:'Boreal Asia', v:130, k:'mixed'},
+    {n:'Central Asia', v:100, k:'balanced'},
+    {n:'Boreal North America', v:60, k:'mixed'},
+    {n:'Temperate North America', v:30, k:'mixed'},
+    {n:'Europe and Middle East', v:30, k:'balanced'}
+  ];
+  function drawFire(){
+    const g=$('fire'); g.innerHTML='';
+    const L=250,R=760,T=22,B=262, n=FIRE.length, h=(B-T)/n;
+    const X=v=>L+(R-L)*v/1150;
+    [0,250,500,750,1000].forEach(v=>{
+      put(g,'line',{x1:X(v),x2:X(v),y1:T-4,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:X(v),y:B+19,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},
+        String(v));
+    });
+    const COL={balanced:'var(--land)',mixed:'var(--warn)',net:'var(--foss)'};
+    FIRE.forEach((f,i)=>{
+      const y=T+i*h+3, bh=h-7;
+      put(g,'rect',{x:L,y:y,width:Math.max(2,X(f.v)-L),height:bh,rx:3,fill:COL[f.k],opacity:.85});
+      put(g,'text',{x:L-10,y:y+bh/2+4,'text-anchor':'end','font-size':12.5,
+        fill:'var(--text-primary)'},f.n);
+      put(g,'text',{x:X(f.v)+9,y:y+bh/2+4,'font-size':12,fill:'var(--text-secondary)',
+        'font-variant-numeric':'tabular-nums'},String(f.v));
+    });
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'Tg C yr⁻¹   ·   total ≈ 2180 Tg C yr⁻¹ = 2.2 PgC yr⁻¹');
+    const leg=[['balanced','largely balanced by regrowth — big gross flux, small net'],
+               ['mixed','partly balanced'],
+               ['net','a genuine net source — carbon stored for millennia'] ];
+    leg.forEach((q,i)=>{
+      const y=B+62+i*20;
+      put(g,'rect',{x:L-160,y:y-10,width:12,height:12,rx:3,fill:COL[q[0]]});
+      put(g,'text',{x:L-142,y:y,'font-size':12,fill:'var(--text-secondary)'},q[1]);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     5 · THE LONG-TERM INORGANIC CYCLE
+     ══════════════════════════════════════════════════════════════════ */
+  function drawGeo(){
+    const g=$('geo'); g.innerHTML='';
+    const boxes=[
+      {id:'atm', x:340, y:20,  w:210, h:62, t:'Atmosphere + ocean', s:'~39 000 PgC as CO₂ and DIC', c:'oce'},
+      {id:'sed', x:620, y:170, w:210, h:62, t:'Limestone (CaCO₃)',  s:'shelf sediments, then rock', c:'rock'},
+      {id:'sil', x:340, y:322, w:210, h:62, t:'Calcium silicate rock', s:'CaSiO₃ · uplifted crust', c:'gw'},
+      {id:'vol', x:52,  y:170, w:210, h:62, t:'Volcanic CO₂',        s:'released at arcs and ridges', c:'foss'}
+    ];
+    boxes.forEach(b=>{
+      put(g,'rect',{x:b.x,y:b.y,width:b.w,height:b.h,rx:11,fill:'var(--surface-2)',
+        stroke:'var(--'+b.c+')','stroke-width':1.8});
+      put(g,'text',{x:b.x+b.w/2,y:b.y+26,'text-anchor':'middle','font-size':14,
+        fill:'var(--text-primary)','font-weight':600},b.t);
+      put(g,'text',{x:b.x+b.w/2,y:b.y+46,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},b.s);
+    });
+    /* curved arrows around the loop */
+    function arc(x1,y1,x2,y2,cx,cy,col,lab,sub,lx,ly){
+      put(g,'path',{d:'M '+x1+' '+y1+' Q '+cx+' '+cy+' '+x2+' '+y2,fill:'none',
+        stroke:col,'stroke-width':3,'marker-end':'url(#ah'+col.replace(/[^a-z]/g,'')+')'});
+      put(g,'text',{x:lx,y:ly,'text-anchor':'middle','font-size':13,fill:'var(--text-primary)',
+        'font-weight':600},lab);
+      put(g,'text',{x:lx,y:ly+17,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},sub);
+    }
+    /* arrowhead defs */
+    const defs=el('defs',{});
+    ['var(--rock)','var(--foss)','var(--gw)','var(--carb)'].forEach(c=>{
+      const m=el('marker',{id:'ah'+c.replace(/[^a-z]/g,''),viewBox:'0 0 10 10',refX:'8',refY:'5',
+        markerWidth:'6',markerHeight:'6',orient:'auto-start-reverse'});
+      m.appendChild(el('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:c}));
+      defs.appendChild(m);
+    });
+    g.appendChild(defs);
+    arc(556,62,  650,168, 640,90,  'var(--rock)', '1 · Sedimentation', '≈ 0.2 PgC yr⁻¹', 645, 116);
+    arc(700,236, 556,352, 700,330, 'var(--gw)',   '2 · Subduction', 'limestone buried and cooked', 690, 292);
+    arc(336,352, 190,236, 190,330, 'var(--foss)', 'metamorphism', 'CO₂ released, ≈ 0.1 PgC yr⁻¹', 200, 300);
+    arc(150,166, 336,60,  180,72,  'var(--carb)', '3 · Weathering', 'CO₂ consumed, ≈ 0.1 PgC yr⁻¹', 230, 108);
+    /* centre annotation */
+    put(g,'rect',{x:322,y:150,width:246,height:104,rx:12,fill:'var(--surface-1)',
+      stroke:'var(--line-soft)','stroke-width':1});
+    put(g,'text',{x:445,y:178,'text-anchor':'middle','font-size':12.5,
+      fill:'var(--text-secondary)'},'Time to cycle the whole');
+    put(g,'text',{x:445,y:196,'text-anchor':'middle','font-size':12.5,
+      fill:'var(--text-secondary)'},'ocean–atmosphere inventory');
+    put(g,'text',{x:445,y:226,'text-anchor':'middle','font-size':24,
+      fill:'var(--text-primary)','font-weight':700},'~400 000 yr');
+    put(g,'text',{x:445,y:246,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'39 000 PgC ÷ 0.1 PgC yr⁻¹');
+    put(g,'text',{x:20,y:404,'font-size':12,fill:'var(--text-secondary)'},
+      'Warmer and wetter → faster weathering → more CO₂ consumed → cooler.  A thermostat with a 10⁵-year time constant.');
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     6 · THE METHANE BOX MODEL  (the demonstration)
+     ══════════════════════════════════════════════════════════════════ */
+  const TG_PER_PPB=2.75, TAU0=9.2, B0=1800*TG_PER_PPB, C_NOW=1930, PREIND=722;
+  const SCEN=[
+    {k:'ar5',  n:'2000s (AR5)',  nat:232, fos:92,  agr:122, wst:102},
+    {k:'now',  n:'Today',        nat:240, fos:110, agr:135, wst:112},
+    {k:'gmp',  n:'Methane Pledge', nat:240, fos:77, agr:95,  wst:78},
+    {k:'deep', n:'Deep cuts (−70 %)', nat:240, fos:33, agr:41, wst:34},
+    {k:'zero', n:'No human sources', nat:240, fos:0,  agr:0,   wst:0},
+    {k:'wet',  n:'Wetland feedback', nat:330, fos:110, agr:135, wst:112}
+  ];
+  const SNOTE={
+    ar5:'The AR5 top-down budget for 2000&ndash;2009. Sources 548 against a sink of 540 &mdash; almost exactly balanced, which is why methane barely grew through that decade. The steady state it implies is about 1830 ppb, which is roughly where methane was sitting.',
+    now:'Emissions have risen by around 10 % since the 2000s, and methane is growing again &mdash; faster since 2020 than at any time in the record. Note how much higher the implied steady state is than today&rsquo;s concentration: even with emissions frozen at this level, methane would keep climbing for decades before levelling off.',
+    gmp:'A 30 % cut in anthropogenic emissions by 2030 &mdash; the Global Methane Pledge. Look at the trajectory rather than the endpoint: within about twenty years methane has found a new, much lower plateau. Nothing comparable is available for CO<sub>2</sub> at any emissions cut short of zero.',
+    deep:'What a determined effort would look like. Methane falls below its 1984 level within a few decades. Roughly a third of the total cut is available from fossil fuel infrastructure alone, much of it at negative cost &mdash; the leaked gas is a saleable product.',
+    zero:'Every anthropogenic source removed. Methane relaxes towards the natural steady state within about three decades &mdash; the clearest possible demonstration of what a chemical sink buys you. Note that the model lands <em>below</em> the observed pre-industrial 722 ppb: reconciling the two would need natural emissions closer to 280 Tg yr<sup>&minus;1</sup> than the 240 assumed here. That is well inside the published range, and the fact that the range is that wide is exactly why the methane budget is harder to close than the CO<sub>2</sub> one.',
+    wet:'The feedback nobody controls. Wetlands are the largest single source and they emit more when they are warmer and wetter; permafrost thaw creates new ones. Here natural emissions rise by 90 Tg yr<sup>&minus;1</sup> while human emissions stay exactly where they are today. Compare the steady state with the <b>Today</b> scenario, and then with <b>Methane Pledge</b>: the natural increase alone outweighs everything the pledge would remove. This is the term no policy can touch, and it is the argument for cutting the terms that policy can.'
+  };
+  let scen='now';
+  $('scenSeg').innerHTML=SCEN.map(s=>
+    '<button data-k="'+s.k+'" aria-pressed="'+(s.k==='now')+'">'+s.n+'</button>').join('');
+  $('scenSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    scen=b.dataset.k;
+    const s=SCEN.find(z=>z.k===scen);
+    [...$('scenSeg').children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===scen));
+    $('mNat').value=s.nat; $('mFos').value=s.fos; $('mAgr').value=s.agr; $('mWst').value=s.wst;
+    runMeth();
+  });
+  ['mNat','mFos','mAgr','mWst'].forEach(id=>$(id).addEventListener('input',()=>{
+    scen='custom';
+    [...$('scenSeg').children].forEach(x=>x.setAttribute('aria-pressed','false'));
+    runMeth();
+  }));
+  $('ohfb').addEventListener('change',runMeth);
+
+  const tauOf=B=>$('ohfb').checked ? TAU0*Math.pow(B/B0,0.28) : TAU0;
+  const forcing=c=>0.036*(Math.sqrt(c)-Math.sqrt(PREIND));
+
+  function runMeth(){
+    const nat=+$('mNat').value, fos=+$('mFos').value, agr=+$('mAgr').value, wst=+$('mWst').value;
+    $('vNat').textContent=nat; $('vFos').textContent=fos;
+    $('vAgr').textContent=agr; $('vWst').textContent=wst;
+    const S=nat+fos+agr+wst, anth=fos+agr+wst;
+    /* integrate forward 100 yr from 2024 */
+    const traj=[]; let B=C_NOW*TG_PER_PPB;
+    for(let y=0;y<=100;y++){
+      traj.push({y:2024+y, c:B/TG_PER_PPB});
+      const dt=0.25;
+      for(let k=0;k<4;k++) B += (S - B/tauOf(B))*dt;
+    }
+    /* steady state: solve B = S·tau(B) by iteration */
+    let Bs=S*TAU0;
+    for(let i=0;i<200;i++) Bs = S*tauOf(Bs);
+    const css=Bs/TG_PER_PPB;
+    /* time to get within 10 % of the way to the plateau… use half-way point */
+    let half=null;
+    for(const p of traj){
+      if((C_NOW-css)!==0 && Math.abs(p.c-css) <= 0.5*Math.abs(C_NOW-css)){ half=p.y-2024; break; }
+    }
+    drawMeth(nat,fos,agr,wst,S,traj,css);
+    const dF=forcing(css)-forcing(C_NOW), dT=0.8*dF;
+    const K=[['Total sources', S+' Tg yr⁻¹', anth+' human · '+nat+' natural'],
+             ['Current sink', Math.round(C_NOW*TG_PER_PPB/tauOf(C_NOW*TG_PER_PPB))+' Tg yr⁻¹',
+              'lifetime '+tauOf(C_NOW*TG_PER_PPB).toFixed(1)+' yr at today’s burden'],
+             ['New steady state', Math.round(css)+' ppb',
+              (css>C_NOW?'+':'−')+Math.abs(Math.round(css-C_NOW))+' ppb on today’s 1930'],
+             ['Half-way there in', half===null?'—':half+' yr',
+              'the concentration does most of its adjusting fast']];
+    $('mKpi').innerHTML=K.map(k=>'<div class="kpi"><div class="k">'+k[0]+'</div>'+
+      '<div class="v">'+k[1]+'</div><div class="s">'+k[2]+'</div></div>').join('');
+    let m='';
+    if(SNOTE[scen]) m+='<b>'+SCEN.find(z=>z.k===scen).n+'.</b> '+SNOTE[scen]+'<br><br>';
+    m+='Sources <b>'+S+'</b> Tg yr⁻¹ against a sink of <b>'+
+       Math.round(C_NOW*TG_PER_PPB/tauOf(C_NOW*TG_PER_PPB))+'</b> Tg yr⁻¹ at today&rsquo;s burden, so the '+
+       'concentration is heading for <span class="big">'+Math.round(css)+' ppb</span>. ';
+    m+='Relative to today that is a radiative forcing change of <b>'+(dF>=0?'+':'−')+
+       Math.abs(dF).toFixed(3)+' W m⁻²</b>, or roughly '+(dT>=0?'+':'−')+Math.abs(dT).toFixed(2)+
+       ' °C of eventual global temperature &mdash; and about 40 % more once methane&rsquo;s indirect effects '+
+       'through ozone and stratospheric water vapour are counted.';
+    if(css<C_NOW) m+=' <b>Note how fast it happens.</b> This is the argument for methane as the most '+
+       'effective lever available on near-term warming: the atmosphere clears it out on a timescale of '+
+       'decades, not millennia.';
+    $('mRead').innerHTML=m;
+  }
+
+  function drawMeth(nat,fos,agr,wst,S,traj,css){
+    const g=$('meth'); g.innerHTML='';
+    /* ── left: the budget as two stacked bars ── */
+    const T=34,B=286,LX=150,SX=252,W=72;
+    const sink=C_NOW*TG_PER_PPB/tauOf(C_NOW*TG_PER_PPB);
+    const scale=Math.max(700,S*1.1,sink*1.1);
+    const H=v=>(B-T)*v/scale;
+    put(g,'line',{x1:LX-8,x2:SX+W+8,y1:B,y2:B,stroke:'var(--text-primary)',
+      'stroke-width':1.4,opacity:.6});
+    let y=B;
+    /* side −1 puts the label to the left of the bar, +1 to the right */
+    const seg=(x,val,col,lab,side)=>{
+      if(val<=0) return;
+      const h=H(val); y-=h;
+      put(g,'rect',{x:x,y:y,width:W,height:h,fill:'var(--'+col+')',opacity:.9});
+      if(h>15) put(g,'text',{x:x+W/2,y:y+h/2+5,'text-anchor':'middle','font-size':12,
+        fill:'#fff','font-weight':600},String(Math.round(val)));
+      put(g,'text',{x:side<0? x-9 : x+W+9, y:y+Math.max(13,h/2+4),
+        'text-anchor':side<0?'end':'start','font-size':11.5,
+        fill:'var(--text-secondary)'},lab);
+    };
+    seg(LX,nat,'land','natural',-1);
+    seg(LX,fos,'foss','fossil fuels',-1);
+    seg(LX,agr,'rock','livestock + rice',-1);
+    seg(LX,wst,'meth','waste + burning',-1);
+    put(g,'text',{x:LX+W/2,y:y-11,'text-anchor':'middle','font-size':14,
+      fill:'var(--text-primary)','font-weight':700},String(S));
+    put(g,'text',{x:LX+W/2,y:B+20,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'SOURCES');
+    /* sink bar */
+    const sOH=sink*0.88, sStr=sink*0.06, sSoil=sink*0.06;
+    y=B;
+    seg(SX,sOH,'carb','OH',1);
+    seg(SX,sStr,'ice','',1);
+    seg(SX,sSoil,'gw','',1);
+    put(g,'text',{x:SX+W/2,y:y-11,'text-anchor':'middle','font-size':14,
+      fill:'var(--text-primary)','font-weight':700},String(Math.round(sink)));
+    put(g,'text',{x:SX+W/2,y:B+20,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'SINK');
+    put(g,'text',{x:LX-8,y:T-14,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'Tg CH₄ yr⁻¹, today');
+    const imb=S-sink;
+    put(g,'text',{x:LX-8,y:B+44,'text-anchor':'end','font-size':12.5,
+      fill:imb>0?'var(--foss)':'var(--carb)','font-weight':600},
+      (imb>=0?'+':'−')+Math.abs(Math.round(imb))+' Tg yr⁻¹ imbalance');
+    put(g,'text',{x:LX-8,y:B+62,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},
+      '= '+(imb>=0?'+':'−')+Math.abs(imb/TG_PER_PPB).toFixed(1)+' ppb yr⁻¹ right now');
+    put(g,'text',{x:SX-30,y:B+44,'font-size':11.5,fill:'var(--text-muted)'},
+      '88 % OH  ·  6 % stratosphere  ·  6 % soil');
+    /* ── right: the trajectory ── */
+    const PL=436,PR=846,PT=34,PB=286;
+    const cmin=Math.min(650,css*0.9,...traj.map(p=>p.c))*0.98;
+    const cmax=Math.max(2100,css*1.05,...traj.map(p=>p.c))*1.02;
+    const X=yr=>PL+(PR-PL)*(yr-2024)/100, Y=c=>PB-(PB-PT)*(c-cmin)/(cmax-cmin);
+    const stepC = (cmax-cmin)>900?400:200;
+    for(let c=Math.ceil(cmin/stepC)*stepC;c<=cmax;c+=stepC){
+      put(g,'line',{x1:PL,x2:PR,y1:Y(c),y2:Y(c),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:PL-8,y:Y(c)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},String(c));
+    }
+    put(g,'text',{x:PL-8,y:PT-8,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'ppb');
+    [2024,2050,2075,2100,2124].forEach(yr=>{
+      put(g,'line',{x1:X(yr),x2:X(yr),y1:PT,y2:PB,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:X(yr),y:PB+19,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},String(yr));
+    });
+    /* reference lines */
+    const ref=[[PREIND,'pre-industrial 722'],[C_NOW,'today 1930']];
+    ref.forEach(([c,lab])=>{
+      if(c<cmin||c>cmax) return;
+      put(g,'line',{x1:PL,x2:PR,y1:Y(c),y2:Y(c),stroke:'var(--text-muted)','stroke-width':1.2,
+        'stroke-dasharray':'5 4',opacity:.8});
+      put(g,'text',{x:PR-4,y:Y(c)-6,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},lab);
+    });
+    /* steady state */
+    if(css>=cmin&&css<=cmax){
+      put(g,'line',{x1:PL,x2:PR,y1:Y(css),y2:Y(css),stroke:'var(--warn)','stroke-width':1.6,
+        'stroke-dasharray':'7 4'});
+      put(g,'text',{x:PL+6,y:Y(css)-7,'font-size':11.5,fill:'var(--warn)','font-weight':600},
+        'steady state '+Math.round(css)+' ppb');
+    }
+    let d=''; traj.forEach((p,i)=>{ d+=(i?' L ':'M ')+X(p.y).toFixed(1)+' '+Y(p.c).toFixed(1); });
+    put(g,'path',{d:d,fill:'none',stroke:'var(--meth)','stroke-width':3});
+    put(g,'circle',{cx:X(2024),cy:Y(C_NOW),r:5,fill:'var(--meth)'});
+    put(g,'text',{x:(PL+PR)/2,y:PB+42,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'atmospheric methane, integrated forward from 2024');
+    put(g,'text',{x:PL,y:PB+66,'font-size':11.5,fill:'var(--text-muted)'},
+      'lifetime '+tauOf(css*TG_PER_PPB).toFixed(1)+' yr at the new steady state'+
+      ($('ohfb').checked?' (OH feedback on)':' (fixed lifetime)'));
+  }
+
+  /* ── theme ─────────────────────────────────────────────────────── */
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+
+  drawCascade(); drawNPP(); drawSoilC(); drawFire(); drawGeo();
+  (function(){ const s=SCEN.find(z=>z.k==='now');
+    $('mNat').value=s.nat; $('mFos').value=s.fos; $('mAgr').value=s.agr; $('mWst').value=s.wst; })();
+  runMeth();
+})();
+</script>
+</body>
+</html>

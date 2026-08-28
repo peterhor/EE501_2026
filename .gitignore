@@ -22,6 +22,7 @@ Goosse2010_textbook/*
 *Teacher*.html
 *Teacher*.dc.html
 local_energy_balance/Lecture3-Teacher-outline.html
+hydro_and_carbon_cycle/Lecture4-Teacher-outline.html
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
@@ -38,3 +39,4 @@ support.js
 !docs/**/doc-page.js
 !docs/**/support.js
 local_energy_balance/Lecture3-Climate-at-a-local-scale2025.pptx
+hydro_and_carbon_cycle/Lecture4-Global-cycles-of-water-and-carbon2025.pptx
