@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What the surface does to the radiation — albedo, emissivity, canopies</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --alb:#eda100; --emi:#c8443a; --leaf:#1baf7a; --dir:#eda100; --dif:#2a78d6;
+    --nr:#1baf7a; --gd:#8a6b45;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --alb:#c98500; --emi:#d9564c; --leaf:#199e70; --dir:#c98500; --dif:#3987e5;
+    --nr:#199e70; --gd:#a08258;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:800px){.two{grid-template-columns:1fr}}
+  .eq{background:var(--surface-2);border-radius:10px;padding:15px 16px;margin:10px 0;
+    font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:7px 15px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  .ctrl{display:grid;grid-template-columns:190px 1fr 104px;gap:12px;align-items:center;
+    margin:0 0 11px;font-size:13.5px;color:var(--text-secondary)}
+  @media(max-width:600px){.ctrl{grid-template-columns:1fr;gap:4px}}
+  .ctrl .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);font-size:14px}
+  input[type=range]{width:100%;accent-color:var(--nr);height:22px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 0}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:21px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--nr);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .big{background:var(--surface-2);border-left:3px solid var(--nr);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:16px 0 0;font-size:14.5px;color:var(--text-secondary)}
+  .big b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">← EE501 course</a> &nbsp;·&nbsp;
+<a href="soil-temperature.html">← heat in the ground</a> &nbsp;·&nbsp; 4 of 4 &nbsp;·&nbsp; <a href="explorer/">explorer</a></p>
+
+<header>
+  <div>
+    <h1>What the surface does to the radiation</h1>
+    <p class="sub">Albedo is the first thing that happens to sunlight and the most powerful single control on
+    local climate. But it is not a fixed number for a surface &mdash; it depends on how wet the ground is, how
+    high the Sun is, and, in a canopy, on how many times a photon can bounce before it escapes.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<h2 class="sec">Albedo and emissivity</h2>
+
+<div class="card">
+  <h3>The range every natural surface occupies</h3>
+  <p class="cap">Each bar is the full observed range, not a single value. Bars are ordered by mid-range albedo.
+  Hover a row to read the numbers.</p>
+  <div class="seg" id="sortSeg" style="margin-bottom:16px">
+    <button data-s="alb" aria-pressed="true">Sort by albedo</button>
+    <button data-s="emi" aria-pressed="false">Sort by emissivity</button>
+  </div>
+  <svg id="tab11" viewBox="0 0 880 700" role="img" aria-label="Ranges of shortwave albedo and longwave emissivity for natural and urban surfaces"></svg>
+  <div class="legend" style="margin-top:14px">
+    <span class="chip"><span class="dot" style="background:var(--alb)"></span>albedo &alpha; — shortwave reflectivity</span>
+    <span class="chip"><span class="dot" style="background:var(--emi)"></span>emissivity &epsilon; — longwave efficiency</span>
+  </div>
+  <div class="big">
+    <b>Emissivity = absorptivity.</b> A surface that radiates infrared efficiently absorbs it just as
+    efficiently &mdash; Kirchhoff&rsquo;s law, at the same wavelength. So &epsilon; is doing double duty in the
+    radiative budget: it sets F<sub>IR↑</sub> through &epsilon;&sigma;T<sub>s</sub><sup>4</sup>, and it sets how
+    much of F<sub>IR↓</sub> the surface actually takes in.
+    <div class="eq" style="font-size:16px;margin:14px 0 4px">
+      F<sub>IR↑</sub> &nbsp;=&nbsp; &epsilon; &sigma; T<sub>s</sub><sup>4</sup>
+      &nbsp;+&nbsp; (1 &minus; &epsilon;) F<sub>IR↓</sub>
+      <span class="u">&nbsp;&nbsp;emitted, plus the fraction reflected</span></div>
+  </div>
+  <p class="note"><b>Notice how much narrower the emissivity range is.</b> Albedo spans 0.03 to 0.95 &mdash; a
+  factor of thirty. Emissivity spans 0.71 to 0.99, and almost everything living sits above 0.95. In the
+  longwave, nature is close to a blackbody and the differences barely matter; in the shortwave, the surface has
+  enormous leverage. That asymmetry is why land-cover change is such a powerful climate forcing.</p>
+  <p class="note"><b>The two exceptions are worth remembering.</b> Desert sand and dry snow are the natural
+  surfaces with genuinely low emissivity, around 0.84&ndash;0.90. Both radiate <em>less</em> than a blackbody at
+  their temperature would &mdash; which slightly limits their night-time cooling, and slightly raises the
+  daytime skin temperature they need in order to shed the same energy.</p>
+</div>
+
+<h2 class="sec">Albedo is not a constant</h2>
+
+<div class="card">
+  <h3>Albedo against solar altitude</h3>
+  <p class="cap">Six canopies, measured through the day. The Sun low in the sky is reflected far more strongly
+  than the Sun overhead &mdash; and how much more depends on the structure of the canopy.</p>
+  <svg id="zen" viewBox="0 0 880 400" role="img" aria-label="Albedo plotted against solar altitude for short grass, kale, oak with and without foliage, spruce and pine"></svg>
+  <div class="ctrl" style="margin-top:16px">
+    <label for="alt">Solar altitude</label>
+    <input type="range" id="alt" min="2" max="70" step="1" value="45">
+    <span class="v" id="altV"></span></div>
+  <div class="kpis" id="zenKpis"></div>
+  <p class="note"><b>Two effects, working together.</b> At a low solar altitude the beam strikes leaves at a
+  glancing angle, where the Fresnel reflection off the waxy leaf surface is much stronger. And the beam
+  penetrates less deeply into the canopy, so a photon has fewer opportunities to be trapped in the gaps and
+  absorbed on a second or third encounter.</p>
+  <p class="note"><b>The steepness is the structural signature.</b> Short grass is nearly flat &mdash; a dense,
+  shallow, more or less closed surface, so angle hardly matters. Pine falls from 0.20 to 0.08 across the same
+  range, because a tall open conifer canopy is full of deep gaps that swallow a high Sun completely and barely
+  exist for a low one. This is also why the same forest has a measurably higher daily-mean albedo in winter at
+  high latitude, before you add any snow at all.</p>
+  <p class="q"><b>Question.</b> Two of these curves are the same oak stand, in leaf and bare. The bare canopy has
+  the <em>lower</em> albedo at every solar altitude. Why does putting leaves on a tree make it brighter, when a
+  single leaf is darker than a bare twig is?</p>
+</div>
+
+<h2 class="sec">Inside the canopy</h2>
+
+<div class="card">
+  <h3>How far light gets in</h3>
+  <p class="cap">Radiation is absorbed layer by layer as it works down through the leaves. The controlling
+  quantity is not height but <em>cumulative leaf area</em> &mdash; the LAI accumulated above you.</p>
+  <div class="eq">F(L) &nbsp;=&nbsp; F<sub>0</sub> &middot; e<sup>&minus;kL</sup>
+    <span class="u">&nbsp;&nbsp;Beer&ndash;Lambert, with L the cumulative leaf area index from the top</span></div>
+  <div class="ctrl" style="margin-top:16px">
+    <label for="lai">Total leaf area index</label>
+    <input type="range" id="lai" min="0.4" max="9" step="0.1" value="5">
+    <span class="v" id="laiV"></span></div>
+  <div class="ctrl">
+    <label for="hcan">Canopy height</label>
+    <input type="range" id="hcan" min="0.2" max="30" step="0.1" value="12">
+    <span class="v" id="hcanV"></span></div>
+  <div class="two">
+    <div>
+      <svg id="canopy" viewBox="0 0 430 330" role="img" aria-label="Profiles of direct and diffuse solar radiation through a canopy against height, with the foliage density silhouette behind"></svg>
+    </div>
+    <div>
+      <svg id="diffuse" viewBox="0 0 430 330" role="img" aria-label="Diffuse fraction of the shortwave radiation increasing from the canopy top to the forest floor"></svg>
+    </div>
+  </div>
+  <div class="kpis" id="canKpis"></div>
+  <p class="note"><b>The floor of a forest is lit almost entirely by diffuse light.</b> Direct beam has to find
+  a clear line through every layer of leaves and is extinguished fast. Diffuse light arrives from all directions
+  at once, is scattered rather than blocked, and survives much better. In a typical stand the diffuse share
+  rises from about 15 % above the canopy to about 46 % at the floor &mdash; the light that reaches the
+  understorey is not just dimmer, it is a different kind of light, and much greener, because leaves transmit and
+  reflect strongly in the green and near-infrared while absorbing red and blue.</p>
+  <p class="note"><b>Set the canopy height to 0.2 m and read it as the grass stand from the lecture.</b> The
+  same curve applies: F<sub>solar</sub> falls off through the stand and net radiation F<sub>NR</sub> follows it
+  closely, because within a canopy the longwave terms are nearly in balance between neighbouring leaves. Almost
+  all of the absorption &mdash; and therefore almost all of the surface&rsquo;s energy exchange with the
+  atmosphere &mdash; happens in the upper part of the foliage. In a tall stand, the &lsquo;active surface&rsquo;
+  is not the ground at all; it sits several metres up in the crown.</p>
+</div>
+
+<div class="card">
+  <h3>Why a canopy is darker than its own leaves</h3>
+  <svg id="trap" viewBox="0 0 880 280" role="img" aria-label="Diagram showing multiple reflection inside a canopy trapping photons that a flat leaf surface would reflect away"></svg>
+  <p class="note"><b>A single leaf reflects about 10&ndash;15 % of visible light. A closed canopy of the same
+  leaves reflects less.</b> A photon reflected off one leaf usually hits another one rather than escaping
+  upward, and each encounter takes another bite. The deeper and more open the structure, the more encounters,
+  and the darker the canopy looks from above &mdash; which is why <b>taller vegetation generally has a lower
+  albedo</b>: grass 0.20&ndash;0.26, crops 0.18&ndash;0.25, deciduous forest 0.15&ndash;0.20, conifers
+  0.05&ndash;0.15.</p>
+  <p class="note">This is a genuine climate feedback and not a curiosity. Boreal conifer forest is one of the
+  darkest natural surfaces on Earth; the tundra it is currently advancing into is one of the brightest in
+  winter, because tundra is buried under snow while trees stand above it. Shrubs and trees moving north
+  therefore warm the local climate directly, through albedo, quite separately from any carbon they store.</p>
+</div>
+
+<h2 class="sec">The microclimate a canopy builds</h2>
+
+<div class="card">
+  <h3>Profiles through a spruce forest, sunny July day, 57°N</h3>
+  <p class="cap">Mean hourly profiles of temperature, vapour pressure, wind speed and CO<sub>2</sub>
+  concentration. Average tree height 11.4 m; the shaded silhouette is foliage density.</p>
+  <svg id="prof" viewBox="0 0 880 400" role="img" aria-label="Four vertical profiles through a spruce forest: temperature, vapour pressure, wind speed and carbon dioxide concentration, alongside foliage density"></svg>
+  <p class="note"><b>Everything happens in the crown, not at the ground.</b> The temperature and vapour-pressure
+  profiles both bulge where the foliage density peaks, around 7 m, because that is where the radiation is being
+  absorbed and where the transpiration is happening. The active surface has been lifted off the soil and
+  suspended in the air.</p>
+  <p class="note"><b>The wind profile is the reason the canopy can do that.</b> Above the trees the wind is
+  strong and the exchange with the atmosphere is vigorous; inside, it collapses almost to zero. The trunk space
+  is aerodynamically sheltered, which decouples it from the air above &mdash; and that decoupling is what lets
+  the two remaining profiles develop.</p>
+  <p class="note"><b>CO<sub>2</sub> tells you where the biology is.</b> The concentration is highest right at
+  the ground, where soil respiration is releasing it, and falls steadily upward as photosynthesis in the crown
+  draws it down. On a still night the profile is far stronger still, because the respired CO<sub>2</sub> has
+  nowhere to go &mdash; the same stable stratification that traps cold air near the surface traps the
+  CO<sub>2</sub> with it.</p>
+  <p class="q"><b>Question.</b> What would these four profiles look like in a deciduous forest in winter? Take
+  them one at a time &mdash; foliage density first, then ask what each of the others depends on.</p>
+</div>
+
+<p class="foot">Albedo and emissivity ranges after Oke, <i>Boundary Layer Climates</i> (2nd edn, 1987),
+Table 1.1. The albedo&ndash;solar-altitude curves are smooth fits of the form
+&alpha; = &alpha;<sub>&infin;</sub> + b·e<sup>&minus;h/h<sub>0</sub></sup> to the six measured curves reproduced
+in the lecture (Oke 1987, after Moene &amp; van Dam 2014); each is drawn only over the altitude range for which
+data exist. The canopy panel uses Beer&ndash;Lambert extinction with k = 0.65 for the direct beam and k = 0.33
+for diffuse, α = 0.15, and a net longwave loss of 0.10 F<sub>solar</sub> at the canopy top that fades out with cumulative leaf area, and a beta-shaped foliage-density profile &mdash; a teaching idealisation of a real canopy, not a
+radiative transfer model. The spruce profiles are drawn from the shape of the measured figure in the lecture and
+are qualitative. &nbsp;·&nbsp; Back to <a href="energy-balance.html">the surface energy balance &rarr;</a> &nbsp;·&nbsp; <a href="explorer/">the live explorer &rarr;</a></p>
+
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const put=(svg,tag,attrs,content)=>{const e=el(tag,attrs);
+    if(content!==undefined) e.textContent=content; svg.appendChild(e); return e;};
+
+  /* ── Table 1.1 ──────────────────────────────────────────────── */
+  const SURF=[
+    {n:'Water — Sun high',        a:[0.03,0.10], e:[0.92,0.97]},
+    {n:'Coniferous forest',       a:[0.05,0.15], e:[0.97,0.99]},
+    {n:'Asphalt',                 a:[0.05,0.20], e:[0.95,0.95]},
+    {n:'Soil — dark, wet → light, dry', a:[0.05,0.40], e:[0.90,0.98]},
+    {n:'Deciduous forest',        a:[0.15,0.20], e:[0.97,0.98]},
+    {n:'Orchards',                a:[0.15,0.20], e:[0.90,0.95]},
+    {n:'Grass — long, 1 m',       a:[0.16,0.16], e:[0.90,0.95]},
+    {n:'Crops and tundra',        a:[0.18,0.25], e:[0.90,0.99]},
+    {n:'Glacier ice',             a:[0.20,0.40], e:[0.92,0.97]},
+    {n:'Desert sand',             a:[0.20,0.45], e:[0.84,0.91]},
+    {n:'Urban area',              a:[0.10,0.27], e:[0.85,0.95]},
+    {n:'Concrete',                a:[0.10,0.35], e:[0.71,0.90]},
+    {n:'Grass — short, 0.02 m',   a:[0.26,0.26], e:[0.90,0.95]},
+    {n:'Sea ice',                 a:[0.30,0.45], e:[0.92,0.97]},
+    {n:'Snow — old',              a:[0.40,0.70], e:[0.82,0.89]},
+    {n:'Snow — fresh',            a:[0.75,0.95], e:[0.90,0.99]}
+  ];
+  let sortBy='alb';
+  const mid=r=>(r[0]+r[1])/2;
+
+  function drawTab(){
+    const g=$('tab11'); g.innerHTML='';
+    const rows=SURF.slice().sort((p,q)=> sortBy==='alb' ? mid(p.a)-mid(q.a) : mid(p.e)-mid(q.e));
+    const LN=232, T=58, RH=38;
+    const AL=LN+8, AR=548, EL=594, ER=788;
+    const xa=v=>AL+v*(AR-AL);
+    const xe=v=>EL+(v-0.70)/0.30*(ER-EL);
+    put(g,'text',{x:(AL+AR)/2,y:18,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)','letter-spacing':'.06em'},'ALBEDO  α');
+    put(g,'text',{x:(EL+ER)/2,y:18,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)','letter-spacing':'.06em'},'EMISSIVITY  ε');
+    [0,0.2,0.4,0.6,0.8,1.0].forEach(v=>{
+      put(g,'line',{x1:xa(v),x2:xa(v),y1:T-14,y2:T+rows.length*RH-14,stroke:'var(--grid)'});
+      put(g,'text',{x:xa(v),y:T-24,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'}, v.toFixed(1));
+    });
+    [0.70,0.80,0.90,1.0].forEach(v=>{
+      put(g,'line',{x1:xe(v),x2:xe(v),y1:T-14,y2:T+rows.length*RH-14,stroke:'var(--grid)'});
+      put(g,'text',{x:xe(v),y:T-24,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'}, v.toFixed(2));
+    });
+    rows.forEach((s,i)=>{
+      const y=T+i*RH;
+      put(g,'text',{x:LN,y:y+4,'text-anchor':'end','font-size':12.5,
+        fill:'var(--text-primary)'}, s.n);
+      const wA=Math.max(4,xa(s.a[1])-xa(s.a[0]));
+      put(g,'rect',{x:xa(s.a[0]),y:y-9,width:wA,height:17,rx:4,fill:'var(--alb)',opacity:.9});
+      put(g,'text',{x:xa(s.a[1])+8,y:y+4,'font-size':11,fill:'var(--text-muted)'},
+        s.a[0]===s.a[1] ? s.a[0].toFixed(2) : s.a[0].toFixed(2)+'–'+s.a[1].toFixed(2));
+      const wE=Math.max(4,xe(s.e[1])-xe(s.e[0]));
+      put(g,'rect',{x:xe(s.e[0]),y:y-9,width:wE,height:17,rx:4,fill:'var(--emi)',opacity:.85});
+      put(g,'text',{x:Math.min(ER,xe(s.e[1]))+6,y:y+4,'font-size':11,
+        fill:'var(--text-muted)'}, (s.e[0]===s.e[1] ? s.e[0].toFixed(2) : s.e[0].toFixed(2)+'–'+s.e[1].toFixed(2)));
+    });
+  }
+  $('sortSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    sortBy=b.dataset.s;
+    [...$('sortSeg').children].forEach(x=>x.setAttribute('aria-pressed', x.dataset.s===sortBy));
+    drawTab();
+  });
+
+  /* ── albedo vs solar altitude ───────────────────────────────── */
+  const CANOPIES=[
+    {n:'Short grass',   ai:0.235, b:0.250, h0:14.8, lo:20, hi:58, c:'#2a78d6'},
+    {n:'Kale',          ai:0.185, b:0.247, h0:14.1, lo:20, hi:55, c:'#eb6834'},
+    {n:'Oak — in leaf', ai:0.155, b:0.311, h0:13.1, lo:10, hi:48, c:'#1baf7a'},
+    {n:'Oak — bare',    ai:0.118, b:0.262, h0:13.8, lo:10, hi:50, c:'#8a6b45'},
+    {n:'Spruce',        ai:0.115, b:0.060, h0:10.1, lo: 2, hi:30, c:'#7d4fa8'},
+    {n:'Pine',          ai:0.070, b:0.130, h0:23.3, lo: 2, hi:68, c:'#c8443a'}
+  ];
+  const albOf=(cn,h)=>cn.ai+cn.b*Math.exp(-h/cn.h0);
+  let solAlt=45;
+
+  function drawZen(){
+    const g=$('zen'); g.innerHTML='';
+    const L=68,R=760,T=30,B=306;
+    const x=h=>L+h/72*(R-L), y=a=>B-(a-0.04)/(0.34-0.04)*(B-T);
+    for(let a=0.05;a<=0.34;a+=0.05){
+      put(g,'line',{x1:L,x2:R,y1:y(a),y2:y(a),stroke:'var(--grid)'});
+      put(g,'text',{x:L-9,y:y(a)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, a.toFixed(2));
+    }
+    for(let h=0;h<=70;h+=10){
+      put(g,'line',{x1:x(h),x2:x(h),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(h),y:B+19,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, h+'°');
+      put(g,'text',{x:x(h),y:T-12,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)',opacity:.8}, (90-h)+'°');
+    }
+    put(g,'text',{x:R+10,y:T-12,'text-anchor':'start','font-size':10.5,
+      fill:'var(--text-muted)',opacity:.8},'zenith θz');
+    put(g,'line',{x1:x(solAlt),x2:x(solAlt),y1:T,y2:B,
+      stroke:'var(--text-primary)','stroke-width':1.6,opacity:.5});
+    CANOPIES.forEach(cn=>{
+      let d='';
+      for(let s=0;s<=80;s++){ const h=cn.lo+(cn.hi-cn.lo)*s/80;
+        d+=(s?'L ':'M ')+x(h).toFixed(1)+' '+y(albOf(cn,h)).toFixed(1)+' '; }
+      put(g,'path',{d:d,fill:'none',stroke:cn.c,'stroke-width':2.4});
+      put(g,'text',{x:x(cn.hi)+8,y:y(albOf(cn,cn.hi))+4,'font-size':12,
+        fill:cn.c,'font-weight':600}, cn.n);
+      if(solAlt>=cn.lo&&solAlt<=cn.hi)
+        put(g,'circle',{cx:x(solAlt),cy:y(albOf(cn,solAlt)),r:4.5,fill:cn.c,
+          stroke:'var(--surface-1)','stroke-width':1.8});
+    });
+    put(g,'text',{x:(L+R)/2,y:B+44,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Solar altitude  (degrees above the horizon)');
+    put(g,'text',{x:20,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 20 '+((T+B)/2)+')'},'Albedo  α');
+    put(g,'text',{x:L+8,y:B-10,'font-size':11.5,fill:'var(--text-muted)'},
+      '← low Sun: more reflection      high Sun: more absorption →');
+    put(g,'text',{x:(L+R)/2,y:B+66,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'curves drawn only over the altitude range each was measured across');
+  }
+  function renderZen(){
+    solAlt=+$('alt').value;
+    $('altV').textContent = solAlt+'°  ·  θz '+(90-solAlt)+'°';
+    const inR=CANOPIES.filter(c=>solAlt>=c.lo&&solAlt<=c.hi);
+    const lo=inR.length?inR.reduce((p,c)=>albOf(c,solAlt)<albOf(p,solAlt)?c:p):null;
+    const hi=inR.length?inR.reduce((p,c)=>albOf(c,solAlt)>albOf(p,solAlt)?c:p):null;
+    const kpi=(k,v,s)=>'<div class="kpi"><div class="k">'+k+'</div><div class="v">'+v+
+      '</div><div class="s">'+s+'</div></div>';
+    $('zenKpis').innerHTML = !inR.length ? '' :
+      kpi('Brightest here', albOf(hi,solAlt).toFixed(3), hi.n) +
+      kpi('Darkest here', albOf(lo,solAlt).toFixed(3), lo.n) +
+      kpi('Ratio', (albOf(hi,solAlt)/albOf(lo,solAlt)).toFixed(2)+'×',
+          'reflected by the brightest vs the darkest') +
+      kpi('Pine, this Sun vs noon',
+          (albOf(CANOPIES[5],solAlt)/albOf(CANOPIES[5],65)).toFixed(2)+'×',
+          'same stand, different solar altitude');
+    drawZen();
+  }
+  $('alt').addEventListener('input',renderZen);
+
+  /* ── canopy penetration ─────────────────────────────────────── */
+  const KDIR=0.65, KDIF=0.33, DIF0=0.15;
+  let LAI=5, HC=12;
+  // cumulative LAI above height fraction f (f = z/H, 1 at the top)
+  // beta-shaped foliage density peaking at 0.62 of the canopy height
+  function cumLAI(f){
+    const n=40; let s=0;
+    for(let i=0;i<n;i++){
+      const u=f+(1-f)*(i+0.5)/n;
+      s+=dens(u)*(1-f)/n;
+    }
+    return s*LAI;
+  }
+  // beta(3.4, 2.2) foliage density, normalised numerically so ∫dens du = 1
+  const densRaw=u=>Math.pow(Math.max(0,u),2.4)*Math.pow(Math.max(0,1-u),1.2);
+  const DNORM=(()=>{ let s=0; const n=2000;
+    for(let i=0;i<n;i++) s+=densRaw((i+0.5)/n)/n; return s; })();
+  function dens(u){ return densRaw(u)/DNORM; }
+  function drawCanopy(){
+    const g=$('canopy'); g.innerHTML='';
+    const L=54,R=396,T=24,B=254;
+    const x=v=>L+v*(R-L), y=f=>B-f*(B-T);
+    // foliage silhouette
+    let d='M '+L+' '+B+' ';
+    for(let i=0;i<=60;i++){ const f=i/60; d+='L '+(L+Math.min(1,dens(Math.max(1e-4,f))/2.4)*(R-L)*0.5)+' '+y(f)+' '; }
+    d+='L '+L+' '+T+' Z';
+    put(g,'path',{d:d,fill:'var(--leaf)',opacity:.13});
+    put(g,'text',{x:L+8,y:T+16,'font-size':11,fill:'var(--leaf)'},'foliage density');
+    for(let v=0;v<=1.001;v+=0.25){
+      put(g,'line',{x1:x(v),x2:x(v),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(v),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, (v*100).toFixed(0)+'%');
+    }
+    [0,0.25,0.5,0.75,1].forEach(f=>
+      put(g,'text',{x:L-8,y:y(f)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, (f*HC).toFixed(HC<2?2:0)+' m'));
+    put(g,'line',{x1:L,x2:R,y1:B,y2:B,stroke:'var(--text-primary)','stroke-width':2,opacity:.6});
+    const curve=(fn,col,w,dash)=>{
+      let p='';
+      for(let i=0;i<=60;i++){ const f=i/60, cl=cumLAI(f);
+        p+=(i?'L ':'M ')+x(fn(cl)).toFixed(1)+' '+y(f).toFixed(1)+' '; }
+      put(g,'path',{d:p,fill:'none',stroke:col,'stroke-width':w,'stroke-dasharray':dash||''});
+    };
+    curve(cl=>(1-DIF0)*Math.exp(-KDIR*cl)+DIF0*Math.exp(-KDIF*cl),'var(--dir)',2.8);
+    curve(cl=>DIF0*Math.exp(-KDIF*cl),'var(--dif)',2.2,'5 4');
+    // F_NR = (1−α)·F_solar − net longwave loss, and the longwave loss is only felt
+    // where a leaf can still see the sky, so it fades out with cumulative leaf area
+    curve(cl=>Math.max(0, 0.85*((1-DIF0)*Math.exp(-KDIR*cl)+DIF0*Math.exp(-KDIF*cl))
+                          - 0.10*Math.exp(-0.5*cl)),'var(--nr)',2,'2 4');
+    put(g,'text',{x:R-6,y:B-52,'text-anchor':'end','font-size':11.5,
+      fill:'var(--dir)','font-weight':600},'F solar (total)');
+    put(g,'text',{x:R-6,y:B-34,'text-anchor':'end','font-size':11.5,
+      fill:'var(--nr)','font-weight':600},'F NR');
+    put(g,'text',{x:R-6,y:B-16,'text-anchor':'end','font-size':11.5,
+      fill:'var(--dif)','font-weight':600},'diffuse only');
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Fraction of the flux above the canopy');
+    put(g,'text',{x:16,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'Height in the canopy');
+  }
+  function drawDiffuse(){
+    const g=$('diffuse'); g.innerHTML='';
+    const L=54,R=396,T=24,B=254;
+    const x=v=>L+v/0.75*(R-L), y=f=>B-f*(B-T);
+    for(let v=0;v<=0.75001;v+=0.15){
+      put(g,'line',{x1:x(v),x2:x(v),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(v),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, (v*100).toFixed(0)+'%');
+    }
+    [0,0.25,0.5,0.75,1].forEach(f=>
+      put(g,'text',{x:L-8,y:y(f)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, (f*HC).toFixed(HC<2?2:0)+' m'));
+    put(g,'line',{x1:L,x2:R,y1:B,y2:B,stroke:'var(--text-primary)','stroke-width':2,opacity:.6});
+    let p='';
+    for(let i=0;i<=60;i++){ const f=i/60, cl=cumLAI(f);
+      const dr=(1-DIF0)*Math.exp(-KDIR*cl), df=DIF0*Math.exp(-KDIF*cl);
+      p+=(i?'L ':'M ')+x(df/(dr+df)).toFixed(1)+' '+y(f).toFixed(1)+' '; }
+    put(g,'path',{d:p,fill:'none',stroke:'var(--dif)','stroke-width':2.8});
+    const clB=cumLAI(0);
+    const drB=(1-DIF0)*Math.exp(-KDIR*clB), dfB=DIF0*Math.exp(-KDIF*clB);
+    const fB=dfB/(drB+dfB);
+    put(g,'circle',{cx:x(DIF0),cy:y(1),r:5,fill:'var(--dif)'});
+    put(g,'text',{x:x(DIF0)+10,y:y(1)+4,'font-size':11.5,
+      fill:'var(--text-secondary)'}, 'above canopy  '+(DIF0*100).toFixed(0)+'%');
+    put(g,'circle',{cx:x(fB),cy:y(0),r:5,fill:'var(--dif)'});
+    put(g,'text',{x:Math.min(R-4,x(fB)+10),y:y(0)-9,'font-size':11.5,
+      fill:'var(--text-primary)','font-weight':600,
+      'text-anchor': x(fB)>R-110?'end':'start'}, 'floor  '+(fB*100).toFixed(0)+'%');
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Diffuse share of the shortwave flux');
+    put(g,'text',{x:16,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'Height in the canopy');
+    return fB;
+  }
+  function renderCanopy(){
+    LAI=+$('lai').value; HC=+$('hcan').value;
+    $('laiV').textContent = LAI.toFixed(1);
+    $('hcanV').textContent = HC<2 ? HC.toFixed(2)+' m' : HC.toFixed(1)+' m';
+    drawCanopy();
+    const fB=drawDiffuse();
+    const clB=cumLAI(0);
+    const tot=(1-DIF0)*Math.exp(-KDIR*clB)+DIF0*Math.exp(-KDIF*clB);
+    // height holding the upper half of the total leaf area
+    let fHalf=1; for(let i=60;i>=0;i--){ if(cumLAI(i/60)>=LAI/2){ fHalf=i/60; break; } }
+    const kpi=(k,v,s)=>'<div class="kpi"><div class="k">'+k+'</div><div class="v">'+v+
+      '</div><div class="s">'+s+'</div></div>';
+    $('canKpis').innerHTML =
+      kpi('Reaches the floor', (tot*100).toFixed(1)+' %', 'of the shortwave above the canopy') +
+      kpi('Diffuse at the floor', (fB*100).toFixed(0)+' %', 'was 15 % above the canopy') +
+      kpi('Half the leaf area', 'above '+(fHalf*HC).toFixed(HC<2?2:1)+' m',
+          'of a '+(HC<2?HC.toFixed(2):HC.toFixed(1))+' m canopy') +
+      kpi('Absorbed in the top half', ((1-Math.exp(-KDIR*LAI/2))*100).toFixed(0)+' %',
+          'of the direct beam, in half the LAI');
+  }
+  ['lai','hcan'].forEach(id=>$(id).addEventListener('input',renderCanopy));
+
+  /* ── multiple-reflection diagram ────────────────────────────── */
+  function drawTrap(){
+    const g=$('trap'); g.innerHTML='';
+    const GY=234;
+    put(g,'line',{x1:0,x2:880,y1:GY,y2:GY,stroke:'var(--text-primary)','stroke-width':2,opacity:.6});
+    // left: single leaf
+    put(g,'text',{x:200,y:30,'text-anchor':'middle','font-size':13.5,
+      fill:'var(--text-primary)','font-weight':600},'A single leaf');
+    put(g,'text',{x:200,y:50,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'reflects ~10–15 % straight back');
+    put(g,'ellipse',{cx:200,cy:GY-24,rx:78,ry:13,fill:'var(--leaf)',opacity:.6});
+    put(g,'path',{d:'M 120 76 L 190 '+(GY-32),stroke:'var(--dir)','stroke-width':3});
+    put(g,'path',{d:'M 210 '+(GY-32)+' L 280 76',stroke:'var(--dir)','stroke-width':3});
+    put(g,'path',{d:'M 272 88 L 282 70 L 262 74 Z',fill:'var(--dir)'});
+    put(g,'text',{x:296,y:80,'font-size':12,fill:'var(--dir)','font-weight':600},'escapes');
+
+    put(g,'line',{x1:440,x2:440,y1:20,y2:GY,stroke:'var(--line)','stroke-dasharray':'3 5'});
+
+    // right: canopy
+    put(g,'text',{x:660,y:30,'text-anchor':'middle','font-size':13.5,
+      fill:'var(--text-primary)','font-weight':600},'A canopy of the same leaves');
+    put(g,'text',{x:660,y:50,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'reflects less — most bounces hit another leaf');
+    const leaves=[[560,96],[640,120],[720,100],[590,150],[680,166],[760,142],
+                  [610,196],[700,206],[770,186],[545,132]];
+    leaves.forEach(([cx,cy])=>put(g,'ellipse',{cx:cx,cy:cy,rx:34,ry:8,
+      fill:'var(--leaf)',opacity:.55,transform:'rotate('+((cx*cy)%40-20)+' '+cx+' '+cy+')'}));
+    put(g,'path',{d:'M 500 62 L 556 92',stroke:'var(--dir)','stroke-width':3});
+    put(g,'path',{d:'M 562 100 L 634 116',stroke:'var(--dir)','stroke-width':2.6,opacity:.85});
+    put(g,'path',{d:'M 640 128 L 596 146',stroke:'var(--dir)','stroke-width':2.2,opacity:.7});
+    put(g,'path',{d:'M 594 158 L 674 164',stroke:'var(--dir)','stroke-width':1.8,opacity:.55});
+    put(g,'path',{d:'M 680 174 L 706 200',stroke:'var(--dir)','stroke-width':1.4,opacity:.4});
+    put(g,'path',{d:'M 706 214 L 730 '+(GY-4),stroke:'var(--dir)','stroke-width':1,opacity:.28});
+    put(g,'text',{x:806,y:120,'font-size':12,fill:'var(--text-muted)'},'each bounce');
+    put(g,'text',{x:806,y:138,'font-size':12,fill:'var(--text-muted)'},'takes another');
+    put(g,'text',{x:806,y:156,'font-size':12,fill:'var(--text-muted)'},'bite out of it');
+    put(g,'text',{x:20,y:GY+30,'font-size':12.5,fill:'var(--text-secondary)'},
+      'Taller, deeper, more open canopies trap more — which is why conifer forest (α 0.05–0.15) is darker than grass (α 0.16–0.26).');
+  }
+
+  /* ── spruce profiles ────────────────────────────────────────── */
+  function drawProfiles(){
+    const g=$('prof'); g.innerHTML='';
+    const T=54,B=326, H=14, hTree=11.4;
+    const y=z=>B-z/H*(B-T);
+    const panels=[
+      {t:'T', s:'temperature', u:'1 °C', c:'#c8443a',
+       f:z=>0.5+0.42*Math.exp(-Math.pow((z-7.2)/3.0,2))-0.30*Math.exp(-Math.pow((z-0.4)/1.4,2))},
+      {t:'e', s:'vapour pressure', u:'10² Pa', c:'#2a78d6',
+       f:z=>0.46+0.16*Math.exp(-Math.pow((z-6.6)/2.6,2))+0.18*Math.exp(-Math.pow((z-0.5)/1.2,2))},
+      {t:'u', s:'wind speed', u:'1 m s⁻¹', c:'#1baf7a',
+       f:z=>0.10+0.80/(1+Math.exp(-(z-10.4)/1.25))},
+      {t:'ρc', s:'CO₂ concentration', u:'1 ppm', c:'#7d4fa8',
+       f:z=>0.16+0.74*Math.exp(-z/4.2)}
+    ];
+    // foliage silhouette on the left
+    const FL=64, FR=176;
+    let d='M '+FL+' '+y(0)+' ';
+    for(let i=0;i<=60;i++){ const z=H*i/60;
+      const v=Math.exp(-Math.pow((z-7.1)/2.6,2))*(z<hTree?1:0.05);
+      d+='L '+(FL+v*(FR-FL))+' '+y(z)+' '; }
+    d+='L '+FL+' '+y(H)+' Z';
+    put(g,'path',{d:d,fill:'var(--leaf)',opacity:.22});
+    put(g,'text',{x:FL+6,y:y(3.4),'font-size':11.5,fill:'var(--leaf)','font-weight':600},'foliage');
+    put(g,'text',{x:FL+6,y:y(2.6),'font-size':11.5,fill:'var(--leaf)','font-weight':600},'density');
+    // height axis
+    for(let z=0;z<=14;z+=2){
+      put(g,'line',{x1:FL-6,x2:FL,y1:y(z),y2:y(z),stroke:'var(--line)'});
+      put(g,'text',{x:FL-10,y:y(z)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, z);
+    }
+    put(g,'text',{x:22,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 22 '+((T+B)/2)+')'},'Height (m)');
+    put(g,'line',{x1:FL,x2:856,y1:y(0),y2:y(0),stroke:'var(--text-primary)','stroke-width':2,opacity:.6});
+    put(g,'line',{x1:FL,x2:856,y1:y(hTree),y2:y(hTree),stroke:'var(--text-muted)','stroke-dasharray':'6 5'});
+    put(g,'text',{x:856,y:y(hTree)-8,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'average tree height, 11.4 m');
+    // four profile panels
+    const P0=208, PW=162;
+    panels.forEach((p,i)=>{
+      const L=P0+i*PW, R=L+PW-36;
+      put(g,'line',{x1:L,x2:L,y1:T,y2:B,stroke:'var(--grid)'});
+      let q='';
+      for(let s=0;s<=70;s++){ const z=H*s/70;
+        q+=(s?'L ':'M ')+(L+p.f(z)*(R-L)).toFixed(1)+' '+y(z).toFixed(1)+' '; }
+      put(g,'path',{d:q,fill:'none',stroke:p.c,'stroke-width':2.6});
+      put(g,'text',{x:(L+R)/2,y:26,'text-anchor':'middle','font-size':14,
+        fill:p.c,'font-weight':600}, p.t);
+      put(g,'text',{x:(L+R)/2,y:42,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, p.s);
+      // scale bar
+      put(g,'line',{x1:L+(R-L)*0.30,x2:L+(R-L)*0.62,y1:B+22,y2:B+22,
+        stroke:'var(--text-muted)','stroke-width':1.4});
+      put(g,'line',{x1:L+(R-L)*0.30,x2:L+(R-L)*0.30,y1:B+18,y2:B+26,stroke:'var(--text-muted)'});
+      put(g,'line',{x1:L+(R-L)*0.62,x2:L+(R-L)*0.62,y1:B+18,y2:B+26,stroke:'var(--text-muted)'});
+      put(g,'text',{x:L+(R-L)*0.46,y:B+40,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, p.u);
+    });
+    put(g,'text',{x:P0,y:B+64,'font-size':11.5,fill:'var(--text-muted)'},
+      'Profile shapes after the measured figure in the lecture (Oke 1987); the horizontal scale bar gives the interval, not an absolute value.');
+  }
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+
+  drawTab(); renderZen(); renderCanopy(); drawTrap(); drawProfiles();
+})();
+</script>
+</body>
+</html>

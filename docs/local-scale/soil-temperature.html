@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heat in the ground — temperature waves below the surface</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --hot:#c8443a; --cold:#2a78d6; --gd:#8a6b45; --nr:#1baf7a; --air:#78776f;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --hot:#d9564c; --cold:#3987e5; --gd:#a08258; --nr:#199e70; --air:#94938a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:800px){.two{grid-template-columns:1fr}}
+  .eq{background:var(--surface-2);border-radius:10px;padding:15px 16px;margin:10px 0;
+    font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .syms{font-size:13.5px;color:var(--text-secondary);margin:10px 0 0;line-height:1.85}
+  .syms b{color:var(--text-primary);font-weight:600}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:7px 16px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  select{font-family:inherit;font-size:13.5px;padding:7px 10px;border-radius:8px;
+    border:1px solid var(--line);background:var(--surface-1);color:var(--text-primary)}
+  .ctrl{display:grid;grid-template-columns:180px 1fr 108px;gap:12px;align-items:center;
+    margin:0 0 11px;font-size:13.5px;color:var(--text-secondary)}
+  @media(max-width:600px){.ctrl{grid-template-columns:1fr;gap:4px}}
+  .ctrl .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);font-size:14px}
+  input[type=range]{width:100%;accent-color:var(--nr);height:22px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 0}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:21px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  th.raw{text-transform:none;letter-spacing:.02em;font-size:12.5px}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--nr);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">← EE501 course</a> &nbsp;·&nbsp;
+<a href="turbulent-fluxes.html">← the bulk formulas</a> &nbsp;·&nbsp; 3 of 4 &nbsp;·&nbsp; <a href="explorer/">explorer</a></p>
+
+<header>
+  <div>
+    <h1>Heat in the ground</h1>
+    <p class="sub">The surface heats and cools every day, and that signal travels downward into the soil as a
+    wave &mdash; getting weaker and arriving later the deeper it goes. How fast it fades is a property of the
+    material, and it explains everything from why the Sahara cools 35 K overnight to why the ground under snow
+    never freezes.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>One equation, two consequences</h3>
+  <p class="cap">Drive a semi-infinite solid with a sinusoidal surface temperature and the solution is a
+  travelling, decaying wave.</p>
+  <div class="eq">T(z, t) &nbsp;=&nbsp; T&#772; &nbsp;+&nbsp; A<sub>0</sub> &middot; e<sup>&minus;z/D</sup>
+    &middot; sin(&omega;t &minus; z/D)</div>
+  <div class="eq" style="font-size:16px">D &nbsp;=&nbsp; &radic;(2&kappa; / &omega;)
+    &nbsp;&nbsp;&nbsp;&nbsp; &kappa; &nbsp;=&nbsp; k / C
+    <span class="u">&nbsp;&nbsp;the damping depth, and the thermal diffusivity behind it</span></div>
+  <div class="syms">
+    <b>A<sub>0</sub></b> amplitude of the surface temperature wave [K] &nbsp;·&nbsp;
+    <b>&omega;</b> angular frequency, 2&pi;/24 h for the daily cycle and 2&pi;/365 d for the annual one<br>
+    <b>&kappa;</b> thermal diffusivity [m<sup>2</sup> s<sup>&minus;1</sup>] &nbsp;·&nbsp;
+    <b>k</b> thermal conductivity [W m<sup>&minus;1</sup> K<sup>&minus;1</sup>] &nbsp;·&nbsp;
+    <b>C</b> volumetric heat capacity [J m<sup>&minus;3</sup> K<sup>&minus;1</sup>]
+  </div>
+  <p class="note">The same D appears twice, and that is the whole story. <b>e<sup>&minus;z/D</sup></b> says the
+  wave loses 63 % of its amplitude in every damping depth. <b>&minus;z/D</b> inside the sine says it also falls
+  one radian further behind in that same distance &mdash; about 3.8 hours for a daily wave. Weaker
+  <em>and</em> later, locked together.</p>
+</div>
+
+<h2 class="sec">Explore</h2>
+
+<div class="card">
+  <div class="row">
+    <div class="seg" id="cycSeg">
+      <button data-c="day" aria-pressed="true">Daily cycle</button>
+      <button data-c="year" aria-pressed="false">Annual cycle</button>
+    </div>
+    <select id="mat"></select>
+  </div>
+  <div class="ctrl">
+    <label for="amp">Surface amplitude A<sub>0</sub></label>
+    <input type="range" id="amp" min="1" max="25" step="0.5" value="18">
+    <span class="v" id="ampV"></span></div>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Damping depth D</div>
+      <div class="v" id="kD"></div><div class="s" id="kDs"></div></div>
+    <div class="kpi"><div class="k">Diffusivity &kappa;</div>
+      <div class="v" id="kK"></div><div class="s">× 10⁻⁶ m² s⁻¹</div></div>
+    <div class="kpi"><div class="k">Active layer</div>
+      <div class="v" id="kA"></div><div class="s" id="kAs"></div></div>
+    <div class="kpi"><div class="k">Phase lag</div>
+      <div class="v" id="kL"></div><div class="s" id="kLs"></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The wave, all depths at once</h3>
+  <p class="cap">Colour is temperature. Read horizontally to follow one depth through time; read vertically to
+  see the profile at one moment. The white line traces the warmest moment at each depth &mdash; it tilts because
+  the wave arrives later further down.</p>
+  <svg id="heat" viewBox="0 0 880 360" role="img" aria-label="Depth-time heatmap of soil temperature, with a tilted line marking the time of maximum temperature at each depth"></svg>
+</div>
+
+<div class="two">
+  <div class="card">
+    <h3>Four depths through the cycle</h3>
+    <p class="cap">The same curve, damped and delayed.</p>
+    <svg id="curves" viewBox="0 0 430 320" role="img" aria-label="Temperature against time at four depths, showing progressive damping and phase lag"></svg>
+  </div>
+  <div class="card">
+    <h3>The profile at one moment</h3>
+    <p class="cap">Air above, soil below. Drag the time slider.</p>
+    <svg id="profile" viewBox="0 0 430 320" role="img" aria-label="Vertical temperature profile through the air and soil at the selected time"></svg>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctrl">
+    <label for="hr" id="hrLab">Time of day</label>
+    <input type="range" id="hr" min="0" max="24" step="0.25" value="14">
+    <span class="v" id="hrV"></span></div>
+  <p class="note" id="condNote"></p>
+  <p class="q"><b>Question.</b> Run the time slider all the way round and watch the sign of the temperature
+  gradient at z = 0 flip twice. At roughly what times does F<sub>cond</sub> change direction &mdash; and why is
+  that <em>not</em> the same as sunrise and sunset?</p>
+</div>
+
+<h2 class="sec">Three things this explains</h2>
+
+<div class="card">
+  <h3>1 · Why the Sahara surface reaches 64 °C and 27 °C on the same day</h3>
+  <p class="cap">Central Sahara, summer. Surface, air at 2 m, and dry sand at 0.3 m and 0.75 m.</p>
+  <svg id="sahara" viewBox="0 0 880 330" role="img" aria-label="Diurnal temperature cycle in the central Sahara showing the surface swinging 37 kelvin while sand at 0.3 metres stays constant"></svg>
+  <p class="note"><b>Dry sand has a damping depth of about 8 cm.</b> At 0.3 m that is nearly four damping
+  depths, so the daily wave arrives with 2 % of its amplitude &mdash; the 0.3 m line is flat, exactly as
+  measured. All of the day&rsquo;s energy is therefore crammed into a layer a few centimetres thick, and a thin
+  layer with a low heat capacity has no choice but to get extremely hot. At night the same thinness works in
+  reverse: there is almost no stored heat to draw on, so radiative cooling drops the surface 35 K before dawn.</p>
+  <p class="note"><b>Now notice which line is on top, and when.</b> By day the surface is far hotter than the
+  air &mdash; strongly unstable, deep convection, the boundary layer grows to kilometres. Between about 19:00
+  and 07:00 the surface is <em>colder</em> than the air at 2 m: a temperature inversion, convectively stable,
+  turbulence suppressed. F<sub>SH</sub> reverses and points downward through those hours.</p>
+</div>
+
+<div class="card">
+  <h3>2 · Why the soil is warmer than the surface in winter</h3>
+  <p class="cap">The annual wave, same physics, 365 times slower &mdash; so the damping depth is about 19 times
+  larger.</p>
+  <p class="note">Switch the control above to <b>Annual cycle</b>. The damping depth jumps from centimetres to
+  metres, and the phase lag from hours to <em>months</em>. At 5 m in a moist soil the annual maximum arrives in
+  autumn and the minimum in spring &mdash; a full season out of step with the surface. So in midwinter, when
+  the surface is at its coldest, the soil a metre or two down is still carrying last summer&rsquo;s heat. The
+  conduction flux runs upward all winter, and downward all summer, on exactly the same logic as the day/night
+  reversal but a hundred times slower.</p>
+  <p class="q"><b>Question.</b> Set the annual cycle to saturated clay and read the phase lag per metre. How
+  deep do you have to go before the ground is warmest in <em>January</em>?</p>
+</div>
+
+<div class="card">
+  <h3>3 · Why snow keeps the ground from freezing</h3>
+  <p class="note">Fresh snow has one of the lowest thermal conductivities in the table below &mdash;
+  0.08 W m<sup>&minus;1</sup> K<sup>&minus;1</sup>, beaten only by dry peat, and some thirty-five times lower
+  than rock or twenty times lower than saturated sand. It is mostly still air held in place. That means a
+  snowpack transmits almost no heat: the snow surface can sit at &minus;30 °C while the soil underneath stays
+  within a degree of 0 °C, insulated from the atmosphere entirely. Plants, soil microbes and small mammals all
+  depend on it, and it is why a winter with little snow can be far harder on an ecosystem than a cold one with
+  deep snow.</p>
+  <p class="note">Note the trap in the numbers: fresh snow has a fairly <em>high</em> diffusivity
+  (&kappa; = 0.38 × 10<sup>&minus;6</sup> m<sup>2</sup> s<sup>&minus;1</sup>, higher than any of the <em>dry</em>
+  soils here) because its heat capacity is so tiny. Diffusivity tells you how fast a temperature <em>signal</em>
+  propagates; conductivity tells you how much <em>energy</em> travels with it. Snow passes the signal on
+  readily and the energy hardly at all &mdash; so its damping depth is respectable while its insulating power
+  is extreme. Read both columns, never just one.</p>
+</div>
+
+<h2 class="sec">Reference</h2>
+
+<div class="card">
+  <h3>Thermal properties of natural materials</h3>
+  <p class="cap">Damping depths computed from &kappa; = k / C. Click a row to load that material above.</p>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Material</th>
+      <th class="num raw">C</th><th class="num raw">k</th><th class="num raw">&kappa;</th>
+      <th class="num raw">D daily</th><th class="num raw">D annual</th>
+      <th class="num raw">Lag at 0.1 m</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  </div>
+  <p class="note" style="color:var(--text-muted)">C in MJ m⁻³ K⁻¹ · k in W m⁻¹ K⁻¹ ·
+    &kappa; in 10⁻⁶ m² s⁻¹ · D in m · lag in hours.</p>
+  <p class="note"><b>Wet soil conducts heat far better than dry soil.</b> Water fills the pores that were
+  holding still air, and both k and C go up &mdash; but k rises faster, so &kappa; rises too. Saturating a
+  sandy soil roughly triples its diffusivity and doubles its damping depth. The daily wave then reaches twice as
+  deep, the heat is spread through twice as much material, and the surface temperature swing is correspondingly
+  smaller. That is a large part of why a moist soil has a gentle diurnal range and a dry one is extreme.</p>
+</div>
+
+<p class="foot">Thermal properties after Oke, <i>Boundary Layer Climates</i> (2nd edn, 1987), Table 2.1;
+&kappa; is computed here as k / C so the table is internally consistent, and may differ in the last digit from
+the printed &kappa; column. The analytic solution assumes a uniform, semi-infinite, dry solid with a purely
+sinusoidal surface forcing &mdash; real soils have layers, moisture that moves, and freeze&ndash;thaw. Applied
+to still water and to snow it describes conduction only, and both in reality also transport heat by convection
+and by vapour movement. The Sahara panel reproduces the measured record shown in the lecture (Oke 1987,
+after Peel); the modelled sand curves use the dry-sand damping depth. &nbsp;·&nbsp; Next:
+<a href="surface-properties.html">what the surface does to the radiation &rarr;</a> &nbsp;·&nbsp; <a href="explorer/">the live explorer &rarr;</a></p>
+
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const put=(svg,tag,attrs,content)=>{const e=el(tag,attrs);
+    if(content!==undefined) e.textContent=content; svg.appendChild(e); return e;};
+
+  const OM_DAY  = 2*Math.PI/86400;
+  const OM_YEAR = 2*Math.PI/(365.25*86400);
+
+  /* Oke Table 2.1 — C [MJ m-3 K-1], k [W m-1 K-1]; kappa derived */
+  const MATS=[
+    {n:'Sandy soil — dry',       C:1.28, k:0.30},
+    {n:'Sandy soil — saturated', C:2.96, k:2.20},
+    {n:'Clay soil — dry',        C:1.42, k:0.25},
+    {n:'Clay soil — saturated',  C:3.10, k:1.58},
+    {n:'Peat soil — dry',        C:0.58, k:0.06},
+    {n:'Peat soil — saturated',  C:3.06, k:0.50},
+    {n:'Snow — fresh',           C:0.21, k:0.08},
+    {n:'Snow — old',             C:0.84, k:0.42},
+    {n:'Ice (0 °C)',             C:1.93, k:2.24},
+    {n:'Water (still, 4 °C)',    C:4.18, k:0.57},
+    {n:'Rock (light)',           C:2.25, k:2.90}
+  ];
+  MATS.forEach(m=>{
+    m.kap = m.k/(m.C*1e6);                       // m2 s-1
+    m.Dday  = Math.sqrt(2*m.kap/OM_DAY);
+    m.Dyear = Math.sqrt(2*m.kap/OM_YEAR);
+  });
+  $('mat').innerHTML = MATS.map((m,i)=>'<option value="'+i+'">'+m.n+'</option>').join('');
+  $('mat').value = 0;
+
+  let cyc='day', mi=0, A0=18, hr=14;
+  const M = ()=>MATS[mi];
+  const D = ()=>cyc==='day' ? M().Dday : M().Dyear;
+  const OM= ()=>cyc==='day' ? OM_DAY : OM_YEAR;
+  const ZMAX = ()=>Math.max(0.4, Math.min(cyc==='day'?1.6:16, D()*5.2));
+  const TMAX = ()=>cyc==='day' ? 24 : 12;        // hours or months
+  const PERIOD_S = ()=>cyc==='day' ? 86400 : 365.25*86400;
+
+  /* surface wave peaks at 14:00 (day) or mid-July (year) */
+  const PEAK = ()=>cyc==='day' ? 14 : 6.5;
+  // temperature anomaly at depth z (m) and cycle position t (h or months)
+  const anom=(z,t)=>{
+    const phase = 2*Math.PI*(t-PEAK())/TMAX();               // cos: maximum exactly at PEAK
+    return A0*Math.exp(-z/D())*Math.cos(phase - z/D());
+  };
+  const MEAN = ()=>cyc==='day' ? 20 : 8;
+
+  const num=(v,d)=>(v<0?'−':'')+Math.abs(v).toFixed(d===undefined?1:d);
+
+  /* diverging colour ramp, theme-independent hues */
+  function heatCol(a){                       // a in -1..1
+    const t=Math.max(-1,Math.min(1,a));
+    const c1=[42,120,214], c0=[236,232,222], c2=[200,68,58];
+    const m = t<0 ? c1 : c2, f=Math.abs(t);
+    return 'rgb('+c0.map((v,i)=>Math.round(v+(m[i]-v)*f)).join(',')+')';
+  }
+
+  /* ── heatmap ────────────────────────────────────────────────── */
+  function drawHeat(){
+    const g=$('heat'); g.innerHTML='';
+    const L=68,R=778,T=28,B=286;
+    const zmax=ZMAX(), tmax=TMAX();
+    const NX=88, NY=52, dw=(R-L)/NX, dh=(B-T)/NY;
+    for(let i=0;i<NX;i++) for(let j=0;j<NY;j++){
+      const t=(i+0.5)/NX*tmax, z=(j+0.5)/NY*zmax;
+      put(g,'rect',{x:L+i*dw,y:T+j*dh,width:dw+0.6,height:dh+0.6,
+        fill:heatCol(anom(z,t)/A0)});
+    }
+    // time of maximum at each depth: t = PEAK + (z/D)/(2pi) * tmax.
+    // It wraps past midnight, so start a new subpath each time it does.
+    let d='', prev=-1;
+    for(let j=0;j<=NY;j++){
+      const z=j/NY*zmax;
+      let tp=PEAK()+(z/D())/(2*Math.PI)*tmax;
+      while(tp>tmax) tp-=tmax;
+      const x=L+tp/tmax*(R-L), y=T+z/zmax*(B-T);
+      d+=(tp<prev||prev<0?'M ':'L ')+x.toFixed(1)+' '+y.toFixed(1)+' ';
+      prev=tp;
+    }
+    put(g,'path',{d:d,fill:'none',stroke:'#fff',opacity:.9,'stroke-width':2.2,
+      'stroke-dasharray':'5 4'});
+    put(g,'text',{x:L+8,y:T+18,'font-size':11.5,fill:'#fff',opacity:.95},'warmest moment');
+
+    // depth ticks
+    const zs = cyc==='day' ? [0,0.1,0.2,0.4,0.8,1.2,1.6] : [0,1,2,4,6,10,16];
+    zs.filter(z=>z<=zmax+1e-9).forEach(z=>{
+      const y=T+z/zmax*(B-T);
+      put(g,'line',{x1:L-5,x2:L,y1:y,y2:y,stroke:'var(--line)'});
+      put(g,'text',{x:L-10,y:y+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, z+' m');
+    });
+    // time ticks
+    const ts = cyc==='day' ? [0,6,12,18,24] : [0,3,6,9,12];
+    const tl = cyc==='day' ? ['00','06','12','18','24'] : ['Jan','Apr','Jul','Oct','Dec'];
+    ts.forEach((t,i)=>{
+      const x=L+t/tmax*(R-L);
+      put(g,'line',{x1:x,x2:x,y1:B,y2:B+5,stroke:'var(--line)'});
+      put(g,'text',{x:x,y:B+21,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},tl[i]);
+    });
+    put(g,'rect',{x:L,y:T,width:R-L,height:B-T,fill:'none',stroke:'var(--line)'});
+    put(g,'text',{x:(L+R)/2,y:B+44,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'}, cyc==='day'?'Time of day':'Month');
+    put(g,'text',{x:20,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 20 '+((T+B)/2)+')'},'Depth below the surface');
+    // marker for the selected time
+    if(cyc==='day'){
+      const x=L+hr/tmax*(R-L);
+      put(g,'line',{x1:x,x2:x,y1:T,y2:B,stroke:'var(--text-primary)','stroke-width':1.6,opacity:.55});
+    }
+    // colour bar
+    const CX=806, CT=T, CB=B;
+    for(let j=0;j<60;j++){
+      const a=1-2*j/59;
+      put(g,'rect',{x:CX,y:CT+j*(CB-CT)/60,width:20,height:(CB-CT)/60+0.6,fill:heatCol(a)});
+    }
+    put(g,'rect',{x:CX,y:CT,width:20,height:CB-CT,fill:'none',stroke:'var(--line)'});
+    [[CT,'+'+A0.toFixed(0)],[(CT+CB)/2,'mean'],[CB,'−'+A0.toFixed(0)]].forEach(([y,t])=>
+      put(g,'text',{x:CX+25,y:y+4,'font-size':11,fill:'var(--text-muted)'},t));
+    put(g,'text',{x:CX+10,y:CT-10,'text-anchor':'middle','font-size':11,
+      fill:'var(--text-muted)'},'K');
+  }
+
+  /* ── curves at four depths ──────────────────────────────────── */
+  function drawCurves(){
+    const g=$('curves'); g.innerHTML='';
+    const L=52,R=414,T=26,B=248, tmax=TMAX();
+    const depths = cyc==='day'
+      ? [0, D()*0.6, D()*1.8, D()*3.6]
+      : [0, D()*0.6, D()*1.8, D()*3.6];
+    const cols=['var(--hot)','var(--gd)','var(--nr)','var(--cold)'];
+    const x=t=>L+t/tmax*(R-L), y=a=>(T+B)/2-a/(A0*1.12)*((B-T)/2);
+    for(let a=-A0;a<=A0+0.01;a+=A0/2){
+      put(g,'line',{x1:L,x2:R,y1:y(a),y2:y(a),stroke:'var(--grid)'});
+      put(g,'text',{x:L-8,y:y(a)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, num(a,0));
+    }
+    const ts = cyc==='day' ? [0,6,12,18,24] : [0,3,6,9,12];
+    const tl = cyc==='day' ? ['00','06','12','18','24'] : ['J','A','J','O','D'];
+    ts.forEach((t,i)=>{
+      put(g,'line',{x1:x(t),x2:x(t),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(t),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},tl[i]);
+    });
+    put(g,'line',{x1:L,x2:R,y1:y(0),y2:y(0),stroke:'var(--text-muted)','stroke-width':1.2});
+    depths.forEach((z,i)=>{
+      let d='';
+      for(let s=0;s<=120;s++){ const t=s/120*tmax;
+        d+=(s?'L ':'M ')+x(t).toFixed(1)+' '+y(anom(z,t)).toFixed(1)+' '; }
+      put(g,'path',{d:d,fill:'none',stroke:cols[i],'stroke-width':i===0?2.6:2,
+        'stroke-dasharray': i===0?'':'', opacity: i===0?1:.9});
+      // label at the curve's own maximum, alternating above/below so neighbours clear
+      let tp=PEAK()+(z/D())/(2*Math.PI)*tmax; while(tp>tmax) tp-=tmax;
+      put(g,'text',{x:Math.min(R-22,Math.max(L+22,x(tp))),y:y(anom(z,tp))+(i%2?20:-9),
+        'text-anchor':'middle','font-size':11,fill:cols[i],'font-weight':600},
+        z<0.005?'surface':(cyc==='day'?(z*100).toFixed(0)+' cm':z.toFixed(1)+' m'));
+    });
+    put(g,'text',{x:16,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'Temperature anomaly (K)');
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'}, cyc==='day'?'Time of day':'Month');
+  }
+
+  /* ── vertical profile through air and soil ──────────────────── */
+  function drawProfile(){
+    const g=$('profile'); g.innerHTML='';
+    const L=64,R=414,T=24,B=256;
+    const zAir=2.0, zSoil=Math.min(0.8, ZMAX());
+    const GY=T+(B-T)*0.36;                          // ground line
+    const yAir=z=>GY-(Math.log(1+z/0.01)/Math.log(1+zAir/0.01))*(GY-T);
+    const ySoil=z=>GY+(z/zSoil)*(B-GY);
+    const Ts=anom(0,hr);
+    // air at 2 m: 35 % of the surface amplitude, lagging 1.5 h
+    const T2=A0*0.35*Math.cos(2*Math.PI*(hr-1.5-PEAK())/TMAX());
+    const span=Math.max(4,A0*1.15);
+    const x=a=>L+(a+span)/(2*span)*(R-L);
+    for(let a=-span;a<=span+0.01;a+=span/2){
+      put(g,'line',{x1:x(a),x2:x(a),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(a),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, num(a,0));
+    }
+    put(g,'rect',{x:L,y:GY,width:R-L,height:B-GY,fill:'var(--gd)',opacity:.1});
+    put(g,'line',{x1:L,x2:R,y1:GY,y2:GY,stroke:'var(--text-primary)','stroke-width':2,opacity:.7});
+    put(g,'text',{x:L+6,y:GY-8,'font-size':11,fill:'var(--text-muted)'},'AIR');
+    put(g,'text',{x:L+6,y:GY+18,'font-size':11,fill:'var(--text-muted)'},'SOIL');
+    [0.1,0.5,2].forEach(z=>put(g,'text',{x:L-8,y:yAir(z)+4,'text-anchor':'end','font-size':10.5,
+      fill:'var(--text-muted)'}, '+'+z+' m'));
+    [0.2,0.4,0.6].filter(z=>z<=zSoil).forEach(z=>
+      put(g,'text',{x:L-8,y:ySoil(z)+4,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'}, '−'+z+' m'));
+    // air branch
+    let da='';
+    for(let s=0;s<=60;s++){ const z=zAir*Math.pow(s/60,2.2);
+      const a=Ts+(T2-Ts)*Math.log(1+z/0.01)/Math.log(1+zAir/0.01);
+      da+=(s?'L ':'M ')+x(a).toFixed(1)+' '+yAir(z).toFixed(1)+' '; }
+    put(g,'path',{d:da,fill:'none',stroke:'var(--air)','stroke-width':2.4,'stroke-dasharray':'5 4'});
+    // soil branch
+    let ds='';
+    for(let s=0;s<=60;s++){ const z=zSoil*s/60;
+      ds+=(s?'L ':'M ')+x(anom(z,hr)).toFixed(1)+' '+ySoil(z).toFixed(1)+' '; }
+    put(g,'path',{d:ds,fill:'none',stroke:'var(--gd)','stroke-width':2.6});
+    put(g,'circle',{cx:x(Ts),cy:GY,r:5.5,fill:'var(--hot)',stroke:'var(--surface-1)','stroke-width':2});
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Temperature anomaly (K)');
+    // conduction arrow
+    const grad = anom(0.02,hr)-Ts;               // soil warmer than surface?
+    const up = grad>0;
+    const ax=R-42, a0=GY+(up?70:22), a1=GY+(up?22:70);
+    put(g,'line',{x1:ax,y1:a0,x2:ax,y2:a1,stroke:'var(--gd)','stroke-width':4});
+    put(g,'path',{d:'M '+(ax-7)+' '+(a1+(up?9:-9))+' L '+ax+' '+a1+' L '+(ax+7)+' '+(a1+(up?9:-9))+' Z',
+      fill:'var(--gd)'});
+    put(g,'text',{x:ax-11,y:GY+50,'text-anchor':'end','font-size':11,
+      fill:'var(--gd)','font-weight':600}, 'F cond '+(up?'up':'down'));
+  }
+
+  /* ── Sahara panel (static) ──────────────────────────────────── */
+  function drawSahara(){
+    const g=$('sahara'); g.innerHTML='';
+    const L=64,R=800,T=26,B=252;
+    const x=t=>L+t/24*(R-L), y=v=>B-(v-20)/(70-20)*(B-T);
+    for(let v=20;v<=70;v+=10){
+      put(g,'line',{x1:L,x2:R,y1:y(v),y2:y(v),stroke:'var(--grid)'});
+      put(g,'text',{x:L-9,y:y(v)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, v+'°');
+    }
+    [0,4,8,12,16,20,24].forEach(t=>{
+      put(g,'line',{x1:x(t),x2:x(t),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(t),y:B+19,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, String(t).padStart(2,'0'));
+    });
+    // measured record, digitised from the lecture figure
+    const surf=[[0,32.5],[2,30],[4,28],[5,27.3],[6,28],[7,33],[8,42],[9,49],[10,54],[11,58],
+                [12,61],[13,63.5],[14,62],[15,58],[16,55],[17,53],[18,49],[19,42],[20,38],
+                [21,36],[22,35],[23,34],[24,32.5]];
+    const air =[[0,32],[2,31],[4,30],[6,30.5],[7,32],[8,34],[9,35.5],[10,36.5],[11,37],
+                [12,37.5],[13,38.5],[14,40],[15,41.5],[16,41],[17,39],[18,37],[19,35.5],
+                [20,34.5],[21,34],[22,33.5],[23,33],[24,32]];
+    const line=(pts,col,w,dash)=>{
+      let d=''; pts.forEach((p,i)=>{ d+=(i?'L ':'M ')+x(p[0]).toFixed(1)+' '+y(p[1]).toFixed(1)+' '; });
+      put(g,'path',{d:d,fill:'none',stroke:col,'stroke-width':w,'stroke-dasharray':dash||''});
+    };
+    put(g,'line',{x1:L,x2:R,y1:y(38),y2:y(38),stroke:'var(--gd)','stroke-width':2,'stroke-dasharray':'7 5'});
+    put(g,'line',{x1:L,x2:R,y1:y(26.5),y2:y(26.5),stroke:'var(--gd)','stroke-width':2,
+      'stroke-dasharray':'2 5',opacity:.75});
+    line(air,'var(--air)',2.4,'6 4');
+    line(surf,'var(--hot)',2.8);
+    put(g,'text',{x:x(13.4),y:y(63.5)-10,'text-anchor':'middle','font-size':12,
+      fill:'var(--hot)','font-weight':600},'surface');
+    put(g,'text',{x:x(15.4),y:y(41.5)-9,'font-size':12,fill:'var(--air)','font-weight':600},'air, 2 m');
+    put(g,'text',{x:R-6,y:y(38)-7,'text-anchor':'end','font-size':11.5,
+      fill:'var(--gd)'},'sand at 0.30 m — no diurnal signal at all');
+    put(g,'text',{x:R-6,y:y(26.5)-7,'text-anchor':'end','font-size':11.5,
+      fill:'var(--gd)',opacity:.85},'sand at 0.75 m');
+    // stable / unstable shading
+    put(g,'rect',{x:L,y:B+30,width:x(7)-L,height:16,fill:'var(--cold)',opacity:.28});
+    put(g,'rect',{x:x(7),y:B+30,width:x(19)-x(7),height:16,fill:'var(--hot)',opacity:.28});
+    put(g,'rect',{x:x(19),y:B+30,width:R-x(19),height:16,fill:'var(--cold)',opacity:.28});
+    put(g,'text',{x:(L+x(7))/2,y:B+42,'text-anchor':'middle','font-size':10.5,
+      fill:'var(--text-secondary)'},'stable');
+    put(g,'text',{x:(x(7)+x(19))/2,y:B+42,'text-anchor':'middle','font-size':10.5,
+      fill:'var(--text-secondary)'},'unstable — surface hotter than the air, convection');
+    put(g,'text',{x:(x(19)+R)/2,y:B+42,'text-anchor':'middle','font-size':10.5,
+      fill:'var(--text-secondary)'},'stable');
+    put(g,'text',{x:(L+R)/2,y:B+68,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Time of day (h)');
+    put(g,'text',{x:18,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 18 '+((T+B)/2)+')'},'Temperature (°C)');
+    put(g,'text',{x:L+8,y:T+16,'font-size':11.5,fill:'var(--text-muted)'},
+      'surface range 36 K · air range 11 K · sand at 0.3 m range ≈ 0');
+  }
+
+  /* ── table ──────────────────────────────────────────────────── */
+  $('tbody').innerHTML = MATS.map((m,i)=>{
+    const lag = 0.1/(m.Dday*OM_DAY)/3600;
+    return '<tr data-i="'+i+'" style="cursor:pointer"><td class="nm">'+m.n+'</td>'+
+      '<td class="num">'+m.C.toFixed(2)+'</td><td class="num">'+m.k.toFixed(2)+'</td>'+
+      '<td class="num">'+(m.kap*1e6).toFixed(2)+'</td>'+
+      '<td class="num">'+m.Dday.toFixed(3)+'</td><td class="num">'+m.Dyear.toFixed(2)+'</td>'+
+      '<td class="num">'+lag.toFixed(1)+' h</td></tr>';
+  }).join('');
+  $('tbody').addEventListener('click',e=>{
+    const r=e.target.closest('tr'); if(!r) return;
+    mi=+r.dataset.i; $('mat').value=mi; render();
+    $('heat').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  /* ── controls ───────────────────────────────────────────────── */
+  $('cycSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    cyc=b.dataset.c;
+    [...$('cycSeg').children].forEach(x=>x.setAttribute('aria-pressed', x.dataset.c===cyc));
+    render();
+  });
+  $('mat').addEventListener('change',()=>{mi=+$('mat').value;render();});
+  $('amp').addEventListener('input',()=>{A0=+$('amp').value;render();});
+  $('hr').addEventListener('input',()=>{hr=+$('hr').value;render();});
+
+  function render(){
+    const m=M(), d=D();
+    [...$('tbody').children].forEach((r,j)=>r.className = j===mi?'on':'');
+    $('ampV').textContent = A0.toFixed(1)+' K';
+    $('kD').textContent = cyc==='day' ? (d*100).toFixed(1)+' cm' : d.toFixed(2)+' m';
+    $('kDs').textContent = 'amplitude × 0.37 per D';
+    $('kK').textContent = (m.kap*1e6).toFixed(2);
+    // depth where the amplitude falls below 1 %
+    const zA = d*Math.log(100);
+    $('kA').textContent = cyc==='day' ? (zA*100).toFixed(0)+' cm' : zA.toFixed(1)+' m';
+    $('kAs').textContent = 'below this, amplitude < 1 %';
+    const lagPer = 1/(d*OM())/3600;     // hours per metre
+    if(cyc==='day'){
+      $('kL').textContent = (0.1*lagPer).toFixed(1)+' h';
+      $('kLs').textContent = 'per 10 cm of depth';
+    } else {
+      $('kL').textContent = (lagPer/24/30.4).toFixed(1)+' mo';
+      $('kLs').textContent = 'per metre of depth';
+    }
+    // time slider maps to hours or months
+    $('hr').max = TMAX(); if(hr>TMAX()) { hr=TMAX()/2; $('hr').value=hr; }
+    $('hr').step = cyc==='day' ? 0.25 : 0.1;
+    $('hrLab').innerHTML = cyc==='day' ? 'Time of day' : 'Month of the year';
+    $('hrV').textContent = cyc==='day'
+      ? String(Math.floor(hr)).padStart(2,'0')+':'+String(Math.round((hr%1)*60)).padStart(2,'0')
+      : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Dec'][Math.floor(hr)];
+    const Ts=anom(0,hr), Tdeep=anom(0.02,hr);
+    const up = Tdeep>Ts;
+    $('condNote').innerHTML = up
+      ? '<b>The ground below is warmer than the surface, so F<sub>cond</sub> points upward.</b> The soil is '+
+        'giving back heat it stored earlier, slowing the surface&rsquo;s cooling. This is the night-time state '+
+        '&mdash; and, for the annual wave, the winter state.'
+      : '<b>The surface is warmer than the ground below, so F<sub>cond</sub> points downward.</b> Energy '+
+        'absorbed at the surface is being conducted away into store, which is why the surface does not get as '+
+        'hot as it otherwise would. This is the daytime state &mdash; and, for the annual wave, the summer '+
+        'state.';
+    drawHeat(); drawCurves(); drawProfile();
+  }
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+    drawHeat();
+  };
+
+  drawSahara(); render();
+})();
+</script>
+</body>
+</html>

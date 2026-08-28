@@ -17,9 +17,11 @@ Goosse2010_textbook/*
 *FASIT*
 *reportHR*
 
-# Instructor-only lab variants (answer-key mode of the interactive labs).
+# Instructor-only material: answer-key variants of the interactive labs, and
+# lecturer running orders / lecture outlines. Never published to docs/.
 *Teacher*.html
 *Teacher*.dc.html
+local_energy_balance/Lecture3-Teacher-outline.html
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
@@ -35,3 +37,4 @@ support.js
 # its own copy of the runtime is required, not a stray duplicate.
 !docs/**/doc-page.js
 !docs/**/support.js
+local_energy_balance/Lecture3-Climate-at-a-local-scale2025.pptx

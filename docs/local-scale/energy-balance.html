@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The surface energy balance — eight real sites</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --sw:#eda100; --lw:#c8443a; --sh:#eb6834; --lh:#2a78d6; --gd:#8a6b45; --nr:#1baf7a;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --sw:#c98500; --lw:#d9564c; --sh:#d95926; --lh:#3987e5; --gd:#a08258; --nr:#199e70;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .sites{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+  .sb{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;text-align:left;line-height:1.3;
+    font-family:inherit}
+  .sb:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .sb[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .sb small{display:block;font-size:11px;opacity:.72}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 16px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--nr);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">← EE501 course</a> &nbsp;·&nbsp; Climate at a local scale · 1 of 4 &nbsp;·&nbsp; <a href="explorer/">explorer</a></p>
+
+<header>
+  <div>
+    <h1>Where the energy goes at the surface</h1>
+    <p class="sub">The global energy budget tells you what the planet does on average. Stand on one patch of
+    ground and the numbers look nothing like it &mdash; and what they look like is decided almost entirely by
+    what that patch is made of. Eight real measurement sites, the same two equations.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Two equations, in order</h3>
+  <p class="cap">The first says how much radiative energy the surface is left holding. The second says what it
+  does with it. They are joined at F<sub>NR</sub>.</p>
+  <div class="eq"><b>1 · Radiative budget</b><br>
+    F<sub>NR</sub> &nbsp;=&nbsp; F<sub>solar</sub> &minus; &alpha;F<sub>solar</sub> &nbsp;+&nbsp; F<sub>IR↓</sub> &minus; F<sub>IR↑</sub>
+    <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="eq"><b>2 · Energy balance</b><br>
+    F<sub>NR</sub> &nbsp;=&nbsp; F<sub>SH</sub> &nbsp;+&nbsp; F<sub>LH</sub> &nbsp;+&nbsp; F<sub>cond</sub> &nbsp;+&nbsp; heat storage
+    <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <p class="note"><b>Sign convention used here.</b> Positive means energy <em>arriving at</em> the surface for
+  the radiative terms, and energy <em>leaving</em> the surface for F<sub>SH</sub>, F<sub>LH</sub> and
+  F<sub>cond</sub>. So a positive F<sub>NR</sub> is a surface being loaded with energy, and a positive
+  F<sub>SH</sub> is that energy being handed to the air. Both flip sign at night.</p>
+</div>
+
+<h2 class="sec">Pick a surface</h2>
+
+<div class="sites" id="sites"></div>
+
+<div class="card">
+  <h3 id="siteTitle"></h3>
+  <p class="cap" id="siteCap"></p>
+  <div class="kpis" id="kpis"></div>
+</div>
+
+<div class="card">
+  <h3>The fluxes, drawn to scale</h3>
+  <p class="cap">Arrow width is proportional to the daily total on one common scale across all eight sites, so
+  the arrows can be compared <em>between</em> surfaces and not only within one.</p>
+  <div class="legend">
+    <span class="chip"><span class="dot" style="background:var(--sw)"></span>shortwave</span>
+    <span class="chip"><span class="dot" style="background:var(--lw)"></span>longwave</span>
+    <span class="chip"><span class="dot" style="background:var(--sh)"></span>sensible heat</span>
+    <span class="chip"><span class="dot" style="background:var(--lh)"></span>latent heat</span>
+    <span class="chip"><span class="dot" style="background:var(--gd)"></span>conduction into the ground</span>
+  </div>
+  <svg id="arrows" viewBox="0 0 880 440" role="img" aria-label="Arrow diagram of the radiative and turbulent fluxes at the selected surface, with arrow width proportional to each daily flux total"></svg>
+</div>
+
+<div class="card">
+  <h3>From sunlight to sensible heat, one step at a time</h3>
+  <p class="cap">A running total. The four radiative terms accumulate into F<sub>NR</sub>; the three balance
+  terms then spend it back down to zero. Daily totals, MJ m<sup>&minus;2</sup> day<sup>&minus;1</sup>.</p>
+  <svg id="water" viewBox="0 0 880 340" role="img" aria-label="Waterfall chart showing the radiative budget accumulating into net radiation and then being spent by the turbulent and conduction fluxes"></svg>
+  <p class="note" id="waterNote"></p>
+</div>
+
+<h2 class="sec">The Bowen ratio</h2>
+
+<div class="card">
+  <h3>How the surface splits its turbulent loss</h3>
+  <div class="eq">B<sub>o</sub> &nbsp;=&nbsp; F<sub>SH</sub> / F<sub>LH</sub></div>
+  <p class="cap" style="margin-top:14px">All eight sites on one axis. The scale is logarithmic in
+  |B<sub>o</sub>|, because the spread runs over three orders of magnitude &mdash; and it crosses zero, which an
+  isolated surface is not supposed to be able to do.</p>
+  <svg id="bowen" viewBox="0 0 880 240" role="img" aria-label="Bowen ratio of all eight sites on a logarithmic axis spanning negative and positive values"></svg>
+  <p class="note"><b>B<sub>o</sub> &gt; 1</b> means the sensible heat flux exceeds the latent heat flux: the
+  surface has more energy available than it has water to evaporate. <b>B<sub>o</sub> &lt; 0</b> means
+  F<sub>SH</sub> and F<sub>LH</sub> point in <em>opposite</em> directions &mdash; the air is delivering heat
+  <em>to</em> the surface, and the surface is spending it on evaporation. That is the oasis effect, and it is
+  the only way F<sub>LH</sub> can exceed F<sub>NR</sub>.</p>
+  <p class="q"><b>Question.</b> The irrigated field and the Antarctic snow both have a negative Bowen ratio, for
+  entirely different reasons. What is different about the sign of F<sub>NR</sub> in the two cases &mdash; and
+  what is each surface doing with the sensible heat it takes from the air?</p>
+</div>
+
+<h2 class="sec">Day and night</h2>
+
+<div class="card">
+  <h3>The same surface, twelve hours apart</h3>
+  <p class="cap">At night F<sub>solar</sub> is zero, so the entire shortwave half of the radiative budget
+  disappears and F<sub>NR</sub> becomes a small negative number set purely by the two longwave terms.
+  Everything downstream flips with it.</p>
+  <div class="seg" id="dnSeg" style="margin-bottom:14px">
+    <button data-dn="day" aria-pressed="true">Day</button>
+    <button data-dn="night" aria-pressed="false">Night</button>
+  </div>
+  <svg id="daynight" viewBox="0 0 880 360" role="img" aria-label="Schematic comparison of the surface fluxes by day and by night"></svg>
+  <p class="note" id="dnNote"></p>
+  <p class="q"><b>Question.</b> By day the surface records the highest temperature in the profile; by night the
+  lowest. Why is it the <em>surface</em> both times, rather than the air at 1.2 m or the soil at 0.2 m?</p>
+</div>
+
+<h2 class="sec">All eight together</h2>
+
+<div class="card">
+  <h3>The numbers</h3>
+  <p class="cap">Daily totals in MJ m<sup>&minus;2</sup> day<sup>&minus;1</sup>. Click a row to load that site
+  into the panels above.</p>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr>
+      <th>Surface</th><th class="num">&alpha;</th><th class="num">F<sub>solar</sub></th>
+      <th class="num">SW<sub>net</sub></th><th class="num">LW<sub>net</sub></th><th class="num">F<sub>NR</sub></th>
+      <th class="num">F<sub>SH</sub></th><th class="num">F<sub>LH</sub></th><th class="num">F<sub>cond</sub></th>
+      <th class="num">B<sub>o</sub></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  </div>
+  <p class="note"><b>Read down the albedo column, then down F<sub>NR</sub>.</b> The Antarctic snow receives
+  26 MJ of sunlight &mdash; slightly less than the Canadian grass, over 21 hours of daylight &mdash; and ends
+  the day with <em>less than nothing</em>, because four fifths of it is reflected straight back while the
+  longwave loss carries on regardless. The desert receives the most sunlight of all and still ends up with half
+  the net radiation of a moist bare soil.</p>
+  <p class="note"><b>Then read F<sub>SH</sub> against F<sub>LH</sub>.</b> The pine and the fir stand sit within
+  a few degrees of latitude of each other, in the same month, with albedos of 0.08 and 0.09 &mdash; and they
+  split their energy the opposite way round. Nothing in the radiative budget predicts that. It is decided by how
+  much water each stand can reach.</p>
+</div>
+
+<div class="card">
+  <h3>What the surface actually controls</h3>
+  <table>
+    <thead><tr><th>Surface property</th><th>The term it sets</th><th>Seen most clearly in</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Albedo &alpha;</td><td>&alpha;F<sub>solar</sub> &mdash; how much sunlight is rejected before anything else can happen</td><td>Antarctic snow (0.80) against pine forest (0.08)</td></tr>
+      <tr><td class="nm">Water availability</td><td>The F<sub>SH</sub> : F<sub>LH</sub> split, i.e. B<sub>o</sub></td><td>Desert sand (B<sub>o</sub> ≈ 37) against a barley field (0.02)</td></tr>
+      <tr><td class="nm">Roughness length</td><td>The bulk transfer coefficients in <em>both</em> turbulent fluxes</td><td>Forest canopies, which couple to the air far more strongly than grass</td></tr>
+      <tr><td class="nm">Thermal admittance</td><td>F<sub>cond</sub>, and how hot the skin itself gets</td><td>Dry sand: low heat capacity and low diffusivity, so a thin layer overheats</td></tr>
+      <tr><td class="nm">Height and leaf area</td><td>Where in the canopy F<sub>NR</sub> is absorbed at all</td><td>A 0.2 m grass stand against a 12 m spruce stand</td></tr>
+      <tr><td class="nm">Emissivity &epsilon;</td><td>F<sub>IR↑</sub>, and therefore the night-time cooling rate</td><td>Deserts, which can cool 35 K between afternoon and dawn</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Every one of these is a property of the <em>surface</em>, not of the atmosphere above it. That
+  is why local climate can change across a fence line &mdash; and why changing land cover changes climate
+  without changing anything at all about the radiation arriving from the Sun.</p>
+</div>
+
+<h2 class="sec">Take it further</h2>
+
+<div class="card" style="border-color:var(--nr)">
+  <h3>The same budget, hour by hour &mdash; the live explorer</h3>
+  <p class="cap">Everything on this page is a <em>daily total</em>. The explorer opens the same four radiative
+  terms out across the day.</p>
+  <p class="note">Pick a latitude and a date and it computes F<sub>solar</sub> from real solar geometry &mdash;
+  the same declination and hour-angle engine behind the <a href="../insolation/">insolation animation</a>
+  &mdash; then lets you drop six different surfaces underneath it: desert, moist soil and oasis, snow and ice,
+  grass and crop, coniferous forest, urban pavement. Each has its own albedo, emissivity, atmospheric emission
+  and thermal lag, so you can watch the <em>identical</em> incoming energy partition completely differently.</p>
+  <p class="note"><b>Three things to do with it in front of a class.</b> Put the site at 45°N in midsummer and
+  step through all six surfaces without touching anything else &mdash; only the surface changes, and
+  F<sub>NR</sub> changes with it. Then switch to snow and note that F<sub>NR</sub> can sit near or below zero
+  through a whole sunlit day. Then compare desert against urban pavement and watch the thermal lag push
+  F<sub>IR↑</sub> hours past sunset &mdash; the urban heat island, visible as a phase shift.</p>
+  <p class="note"><b>What it shows and what it does not.</b> The explorer plots the four <em>radiative</em>
+  terms and their sum. It stops at F<sub>NR</sub>; the turbulent and conduction terms that spend it are the
+  subject of <a href="turbulent-fluxes.html">page 2</a> and <a href="soil-temperature.html">page 3</a>. Its
+  surface temperature is a lagged cosine rather than a solved thermal model, and it assumes a fixed
+  atmospheric transmissivity of 0.75 &mdash; so read it for the mechanism, and read the eight measured sites
+  above for the numbers.</p>
+  <p style="margin:18px 0 0">
+    <a href="explorer/" style="display:inline-block;background:var(--nr);color:var(--surface-1);
+      text-decoration:none;font-weight:600;font-size:14px;padding:11px 20px;border-radius:9px">
+      Open the local energy balance explorer &rarr;</a>
+    <span style="font-size:12.5px;color:var(--text-muted);margin-left:12px">opens full-screen &middot;
+      needs to be served over http, not opened as a local file</span>
+  </p>
+</div>
+
+<p class="foot">Sites and daily totals after Oke, <i>Boundary Layer Climates</i> (2nd edn, 1987), as used in the
+EE501 lecture. Values stated in the lecture: the Matador radiative budget; the Agassiz energy balance; the
+Antarctic albedo and F<sub>NR</sub>; the barley albedo; the Douglas fir net shortwave, net longwave and
+F<sub>NR</sub>; and the Bowen ratios of the pine (1.67) and Haney fir (0.48) stands. Where the lecture gave only
+one half of a budget, the remaining terms here are representative values chosen so the balance closes exactly
+&mdash; treat those as teaching figures rather than published measurements. Heat storage is folded into
+F<sub>cond</sub> at the vegetated sites. &nbsp;·&nbsp; Next:
+<a href="turbulent-fluxes.html">the bulk formulas behind F<sub>SH</sub> and F<sub>LH</sub> &rarr;</a></p>
+
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const put=(svg,tag,attrs,content,html)=>{const e=el(tag,attrs);
+    if(html!==undefined) e.innerHTML=html; else if(content!==undefined) e.textContent=content;
+    svg.appendChild(e); return e;};
+
+  /* ── the eight sites ───────────────────────────────────────────────
+     sol  incoming shortwave        swn  net shortwave
+     ird  downward longwave         iru  upward longwave
+     sh / lh / gd  the balance terms.  All MJ m-2 day-1.            */
+  const SITES=[
+    {k:'grass', name:'Short grass', short:'Grass',
+     where:'Matador, Saskatchewan · 49°N', when:'30 July 1971 · clear sunny day · 0.2 m stand',
+     a:0.16, sol:27.3, swn:22.7, ird:27.5, iru:36.8, sh:3.4, lh:9.1, gd:0.9,
+     blurb:'The lecture&rsquo;s reference clear-sky radiative budget. Notice how nearly the two longwave terms cancel: 27.5 down against 36.8 up leaves a net loss of only 9.3 &mdash; small, but enough to take a third off the shortwave gain.'},
+    {k:'soil', name:'Moist bare soil', short:'Moist soil',
+     where:'Agassiz, British Columbia · 49°N', when:'30 May 1978 · moist bare soil',
+     a:0.10, sol:26.0, swn:23.4, ird:30.0, iru:35.4, sh:2.3, lh:13.4, gd:2.3,
+     blurb:'The lecture&rsquo;s reference energy balance. Three quarters of the net radiation leaves as evaporation, and the surface &mdash; not the air at 1.2 m, not the soil at 0.2 m &mdash; records both the highest and the lowest temperature of the day.'},
+    {k:'desert', name:'Dry desert sand', short:'Desert',
+     where:'Central Sahara · ~25°N', when:'Summer · cloudless · light sand',
+     a:0.30, sol:30.0, swn:21.0, ird:27.0, iru:39.0, sh:7.4, lh:0.2, gd:1.4,
+     blurb:'The most sunlight of any site here, and among the least net radiation. Light sand rejects nearly a third of it outright, and the scorching surface radiates away an enormous 39 MJ of infrared. With no water to evaporate, essentially everything that survives goes into heating the air.'},
+    {k:'oasis', name:'Irrigated field', short:'Oasis',
+     where:'Mid-latitude irrigated crop', when:'June · dry surroundings',
+     a:0.22, sol:26.0, swn:20.3, ird:30.5, iru:34.8, sh:-6.0, lh:21.0, gd:1.0,
+     blurb:'Warm dry air blows in off the surrounding dry land and gives heat <em>to</em> the wet surface. F<sub>LH</sub> exceeds the net radiation &mdash; impossible for an isolated surface. The extra energy is being advected in horizontally, which is exactly what makes this a local effect rather than a global one.'},
+    {k:'barley', name:'Barley field', short:'Barley',
+     where:'Mid-latitude cropland', when:'Summer · full canopy',
+     a:0.24, sol:25.0, swn:19.0, ird:30.0, iru:34.0, sh:0.3, lh:14.9, gd:-0.2,
+     blurb:'Albedo 0.24, so about three quarters of the sunlight is absorbed. Evaporative cooling holds the canopy cool, which suppresses F<sub>IR↑</sub>; humid air overhead radiates strongly back down. The net longwave loss is therefore unusually small, and evapotranspiration then takes 99 % of what is left.'},
+    {k:'fir', name:'Douglas fir forest', short:'Fir forest',
+     where:'Haney, British Columbia · 47–49°N', when:'July–August',
+     a:0.09, sol:25.9, swn:23.6, ird:28.4, iru:35.2, sh:5.5, lh:11.4, gd:-0.1,
+     blurb:'The darkest surface on this page: albedo 0.09, so 91 % of the sunlight is absorbed. Cool, well-watered conditions keep the longwave loss modest, and about two thirds of the net radiation leaves as evapotranspiration. F<sub>SH</sub> peaks before F<sub>NR</sub> does; F<sub>LH</sub> peaks after it.'},
+    {k:'pine', name:'Pine forest', short:'Pine forest',
+     where:'Thetford, England · 52°N', when:'July',
+     a:0.08, sol:24.0, swn:22.1, ird:27.6, iru:34.7, sh:9.0, lh:5.4, gd:0.6,
+     blurb:'Almost the same latitude, the same month and the same albedo as the fir stand &mdash; and the opposite energy balance. About 60 % of F<sub>NR</sub> goes to sensible heat, for a Bowen ratio of 1.67. The difference is water supply, not radiation.'},
+    {k:'snow', name:'Snow', short:'Snow',
+     where:'Antarctica · 70°S', when:'13 November 1979 · 21 hours of daylight',
+     a:0.80, sol:26.0, swn:5.2, ird:17.0, iru:23.2, sh:-0.6, lh:0.3, gd:-0.7,
+     blurb:'Twenty-one hours of sunshine, and the day still ends in deficit. An albedo of 0.80 throws away four fifths of a generous shortwave supply, and the longwave loss continues around the clock. Net radiation for the whole day: &minus;1.0 MJ m<sup>&minus;2</sup>.'}
+  ];
+  SITES.forEach(s=>{
+    s.ref = s.sol - s.swn;          // reflected shortwave
+    s.lwn = s.ird - s.iru;          // net longwave
+    s.nr  = s.swn + s.lwn;          // net radiation
+    s.bo  = s.lh===0 ? Infinity : s.sh/s.lh;
+  });
+
+  const sgn=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(1);
+  const num=v=>(v<0?'−':'')+Math.abs(v).toFixed(1);
+  const boTxt=b=>isFinite(b)?(b<0?'−':'')+Math.abs(b).toFixed(2):'∞';
+
+  let cur=0, dn='day';
+
+  /* ── site buttons ───────────────────────────────────────────────── */
+  $('sites').innerHTML = SITES.map((s,i)=>
+    '<button class="sb" data-i="'+i+'" aria-pressed="'+(i===0)+'">'+s.short+
+    '<small>&alpha; '+s.a.toFixed(2)+' &nbsp;·&nbsp; B<sub>o</sub> '+boTxt(s.bo)+'</small></button>').join('');
+  $('sites').addEventListener('click',e=>{
+    const b=e.target.closest('.sb'); if(b) select(+b.dataset.i);
+  });
+
+  /* ── table ──────────────────────────────────────────────────────── */
+  $('tbody').innerHTML = SITES.map((s,i)=>
+    '<tr data-i="'+i+'" style="cursor:pointer"><td class="nm">'+s.name+'</td>'+
+    '<td class="num">'+s.a.toFixed(2)+'</td>'+
+    '<td class="num">'+s.sol.toFixed(1)+'</td>'+
+    '<td class="num">'+s.swn.toFixed(1)+'</td>'+
+    '<td class="num">'+num(s.lwn)+'</td>'+
+    '<td class="num"><b>'+num(s.nr)+'</b></td>'+
+    '<td class="num">'+num(s.sh)+'</td>'+
+    '<td class="num">'+num(s.lh)+'</td>'+
+    '<td class="num">'+num(s.gd)+'</td>'+
+    '<td class="num">'+boTxt(s.bo)+'</td></tr>').join('');
+  $('tbody').addEventListener('click',e=>{
+    const r=e.target.closest('tr'); if(!r) return;
+    select(+r.dataset.i);
+    $('siteTitle').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  /* ── day / night switch ─────────────────────────────────────────── */
+  $('dnSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    dn=b.dataset.dn;
+    [...$('dnSeg').children].forEach(x=>x.setAttribute('aria-pressed', x.dataset.dn===dn));
+    drawDN();
+  });
+
+  /* ─────────── scaled arrows ─────────── */
+  const AMAX=42;                                     // common width scale, MJ
+  const wOf=v=>5+34*Math.min(1,Math.abs(v)/AMAX);
+
+  /* mode 'top'  — number and name stacked above the arrow, clear of the ground line
+     mode 'side' — number and name to the right, for the sub-surface arrow          */
+  function arrow(svg,x,yTop,yBot,val,color,label,dir,mode){
+    const w=wOf(val), head=Math.max(w*1.5,13), up=(dir==='up');
+    const tip = up? yTop : yBot, tail = up? yBot : yTop;
+    const be  = up? tip+head : tip-head;
+    const d='M '+(x-w/2)+' '+tail+' L '+(x-w/2)+' '+be+
+            ' L '+(x-head/2-w/2)+' '+be+' L '+x+' '+tip+
+            ' L '+(x+head/2+w/2)+' '+be+' L '+(x+w/2)+' '+be+
+            ' L '+(x+w/2)+' '+tail+' Z';
+    put(svg,'path',{d:d,fill:color,opacity:.92});
+    if(mode==='side'){
+      const my=(yTop+yBot)/2;
+      put(svg,'text',{x:x+w/2+12,y:my-2,'font-size':13,fill:'var(--text-primary)',
+        'font-weight':600}, Math.abs(val).toFixed(1));
+      put(svg,'text',{x:x+w/2+12,y:my+15,'font-size':11.5,
+        fill:'var(--text-muted)'}, undefined, label);
+    } else {
+      put(svg,'text',{x:x,y:yTop-14,'text-anchor':'middle','font-size':13,
+        fill:'var(--text-primary)','font-weight':600}, Math.abs(val).toFixed(1));
+      put(svg,'text',{x:x,y:yTop-34,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'}, undefined, label);
+    }
+  }
+  const SUB=s=>'F<tspan baseline-shift="sub" font-size="9">'+s+'</tspan>';
+
+  function drawArrows(){
+    const s=SITES[cur], g=$('arrows'); g.innerHTML='';
+    const GY=300, TOP=118;
+    put(g,'rect',{x:0,y:0,width:880,height:GY,fill:'var(--surface-2)',opacity:.5});
+    put(g,'rect',{x:0,y:GY,width:880,height:440-GY,fill:'var(--gd)',opacity:.14});
+    put(g,'line',{x1:0,x2:880,y1:GY,y2:GY,stroke:'var(--text-primary)','stroke-width':2.5,opacity:.7});
+    put(g,'text',{x:12,y:22,'font-size':11.5,fill:'var(--text-muted)'},'atmosphere');
+    put(g,'text',{x:12,y:GY+24,'font-size':11.5,fill:'var(--text-muted)'},'soil / substrate');
+
+    [252,494,700].forEach(x=>put(g,'line',{x1:x,x2:x,y1:60,y2:GY,stroke:'var(--line)','stroke-dasharray':'3 5'}));
+    const hd=(t,x)=>put(g,'text',{x:x,y:50,'font-size':11.5,fill:'var(--text-muted)',
+      'text-anchor':'middle','letter-spacing':'.07em'},t);
+    hd('SHORTWAVE',132); hd('LONGWAVE',373); hd('TURBULENT',597); hd('NET',790);
+
+    arrow(g, 82,TOP,GY-4, s.sol,'var(--sw)',SUB('solar'),'down');
+    arrow(g,186,TOP,GY-4, s.ref,'var(--sw)','&alpha;'+SUB('solar'),'up');
+    arrow(g,318,TOP,GY-4, s.ird,'var(--lw)',SUB('IR↓'),'down');
+    arrow(g,426,TOP,GY-4, s.iru,'var(--lw)',SUB('IR↑'),'up');
+    arrow(g,546,TOP,GY-4, s.sh ,'var(--sh)',SUB('SH'), s.sh>=0?'up':'down');
+    arrow(g,650,TOP,GY-4, s.lh ,'var(--lh)',SUB('LH'), s.lh>=0?'up':'down');
+    arrow(g,742,GY+22,424, s.gd,'var(--gd)',SUB('cond'), s.gd>=0?'up':'down','side');
+
+    put(g,'rect',{x:724,y:118,width:134,height:78,rx:11,fill:'var(--surface-1)',
+      stroke: s.nr>=0?'var(--nr)':'var(--lw)','stroke-width':2});
+    put(g,'text',{x:791,y:143,'text-anchor':'middle','font-size':11,
+      fill:'var(--text-muted)','letter-spacing':'.05em'},'NET RADIATION');
+    put(g,'text',{x:791,y:172,'text-anchor':'middle','font-size':26,
+      fill: s.nr>=0?'var(--nr)':'var(--lw)','font-weight':600}, num(s.nr));
+    put(g,'text',{x:791,y:189,'text-anchor':'middle','font-size':10.5,
+      fill:'var(--text-muted)'},'MJ m⁻² day⁻¹');
+  }
+
+  /* ─────────── waterfall ─────────── */
+  function drawWater(){
+    const s=SITES[cur], g=$('water'); g.innerHTML='';
+    const steps=[
+      {l:'F solar',  v: s.sol, c:'var(--sw)'},
+      {l:'− αF solar', v:-s.ref, c:'var(--sw)'},
+      {l:'+ F IR↓', v: s.ird, c:'var(--lw)'},
+      {l:'− F IR↑', v:-s.iru, c:'var(--lw)'},
+      {l:'= F NR',   total:'nr', c:'var(--nr)'},
+      {l:'− F SH',  v:-s.sh, c:'var(--sh)'},
+      {l:'− F LH',  v:-s.lh, c:'var(--lh)'},
+      {l:'− F cond',v:-s.gd, c:'var(--gd)'},
+      {l:'= 0',      total:'zero', c:'var(--text-muted)'}
+    ];
+    let run=0; const seq=[];
+    steps.forEach(st=>{
+      if(st.total){ seq.push(Object.assign({},st,{from:run,to:run})); }
+      else { seq.push(Object.assign({},st,{from:run,to:run+st.v})); run+=st.v; }
+    });
+    let lo=0,hi=0; seq.forEach(q=>{lo=Math.min(lo,q.from,q.to);hi=Math.max(hi,q.from,q.to);});
+    lo=Math.floor((lo-3)/5)*5; hi=Math.ceil((hi+4)/5)*5;
+    const L=66,R=862,T=28,B=278, y=v=>B-(v-lo)/(hi-lo)*(B-T);
+    const step=(hi-lo)>65?10:5;
+    for(let v=lo; v<=hi+0.001; v+=step){
+      put(g,'line',{x1:L,x2:R,y1:y(v),y2:y(v),stroke:'var(--grid)'});
+      put(g,'text',{x:L-10,y:y(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+    }
+    put(g,'line',{x1:L,x2:R,y1:y(0),y2:y(0),stroke:'var(--text-muted)','stroke-width':1.4});
+    const n=seq.length, gap=(R-L)/n, bw=gap*0.58;
+    seq.forEach((q,i)=>{
+      const cx=L+gap*(i+0.5);
+      if(q.total){
+        const v = q.total==='zero'?0:s.nr;
+        put(g,'line',{x1:cx-bw/2-7,x2:cx+bw/2+7,y1:y(v),y2:y(v),stroke:q.c,'stroke-width':3.5});
+        put(g,'circle',{cx:cx,cy:y(v),r:5,fill:q.c});
+        put(g,'text',{x:cx,y:y(v)+(v>=0?-15:23),'text-anchor':'middle','font-size':13.5,
+          fill:q.c,'font-weight':600}, num(v));
+      } else {
+        const y0=y(q.from), y1=y(q.to);
+        put(g,'rect',{x:cx-bw/2,y:Math.min(y0,y1),width:bw,
+          height:Math.max(2,Math.abs(y1-y0)),fill:q.c,opacity:.85,rx:2});
+        put(g,'text',{x:cx,y:Math.min(y0,y1)-7,'text-anchor':'middle','font-size':11.5,
+          fill:'var(--text-primary)'}, sgn(q.v));
+      }
+      if(i<n-1) put(g,'line',{x1:cx+bw/2,x2:L+gap*(i+1.5)-bw/2,y1:y(q.to),y2:y(q.to),
+        stroke:'var(--text-muted)','stroke-dasharray':'2 4',opacity:.55});
+      put(g,'text',{x:cx,y:B+22,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-secondary)'}, q.l);
+    });
+    put(g,'text',{x:16,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'Running total (MJ m⁻² day⁻¹)');
+    put(g,'text',{x:L,y:B+52,'font-size':11.5,fill:'var(--text-muted)'},
+      'radiative budget  →  F NR  →  energy balance');
+  }
+
+  /* ─────────── Bowen strip ─────────── */
+  function drawBowen(){
+    const g=$('bowen'); g.innerHTML='';
+    const L=64,R=852,AX=162;
+    const core=0.05, lo=Math.log10(core), hi=Math.log10(50);
+    const mid=(L+R)/2, half=(R-L)/2, gapc=24;
+    const pos=b=>{
+      const m=Math.max(core,Math.min(50,Math.abs(b)));
+      const f=(Math.log10(m)-lo)/(hi-lo);
+      return b>=0 ? mid+gapc+f*(half-gapc) : mid-gapc-f*(half-gapc);
+    };
+    put(g,'line',{x1:L,x2:R,y1:AX,y2:AX,stroke:'var(--line)','stroke-width':1.5});
+    [0.05,0.1,0.5,1,5,10,50].forEach(v=>[1,-1].forEach(sg=>{
+      const x=pos(sg*v);
+      put(g,'line',{x1:x,x2:x,y1:AX-5,y2:AX+5,stroke:'var(--line)'});
+      put(g,'text',{x:x,y:AX+21,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'}, (sg<0?'−':'')+v);
+    }));
+    put(g,'rect',{x:mid-gapc+1,y:AX-8,width:gapc*2-2,height:16,fill:'var(--surface-1)'});
+    put(g,'text',{x:mid,y:AX+21,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},'0');
+    const x1=pos(1);
+    put(g,'line',{x1:x1,x2:x1,y1:32,y2:AX,stroke:'var(--text-muted)','stroke-dasharray':'3 4'});
+    put(g,'text',{x:x1,y:24,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'Bₒ = 1');
+    put(g,'text',{x:L,y:AX+50,'font-size':12,fill:'var(--text-secondary)'},
+      '← F SH into the surface: the oasis effect');
+    put(g,'text',{x:R,y:AX+50,'font-size':12,fill:'var(--text-secondary)','text-anchor':'end'},
+      'heating the air dominates →');
+    put(g,'text',{x:mid+gapc+10,y:AX+50,'font-size':12,fill:'var(--text-muted)'},'evaporation dominates');
+    // stagger the labels by horizontal order so neighbours never share a row
+    const order=SITES.map((s,i)=>({i:i,x:pos(s.bo)})).sort((p,q)=>p.x-q.x);
+    const rows=[]; order.forEach((o,k)=>rows[o.i]=k%3);
+    SITES.forEach((s,i)=>{
+      const x=pos(s.bo), yy=AX-30-rows[i]*30, on=(i===cur);
+      put(g,'line',{x1:x,x2:x,y1:yy,y2:AX,stroke:'var(--line)'});
+      put(g,'circle',{cx:x,cy:yy,r:on?7:5,fill:on?'var(--nr)':'var(--text-secondary)'});
+      put(g,'text',{x:x,y:yy-12,'text-anchor':'middle','font-size':11.5,
+        fill:on?'var(--text-primary)':'var(--text-muted)','font-weight':on?600:400},
+        s.short+'  '+boTxt(s.bo));
+    });
+  }
+
+  /* ─────────── day / night schematic ─────────── */
+  function drawDN(){
+    const s=SITES[cur], g=$('daynight'); g.innerHTML='';
+    const night=(dn==='night');
+    // night: shortwave gone; IR-down falls ~18 %, IR-up ~12 % as the surface cools
+    const ird = night ? s.ird*0.82 : s.ird;
+    const iru = night ? s.iru*0.88 : s.iru;
+    const nr  = night ? (ird-iru) : s.nr;
+    let sh,lh,gd;
+    if(night){ const m=Math.abs(nr); sh=-m*0.45; lh=-m*0.15; gd=-m*0.40; }
+    else     { sh=s.sh; lh=s.lh; gd=s.gd; }
+
+    const GY=240, TOP=66;
+    put(g,'rect',{x:0,y:0,width:880,height:GY,
+      fill: night?'var(--text-primary)':'var(--surface-2)', opacity: night?.06:.5});
+    put(g,'rect',{x:0,y:GY,width:880,height:360-GY,fill:'var(--gd)',opacity:.14});
+    put(g,'line',{x1:0,x2:880,y1:GY,y2:GY,stroke:'var(--text-primary)','stroke-width':2.5,opacity:.7});
+
+    if(!night){
+      arrow(g, 76,TOP,GY-4, s.sol,'var(--sw)',SUB('solar'),'down');
+      arrow(g,176,TOP,GY-4, s.ref,'var(--sw)','&alpha;'+SUB('solar'),'up');
+    } else {
+      put(g,'rect',{x:44,y:TOP,width:164,height:GY-TOP-6,rx:10,fill:'none',
+        stroke:'var(--line)','stroke-dasharray':'4 5'});
+      put(g,'text',{x:126,y:150,'text-anchor':'middle','font-size':14,
+        fill:'var(--text-muted)'},'F solar = 0');
+      put(g,'text',{x:126,y:172,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},'no shortwave at all');
+    }
+    arrow(g,300,TOP,GY-4, ird,'var(--lw)',SUB('IR↓'),'down');
+    arrow(g,408,TOP,GY-4, iru,'var(--lw)',SUB('IR↑'),'up');
+    arrow(g,536,TOP,GY-4, sh ,'var(--sh)',SUB('SH'), sh>=0?'up':'down');
+    arrow(g,644,TOP,GY-4, lh ,'var(--lh)',SUB('LH'), lh>=0?'up':'down');
+    arrow(g,730,GY+20,348, gd,'var(--gd)',SUB('cond'), gd>=0?'up':'down','side');
+
+    put(g,'rect',{x:726,y:84,width:132,height:68,rx:11,fill:'var(--surface-1)',
+      stroke: nr>=0?'var(--nr)':'var(--lw)','stroke-width':2});
+    put(g,'text',{x:792,y:106,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},'F NR');
+    put(g,'text',{x:792,y:135,'text-anchor':'middle','font-size':25,
+      fill: nr>=0?'var(--nr)':'var(--lw)','font-weight':600}, num(nr));
+
+    put(g,'text',{x:20,y:GY+70,'font-size':13.5,fill:'var(--text-secondary)'},undefined,
+      night
+      ? 'F<tspan baseline-shift="sub" font-size="10">NR</tspan> = F<tspan baseline-shift="sub" font-size="10">IR↓</tspan> − F<tspan baseline-shift="sub" font-size="10">IR↑</tspan>  →  negative, and F<tspan baseline-shift="sub" font-size="10">SH</tspan>, F<tspan baseline-shift="sub" font-size="10">LH</tspan> and F<tspan baseline-shift="sub" font-size="10">cond</tspan> all reverse to supply it'
+      : 'F<tspan baseline-shift="sub" font-size="10">NR</tspan> = F<tspan baseline-shift="sub" font-size="10">solar</tspan> − αF<tspan baseline-shift="sub" font-size="10">solar</tspan> + F<tspan baseline-shift="sub" font-size="10">IR↓</tspan> − F<tspan baseline-shift="sub" font-size="10">IR↑</tspan>  →  positive, and spent on F<tspan baseline-shift="sub" font-size="10">SH</tspan> + F<tspan baseline-shift="sub" font-size="10">LH</tspan> + F<tspan baseline-shift="sub" font-size="10">cond</tspan>');
+
+    $('dnNote').innerHTML = night
+      ? '<b>At night the surface is the coldest thing around.</b> It keeps radiating infrared but receives no '+
+        'sunlight, so F<sub>NR</sub> goes negative and every other flux turns round to feed it. Heat conducts '+
+        '<em>upward</em> from the now-warmer soil, and the air &mdash; also now warmer than the ground &mdash; '+
+        'delivers sensible heat <em>downward</em>. That downward F<sub>SH</sub> exists only because a '+
+        'temperature inversion has formed, which is itself a consequence of the surface having cooled first. '+
+        '<span style="color:var(--text-muted)">Night-time magnitudes here are indicative, scaled from the '+
+        'site&rsquo;s daytime longwave terms.</span>'
+      : '<b>By day the surface is the warmest thing around.</b> It is the only place the sunlight is actually '+
+        'absorbed, so it heats up and heat flows away from it in every direction at once &mdash; upward into '+
+        'the air as F<sub>SH</sub> and F<sub>LH</sub>, downward into the soil as F<sub>cond</sub>. Both '+
+        'turbulent fluxes and the conduction flux point away from the surface, and that is the whole reason '+
+        'the surface sits at the top of the temperature profile.';
+  }
+
+  /* ─────────── selection ─────────── */
+  const kpi=(k,v,sub)=>'<div class="kpi"><div class="k">'+k+'</div><div class="v">'+v+
+    '</div><div class="s">'+sub+'</div></div>';
+
+  function select(i){
+    cur=i; const s=SITES[i];
+    [...$('sites').children].forEach((b,j)=>b.setAttribute('aria-pressed', j===i));
+    [...$('tbody').children].forEach((r,j)=>r.className = j===i?'on':'');
+    $('siteTitle').textContent = s.name;
+    $('siteCap').textContent = s.where + '  ·  ' + s.when;
+    $('kpis').innerHTML =
+      kpi('Albedo', s.a.toFixed(2), Math.round(100*s.a)+' % reflected') +
+      kpi('Net radiation', num(s.nr), 'MJ m⁻² day⁻¹') +
+      kpi('Bowen ratio', boTxt(s.bo),
+          s.bo<0 ? 'F SH reversed' : (s.bo>1 ? 'sensible heat wins' : 'evaporation wins')) +
+      kpi('Goes to evaporation',
+          s.nr>0 ? Math.round(100*s.lh/s.nr)+' %' : 'n/a',
+          s.nr>0 ? 'of F NR as F LH' : 'F NR is negative');
+    $('waterNote').innerHTML = s.blurb;
+    drawArrows(); drawWater(); drawBowen(); drawDN();
+  }
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+
+  select(0);
+})();
+</script>
+</body>
+</html>

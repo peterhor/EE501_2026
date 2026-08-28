@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sensible and latent heat — the bulk formulas</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --sh:#eb6834; --lh:#2a78d6; --nr:#1baf7a; --gd:#8a6b45; --warn:#c8443a;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --sh:#d95926; --lh:#3987e5; --nr:#199e70; --gd:#a08258; --warn:#d9564c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:780px){.two{grid-template-columns:1fr}}
+  .eq{background:var(--surface-2);border-radius:10px;padding:15px 16px;margin:10px 0;
+    font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .syms{font-size:13.5px;color:var(--text-secondary);margin:10px 0 0;line-height:1.85}
+  .syms b{color:var(--text-primary);font-weight:600}
+  .presets{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+  .pb{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;font-family:inherit;line-height:1.3;text-align:left}
+  .pb:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pb[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .ctrl{display:grid;grid-template-columns:170px 1fr 96px;gap:12px;align-items:center;
+    margin:0 0 11px;font-size:13.5px;color:var(--text-secondary)}
+  @media(max-width:600px){.ctrl{grid-template-columns:1fr;gap:4px}}
+  .ctrl .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);font-size:14px}
+  input[type=range]{width:100%;accent-color:var(--nr);height:22px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 0}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:21px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .big{background:var(--surface-2);border-left:3px solid var(--nr);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:16px 0 0;font-size:14.5px;color:var(--text-secondary)}
+  .big b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--nr);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  select{font-family:inherit;font-size:13.5px;padding:6px 10px;border-radius:8px;
+    border:1px solid var(--line);background:var(--surface-1);color:var(--text-primary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">← EE501 course</a> &nbsp;·&nbsp;
+<a href="energy-balance.html">← the surface energy balance</a> &nbsp;·&nbsp; 2 of 4 &nbsp;·&nbsp; <a href="explorer/">explorer</a></p>
+
+<header>
+  <div>
+    <h1>Sensible and latent heat: what the formulas actually say</h1>
+    <p class="sub">F<sub>SH</sub> and F<sub>LH</sub> carry most of the energy away from the surface, and both are
+    written the same way: a transfer efficiency, times the wind, times a difference between the surface and the
+    air. Move the four things you can measure and watch the fluxes follow.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>The two bulk formulas</h3>
+  <p class="cap">Identical in structure. Only the gradient being transported, and the constant in front of it,
+  are different.</p>
+  <div class="eq" style="border-left:3px solid var(--sh)">
+    F<sub>SH</sub> &nbsp;=&nbsp; &rho; &middot; c<sub>p</sub> &middot; c<sub>h</sub> &middot; U<sub>a</sub> &middot; (T<sub>s</sub> &minus; T<sub>a</sub>)
+    <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="eq" style="border-left:3px solid var(--lh)">
+    F<sub>LH</sub> &nbsp;=&nbsp; &rho; &middot; L<sub>v</sub> &middot; c<sub>L</sub> &middot; U<sub>a</sub> &middot; (q<sub>s</sub> &minus; q<sub>a</sub>)
+    <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="syms">
+    <b>&rho;</b> air density, about 1.2 kg m<sup>&minus;3</sup> near sea level &nbsp;·&nbsp;
+    <b>c<sub>p</sub></b> specific heat of dry air, 1004 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup> &nbsp;·&nbsp;
+    <b>L<sub>v</sub></b> latent heat of vaporisation, 2.50 &times; 10<sup>6</sup> J kg<sup>&minus;1</sup> at 0 °C<br>
+    <b>c<sub>h</sub>, c<sub>L</sub></b> dimensionless bulk transfer coefficients &mdash; the surface&rsquo;s
+    aerodynamic grip on the air &nbsp;·&nbsp;
+    <b>U<sub>a</sub></b> wind speed at the reference level (10 m)<br>
+    <b>T<sub>s</sub> &minus; T<sub>a</sub></b> surface-to-air temperature difference, air taken at 2 m &nbsp;·&nbsp;
+    <b>q<sub>s</sub> &minus; q<sub>a</sub></b> specific humidity difference, same two levels
+  </div>
+  <p class="note"><b>Three ingredients each, and all three must be non-zero.</b> No wind, no flux &mdash; however
+  hot the surface is. No gradient, no flux &mdash; however hard the wind blows. And a rough surface moves far
+  more heat than a smooth one at the same wind speed and the same temperature difference, because
+  c<sub>h</sub> is larger.</p>
+</div>
+
+<h2 class="sec">Try it</h2>
+
+<div class="presets" id="presets"></div>
+
+<div class="card">
+  <h3 id="pTitle">Custom conditions</h3>
+  <p class="cap" id="pCap">Drag any slider to leave the preset and explore.</p>
+
+  <div class="ctrl">
+    <label for="ua">Wind speed U<sub>a</sub></label>
+    <input type="range" id="ua" min="0" max="12" step="0.1" value="4">
+    <span class="v" id="uaV"></span></div>
+
+  <div class="ctrl">
+    <label for="dt">T<sub>s</sub> &minus; T<sub>a</sub></label>
+    <input type="range" id="dt" min="-12" max="35" step="0.5" value="22">
+    <span class="v" id="dtV"></span></div>
+
+  <div class="ctrl">
+    <label for="dq">q<sub>s</sub> &minus; q<sub>a</sub></label>
+    <input type="range" id="dq" min="-3" max="16" step="0.05" value="0.3">
+    <span class="v" id="dqV"></span></div>
+
+  <div class="ctrl">
+    <label for="cc">Transfer coefficient c<sub>h</sub> = c<sub>L</sub></label>
+    <input type="range" id="cc" min="0" max="100" step="1" value="66">
+    <span class="v" id="ccV"></span></div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">F<sub>SH</sub></div>
+      <div class="v" id="kSH" style="color:var(--sh)"></div><div class="s" id="kSHs"></div></div>
+    <div class="kpi"><div class="k">F<sub>LH</sub></div>
+      <div class="v" id="kLH" style="color:var(--lh)"></div><div class="s" id="kLHs"></div></div>
+    <div class="kpi"><div class="k">Bowen ratio</div>
+      <div class="v" id="kBo"></div><div class="s" id="kBos"></div></div>
+    <div class="kpi"><div class="k">Aerodynamic resistance</div>
+      <div class="v" id="kRa"></div><div class="s">r<sub>a</sub> = 1 / (c U<sub>a</sub>)</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The two fluxes side by side</h3>
+  <p class="cap">Bars above the axis leave the surface; below it, they arrive at the surface. Together they are
+  the turbulent heat loss that the net radiation has to pay for.</p>
+  <svg id="bars" viewBox="0 0 880 250" role="img" aria-label="Bar chart comparing the sensible and latent heat fluxes for the current conditions"></svg>
+</div>
+
+<div class="two">
+  <div class="card">
+    <h3>Change the wind</h3>
+    <p class="cap">Both fluxes are exactly linear in U<sub>a</sub>. Neither one saturates.</p>
+    <svg id="wind" viewBox="0 0 430 300" role="img" aria-label="Sensible and latent heat flux plotted against wind speed, both straight lines through the origin"></svg>
+  </div>
+  <div class="card">
+    <h3>Where the sign changes</h3>
+    <p class="cap">The Bowen ratio as a function of the two gradients. Lines through the origin are contours of
+    constant B<sub>o</sub>.</p>
+    <svg id="regime" viewBox="0 0 430 300" role="img" aria-label="Regime map of the Bowen ratio in the plane of temperature difference against humidity difference, with contours radiating from the origin"></svg>
+  </div>
+</div>
+
+<div class="card">
+  <div class="big">
+    <b>The Bowen ratio does not care about wind or roughness.</b> Divide the two formulas and, as long as heat
+    and vapour are carried by the same eddies (c<sub>h</sub> = c<sub>L</sub>), &rho;, c and U<sub>a</sub> all
+    cancel:
+    <div class="eq" style="font-size:16px;margin:14px 0 10px">
+      B<sub>o</sub> &nbsp;=&nbsp; (c<sub>p</sub> / L<sub>v</sub>) &middot;
+      (T<sub>s</sub> &minus; T<sub>a</sub>) / (q<sub>s</sub> &minus; q<sub>a</sub>)
+      &nbsp;&nbsp;&asymp;&nbsp;&nbsp; 0.40 &middot; &Delta;T [K] / &Delta;q [g kg<sup>&minus;1</sup>]</div>
+    Blow harder and both fluxes grow together. Move to a rougher surface and both grow together. The <em>split</em>
+    is set by nothing except the ratio of the two gradients &mdash; which is another way of saying it is set by
+    how much water the surface can supply. Check it on the sliders: change U<sub>a</sub> or c<sub>h</sub> and
+    watch B<sub>o</sub> refuse to move.
+  </div>
+  <p class="q"><b>Question.</b> A surface has &Delta;T = 8 K. How large does &Delta;q have to be before evaporation
+  takes more energy than heating the air? What kind of surface supplies that much water vapour, and what kind
+  cannot?</p>
+</div>
+
+<h2 class="sec">The oasis effect</h2>
+
+<div class="card">
+  <h3>How F<sub>LH</sub> can exceed F<sub>NR</sub></h3>
+  <p class="cap">A small moist patch inside a dry landscape &mdash; an oasis, an irrigated field, a city park in
+  August.</p>
+  <svg id="oasis" viewBox="0 0 880 320" role="img" aria-label="Schematic of the oasis effect showing warm dry air advected over a moist patch, with sensible heat flowing downward into the surface and a latent heat flux larger than the net radiation"></svg>
+  <p class="note"><b>Follow the temperature difference.</b> The wet patch evaporates hard, so it stays cool
+  &mdash; cooler than the hot dry air arriving from upwind. That makes T<sub>s</sub> &minus; T<sub>a</sub>
+  <em>negative</em>, so F<sub>SH</sub> reverses and the air starts delivering heat <em>to</em> the surface. The
+  surface now has two energy supplies, radiation and advection, and can evaporate more than the radiation alone
+  could ever pay for. F<sub>LH</sub> &gt; F<sub>NR</sub>, and B<sub>o</sub> is negative.</p>
+  <p class="note"><b>It only works because the patch is small.</b> The extra energy is being carried in
+  horizontally from the surrounding dry land. Irrigate the whole desert and the upwind air becomes cool and
+  humid, the advection stops, and the oasis effect disappears. This is a genuinely <em>local</em> phenomenon
+  &mdash; it cannot appear in a global energy budget, because globally there is no upwind.</p>
+  <p class="note" style="color:var(--text-muted)">Preset <b>Irrigated field</b> above puts you in this state:
+  &Delta;T negative, &Delta;q large, B<sub>o</sub> &asymp; &minus;0.13.</p>
+</div>
+
+<h2 class="sec">Heat storage in the surface layer</h2>
+
+<div class="card">
+  <h3>The fourth term</h3>
+  <p class="cap">Not everything leaves. Some of the net radiation simply warms up a thin layer of the surface
+  itself &mdash; and how thin that layer is, is a property of the material.</p>
+  <div class="eq">heat storage &nbsp;=&nbsp; &rho; c<sub>ground</sub> &middot; h<sub>su</sub> &middot;
+    &delta;T<sub>s</sub>/&delta;t <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="syms">
+    <b>&rho; c<sub>ground</sub></b> volumetric heat capacity of the layer [J m<sup>&minus;3</sup> K<sup>&minus;1</sup>] &nbsp;·&nbsp;
+    <b>h<sub>su</sub></b> thickness of the surface layer [m] &nbsp;·&nbsp;
+    <b>&delta;T<sub>s</sub>/&delta;t</b> its warming rate [K s<sup>&minus;1</sup>]
+  </div>
+
+  <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:18px 0 14px">
+    <label for="mat" style="font-size:13.5px;color:var(--text-secondary)">Material</label>
+    <select id="mat"></select>
+  </div>
+  <div class="ctrl">
+    <label for="hsu">Layer thickness h<sub>su</sub></label>
+    <input type="range" id="hsu" min="0.01" max="0.60" step="0.01" value="0.10">
+    <span class="v" id="hsuV"></span></div>
+  <div class="ctrl">
+    <label for="rate">Warming rate &delta;T<sub>s</sub>/&delta;t</label>
+    <input type="range" id="rate" min="-8" max="12" step="0.25" value="5">
+    <span class="v" id="rateV"></span></div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Heat storage</div>
+      <div class="v" id="kSt" style="color:var(--gd)"></div><div class="s">W m⁻²</div></div>
+    <div class="kpi"><div class="k">Volumetric heat capacity</div>
+      <div class="v" id="kC"></div><div class="s">MJ m⁻³ K⁻¹</div></div>
+    <div class="kpi"><div class="k">Energy in the layer</div>
+      <div class="v" id="kE"></div><div class="s">MJ m⁻² per 10 K</div></div>
+    <div class="kpi"><div class="k">If 100 W m⁻² went in</div>
+      <div class="v" id="kR"></div><div class="s">K per hour</div></div>
+  </div>
+  <p class="note"><b>This is why deserts get so hot.</b> Dry sand has a low volumetric heat capacity and a low
+  diffusivity, so the absorbed energy is trapped in a very thin layer and has nowhere to go but up in
+  temperature. Set the material to dry sand and h<sub>su</sub> to 5 cm and read the last box: a modest 100 W
+  m<sup>&minus;2</sup> heats it more than 5 K every hour. Do the same to wet clay 30 cm deep and it barely
+  moves.</p>
+  <p class="note"><b>And why snow behaves so strangely.</b> Fresh snow has the lowest heat capacity on the list.
+  A thin snow layer changes temperature very fast &mdash; but it also insulates whatever is beneath it almost
+  completely, which is why the soil under a snowpack stays near 0 °C all winter while the snow surface goes to
+  &minus;30 °C.</p>
+</div>
+
+<h2 class="sec">Reference values</h2>
+
+<div class="card">
+  <h3>Typical turbulent fluxes at midday</h3>
+  <p class="cap">Instantaneous values around solar noon on a clear summer day, W m<sup>&minus;2</sup>. Click a
+  row to load it.</p>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Situation</th><th class="num">U<sub>a</sub></th><th class="num">&Delta;T</th>
+      <th class="num">&Delta;q</th><th class="num">c</th>
+      <th class="num">F<sub>SH</sub></th><th class="num">F<sub>LH</sub></th><th class="num">B<sub>o</sub></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  </div>
+  <p class="note"><b>The transfer coefficient spans two orders of magnitude.</b> The lecture quotes a range of
+  5 &times; 10<sup>&minus;5</sup> to 1 &times; 10<sup>&minus;3</sup>, which covers smooth surfaces &mdash; open
+  water, snow, short grass. A forest canopy is aerodynamically far rougher and sits an order of magnitude above
+  that, which is why a forest can move several hundred watts per square metre on a light breeze and a lake
+  cannot.</p>
+</div>
+
+<p class="foot">Constants: &rho; = 1.15 kg m<sup>&minus;3</sup> · c<sub>p</sub> = 1004 J K<sup>&minus;1</sup>
+kg<sup>&minus;1</sup> · L<sub>v</sub> = 2.50 &times; 10<sup>6</sup> J kg<sup>&minus;1</sup>. Volumetric heat
+capacities after Oke, <i>Boundary Layer Climates</i> (1987), Table 2.1. The presets are plausible midday
+conditions chosen to reproduce the Bowen ratios quoted in the lecture for each surface type, not measurements
+from a specific instrument record. Both formulas assume c<sub>h</sub> = c<sub>L</sub>, which is a good
+approximation in near-neutral conditions and breaks down in a strong inversion. &nbsp;·&nbsp; Next:
+<a href="soil-temperature.html">heat in the ground &rarr;</a> &nbsp;·&nbsp; <a href="explorer/">the live explorer &rarr;</a></p>
+
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const put=(svg,tag,attrs,content,html)=>{const e=el(tag,attrs);
+    if(html!==undefined) e.innerHTML=html; else if(content!==undefined) e.textContent=content;
+    svg.appendChild(e); return e;};
+
+  const RHO=1.15, CP=1004, LV=2.50e6;
+
+  /* the coefficient slider is logarithmic: 0..100 -> 5e-5 .. 1e-2 */
+  const cFromSlider = p => 5e-5*Math.pow(1e-2/5e-5, p/100);
+  const sliderFromC = c => 100*Math.log(c/5e-5)/Math.log(1e-2/5e-5);
+  const cTxt = c => {
+    const e=Math.floor(Math.log10(c)), m=c/Math.pow(10,e);
+    return m.toFixed(1)+' × 10'+String(e).replace('-','⁻').replace('2','²').replace('3','³').replace('4','⁴').replace('5','⁵');
+  };
+
+  const PRESETS=[
+    {n:'Desert, noon',      short:'Desert',   ua:4.0, dt:22,   dq:0.30, c:3.5e-3,
+     cap:'Hot dry sand under a cloudless sky. A huge temperature difference, and almost nothing to evaporate.'},
+    {n:'Irrigated field',   short:'Oasis',    ua:4.0, dt:-3.0, dq:9.00, c:3.0e-3,
+     cap:'A wet patch in a dry landscape, afternoon. The surface is cooler than the air arriving over it.'},
+    {n:'Pine forest',       short:'Pine',     ua:3.5, dt:6.0,  dq:1.45, c:6.0e-3,
+     cap:'Thetford, July. A very rough canopy but a limited water supply — Bₒ = 1.67, as in the lecture.'},
+    {n:'Fir forest',        short:'Fir',      ua:3.0, dt:3.0,  dq:2.50, c:6.0e-3,
+     cap:'Haney, July. Same roughness, far more water available — Bₒ = 0.48, as in the lecture.'},
+    {n:'Open ocean',        short:'Ocean',    ua:8.0, dt:1.5,  dq:4.00, c:1.2e-3,
+     cap:'Trade-wind conditions. Smooth surface, strong wind, an unlimited water supply and a tiny ΔT.'},
+    {n:'Snow, polar summer',short:'Snow',     ua:5.0, dt:-2.0, dq:0.15, c:1.2e-3,
+     cap:'Melting-point snow under warmer air. Fₛₕ is downward — the air is helping to melt the snow.'},
+    {n:'Clear night, grass',short:'Night',    ua:1.2, dt:-4.0, dq:-0.40, c:1.5e-3,
+     cap:'Radiative cooling has made the surface colder than the air. Both fluxes point down, and dew is forming.'},
+    {n:'Calm, no wind',     short:'Calm',     ua:0.2, dt:15,   dq:5.00, c:3.0e-3,
+     cap:'Everything is favourable except the wind. Watch both fluxes collapse together.'}
+  ];
+
+  /* Oke Table 2.1 — volumetric heat capacity, MJ m-3 K-1 */
+  const MATS=[
+    {n:'Sandy soil — dry',      C:1.28},
+    {n:'Sandy soil — saturated',C:2.96},
+    {n:'Clay soil — dry',       C:1.42},
+    {n:'Clay soil — saturated', C:3.10},
+    {n:'Peat — dry',            C:0.58},
+    {n:'Peat — saturated',      C:3.06},
+    {n:'Snow — fresh',          C:0.21},
+    {n:'Snow — old',            C:0.84},
+    {n:'Ice',                   C:1.93},
+    {n:'Still water',           C:4.18},
+    {n:'Rock',                  C:2.25}
+  ];
+  $('mat').innerHTML = MATS.map((m,i)=>'<option value="'+i+'"'+(i===0?' selected':'')+'>'+m.n+'</option>').join('');
+
+  const num=(v,d)=>(v<0?'−':'')+Math.abs(v).toFixed(d===undefined?0:d);
+  const boTxt=b=>!isFinite(b)?'∞':(Math.abs(b)>=100?num(b,0):num(b,2));
+
+  let st={ua:4.0, dt:22, dq:0.30, c:3.5e-3}, activePreset=0;
+
+  /* ── presets ─────────────────────────────────────────────────── */
+  $('presets').innerHTML = PRESETS.map((p,i)=>
+    '<button class="pb" data-i="'+i+'" aria-pressed="'+(i===0)+'">'+p.n+'</button>').join('');
+  $('presets').addEventListener('click',e=>{
+    const b=e.target.closest('.pb'); if(!b) return;
+    loadPreset(+b.dataset.i);
+  });
+  function loadPreset(i){
+    const p=PRESETS[i]; activePreset=i;
+    st={ua:p.ua, dt:p.dt, dq:p.dq, c:p.c};
+    $('ua').value=p.ua; $('dt').value=p.dt; $('dq').value=p.dq; $('cc').value=sliderFromC(p.c);
+    $('pTitle').textContent=p.n; $('pCap').textContent=p.cap;
+    [...$('presets').children].forEach((b,j)=>b.setAttribute('aria-pressed', j===i));
+    render();
+  }
+
+  ['ua','dt','dq','cc'].forEach(id=>$(id).addEventListener('input',()=>{
+    st.ua=+$('ua').value; st.dt=+$('dt').value; st.dq=+$('dq').value; st.c=cFromSlider(+$('cc').value);
+    if(activePreset!==null){
+      activePreset=null;
+      [...$('presets').children].forEach(b=>b.setAttribute('aria-pressed',false));
+      $('pTitle').textContent='Custom conditions';
+      $('pCap').textContent='Off-preset. Load one of the buttons above to come back.';
+    }
+    render();
+  }));
+
+  const fSH = s => RHO*CP*s.c*s.ua*s.dt;
+  const fLH = s => RHO*LV*s.c*s.ua*(s.dq/1000);
+
+  /* ── reference table ─────────────────────────────────────────── */
+  $('tbody').innerHTML = PRESETS.map((p,i)=>{
+    const sh=fSH(p), lh=fLH(p), bo = lh===0?Infinity:sh/lh;
+    return '<tr data-i="'+i+'" style="cursor:pointer"><td class="nm">'+p.n+'</td>'+
+      '<td class="num">'+p.ua.toFixed(1)+'</td><td class="num">'+num(p.dt,1)+'</td>'+
+      '<td class="num">'+num(p.dq,2)+'</td><td class="num">'+cTxt(p.c)+'</td>'+
+      '<td class="num">'+num(sh,0)+'</td><td class="num">'+num(lh,0)+'</td>'+
+      '<td class="num">'+boTxt(bo)+'</td></tr>';
+  }).join('');
+  $('tbody').addEventListener('click',e=>{
+    const r=e.target.closest('tr'); if(!r) return;
+    loadPreset(+r.dataset.i);
+    $('pTitle').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  /* ── bars ────────────────────────────────────────────────────── */
+  function drawBars(sh,lh){
+    const g=$('bars'); g.innerHTML='';
+    const L=190,R=846,T=24,B=196;
+    const m=Math.max(60,Math.abs(sh),Math.abs(lh))*1.15;
+    const lo=Math.min(0,-m*0.45), hi=m;
+    const x=v=>L+(v-lo)/(hi-lo)*(R-L);
+    const step = m>400?100:(m>200?50:(m>80?25:10));
+    for(let v=Math.ceil(lo/step)*step; v<=hi; v+=step){
+      put(g,'line',{x1:x(v),x2:x(v),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(v),y:B+20,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},v);
+    }
+    put(g,'line',{x1:x(0),x2:x(0),y1:T,y2:B,stroke:'var(--text-muted)','stroke-width':1.5});
+    const rows=[{l:'F SH',v:sh,c:'var(--sh)',s:'sensible — heats the air'},
+                {l:'F LH',v:lh,c:'var(--lh)',s:'latent — evaporates water'}];
+    rows.forEach((r,i)=>{
+      const cy=T+44+i*76, h=44;
+      put(g,'rect',{x:Math.min(x(0),x(r.v)),y:cy-h/2,width:Math.max(2,Math.abs(x(r.v)-x(0))),
+        height:h,fill:r.c,opacity:.88,rx:3});
+      put(g,'text',{x:L-16,y:cy-3,'text-anchor':'end','font-size':15,
+        fill:'var(--text-primary)','font-weight':600},r.l);
+      put(g,'text',{x:L-16,y:cy+15,'text-anchor':'end','font-size':11.5,
+        fill:'var(--text-muted)'},r.s);
+      const tx = r.v>=0 ? x(r.v)+10 : x(r.v)-10;
+      put(g,'text',{x:tx,y:cy+6,'text-anchor':r.v>=0?'start':'end','font-size':16,
+        fill:'var(--text-primary)','font-weight':600}, num(r.v,0)+' W m⁻²');
+    });
+    put(g,'text',{x:(L+R)/2,y:B+44,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Flux density (W m⁻²)   ·   ← into the surface    out of the surface →');
+    put(g,'text',{x:x(0),y:B+64,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},'0');
+  }
+
+  /* ── flux vs wind ────────────────────────────────────────────── */
+  function drawWind(sh,lh){
+    const g=$('wind'); g.innerHTML='';
+    const L=54,R=414,T=20,B=232;
+    const at=u=>({sh:RHO*CP*st.c*u*st.dt, lh:RHO*LV*st.c*u*(st.dq/1000)});
+    const e=at(12);
+    // frame only the range the two lines actually occupy, plus 0
+    let hi=Math.max(0,e.sh,e.lh), lo=Math.min(0,e.sh,e.lh);
+    if(hi-lo<40){ hi+=20; lo-=20; }
+    const pad=(hi-lo)*0.10; hi+=pad; lo-=pad;
+    const x=u=>L+u/12*(R-L), y=v=>B-(v-lo)/(hi-lo)*(B-T);
+    for(let u=0;u<=12;u+=2){
+      put(g,'line',{x1:x(u),x2:x(u),y1:T,y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:x(u),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},u);
+    }
+    // a few round gridlines across the range
+    const span=hi-lo, raw=span/4;
+    const mag=Math.pow(10,Math.floor(Math.log10(raw)));
+    const stp=[1,2,2.5,5,10].map(f=>f*mag).find(v=>v>=raw)||mag*10;
+    for(let v=Math.ceil(lo/stp)*stp; v<=hi; v+=stp){
+      put(g,'line',{x1:L,x2:R,y1:y(v),y2:y(v),stroke:'var(--grid)'});
+      put(g,'text',{x:L-8,y:y(v)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'}, num(v,0));
+    }
+    put(g,'line',{x1:L,x2:R,y1:y(0),y2:y(0),stroke:'var(--text-muted)','stroke-width':1.3});
+    [['sh','var(--sh)','F SH'],['lh','var(--lh)','F LH']].forEach(([k,c,lab])=>{
+      put(g,'line',{x1:x(0),y1:y(0),x2:x(12),y2:y(e[k]),stroke:c,'stroke-width':2.5});
+      put(g,'text',{x:x(12)-4,y:y(e[k])+(e[k]>=0?-8:16),'text-anchor':'end','font-size':12,
+        fill:c,'font-weight':600},lab);
+    });
+    const cu=at(st.ua);
+    put(g,'line',{x1:x(st.ua),x2:x(st.ua),y1:T,y2:B,stroke:'var(--text-muted)','stroke-dasharray':'3 4'});
+    put(g,'circle',{cx:x(st.ua),cy:y(cu.sh),r:5,fill:'var(--sh)',stroke:'var(--surface-1)','stroke-width':2});
+    put(g,'circle',{cx:x(st.ua),cy:y(cu.lh),r:5,fill:'var(--lh)',stroke:'var(--surface-1)','stroke-width':2});
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'Wind speed U a  (m s⁻¹)');
+    put(g,'text',{x:16,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'Flux (W m⁻²)');
+    put(g,'text',{x:L+6,y:T+16,'font-size':11.5,fill:'var(--text-muted)'},
+      'both straight lines — Bₒ is the same at every wind speed');
+  }
+
+  /* ── Bowen regime map ────────────────────────────────────────── */
+  function drawRegime(){
+    const g=$('regime'); g.innerHTML='';
+    const L=54,R=414,T=20,B=232;
+    const dtLo=-12,dtHi=35, dqLo=-3,dqHi=16;
+    const x=d=>L+(d-dqLo)/(dqHi-dqLo)*(R-L);
+    const y=d=>B-(d-dtLo)/(dtHi-dtLo)*(B-T);
+    // quadrant shading
+    put(g,'rect',{x:x(0),y:T,width:R-x(0),height:y(0)-T,fill:'var(--nr)',opacity:.07});
+    put(g,'rect',{x:L,y:T,width:x(0)-L,height:y(0)-T,fill:'var(--warn)',opacity:.07});
+    put(g,'rect',{x:x(0),y:y(0),width:R-x(0),height:B-y(0),fill:'var(--warn)',opacity:.07});
+    put(g,'rect',{x:L,y:y(0),width:x(0)-L,height:B-y(0),fill:'var(--nr)',opacity:.07});
+    for(let d=-2;d<=16;d+=2){
+      put(g,'line',{x1:x(d),x2:x(d),y1:T,y2:B,stroke:'var(--grid)'});
+      if(d%4===0) put(g,'text',{x:x(d),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},d);
+    }
+    for(let d=-10;d<=35;d+=5){
+      put(g,'line',{x1:L,x2:R,y1:y(d),y2:y(d),stroke:'var(--grid)'});
+      if(d%10===0) put(g,'text',{x:L-8,y:y(d)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},d);
+    }
+    put(g,'line',{x1:L,x2:R,y1:y(0),y2:y(0),stroke:'var(--text-muted)','stroke-width':1.3});
+    put(g,'line',{x1:x(0),x2:x(0),y1:T,y2:B,stroke:'var(--text-muted)','stroke-width':1.3});
+    // Bo contours: dT = (Lv/cp) * Bo * dq(kg/kg)  ->  dT = 2.49 * Bo * dq[g/kg]
+    const K=LV/CP/1000;             // 2.49 K per (g/kg) per unit Bo
+    // the line dT = m*dq clipped to the plotted box
+    const clip=m=>{
+      const a=[], add=(q,t)=>{ if(q>=dqLo-1e-9&&q<=dqHi+1e-9&&t>=dtLo-1e-9&&t<=dtHi+1e-9) a.push([q,t]); };
+      add(dqLo, m*dqLo); add(dqHi, m*dqHi);
+      if(m!==0){ add(dtLo/m, dtLo); add(dtHi/m, dtHi); }
+      return a.length>=2 ? [a[0],a[a.length-1]] : null;
+    };
+    [[0.1,'0.1'],[0.5,'0.5'],[1,'Bₒ = 1'],[3,'3'],[10,'10']].forEach(([bo,lab])=>{
+      const seg=clip(K*bo); if(!seg) return;
+      put(g,'line',{x1:x(seg[0][0]),y1:y(seg[0][1]),x2:x(seg[1][0]),y2:y(seg[1][1]),
+        stroke:'var(--text-muted)','stroke-width':bo===1?1.8:1,
+        'stroke-dasharray':bo===1?'':'3 4',opacity:.8});
+      const end = seg[1][0]>seg[0][0] ? seg[1] : seg[0];
+      put(g,'text',{x:x(end[0])-5,y:y(end[1])-6,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},lab);
+    });
+    put(g,'text',{x:x(dqHi)-6,y:y(-8),'text-anchor':'end','font-size':10.5,
+      fill:'var(--warn)'},'Bₒ < 0  — the oasis effect');
+    put(g,'text',{x:L+6,y:y(30),'font-size':10.5,fill:'var(--warn)'},'Bₒ < 0  — dew forming');
+    put(g,'circle',{cx:x(st.dq),cy:y(Math.max(dtLo,Math.min(dtHi,st.dt))),r:6,
+      fill:'var(--nr)',stroke:'var(--surface-1)','stroke-width':2});
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'q s − q a  (g kg⁻¹)');
+    put(g,'text',{x:16,y:(T+B)/2,'font-size':12,fill:'var(--text-secondary)','text-anchor':'middle',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'T s − T a  (K)');
+  }
+
+  /* ── oasis schematic (static) ────────────────────────────────── */
+  function drawOasis(){
+    const g=$('oasis'); g.innerHTML='';
+    const GY=214;
+    put(g,'rect',{x:0,y:0,width:880,height:GY,fill:'var(--surface-2)',opacity:.5});
+    // dry ground either side, wet patch in the middle
+    put(g,'rect',{x:0,y:GY,width:880,height:320-GY,fill:'var(--sh)',opacity:.16});
+    put(g,'rect',{x:300,y:GY,width:280,height:320-GY,fill:'var(--lh)',opacity:.24});
+    put(g,'line',{x1:0,x2:880,y1:GY,y2:GY,stroke:'var(--text-primary)','stroke-width':2.5,opacity:.7});
+    put(g,'text',{x:150,y:GY+34,'text-anchor':'middle','font-size':13,
+      fill:'var(--text-secondary)'},'dry land — hot, no water');
+    put(g,'text',{x:440,y:GY+34,'text-anchor':'middle','font-size':13,
+      fill:'var(--text-primary)','font-weight':600},'irrigated field — cool, wet');
+    put(g,'text',{x:730,y:GY+34,'text-anchor':'middle','font-size':13,
+      fill:'var(--text-secondary)'},'dry land');
+    put(g,'text',{x:150,y:GY+56,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'T s ≈ 55 °C');
+    put(g,'text',{x:440,y:GY+56,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'T s ≈ 22 °C, below the air temperature');
+
+    // advected air stream
+    for(let i=0;i<4;i++){
+      const yy=56+i*28;
+      put(g,'path',{d:'M 20 '+yy+' L 300 '+yy, stroke:'var(--sh)','stroke-width':2,opacity:.55});
+      put(g,'path',{d:'M 292 '+(yy-6)+' L 306 '+yy+' L 292 '+(yy+6)+' Z',fill:'var(--sh)',opacity:.65});
+    }
+    put(g,'text',{x:24,y:40,'font-size':12.5,fill:'var(--sh)','font-weight':600},
+      'warm dry air advected in from upwind');
+
+    // downward sensible heat over the patch
+    [352,420,488,556].forEach(cx=>{
+      put(g,'path',{d:'M '+cx+' 118 L '+cx+' '+(GY-22),stroke:'var(--sh)','stroke-width':6,opacity:.85});
+      put(g,'path',{d:'M '+(cx-11)+' '+(GY-24)+' L '+cx+' '+(GY-6)+' L '+(cx+11)+' '+(GY-24)+' Z',
+        fill:'var(--sh)',opacity:.85});
+    });
+    put(g,'text',{x:454,y:108,'text-anchor':'middle','font-size':13,
+      fill:'var(--sh)','font-weight':600},'F SH  downward  —  T s − T a < 0');
+
+    // big latent flux upward, and the radiative supply beside it for comparison —
+    // both drawn over the same vertical span, so only the WIDTH carries the magnitude
+    put(g,'path',{d:'M 640 '+(GY-6)+' L 640 84',stroke:'var(--lh)','stroke-width':26,opacity:.85});
+    put(g,'path',{d:'M 616 92 L 640 56 L 664 92 Z',fill:'var(--lh)',opacity:.85});
+    put(g,'text',{x:678,y:86,'font-size':13.5,fill:'var(--lh)','font-weight':600},'F LH');
+    put(g,'text',{x:678,y:105,'font-size':12,fill:'var(--text-muted)'},'evaporation');
+
+    put(g,'path',{d:'M 790 84 L 790 '+(GY-24),stroke:'var(--nr)','stroke-width':13,opacity:.75});
+    put(g,'path',{d:'M 778 '+(GY-26)+' L 790 '+(GY-6)+' L 802 '+(GY-26)+' Z',fill:'var(--nr)',opacity:.75});
+    put(g,'text',{x:810,y:86,'font-size':13.5,fill:'var(--nr)','font-weight':600},'F NR');
+    put(g,'text',{x:810,y:105,'font-size':12,fill:'var(--text-muted)'},'radiative');
+    put(g,'text',{x:810,y:121,'font-size':12,fill:'var(--text-muted)'},'supply');
+    put(g,'text',{x:612,y:62,'font-size':11.5,fill:'var(--text-muted)','text-anchor':'end'},
+      'arrow width = size of the flux');
+  }
+
+  /* ── heat storage ────────────────────────────────────────────── */
+  function renderStorage(){
+    const C = MATS[+$('mat').value].C*1e6;      // J m-3 K-1
+    const h = +$('hsu').value;
+    const rate = +$('rate').value;              // K per hour
+    const st_ = C*h*(rate/3600);                // W m-2
+    $('hsuV').textContent = (h*100).toFixed(0)+' cm';
+    $('rateV').textContent = num(rate,2)+' K h⁻¹';
+    $('kSt').textContent = num(st_,0);
+    $('kC').textContent  = (C/1e6).toFixed(2);
+    $('kE').textContent  = (C*h*10/1e6).toFixed(2);
+    $('kR').textContent  = (100/(C*h)*3600).toFixed(2);
+  }
+  ['mat','hsu','rate'].forEach(id=>$(id).addEventListener('input',renderStorage));
+
+  /* ── render ──────────────────────────────────────────────────── */
+  function render(){
+    const sh=fSH(st), lh=fLH(st), bo = lh===0?Infinity:sh/lh;
+    $('uaV').textContent = st.ua.toFixed(1)+' m s⁻¹';
+    $('dtV').textContent = num(st.dt,1)+' K';
+    $('dqV').textContent = num(st.dq,2)+' g kg⁻¹';
+    $('ccV').textContent = cTxt(st.c);
+    $('kSH').textContent = num(sh,0);
+    $('kLH').textContent = num(lh,0);
+    $('kSHs').textContent = (sh>=0?'W m⁻², out of the surface':'W m⁻², into the surface');
+    $('kLHs').textContent = (lh>=0?'W m⁻², evaporation':'W m⁻², condensation / dew');
+    $('kBo').textContent = boTxt(bo);
+    $('kBos').textContent = !isFinite(bo) ? 'no evaporation at all'
+      : bo<0 ? 'fluxes oppose — oasis / inversion'
+      : bo>1 ? 'sensible heat dominates' : 'evaporation dominates';
+    const ra = 1/(st.c*Math.max(st.ua,0.01));
+    $('kRa').textContent = st.ua<0.05 ? '∞' : Math.round(ra)+' s m⁻¹';
+    drawBars(sh,lh); drawWind(sh,lh); drawRegime();
+  }
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+
+  drawOasis(); renderStorage(); loadPreset(0);
+})();
+</script>
+</body>
+</html>
