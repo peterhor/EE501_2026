@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The pattern in space: radiation balance at the top of the atmosphere</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --sun:#eb6834; --sun-soft:#fdeae1; --sun-deep:#c14a1c;
+    --earth:#2a78d6; --earth-soft:#e2edfb; --earth-deep:#1c5cab;
+    --atmo:#3f9488; --atmo-soft:#e0f0ec; --atmo-deep:#2b7267;
+    --ground:#8a5a2e;
+    --accent:#4a3aa7; --good:#0ca30c;
+    --grid:#e6e5df;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --sun:#d95926; --sun-soft:#3a2318; --sun-deep:#eb6834;
+    --earth:#3987e5; --earth-soft:#152436; --earth-deep:#86b6ef;
+    --atmo:#4db3a4; --atmo-soft:#12302b; --atmo-deep:#7ad4c4;
+    --ground:#a06c39;
+    --accent:#9085e9; --good:#0ca30c;
+    --grid:#2e2e2b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--surface-0); color:var(--text-primary);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:34px 22px 90px}
+  header.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:10px}
+  h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:16px;max-width:64ch;margin:0}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  h2{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);
+     margin:0 0 14px;font-weight:600}
+  h3{font-size:18px;margin:0 0 8px;letter-spacing:-.01em}
+  section{margin:0 0 26px}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:22px 24px}
+  .card + .card{margin-top:14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p strong, li strong{color:var(--text-primary);font-weight:600}
+  ul{margin:0 0 12px;padding-left:20px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  .eq{background:var(--surface-2);border-radius:10px;padding:16px 18px;margin:14px 0;
+      font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+      font-size:21px;text-align:center;color:var(--text-primary);letter-spacing:.01em;overflow-x:auto}
+  .eq small{display:block;font-family:inherit;font-size:13px;color:var(--text-muted);margin-top:8px;letter-spacing:0}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 20px;margin:14px 0 4px}
+  .def{font-size:14px;color:var(--text-secondary)}
+  .def b{color:var(--text-primary);font-family:"Iowan Old Style",Georgia,serif;font-size:16px;margin-right:6px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr} .three{grid-template-columns:1fr}}
+  .tile{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:18px 20px}
+  .tile .lab{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+  .tile .val{font-size:27px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .tile .note{font-size:13px;color:var(--text-secondary);margin-top:6px}
+  .sunv .val{color:var(--sun-deep)} .earthv .val{color:var(--earth-deep)} .atmov .val{color:var(--atmo-deep)}
+  figure{margin:18px 0 6px}
+  figcaption{font-size:13px;color:var(--text-muted);margin-top:10px;text-align:center}
+  svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  .ctl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+  .ctl label{font-size:13px;color:var(--text-secondary);min-width:140px}
+  input[type=range]{flex:1;min-width:190px;accent-color:var(--atmo)}
+  .readout{font-variant-numeric:tabular-nums;font-weight:600;min-width:126px;text-align:right}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary)}
+  th{color:var(--text-muted);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--text-secondary)}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin:2px 0 10px}
+  .callout{border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:14px 0;font-size:15px;color:var(--text-secondary)}
+  .callout b{color:var(--text-primary)}
+  .callout.warn{border-left-color:var(--sun-deep)}
+  details{margin-top:10px}
+  summary{cursor:pointer;font-size:13px;color:var(--text-muted)}
+  summary:hover{color:var(--text-primary)}
+  .foot{color:var(--text-muted);font-size:13px;margin-top:34px;border-top:1px solid var(--line-soft);padding-top:16px}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:5px;font-size:13.5px}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+</style>
+<style>
+  /* ── additions used by the four "global view" pages ── */
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0 4px}
+  .kv .k{background:var(--surface-2);border-radius:10px;padding:12px 14px}
+  .kv .k .n{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)}
+  .kv .k .v{font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:3px}
+  .kv .k .d{font-size:12.5px;color:var(--text-muted);margin-top:3px;line-height:1.45}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .pills button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface-1);
+    color:var(--text-secondary);border-radius:999px;padding:6px 13px;cursor:pointer}
+  .pills button:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .q{border-left:3px solid var(--sun-deep);background:var(--surface-2);border-radius:0 10px 10px 0;
+    padding:13px 17px;margin:14px 0 0;font-size:14.5px;color:var(--text-secondary)}
+  .q > b{color:var(--text-primary)}
+  .q .k{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--sun-deep);font-weight:700;margin-bottom:4px}
+  .q details{margin-top:8px}
+  .q summary{color:var(--text-muted)}
+  .q .ans{margin-top:8px;font-size:14px;color:var(--text-secondary)}
+  .num-in{font:inherit;font-size:15px;width:92px;padding:5px 8px;border:1px solid var(--line);
+    border-radius:8px;background:var(--surface-1);color:var(--text-primary);
+    font-variant-numeric:tabular-nums;text-align:right}
+  .ok{color:var(--good);font-weight:600}
+  .bad{color:var(--sun-deep);font-weight:600}
+  .barrow{display:grid;grid-template-columns:112px 1fr 74px;gap:10px;align-items:center;
+    font-size:13.5px;margin-bottom:7px}
+  .barrow .nm{color:var(--text-primary)}
+  .barrow .tr{background:var(--surface-2);border-radius:5px;height:15px;overflow:hidden}
+  .barrow .fl{display:block;height:100%;border-radius:5px}
+  .barrow .vv{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-secondary)}
+  .seriesnav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;font-size:12.5px}
+  .seriesnav a,.seriesnav span{padding:5px 11px;border-radius:999px;border:1px solid var(--line-soft);
+    text-decoration:none;color:var(--text-muted);background:var(--surface-1)}
+  .seriesnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .seriesnav span.here{background:var(--accent);border-color:var(--accent);color:#fff}
+  .foot a{color:var(--accent)}
+  .card p:last-child, .card ul:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp; <a href="real-atmosphere.html">&larr; From one layer to a real atmosphere</a></p>
+
+<header class="top">
+  <div>
+    <h1>The pattern in space</h1>
+    <p class="sub">Part 2 of 4 of the <b>global view</b>. Everything so far has been a global average &mdash;
+    one number for the whole planet. But the planet does not absorb where it emits. This page takes the two
+    fluxes apart geographically, and the difference between them turns out to be the reason the atmosphere
+    and ocean circulate at all. Goosse et al. (2010) &sect;2.1.5, Figs. 2.12&ndash;2.14.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="seriesnav">
+  <a href="real-atmosphere.html">1 &middot; A real atmosphere</a>
+  <span class="here">2 &middot; The pattern in space</span>
+  <a href="heat-transport.html">3 &middot; Storage and transport</a>
+  <a href="global-budget.html">4 &middot; The complete ledger</a>
+</div>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; Two fields, one difference</a>
+  <a href="#s2">2 &middot; Absorbed solar</a>
+  <a href="#s3">3 &middot; Outgoing longwave</a>
+  <a href="#s4">4 &middot; Six places</a>
+  <a href="#s5">5 &middot; The zonal picture</a>
+  <a href="#s6">6 &middot; What it forces</a>
+</div>
+
+<!-- ───────────── 1 ───────────── -->
+<section id="s1">
+  <h2>1 &middot; Two fields, one difference</h2>
+  <div class="card">
+    <h3>The same equation as before, but as a function of place</h3>
+    <p>The planetary balance 239 in = 239 out holds for the <em>global annual mean</em> and nowhere else.
+    Written locally, the top-of-atmosphere net radiation is:</p>
+    <div class="eq">R<sub>TOA</sub>(&phi;,&lambda;) = Q(&phi;) &middot; [1 &minus; &alpha;(&phi;,&lambda;)] &nbsp;&minus;&nbsp; OLR(&phi;,&lambda;)
+      <small>absorbed solar radiation minus outgoing longwave radiation, W m<sup>&minus;2</sup></small></div>
+    <p>The two terms are controlled by completely different things, and this is the point of the whole
+    section:</p>
+    <div class="two">
+      <div class="tile sunv"><div class="lab">Absorbed solar &mdash; ASR</div><div class="val">Q &middot; (1&minus;&alpha;)</div>
+        <div class="note">set by <b>geometry</b> (how much sunlight arrives, from
+        <a href="../insolation/">the insolation page</a>) and by <b>reflectivity</b> &mdash; clouds, snow,
+        desert sand, ocean</div></div>
+      <div class="tile earthv"><div class="lab">Outgoing longwave &mdash; OLR</div><div class="val">&asymp; &sigma;T<sub>emit</sub><sup>4</sup></div>
+        <div class="note">set by the <b>temperature of whatever is doing the emitting</b> &mdash; and from
+        <a href="real-atmosphere.html">Part 1</a> we know that is not the surface but an altitude</div></div>
+    </div>
+    <div class="callout"><b>Keep the two questions separate.</b> "Why is this place bright?" is a question
+    about albedo. "Why is this place radiating a lot?" is a question about how high and how cold its
+    emission level is. Places can be extreme in one and ordinary in the other, and the Sahara &mdash; which
+    is extreme in <em>both, in opposite directions</em> &mdash; is the example that makes the distinction
+    stick.</div>
+  </div>
+</section>
+
+<!-- ───────────── 2 ───────────── -->
+<section id="s2">
+  <h2>2 &middot; Absorbed solar radiation</h2>
+  <div class="card">
+    <h3>Sunlight arriving, minus sunlight thrown away</h3>
+    <p>The incoming part is pure astronomy. Annual-mean insolation at the top of the atmosphere falls
+    smoothly from about 422 W&nbsp;m<sup>&minus;2</sup> at the equator to 176 W&nbsp;m<sup>&minus;2</sup> at
+    the poles &mdash; a factor of 2.4, and no more, because the poles get six months of continuous daylight
+    to partly compensate for the low sun. That gentle gradient is not enough on its own to explain the
+    observed pattern of absorbed radiation.</p>
+    <p>The albedo does the rest, and it is far less smooth. It ranges from <b>0.06</b> over calm tropical
+    ocean under a high sun to <b>0.85</b> over fresh snow, with clouds sitting anywhere between 0.2 and
+    0.7 depending on their thickness. Because albedo multiplies the insolation, a bright surface at low
+    latitude can end up absorbing less than a dark surface much further poleward.</p>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>Fig. 2.12 shows annual mean net solar flux at the top of the atmosphere. How do you explain the
+      differences within Africa, with low values in the north?</b>
+      <details><summary>Answer</summary><div class="ans">Not because less sunlight arrives. At 23&deg;&nbsp;N
+      the annual-mean insolation is 385 W&nbsp;m<sup>&minus;2</sup> against 422 at the equator &mdash; a
+      difference of under 10&nbsp;%, and the Sahara is far more cloud-free, so at ground level it is the
+      sunniest place in Africa by a wide margin. The reason it absorbs so little at the top of the atmosphere
+      is the <b>albedo</b>: pale sand under a cloudless sky returns about 35&nbsp;% of the beam, against
+      12&ndash;15&nbsp;% for dark rainforest canopy. Multiply and the desert absorbs some 50
+      W&nbsp;m<sup>&minus;2</sup> <em>less</em> than the Congo basin. That figure is essentially an albedo
+      map with a gentle latitude gradient behind it. The same signature appears over the Arabian peninsula,
+      the Kalahari, central Australia and above all Antarctica &mdash; every bright surface on Earth prints
+      itself onto the absorbed-solar field.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 3 ───────────── -->
+<section id="s3">
+  <h2>3 &middot; Outgoing longwave radiation</h2>
+  <div class="card">
+    <h3>OLR measures an altitude, not a ground temperature</h3>
+    <p>A satellite looking down does not see the surface, except through the atmospheric window. What it
+    measures is the emission from whatever is optically thick at each wavelength &mdash; which, over a deep
+    convective cloud, is the cloud top. So the strongest control on OLR is <b>how high and how cold the
+    emitting surface is</b>:</p>
+    <div class="two">
+      <div class="tile"><div class="lab">Deep convective cloud top, 15 km</div><div class="val">&asymp; 210 W/m&sup2;</div>
+        <div class="note">emitting at about 215 K &mdash; &sigma;T<sup>4</sup> = 121 W/m&sup2; from the cloud,
+        plus warmer emission from the cloud-free fraction of the grid box</div></div>
+      <div class="tile"><div class="lab">Cloud-free hot desert</div><div class="val">&asymp; 290 W/m&sup2;</div>
+        <div class="note">a 320 K surface radiates 595 W/m&sup2;, and with almost no water vapour a large
+        share of it goes straight out through the window</div></div>
+    </div>
+    <p>Which produces the result students find genuinely surprising: <b>the hottest place on the map is the
+    brightest thing in the infrared, and the wettest place is the dimmest.</b> The tropical rainforest belt
+    is a <em>minimum</em> of outgoing longwave radiation, even though the surface underneath it is warm,
+    because that surface is hidden under cloud tops at &minus;60&nbsp;&deg;C.</p>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>Fig. 2.13 shows outgoing longwave radiation, with maxima north and south of the equator over
+      Africa and a minimum at the equator. And what is meant by "properties of the atmosphere"?</b>
+      <details><summary>Answer</summary><div class="ans">The maxima are the subtropical desert belts: hot,
+      cloud-free and above all <em>dry</em>, so the atmospheric window is wide open and the emission level
+      sits low and warm. The equatorial minimum is the ITCZ, where deep convection puts cold cloud tops
+      between the surface and the satellite. "Properties of the atmosphere" means the three things that set
+      the emission level: <b>cloud cover and cloud-top altitude</b>, <b>water vapour</b> (by far the most
+      variable greenhouse gas, and the one that closes the window), and <b>aerosols</b>. Note that this makes
+      OLR nearly the mirror image of the absorbed-solar field over Africa &mdash; and that the two partly
+      cancel, which is exactly why the tropics do not run away.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 4 ───────────── -->
+<section id="s4">
+  <h2>4 &middot; Six places, three questions</h2>
+  <div class="card">
+    <h3>Same arithmetic, run six times</h3>
+    <p>Each row uses the annual-mean insolation for its latitude, a representative planetary albedo, and a
+    representative outgoing longwave flux. Switch the bar chart between the three columns and watch the
+    order of the sites change.</p>
+    <div class="pills" id="sitePills">
+      <button type="button" data-v="asr" aria-pressed="true">Absorbed solar</button>
+      <button type="button" data-v="olr" aria-pressed="false">Outgoing longwave</button>
+      <button type="button" data-v="net" aria-pressed="false">Net radiation</button>
+    </div>
+    <div id="siteBars"></div>
+    <table style="margin-top:16px">
+      <thead><tr><th>Place</th><th>Lat</th><th class="num" style="text-align:right">Q</th>
+        <th class="num" style="text-align:right;text-transform:none;font-size:14px">&alpha;</th><th class="num" style="text-align:right">ASR</th>
+        <th class="num" style="text-align:right">OLR</th><th class="num" style="text-align:right">Net</th></tr></thead>
+      <tbody id="siteTable"></tbody>
+    </table>
+    <div class="callout warn"><b>The Sahara is a radiative sink.</b> It absorbs less than almost anywhere
+    else at its latitude because it is bright, and it emits more than anywhere else on the planet because it
+    is hot, dry and cloud-free. Both effects push the same way. The desert therefore <em>loses</em> around
+    45 W&nbsp;m<sup>&minus;2</sup> at the top of the atmosphere all year, and stays hot only because the
+    atmosphere keeps importing energy into it &mdash; subsiding air from the Hadley circulation, warming as
+    it descends. A desert is not a place with an energy surplus. It is a place with a
+    <em>water</em> deficit, which is a different thing entirely, and the two get confused constantly.</div>
+    <p style="margin-top:6px">This is also the physical core of the Sahara feedback you will simulate in
+    <a href="../sahara/">PC Lab 3</a>: darken the surface with vegetation, absorbed solar goes up, and the
+    circulation that keeps the desert dry is altered.</p>
+  </div>
+</section>
+
+<!-- ───────────── 5 ───────────── -->
+<section id="s5">
+  <h2>5 &middot; The zonal picture</h2>
+  <div class="card">
+    <h3>Average around every circle of latitude and the noise disappears</h3>
+    <p>Averaging over all longitudes removes the land&ndash;ocean detail and leaves the structure that
+    actually matters. Absorbed solar falls steeply from equator to pole. Outgoing longwave falls too
+    &mdash; but far more gently, because the atmosphere has already moved heat poleward and warmed the high
+    latitudes above what they could sustain on their own. The two curves cross.</p>
+    <figure><svg id="zonal" viewBox="0 0 800 520" role="img" aria-label="Zonal mean absorbed solar radiation and outgoing longwave radiation against latitude, with the surplus and deficit regions shaded"></svg>
+      <figcaption>Annual, zonal means. Absorbed solar is computed as Q(&phi;)&nbsp;&middot;&nbsp;(1&nbsp;&minus;&nbsp;&alpha;)
+      from the annual-mean insolation and a tabulated albedo; outgoing longwave is tabulated. Shading marks
+      the radiative surplus (orange) and deficit (blue).</figcaption>
+    </figure>
+    <div class="three">
+      <div class="tile sunv"><div class="lab">Surplus poleward to</div><div class="val" id="crossN">35&deg; N</div>
+        <div class="note">and <span id="crossS">37&deg; S</span> &mdash; where the two curves cross</div></div>
+      <div class="tile"><div class="lab">Global mean ASR</div><div class="val" id="mASR">239 W/m&sup2;</div>
+        <div class="note">observed 240.2</div></div>
+      <div class="tile"><div class="lab">Global mean OLR</div><div class="val" id="mOLR">237 W/m&sup2;</div>
+        <div class="note">observed 239.6</div></div>
+    </div>
+    <div class="callout"><b>Three readings of this one figure.</b>
+    <b>(1)</b> The tropics gain energy every year and the poles lose it, yet neither is heating or cooling
+    without limit. Something must be carrying the difference poleward &mdash; that is
+    <a href="heat-transport.html">Part 3</a>, and this figure is its entire justification.
+    <b>(2)</b> The OLR curve is much flatter than the ASR curve. If the planet had no circulation, OLR would
+    have to match ASR everywhere and the pole&ndash;equator temperature contrast would be enormous. The
+    flatness <em>is</em> the transport.
+    <b>(3)</b> The crossing sits near 35&deg;, not at the pole &mdash; so the "tropics" that export energy
+    are much wider than the astronomical tropics at 23.4&deg;.</div>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>Why is the longwave flux larger than the shortwave flux at high latitudes?</b>
+      <details><summary>Answer</summary><div class="ans">Because the high latitudes are being kept warm by
+      imported heat, and they radiate at a temperature they could never sustain from local sunlight alone.
+      A polar cap absorbs about 60 W&nbsp;m<sup>&minus;2</sup> of sunlight; if it were radiatively isolated
+      it would settle near 185&nbsp;K. It actually radiates about 170&nbsp;W&nbsp;m<sup>&minus;2</sup>,
+      which needs roughly 235&nbsp;K. The extra 110&nbsp;W&nbsp;m<sup>&minus;2</sup> is delivered by the
+      atmosphere and ocean. The deficit in this figure is not a sign that the poles are cooling &mdash; it is
+      the receipt for the energy they are being sent.</div></details>
+    </div>
+    <p class="note" style="font-size:13.5px;color:var(--text-muted);margin-top:14px">
+    <b>An honest note on the numbers.</b> The tabulated curves here average to
+    <span id="resid">+2.7</span> W&nbsp;m<sup>&minus;2</sup> rather than to the observed
+    +0.6 W&nbsp;m<sup>&minus;2</sup>. That residual is the accuracy of a hand-tabulated teaching dataset, and
+    it is worth keeping in view: in <a href="heat-transport.html">Part 3</a> it shows up as a transport
+    curve that does not quite return to zero at the pole, which is exactly the diagnostic real analyses have
+    to confront.</p>
+  </div>
+</section>
+
+<!-- ───────────── 6 ───────────── -->
+<section id="s6">
+  <h2>6 &middot; What the imbalance forces</h2>
+  <div class="card">
+    <h3>Two ways to absorb a local imbalance</h3>
+    <p>If a column of the climate system takes in more radiation than it emits, exactly two things can
+    happen to the surplus. It can be <b>stored</b> &mdash; warming the ocean, the land or the air beneath it
+    &mdash; or it can be <b>moved somewhere else</b>. Written as a budget for the column:</p>
+    <div class="eq">&part;E<sub>s</sub>/&part;t = R<sub>TOA</sub> &minus; F<sub>transport</sub>
+      <small>storage change = net radiation in at the top &minus; net export sideways</small></div>
+    <p>On a <b>daily and seasonal</b> timescale, storage dominates: the ocean charges up in summer and
+    discharges in winter, and the annual mean of the storage term is close to zero. On the <b>annual
+    mean</b>, storage nearly vanishes and transport must carry the whole thing &mdash; roughly
+    6&nbsp;PW across mid-latitudes, in each hemisphere, every year.</p>
+    <p>Both halves of that sentence are <a href="heat-transport.html">Part 3</a>.</p>
+  </div>
+</section>
+
+<p class="foot">Annual-mean insolation from the second-Legendre approximation
+Q(&phi;) = (S<sub>0</sub>/4)&thinsp;[1 &minus; 0.482&thinsp;P<sub>2</sub>(sin&thinsp;&phi;)] with
+S<sub>0</sub>/4 = 340.25 W m<sup>&minus;2</sup>, which is accurate to a few W m<sup>&minus;2</sup> at
+present-day obliquity; the full expression is on <a href="../insolation/">the insolation page</a>. Zonal
+albedo and outgoing longwave are representative annual means rounded from satellite climatology
+(CERES EBAF), chosen so that the global means and the meridional transport come out right; they are a
+teaching dataset, not a reanalysis. Site values are constructed the same way. Figures follow Goosse H.,
+P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to Climate Dynamics and Climate
+Modelling</em>, Figs. 2.12&ndash;2.14 (climate.be/textbook).</p>
+
+<p class="foot">Continue to <a href="heat-transport.html">Part 3 &mdash; where the surplus goes: storage and
+transport &rarr;</a></p>
+
+</div>
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (t,a,p) => { const e=document.createElementNS(NS,t);
+    for (const k in a) e.setAttribute(k,a[k]); if (p) p.appendChild(e); return e; };
+  const tx = (p,a,s) => { const t=el('text',a,p); t.textContent=s; return t; };
+  const C = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const clear = s => { while (s.firstChild) s.removeChild(s.firstChild); };
+  const rad = d => Math.PI*d/180;
+
+  /* annual-mean insolation, second-Legendre approximation */
+  const S4 = 340.25;
+  const Q = phi => { const s = Math.sin(rad(phi)); return S4*(1 - 0.482*(3*s*s - 1)/2); };
+
+  /* ══════════ zonal teaching dataset ══════════ */
+  const LAT = [-90,-80,-70,-60,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90];
+  const ALB = [0.72,0.68,0.57,0.46,0.38,0.30,0.26,0.25,0.26,0.29,0.26,0.24,0.24,0.27,0.33,0.42,0.50,0.59,0.64];
+  const OLRZ= [154,159,173,188,207,232,249,257,257,248,259,264,262,246,221,198,188,175,168];
+  const ASRZ = LAT.map((p,i)=>Q(p)*(1-ALB[i]));
+  const NETZ = ASRZ.map((a,i)=>a-OLRZ[i]);
+
+  const interp = (arr,p) => { let i=0; while (i<LAT.length-2 && LAT[i+1]<p) i++;
+    const f=(p-LAT[i])/(LAT[i+1]-LAT[i]); return arr[i]+f*(arr[i+1]-arr[i]); };
+  /* area-weighted mean by trapezoidal integration in latitude — the same rule
+     Part 3 uses to integrate the transport, so the two pages agree exactly */
+  const wmean = arr => { let num=0, den=0;
+    for (let p=-90; p<90; p+=0.5){
+      const a=rad(p), b=rad(p+0.5), ca=Math.cos(a), cb=Math.cos(b);
+      num += (interp(arr,p)*ca + interp(arr,p+0.5)*cb)/2*(b-a);
+      den += (ca+cb)/2*(b-a);
+    }
+    return num/den; };
+  const MEAN_ASR = wmean(ASRZ), MEAN_OLR = wmean(OLRZ), MEAN_NET = MEAN_ASR - MEAN_OLR;
+
+  /* zero crossings of the net curve, linearly interpolated */
+  function crossing(from,to){
+    for (let i=from;i!==to;i+= (to>from?1:-1)){
+      const j = i + (to>from?1:-1);
+      if (NETZ[i]===0) return LAT[i];
+      if (NETZ[i]*NETZ[j] < 0)
+        return LAT[i] + (LAT[j]-LAT[i])*NETZ[i]/(NETZ[i]-NETZ[j]);
+    }
+    return null;
+  }
+  const xN = crossing(9,18), xS = crossing(9,0);
+
+  /* ══════════ 4 · six places ══════════ */
+  const SITES = [
+    {n:'Congo basin',        sub:'rainforest, deep convection', lat:-5,  a:0.30, olr:234},
+    {n:'W Pacific warm pool',sub:'ITCZ, 15 km cloud tops',      lat: 5,  a:0.32, olr:212},
+    {n:'Sahel',              sub:'seasonal savanna',            lat:15,  a:0.28, olr:272},
+    {n:'Central Sahara',     sub:'bright, dry, cloud-free',     lat:23,  a:0.36, olr:290},
+    {n:'Southern Ocean',     sub:'permanent stratocumulus',     lat:-55, a:0.42, olr:212},
+    {n:'Greenland ice sheet',sub:'high, bright and cold',       lat:72,  a:0.68, olr:175}
+  ].map(s => { s.Q = Q(s.lat); s.asr = s.Q*(1-s.a); s.net = s.asr - s.olr; return s; });
+
+  let view = 'asr';
+  function drawSites(){
+    const host = $('siteBars'); host.innerHTML = '';
+    const key = view==='asr' ? 'asr' : view==='olr' ? 'olr' : 'net';
+    const col = view==='asr' ? C('--sun-deep') : view==='olr' ? C('--earth-deep') : null;
+    const rows = SITES.slice().sort((a,b)=>b[key]-a[key]);
+    const mx = Math.max(...rows.map(r=>Math.abs(r[key])));
+    rows.forEach(r => {
+      const v = r[key];
+      const d = document.createElement('div'); d.className = 'barrow';
+      const c = col || (v>=0 ? C('--sun-deep') : C('--earth-deep'));
+      d.innerHTML = '<span class="nm">'+r.n+'</span>'+
+        '<span class="tr"><span class="fl" style="width:'+(100*Math.abs(v)/mx).toFixed(1)+
+        '%;background:'+c+'"></span></span>'+
+        '<span class="vv">'+(v>0&&key==='net'?'+':'')+v.toFixed(0)+' W/m²</span>';
+      host.appendChild(d);
+    });
+    const lab = document.createElement('p');
+    lab.style.cssText = 'font-size:13px;color:var(--text-muted);margin:10px 0 0';
+    lab.textContent = view==='asr'
+      ? 'Absorbed solar, Q·(1−α), W/m². The Sahara absorbs 46 less than the Sahel a few degrees south — two-thirds of that gap is albedo, one-third is latitude.'
+      : view==='olr'
+      ? 'Outgoing longwave, W/m². The order has almost inverted: the desert now leads by a wide margin, the deep-convective sites are last.'
+      : 'Net radiation, ASR − OLR, W/m². Three of these six places run a permanent deficit at the top of the atmosphere.';
+    host.appendChild(lab);
+
+    const tb = $('siteTable'); tb.innerHTML = '';
+    SITES.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td><b style="color:var(--text-primary)">'+r.n+'</b><br>'+
+        '<span style="font-size:12.5px;color:var(--text-muted)">'+r.sub+'</span></td>'+
+        '<td>'+Math.abs(r.lat)+'° '+(r.lat<0?'S':'N')+'</td>'+
+        '<td class="num">'+r.Q.toFixed(0)+'</td><td class="num">'+r.a.toFixed(2)+'</td>'+
+        '<td class="num">'+r.asr.toFixed(0)+'</td><td class="num">'+r.olr+'</td>'+
+        '<td class="num" style="color:'+(r.net>=0?C('--sun-deep'):C('--earth-deep'))+';font-weight:600">'+
+        (r.net>0?'+':'')+r.net.toFixed(0)+'</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  /* ══════════ 5 · zonal chart ══════════ */
+  function drawZonal(){
+    const s = $('zonal'); clear(s);
+    const L=62, R=770, T=28, B=372;
+    const vmax = 340;
+    const X = p => L + (p+90)/180*(R-L);
+    const Y = v => B - v/vmax*(B-T);
+    const line=C('--line'), muted=C('--text-muted'), sec=C('--text-secondary'),
+          prim=C('--text-primary'), sun=C('--sun'), sunD=C('--sun-deep'),
+          earth=C('--earth'), earthD=C('--earth-deep'), acc=C('--accent');
+
+    /* grid */
+    for (let v=0;v<=300;v+=50){
+      el('line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:line,'stroke-width':1,opacity:.5},s);
+      tx(s,{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11.5,fill:muted},v);
+    }
+    tx(s,{x:L-8,y:T-8,'text-anchor':'end','font-size':11.5,fill:muted},'W/m²');
+    for (let p=-90;p<=90;p+=30){
+      el('line',{x1:X(p),y1:T,x2:X(p),y2:B,stroke:line,'stroke-width':1,opacity:.4},s);
+      tx(s,{x:X(p),y:B+18,'text-anchor':'middle','font-size':11.5,fill:muted},
+         p===0?'Eq':(Math.abs(p)+'°'+(p<0?'S':'N')));
+    }
+
+    /* shaded surplus / deficit between the curves */
+    const path = (vals, close) => {
+      let d = 'M '+X(LAT[0]).toFixed(1)+' '+Y(vals[0]).toFixed(1);
+      for (let i=1;i<LAT.length;i++) d += ' L '+X(LAT[i]).toFixed(1)+' '+Y(vals[i]).toFixed(1);
+      return d;
+    };
+    /* sample finely so the sign split is clean */
+    const N = 360, sASR=[], sOLR=[], sLAT=[];
+    for (let k=0;k<=N;k++){ const p=-90+180*k/N; sLAT.push(p);
+      sASR.push(interp(ASRZ,p)); sOLR.push(interp(OLRZ,p)); }
+    /* fill by drawing vertical hairlines: simple and robust */
+    for (let k=0;k<=N;k++){
+      const up = sASR[k] > sOLR[k];
+      el('line',{x1:X(sLAT[k]),y1:Y(sASR[k]),x2:X(sLAT[k]),y2:Y(sOLR[k]),
+                 stroke: up?sun:earth, 'stroke-width':(R-L)/N+0.6, opacity:.30},s);
+    }
+
+    /* curves */
+    el('path',{d:path(ASRZ),fill:'none',stroke:sunD,'stroke-width':2.8,'stroke-linejoin':'round'},s);
+    el('path',{d:path(OLRZ),fill:'none',stroke:earthD,'stroke-width':2.8,'stroke-linejoin':'round'},s);
+
+    /* crossings */
+    [[xN,'35'],[xS,'37']].forEach(([p])=>{
+      if (p===null) return;
+      el('line',{x1:X(p),y1:T,x2:X(p),y2:B,stroke:acc,'stroke-width':1.4,'stroke-dasharray':'5 4'},s);
+      tx(s,{x:X(p),y:T-8,'text-anchor':'middle','font-size':11.5,fill:acc,'font-weight':600},
+         Math.abs(p).toFixed(0)+'°'+(p<0?'S':'N'));
+    });
+
+    /* labels on the curves */
+    tx(s,{x:X(-2),y:Y(interp(ASRZ,0))-12,'text-anchor':'middle','font-size':12.5,fill:sunD,'font-weight':600},
+       'absorbed solar');
+    tx(s,{x:X(-2),y:Y(interp(OLRZ,0))+20,'text-anchor':'middle','font-size':12.5,fill:earthD,'font-weight':600},
+       'outgoing longwave');
+    tx(s,{x:X(-8),y:Y(285),'text-anchor':'middle','font-size':12,fill:sunD,'font-weight':600},'SURPLUS');
+    tx(s,{x:X(-72),y:Y(120),'text-anchor':'middle','font-size':12,fill:earthD,'font-weight':600},'DEFICIT');
+    tx(s,{x:X(72),y:Y(120),'text-anchor':'middle','font-size':12,fill:earthD,'font-weight':600},'DEFICIT');
+    tx(s,{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':12.5,fill:sec},'Latitude');
+
+    /* net curve on a second, offset baseline */
+    const nb = 482, nsc = 0.28;
+    el('line',{x1:L,y1:nb,x2:R,y2:nb,stroke:line,'stroke-width':1},s);
+    let dn = '';
+    LAT.forEach((p,i)=> dn += (i?' L ':'M ')+X(p).toFixed(1)+' '+(nb-NETZ[i]*nsc).toFixed(1));
+    el('path',{d:dn,fill:'none',stroke:acc,'stroke-width':2},s);
+    tx(s,{x:L,y:nb-38,'font-size':11.5,fill:acc,'font-weight':600},'net = ASR − OLR');
+    tx(s,{x:R,y:nb-38,'text-anchor':'end','font-size':11,fill:muted},'+60 … −105 W/m², vertical scale exaggerated');
+
+    /* readouts */
+    $('mASR').textContent  = MEAN_ASR.toFixed(0)+' W/m²';
+    $('mOLR').textContent  = MEAN_OLR.toFixed(0)+' W/m²';
+    $('crossN').textContent = xN===null?'—':(xN.toFixed(0)+'° N');
+    $('crossS').textContent = xS===null?'—':(Math.abs(xS).toFixed(0)+'° S');
+    $('resid').textContent  = (MEAN_NET>0?'+':'')+MEAN_NET.toFixed(1);
+  }
+
+  /* ══════════ wiring ══════════ */
+  const redraw = () => { drawSites(); drawZonal(); };
+
+  $('themeBtn').onclick = function(){
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    this.textContent = dark ? 'Dark' : 'Light';
+    redraw();
+  };
+  $('sitePills').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    view = b.dataset.v;
+    [...$('sitePills').querySelectorAll('button')].forEach(x =>
+      x.setAttribute('aria-pressed', String(x === b)));
+    drawSites();
+  });
+
+  redraw();
+})();
+</script>
+</body>
+</html>
