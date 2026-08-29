@@ -21,6 +21,7 @@ Goosse2010_textbook/*
 # lecturer running orders / lecture outlines. Never published to docs/.
 *Teacher*.html
 *Teacher*.dc.html
+energy_fluxes/Lecture2-Teacher-outline.html
 local_energy_balance/Lecture3-Teacher-outline.html
 hydro_and_carbon_cycle/Lecture4-Teacher-outline.html
 
@@ -38,5 +39,6 @@ support.js
 # its own copy of the runtime is required, not a stray duplicate.
 !docs/**/doc-page.js
 !docs/**/support.js
+energy_fluxes/Lecture 2 - The Earths Energy Budget.pptx
 local_energy_balance/Lecture3-Climate-at-a-local-scale2025.pptx
 hydro_and_carbon_cycle/Lecture4-Global-cycles-of-water-and-carbon2025.pptx

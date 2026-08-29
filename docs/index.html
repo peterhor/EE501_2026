@@ -74,6 +74,25 @@
   }
   a.canvas-link:hover { opacity: 0.9; }
   h2.section-title { font-size: 1.1rem; margin: 2.5rem 0 0.75rem; }
+  h3.lecture {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+  }
+  h3.lecture:first-of-type { margin-top: 1rem; }
+  h3.lecture .lec {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  h3.lecture .rule { flex: 1; height: 1px; background: var(--card-border); }
+  @media (max-width: 520px) { h3.lecture { flex-wrap: wrap; gap: 0.4rem; } }
   .table-wrap { overflow-x: auto; border: 1px solid var(--card-border); border-radius: 12px; }
   table.schedule { border-collapse: collapse; width: 100%; font-size: 0.83rem; }
   table.schedule th, table.schedule td {
@@ -134,10 +153,12 @@
     </div>
   </div>
   <h2 class="section-title">Lecture Materials</h2>
-  <p class="subtitle">Animations and explanations.</p>
+  <p class="subtitle">Interactive explanations and animations, grouped by lecture and in the order they are used.</p>
+
+  <h3 class="lecture"><span class="lec">Lecture 2</span> The Earth&rsquo;s Energy Budget <span class="rule"></span></h3>
   <div class="grid">
     <div class="card">
-      <div class="num">Energy Budget</div>
+      <div class="num">Part 1</div>
       <h2>Thermal Emitters</h2>
       <p>Four thermal emitters compared: heater, fire, skin, Sun.</p>
       <div class="card-links">
@@ -145,31 +166,31 @@
       </div>
     </div>
     <div class="card">
-      <div class="num">Energy Budget</div>
+      <div class="num">Part 2</div>
       <h2>Stefan&ndash;Boltzmann</h2>
-      <p>How much energy the Sun and the Earth radiate. Part 1 of 2.</p>
+      <p>How much energy the Sun and the Earth radiate.</p>
       <div class="card-links">
         <a href="energy-budget/stefan-boltzmann.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Energy Budget</div>
+      <div class="num">Part 3</div>
       <h2>The Greenhouse Effect</h2>
-      <p>Why the surface is warmer than space. Part 2 of 2.</p>
+      <p>Why the surface is warmer than space.</p>
       <div class="card-links">
         <a href="energy-budget/greenhouse-effect.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Energy Budget</div>
+      <div class="num">Part 4</div>
       <h2>A Real Atmosphere</h2>
-      <p>Vertical structure, the emission level, absorption bands and the window. Global view, part 1 of 4.</p>
+      <p>Vertical structure, the emission level, absorption bands and the window.</p>
       <div class="card-links">
         <a href="energy-budget/real-atmosphere.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Energy Budget</div>
+      <div class="num">Part 5</div>
       <h2>Insolation</h2>
       <p>Earth&rsquo;s orbit, declination and the daily/annual insolation curve.</p>
       <div class="card-links">
@@ -177,103 +198,107 @@
       </div>
     </div>
     <div class="card">
-      <div class="num">Energy Budget</div>
-      <h2>The Pattern in Space</h2>
-      <p>Why the Sahara is a radiative sink, and the zonal surplus and deficit. Global view, part 2 of 4.</p>
+      <div class="num">Part 6</div>
+      <h2>The Geography of the Budget</h2>
+      <p>Why the Sahara is a radiative sink, and where the surplus goes.</p>
       <div class="card-links">
-        <a href="energy-budget/toa-radiation.html">Open &rarr;</a>
+        <a href="energy-budget/geography.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Energy Budget</div>
-      <h2>Storage and Transport</h2>
-      <p>Heat capacity, the seasonal lag, and six petawatts moving poleward. Global view, part 3 of 4.</p>
-      <div class="card-links">
-        <a href="energy-budget/heat-transport.html">Open &rarr;</a>
-      </div>
-    </div>
-    <div class="card">
-      <div class="num">Energy Budget</div>
+      <div class="num">Part 7</div>
       <h2>The Complete Ledger</h2>
-      <p>Every flux on one diagram, with a solve-for-the-missing-arrow exercise. Global view, part 4 of 4.</p>
+      <p>Every flux on one diagram, with a solve-for-the-missing-arrow exercise.</p>
       <div class="card-links">
         <a href="energy-budget/global-budget.html">Open &rarr;</a>
       </div>
     </div>
+  </div>
+
+  <h3 class="lecture"><span class="lec">Lecture 3</span> Climate at a Local Scale <span class="rule"></span></h3>
+  <div class="grid">
     <div class="card">
-      <div class="num">Climate at a Local Scale</div>
+      <div class="num">Part 1</div>
       <h2>Surface Energy Balance</h2>
-      <p>Eight real sites, the same two equations. Part 1 of 4.</p>
+      <p>Eight real sites, the same two equations.</p>
       <div class="card-links">
         <a href="local-scale/energy-balance.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Climate at a Local Scale</div>
+      <div class="num">Part 2</div>
       <h2>Turbulent Fluxes</h2>
-      <p>The bulk formulas, the Bowen ratio and the oasis effect. Part 2 of 4.</p>
+      <p>The bulk formulas, the Bowen ratio and the oasis effect.</p>
       <div class="card-links">
         <a href="local-scale/turbulent-fluxes.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Climate at a Local Scale</div>
+      <div class="num">Part 3</div>
       <h2>Heat in the Ground</h2>
-      <p>Soil temperature waves, damping depth and phase lag. Part 3 of 4.</p>
+      <p>Soil temperature waves, damping depth and phase lag.</p>
       <div class="card-links">
         <a href="local-scale/soil-temperature.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Climate at a Local Scale</div>
+      <div class="num">Part 4</div>
       <h2>Surface Properties</h2>
-      <p>Albedo, emissivity and what happens inside a canopy. Part 4 of 4.</p>
+      <p>Albedo, emissivity and what happens inside a canopy.</p>
       <div class="card-links">
         <a href="local-scale/surface-properties.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Climate at a Local Scale</div>
+      <div class="num">Part 5</div>
       <h2>Energy Balance Explorer</h2>
       <p>Live diurnal budget for six surface types, driven by real solar geometry.</p>
       <div class="card-links">
         <a href="local-scale/explorer/">Open &rarr;</a>
       </div>
     </div>
+  </div>
+
+  <h3 class="lecture"><span class="lec">Lecture 4</span> Global Cycles: Water and Carbon <span class="rule"></span></h3>
+  <div class="grid">
     <div class="card">
-      <div class="num">Global Cycles</div>
+      <div class="num">Part 1</div>
       <h2>The Water Balance</h2>
-      <p>Reservoirs, residence times and the soil bucket. Part 1 of 4.</p>
+      <p>Reservoirs, residence times and the soil bucket.</p>
       <div class="card-links">
         <a href="global-cycles/water-balance.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Global Cycles</div>
+      <div class="num">Part 2</div>
       <h2>The Carbon Budget</h2>
-      <p>Keeling curve, stocks and fluxes, the budget ledger. Part 2 of 4.</p>
+      <p>Keeling curve, stocks and fluxes, the budget ledger.</p>
       <div class="card-links">
         <a href="global-cycles/carbon-budget.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Global Cycles</div>
+      <div class="num">Part 3</div>
       <h2>The Oceanic Carbon Cycle</h2>
-      <p>A live carbonate solver, buffering and the three pumps. Part 3 of 4.</p>
+      <p>A live carbonate solver, buffering and the three pumps.</p>
       <div class="card-links">
         <a href="global-cycles/ocean-carbon.html">Open &rarr;</a>
       </div>
     </div>
     <div class="card">
-      <div class="num">Global Cycles</div>
+      <div class="num">Part 4</div>
       <h2>Land, Rock and Methane</h2>
-      <p>NPP, soil carbon, the rock cycle and a methane box model. Part 4 of 4.</p>
+      <p>NPP, soil carbon, the rock cycle and a methane box model.</p>
       <div class="card-links">
         <a href="global-cycles/land-rock-methane.html">Open &rarr;</a>
       </div>
     </div>
+  </div>
+
+  <h3 class="lecture"><span class="lec">Lecture 5</span> Modelling the Climate System <span class="rule"></span></h3>
+  <div class="grid">
     <div class="card">
-      <div class="num">Modelling the Climate System</div>
+      <div class="num">Part 1</div>
       <h2>Atmospheric Equations</h2>
       <p>The governing equations of the atmosphere.</p>
       <div class="card-links">

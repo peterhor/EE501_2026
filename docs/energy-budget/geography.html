@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Where the surplus goes: heat storage and heat transport</title>
+<title>The geography of the energy budget</title>
 <style>
   :root{
     color-scheme: light;
@@ -136,45 +136,246 @@
   .seriesnav span.here{background:var(--accent);border-color:var(--accent);color:#fff}
   .foot a{color:var(--accent)}
   .card p:last-child, .card ul:last-child{margin-bottom:0}
+  /* act dividers, used on the long merged page */
+  .act{display:flex;align-items:center;gap:16px;margin:38px 0 20px}
+  .act .n{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+    font-weight:700;white-space:nowrap}
+  .act .t{font-size:17px;font-weight:600;color:var(--text-primary)}
+  .act .r{flex:1;height:1px;background:var(--line);min-width:20px}
+  @media(max-width:640px){.act{flex-wrap:wrap;gap:8px}}
+  .stepnav .grp{font-size:12px;color:var(--text-muted);align-self:center;padding:0 2px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp; <a href="toa-radiation.html">&larr; The pattern in space</a></p>
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp; <a href="real-atmosphere.html">&larr; From one layer to a real atmosphere</a></p>
 
 <header class="top">
   <div>
-    <h1>Where the surplus goes</h1>
-    <p class="sub">Part 3 of 4 of the <b>global view</b>. The tropics gain 50 W&nbsp;m<sup>&minus;2</sup> a
-    year and the poles lose 100, and neither is running away. There are exactly two places the difference can
-    go: into <b>storage</b>, or <b>sideways</b>. This page does both, and finds that which one dominates
-    depends entirely on the timescale you ask about. Goosse et al. (2010) &sect;2.1.5, Figs. 2.15&ndash;2.18.</p>
+    <h1>The geography of the budget</h1>
+    <p class="sub">Part 2 of 3 of the <b>global view</b>. Everything so far has been a global average &mdash;
+    one number for the whole planet. But the planet does not absorb where it emits, and it does not emit
+    where it absorbs. This page takes the budget apart geographically, and then follows what that
+    imbalance forces the climate system to do about it. Goosse et al. (2010) &sect;2.1.5,
+    Figs. 2.12&ndash;2.18.</p>
   </div>
   <button class="toggle" id="themeBtn">Dark</button>
 </header>
 
 <div class="seriesnav">
   <a href="real-atmosphere.html">1 &middot; A real atmosphere</a>
-  <a href="toa-radiation.html">2 &middot; The pattern in space</a>
-  <span class="here">3 &middot; Storage and transport</span>
-  <a href="global-budget.html">4 &middot; The complete ledger</a>
+  <span class="here">2 &middot; The geography of the budget</span>
+  <a href="global-budget.html">3 &middot; The complete ledger</a>
 </div>
 
 <div class="stepnav">
-  <a href="#s1">1 &middot; Two terms</a>
-  <a href="#s2">2 &middot; Storage</a>
-  <a href="#s3">3 &middot; The seasonal test</a>
-  <a href="#s4">4 &middot; Transport</a>
-  <a href="#s5">5 &middot; Who carries it</a>
-  <a href="#s6">6 &middot; Regional signature</a>
+  <span class="grp">Pattern:</span>
+  <a href="#s1">1 &middot; Two fields</a>
+  <a href="#s2">2 &middot; What sets each</a>
+  <a href="#s3">3 &middot; Six places</a>
+  <a href="#s4">4 &middot; The zonal picture</a>
+  <span class="grp">Response:</span>
+  <a href="#s5">5 &middot; Storage</a>
+  <a href="#s6">6 &middot; The seasonal test</a>
+  <a href="#s7">7 &middot; Transport</a>
+  <a href="#s8">8 &middot; Regional signature</a>
+</div>
+
+<div class="act">
+  <span class="n">Part one</span>
+  <span class="t">The pattern &mdash; where the energy lands</span>
+  <span class="r"></span>
 </div>
 
 <!-- ───────────── 1 ───────────── -->
 <section id="s1">
-  <h2>1 &middot; Two terms, and a timescale that picks between them</h2>
+  <h2>1 &middot; Two fields, one difference</h2>
+  <div class="card">
+    <h3>The same equation as before, but as a function of place</h3>
+    <p>The planetary balance 239 in = 239 out holds for the <em>global annual mean</em> and nowhere else.
+    Written locally, the top-of-atmosphere net radiation is:</p>
+    <div class="eq">R<sub>TOA</sub>(&phi;,&lambda;) = Q(&phi;) &middot; [1 &minus; &alpha;(&phi;,&lambda;)] &nbsp;&minus;&nbsp; OLR(&phi;,&lambda;)
+      <small>absorbed solar radiation minus outgoing longwave radiation, W m<sup>&minus;2</sup></small></div>
+    <p>The two terms are controlled by completely different things, and this is the point of the whole
+    page:</p>
+    <div class="two">
+      <div class="tile sunv"><div class="lab">Absorbed solar &mdash; ASR</div><div class="val">Q &middot; (1&minus;&alpha;)</div>
+        <div class="note">set by <b>geometry</b> (how much sunlight arrives, from
+        <a href="../insolation/">the insolation page</a>) and by <b>reflectivity</b> &mdash; clouds, snow,
+        desert sand, ocean</div></div>
+      <div class="tile earthv"><div class="lab">Outgoing longwave &mdash; OLR</div><div class="val">&asymp; &sigma;T<sub>emit</sub><sup>4</sup></div>
+        <div class="note">set by the <b>temperature of whatever is doing the emitting</b> &mdash; and from
+        <a href="real-atmosphere.html">Part 1</a> we know that is not the surface but an altitude</div></div>
+    </div>
+    <div class="callout"><b>Keep the two questions separate.</b> "Why is this place bright?" is a question
+    about albedo. "Why is this place radiating a lot?" is a question about how high and how cold its
+    emission level is. Places can be extreme in one and ordinary in the other, and the Sahara &mdash; which
+    is extreme in <em>both, in opposite directions</em> &mdash; is the example that makes the distinction
+    stick.</div>
+  </div>
+</section>
+
+<!-- ───────────── 2 ───────────── -->
+<section id="s2">
+  <h2>2 &middot; What sets each of the two fields</h2>
+  <div class="card">
+    <h3>Absorbed solar: sunlight arriving, minus sunlight thrown away</h3>
+    <p>The incoming part is pure astronomy. Annual-mean insolation at the top of the atmosphere falls
+    smoothly from about 422 W&nbsp;m<sup>&minus;2</sup> at the equator to 176 W&nbsp;m<sup>&minus;2</sup> at
+    the poles &mdash; a factor of 2.4, and no more, because the poles get six months of continuous daylight
+    to partly compensate for the low sun. That gentle gradient is not enough on its own to explain the
+    observed pattern of absorbed radiation.</p>
+    <p>The albedo does the rest, and it is far less smooth. It ranges from <b>0.06</b> over calm tropical
+    ocean under a high sun to <b>0.85</b> over fresh snow, with clouds sitting anywhere between 0.2 and
+    0.7 depending on their thickness. Because albedo multiplies the insolation, a bright surface at low
+    latitude can end up absorbing less than a dark surface much further poleward.</p>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>Fig. 2.12 shows annual mean net solar flux at the top of the atmosphere. How do you explain the
+      differences within Africa, with low values in the north?</b>
+      <details><summary>Answer</summary><div class="ans">Not because less sunlight arrives. At 23&deg;&nbsp;N
+      the annual-mean insolation is 385 W&nbsp;m<sup>&minus;2</sup> against 422 at the equator &mdash; a
+      difference of under 10&nbsp;%, and the Sahara is far more cloud-free, so at ground level it is the
+      sunniest place in Africa by a wide margin. The reason it absorbs so little at the top of the atmosphere
+      is the <b>albedo</b>: pale sand under a cloudless sky returns about 35&nbsp;% of the beam, against
+      12&ndash;15&nbsp;% for dark rainforest canopy. Multiply and the desert absorbs some 50
+      W&nbsp;m<sup>&minus;2</sup> <em>less</em> than the Congo basin. That figure is essentially an albedo
+      map with a gentle latitude gradient behind it. The same signature appears over the Arabian peninsula,
+      the Kalahari, central Australia and above all Antarctica &mdash; every bright surface on Earth prints
+      itself onto the absorbed-solar field.</div></details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Outgoing longwave: a measure of altitude, not of ground temperature</h3>
+    <p>A satellite looking down does not see the surface, except through the atmospheric window. What it
+    measures is the emission from whatever is optically thick at each wavelength &mdash; which, over a deep
+    convective cloud, is the cloud top. So the strongest control on OLR is <b>how high and how cold the
+    emitting surface is</b>:</p>
+    <div class="two">
+      <div class="tile"><div class="lab">Deep convective cloud top, 15 km</div><div class="val">&asymp; 210 W/m&sup2;</div>
+        <div class="note">emitting at about 215 K &mdash; &sigma;T<sup>4</sup> = 121 W/m&sup2; from the cloud,
+        plus warmer emission from the cloud-free fraction of the grid box</div></div>
+      <div class="tile"><div class="lab">Cloud-free hot desert</div><div class="val">&asymp; 290 W/m&sup2;</div>
+        <div class="note">a 320 K surface radiates 595 W/m&sup2;, and with almost no water vapour a large
+        share of it goes straight out through the window</div></div>
+    </div>
+    <p>Which produces the result students find genuinely surprising: <b>the hottest place on the map is the
+    brightest thing in the infrared, and the wettest place is the dimmest.</b> The tropical rainforest belt
+    is a <em>minimum</em> of outgoing longwave radiation, even though the surface underneath it is warm,
+    because that surface is hidden under cloud tops at &minus;60&nbsp;&deg;C.</p>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>Fig. 2.13 shows outgoing longwave radiation, with maxima north and south of the equator over
+      Africa and a minimum at the equator. And what is meant by "properties of the atmosphere"?</b>
+      <details><summary>Answer</summary><div class="ans">The maxima are the subtropical desert belts: hot,
+      cloud-free and above all <em>dry</em>, so the atmospheric window is wide open and the emission level
+      sits low and warm. The equatorial minimum is the ITCZ, where deep convection puts cold cloud tops
+      between the surface and the satellite. "Properties of the atmosphere" means the three things that set
+      the emission level: <b>cloud cover and cloud-top altitude</b>, <b>water vapour</b> (by far the most
+      variable greenhouse gas, and the one that closes the window), and <b>aerosols</b>. Note that this makes
+      OLR nearly the mirror image of the absorbed-solar field over Africa &mdash; and that the two partly
+      cancel, which is exactly why the tropics do not run away.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 3 ───────────── -->
+<section id="s3">
+  <h2>3 &middot; Six places, three questions</h2>
+  <div class="card">
+    <h3>Same arithmetic, run six times</h3>
+    <p>Each row uses the annual-mean insolation for its latitude, a representative planetary albedo, and a
+    representative outgoing longwave flux. Switch the bar chart between the three columns and watch the
+    order of the sites change.</p>
+    <div class="pills" id="sitePills">
+      <button type="button" data-v="asr" aria-pressed="true">Absorbed solar</button>
+      <button type="button" data-v="olr" aria-pressed="false">Outgoing longwave</button>
+      <button type="button" data-v="net" aria-pressed="false">Net radiation</button>
+    </div>
+    <div id="siteBars"></div>
+    <table style="margin-top:16px">
+      <thead><tr><th>Place</th><th>Lat</th><th class="num" style="text-align:right">Q</th>
+        <th class="num" style="text-align:right;text-transform:none;font-size:14px">&alpha;</th><th class="num" style="text-align:right">ASR</th>
+        <th class="num" style="text-align:right">OLR</th><th class="num" style="text-align:right">Net</th></tr></thead>
+      <tbody id="siteTable"></tbody>
+    </table>
+    <div class="callout warn"><b>The Sahara is a radiative sink.</b> It absorbs less than almost anywhere
+    else at its latitude because it is bright, and it emits more than anywhere else on the planet because it
+    is hot, dry and cloud-free. Both effects push the same way. The desert therefore <em>loses</em> around
+    45 W&nbsp;m<sup>&minus;2</sup> at the top of the atmosphere all year, and stays hot only because the
+    atmosphere keeps importing energy into it &mdash; subsiding air from the Hadley circulation, warming as
+    it descends. A desert is not a place with an energy surplus. It is a place with a
+    <em>water</em> deficit, which is a different thing entirely, and the two get confused constantly.</div>
+    <p style="margin-top:6px">This is also the physical core of the Sahara feedback you will simulate in
+    <a href="../sahara/">PC Lab 3</a>: darken the surface with vegetation, absorbed solar goes up, and the
+    circulation that keeps the desert dry is altered.</p>
+  </div>
+</section>
+
+<!-- ───────────── 4 ───────────── -->
+<section id="s4">
+  <h2>4 &middot; The zonal picture</h2>
+  <div class="card">
+    <h3>Average around every circle of latitude and the noise disappears</h3>
+    <p>Averaging over all longitudes removes the land&ndash;ocean detail and leaves the structure that
+    actually matters. Absorbed solar falls steeply from equator to pole. Outgoing longwave falls too
+    &mdash; but far more gently, because the atmosphere has already moved heat poleward and warmed the high
+    latitudes above what they could sustain on their own. The two curves cross.</p>
+    <figure><svg id="zonal" viewBox="0 0 800 520" role="img" aria-label="Zonal mean absorbed solar radiation and outgoing longwave radiation against latitude, with the surplus and deficit regions shaded"></svg>
+      <figcaption>Annual, zonal means. Absorbed solar is computed as Q(&phi;)&nbsp;&middot;&nbsp;(1&nbsp;&minus;&nbsp;&alpha;)
+      from the annual-mean insolation and a tabulated albedo; outgoing longwave is tabulated. Shading marks
+      the radiative surplus (orange) and deficit (blue).</figcaption>
+    </figure>
+    <div class="three">
+      <div class="tile sunv"><div class="lab">Surplus poleward to</div><div class="val" id="crossN">35&deg; N</div>
+        <div class="note">and <span id="crossS">37&deg; S</span> &mdash; where the two curves cross</div></div>
+      <div class="tile"><div class="lab">Global mean ASR</div><div class="val" id="mASR">238 W/m&sup2;</div>
+        <div class="note">observed 240.2</div></div>
+      <div class="tile"><div class="lab">Global mean OLR</div><div class="val" id="mOLR">236 W/m&sup2;</div>
+        <div class="note">observed 239.6</div></div>
+    </div>
+    <div class="callout"><b>Three readings of this one figure.</b>
+    <b>(1)</b> The tropics gain energy every year and the poles lose it, yet neither is heating or cooling
+    without limit. Something must be carrying the difference poleward &mdash; that is the second half of
+    this page, and this figure is its entire justification.
+    <b>(2)</b> The OLR curve is much flatter than the ASR curve. If the planet had no circulation, OLR would
+    have to match ASR everywhere and the pole&ndash;equator temperature contrast would be enormous. The
+    flatness <em>is</em> the transport.
+    <b>(3)</b> The crossing sits near 35&deg;, not at the pole &mdash; so the "tropics" that export energy
+    are much wider than the astronomical tropics at 23.4&deg;.</div>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>Why is the longwave flux larger than the shortwave flux at high latitudes?</b>
+      <details><summary>Answer</summary><div class="ans">Because the high latitudes are being kept warm by
+      imported heat, and they radiate at a temperature they could never sustain from local sunlight alone.
+      A polar cap absorbs about 60 W&nbsp;m<sup>&minus;2</sup> of sunlight; if it were radiatively isolated
+      it would settle near 185&nbsp;K. It actually radiates about 170&nbsp;W&nbsp;m<sup>&minus;2</sup>,
+      which needs roughly 235&nbsp;K. The extra 110&nbsp;W&nbsp;m<sup>&minus;2</sup> is delivered by the
+      atmosphere and ocean. The deficit in this figure is not a sign that the poles are cooling &mdash; it is
+      the receipt for the energy they are being sent.</div></details>
+    </div>
+    <p class="note" style="font-size:13.5px;color:var(--text-muted);margin-top:14px">
+    <b>An honest note on the numbers.</b> The tabulated curves here average to
+    <span id="resid">+2.1</span> W&nbsp;m<sup>&minus;2</sup> rather than to the observed
+    +0.6 W&nbsp;m<sup>&minus;2</sup>. That residual is the accuracy of a hand-tabulated teaching dataset, and
+    it is worth keeping in view: in &sect;7 it shows up as a transport curve that does not quite return to
+    zero at the pole, which is exactly the diagnostic real analyses have to confront.</p>
+  </div>
+</section>
+
+<div class="act">
+  <span class="n">Part two</span>
+  <span class="t">The response &mdash; what the pattern forces</span>
+  <span class="r"></span>
+</div>
+
+<!-- ───────────── 5 ───────────── -->
+<section id="s5">
+  <h2>5 &middot; Storage, and the two terms that absorb an imbalance</h2>
   <div class="card">
     <h3>The budget for a column of the climate system</h3>
+    <p>If a column takes in more radiation than it emits, exactly two things can happen to the surplus. It
+    can be <b>stored</b> &mdash; warming the ocean, the land or the air beneath it &mdash; or it can be
+    <b>moved somewhere else</b>:</p>
     <div class="eq">&part;E<sub>s</sub>/&part;t = R<sub>TOA</sub> &minus; F<sub>transport</sub>
       <small>rate of change of stored energy = net radiation at the top &minus; net export sideways</small></div>
     <p>Three quantities, and any two of them determine the third. What makes this equation useful is that
@@ -194,11 +395,7 @@
     is, in the most literal sense, the storage term failing to close. Small as it is, integrated over the
     ocean's mass it is the dominant fact about the current climate.</div>
   </div>
-</section>
 
-<!-- ───────────── 2 ───────────── -->
-<section id="s2">
-  <h2>2 &middot; Storage: it is all heat capacity</h2>
   <div class="card">
     <h3>How much energy does it take to warm something by one kelvin?</h3>
     <p>The heat capacity of a column, per square metre of surface, is
@@ -240,9 +437,9 @@
   </div>
 </section>
 
-<!-- ───────────── 3 ───────────── -->
-<section id="s3">
-  <h2>3 &middot; The seasonal cycle as a test of heat capacity</h2>
+<!-- ───────────── 6 ───────────── -->
+<section id="s6">
+  <h2>6 &middot; The seasonal cycle as a test of heat capacity</h2>
   <div class="card">
     <h3>Drive a column with a sine wave and see what comes out</h3>
     <p>Take one column, force it with the seasonal swing in net radiation, and let it shed heat in
@@ -302,17 +499,17 @@
   </div>
 </section>
 
-<!-- ───────────── 4 ───────────── -->
-<section id="s4">
-  <h2>4 &middot; Transport: integrating the imbalance</h2>
+<!-- ───────────── 7 ───────────── -->
+<section id="s7">
+  <h2>7 &middot; Transport: integrating the imbalance</h2>
   <div class="card">
-    <h3>The annual-mean picture, straight from Part 2</h3>
+    <h3>The annual-mean picture, straight from &sect;4</h3>
     <p>On the annual mean, storage nearly vanishes and the column budget collapses to
     R<sub>TOA</sub> = F<sub>transport</sub>. Integrate the net radiation from the South Pole up to some
     latitude &phi; and you have the total energy that must cross that circle of latitude, northward:</p>
     <div class="eq">F(&phi;) = 2&pi;a&sup2; &int;<sub>&minus;&pi;/2</sub><sup>&phi;</sup> R<sub>TOA</sub>(&phi;&prime;) cos&phi;&prime; d&phi;&prime;
       <small>a = 6371 km; the cos&thinsp;&phi; is the shrinking circumference of a latitude circle</small></div>
-    <p>This is not a new measurement. It is the <em>same</em> zonal curve from Part 2, integrated. And that
+    <p>This is not a new measurement. It is the <em>same</em> zonal curve from &sect;4, integrated. And that
     is the point worth making in class: the entire poleward heat transport of the climate system is a
     derived quantity &mdash; nobody measures 5 petawatts crossing 35&deg;&nbsp;N. It is inferred from
     satellite radiation data by exactly this integral.</p>
@@ -321,43 +518,37 @@
       <button type="button" data-f="adj" aria-pressed="false">Residual removed</button>
     </div>
     <figure><svg id="transport" viewBox="0 0 800 420" role="img" aria-label="Northward energy transport in petawatts as a function of latitude, obtained by integrating the net top-of-atmosphere radiation"></svg>
-      <figcaption>Positive is northward. Computed from the zonal net radiation of
-      <a href="toa-radiation.html">Part 2</a> by the integral above.</figcaption>
+      <figcaption>Positive is northward. Computed from the zonal net radiation of &sect;4 by the integral
+      above.</figcaption>
     </figure>
     <div class="three">
-      <div class="tile"><div class="lab">Peak northward</div><div class="val" id="peakN">6.0 PW</div>
-        <div class="note" id="peakNat">at 38&deg; N</div></div>
-      <div class="tile"><div class="lab">Peak southward</div><div class="val" id="peakS">4.5 PW</div>
-        <div class="note" id="peakSat">at 40&deg; S</div></div>
-      <div class="tile"><div class="lab">Closure at the North Pole</div><div class="val" id="closeOut">+1.4 PW</div>
+      <div class="tile"><div class="lab">Peak northward</div><div class="val" id="peakN">5.9 PW</div>
+        <div class="note" id="peakNat">at 35&deg; N</div></div>
+      <div class="tile"><div class="lab">Peak southward</div><div class="val" id="peakS">4.7 PW</div>
+        <div class="note" id="peakSat">at 37&deg; S</div></div>
+      <div class="tile"><div class="lab">Closure at the North Pole</div><div class="val" id="closeOut">+1.09 PW</div>
         <div class="note">should be exactly zero &mdash; see below</div></div>
     </div>
     <div class="callout warn"><b>Read the closure error, do not hide it.</b> Nothing can be transported
     across the pole, so F(90&deg;) must be zero. Ours is not, because the tabulated radiation curves average
-    to <span id="residTxt">+2.1</span> W&nbsp;m<sup>&minus;2</sup> rather than to zero &mdash; and that, spread over
-    the planet's 5.1 &times; 10<sup>14</sup> m&sup2;, is the <span id="residPW">1.1</span> PW you see at the pole.
-    Press <b>Residual removed</b> to subtract the global mean
-    before integrating and watch the curve come back to zero. Real observational estimates face exactly this
-    problem: satellite radiation budgets are not accurate enough in absolute terms to close, so they are
-    adjusted the same way, and the size of the adjustment is a fair measure of how well anyone actually
-    knows these numbers.</div>
+    to <span id="residTxt">+2.1</span> W&nbsp;m<sup>&minus;2</sup> rather than to zero &mdash; and that,
+    spread over the planet's 5.1 &times; 10<sup>14</sup> m&sup2;, is the
+    <span id="residPW">1.1</span> PW you see at the pole.
+    Press <b>Residual removed</b> to subtract the global mean before integrating and watch the curve come
+    back to zero. Real observational estimates face exactly this problem: satellite radiation budgets are not
+    accurate enough in absolute terms to close, so they are adjusted the same way, and the size of the
+    adjustment is a fair measure of how well anyone actually knows these numbers.</div>
     <p style="margin-top:6px">For scale: <b>1 PW = 10<sup>15</sup> W</b>. Total human primary energy use is
     about 0.019 PW. The climate system moves roughly three hundred times that across a single circle of
     latitude, continuously.</p>
-  </div>
-</section>
 
-<!-- ───────────── 5 ───────────── -->
-<section id="s5">
-  <h2>5 &middot; Who carries it &mdash; atmosphere or ocean?</h2>
-  <div class="card">
-    <h3>The split, and why it changes with latitude</h3>
+    <h3 style="margin-top:26px">Who carries it &mdash; atmosphere or ocean?</h3>
     <p>The integral gives the total, but not the carrier. Observational estimates split it roughly like
     this: the <b>ocean</b> dominates in the deep tropics, peaking near 15&ndash;20&deg;&nbsp;N at about
     1.7&nbsp;PW; the <b>atmosphere</b> takes over polewards of about 25&deg; and does almost all of the work
     in mid-latitudes, where the storm tracks carry warm moist air poleward and cold dry air equatorward.</p>
     <figure><svg id="split" viewBox="0 0 800 400" role="img" aria-label="Split of the total poleward energy transport between the atmosphere and the ocean as a function of latitude"></svg>
-      <figcaption>Total from the integral on this page, with the residual removed; the oceanic component
+      <figcaption>Total from the integral above, with the residual removed; the oceanic component
       follows Fasullo &amp; Trenberth (2008) and the atmospheric component is the difference.</figcaption>
     </figure>
     <div class="kv">
@@ -385,9 +576,9 @@
   </div>
 </section>
 
-<!-- ───────────── 6 ───────────── -->
-<section id="s6">
-  <h2>6 &middot; The regional signature of transport</h2>
+<!-- ───────────── 8 ───────────── -->
+<section id="s8">
+  <h2>8 &middot; The regional signature of transport</h2>
   <div class="card">
     <h3>Subtract the zonal mean and what is left is circulation</h3>
     <p>A clean way to see transport in observed temperatures: take the annual mean temperature at a place and
@@ -396,7 +587,8 @@
     nothing else.</p>
     <div id="anomBars"></div>
     <p style="margin-top:14px">All five of these places sit within four degrees of latitude of one another
-    and receive, to within a percent or two, the same annual sunlight. They span just over <b>17 kelvin</b>.</p>
+    and receive, to within a percent or two, the same annual sunlight. They span just over
+    <b>17 kelvin</b>.</p>
     <div class="q"><span class="k">Ask yourself (from the slides)</span>
       <b>What causes the strong positive values over the North Pacific and especially the North Atlantic?</b>
       <details><summary>Answer</summary><div class="ans">Three things, working together.
@@ -408,27 +600,33 @@
       anomaly is partly the Atlantic being warm and partly everything else at that latitude being cold. Both
       halves of that are the same physics seen from two sides.</div></details>
     </div>
-    <p style="margin-top:14px"><b>The sentence to leave with.</b> The radiation budget of
-    <a href="toa-radiation.html">Part 2</a> sets up an imbalance the planet cannot tolerate. Storage buffers
-    it on short timescales, transport removes it on long ones, and the two together are why Earth has a
-    climate rather than just a temperature. What remains is to check that all the arrows really do add up
-    &mdash; which is <a href="global-budget.html">Part 4</a>.</p>
+    <p style="margin-top:14px"><b>The sentence to leave with.</b> The radiation budget of the first half of
+    this page sets up an imbalance the planet cannot tolerate. Storage buffers it on short timescales,
+    transport removes it on long ones, and the two together are why Earth has a climate rather than just a
+    temperature. What remains is to check that all the arrows really do add up &mdash; which is
+    <a href="global-budget.html">Part 3</a>.</p>
   </div>
 </section>
 
-<p class="foot">The seasonal model is a deliberate caricature: one lumped column, a sinusoidal forcing of
-amplitude A = 130 W m<sup>&minus;2</sup> and a fixed damping &lambda; = 9 W m<sup>&minus;2</sup> K<sup>&minus;1</sup>
-standing in for radiative and turbulent loss together. Its job is the <em>ratio</em> between land and ocean and
-the phase lag, not the absolute temperatures. Volumetric heat capacities: sea water 4.1 &times; 10<sup>6</sup>,
-moist soil 2.0 &times; 10<sup>6</sup> J m<sup>&minus;3</sup> K<sup>&minus;1</sup>. Transport is integrated from
-the zonal radiation dataset of <a href="toa-radiation.html">Part 2</a>; the atmosphere/ocean split follows
+<p class="foot">Annual-mean insolation from the second-Legendre approximation
+Q(&phi;) = (S<sub>0</sub>/4)&thinsp;[1 &minus; 0.482&thinsp;P<sub>2</sub>(sin&thinsp;&phi;)] with
+S<sub>0</sub>/4 = 340.25 W m<sup>&minus;2</sup>, which is accurate to a few W m<sup>&minus;2</sup> at
+present-day obliquity; the full expression is on <a href="../insolation/">the insolation page</a>. Zonal
+albedo and outgoing longwave are representative annual means rounded from satellite climatology
+(CERES EBAF), chosen so that the global means and the meridional transport come out right; they are a
+teaching dataset, not a reanalysis. Site values are constructed the same way. The seasonal model is a
+deliberate caricature: one lumped column, a sinusoidal forcing of amplitude A = 130 W m<sup>&minus;2</sup>
+and a fixed damping &lambda; = 9 W m<sup>&minus;2</sup> K<sup>&minus;1</sup> standing in for radiative and
+turbulent loss together. Its job is the <em>ratio</em> between land and ocean and the phase lag, not the
+absolute temperatures. Volumetric heat capacities: sea water 4.1 &times; 10<sup>6</sup>, moist soil
+2.0 &times; 10<sup>6</sup> J m<sup>&minus;3</sup> K<sup>&minus;1</sup>. The atmosphere/ocean split follows
 Fasullo, J.T. and K.E. Trenberth (2008), <em>J. Climate</em> 21, 2297&ndash;2312. Station temperatures are
 1991&ndash;2020 annual normals, rounded; the 60&deg; N zonal mean is taken as &minus;1 &deg;C. Figures follow
-Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to Climate Dynamics and
-Climate Modelling</em>, Figs. 2.15&ndash;2.18 (climate.be/textbook), with observed seasonal and annual
+Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to Climate Dynamics
+and Climate Modelling</em>, Figs. 2.12&ndash;2.18 (climate.be/textbook), with observed seasonal and annual
 temperature fields after Rayner et al. (2003).</p>
 
-<p class="foot">Continue to <a href="global-budget.html">Part 4 &mdash; the complete ledger: does it all add
+<p class="foot">Continue to <a href="global-budget.html">Part 3 &mdash; the complete ledger: does it all add
 up? &rarr;</a></p>
 
 </div>
@@ -444,44 +642,186 @@ up? &rarr;</a></p>
   const clear = s => { while (s.firstChild) s.removeChild(s.firstChild); };
   const rad = d => Math.PI*d/180;
 
-  /* ══════════ shared zonal dataset — identical to Part 2 ══════════ */
+  /* ══════════════════════════════════════════════════════════════════
+     ONE zonal teaching dataset, used by every figure on this page.
+     Annual-mean insolation from the second-Legendre approximation;
+     albedo and OLR tabulated from satellite climatology.
+     ══════════════════════════════════════════════════════════════════ */
   const S4 = 340.25;
   const Q = phi => { const s = Math.sin(rad(phi)); return S4*(1 - 0.482*(3*s*s - 1)/2); };
   const LAT = [-90,-80,-70,-60,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90];
   const ALB = [0.72,0.68,0.57,0.46,0.38,0.30,0.26,0.25,0.26,0.29,0.26,0.24,0.24,0.27,0.33,0.42,0.50,0.59,0.64];
   const OLRZ= [154,159,173,188,207,232,249,257,257,248,259,264,262,246,221,198,188,175,168];
-  const NETZ = LAT.map((p,i)=>Q(p)*(1-ALB[i]) - OLRZ[i]);
+  const ASRZ = LAT.map((p,i)=>Q(p)*(1-ALB[i]));
+  const NETZ = ASRZ.map((a,i)=>a-OLRZ[i]);
+
   const interp = (arr,p) => { let i=0; while (i<LAT.length-2 && LAT[i+1]<p) i++;
     const f=(p-LAT[i])/(LAT[i+1]-LAT[i]); return arr[i]+f*(arr[i+1]-arr[i]); };
 
-  /* area-weighted mean by the same trapezoidal rule used for the transport integral,
-     so that removing it makes F(90°) vanish exactly */
-  const MEAN_NET = (() => { let num=0, den=0;
+  /* area-weighted mean by the same trapezoidal rule used for the transport
+     integral, so that removing it makes F(90°) vanish exactly */
+  const wmean = arr => { let num=0, den=0;
     for (let p=-90; p<90; p+=0.5){
       const a=rad(p), b=rad(p+0.5), ca=Math.cos(a), cb=Math.cos(b);
-      num += (interp(NETZ,p)*ca + interp(NETZ,p+0.5)*cb)/2*(b-a);
+      num += (interp(arr,p)*ca + interp(arr,p+0.5)*cb)/2*(b-a);
       den += (ca+cb)/2*(b-a);
     }
-    return num/den; })();
+    return num/den; };
+  const MEAN_ASR = wmean(ASRZ), MEAN_OLR = wmean(OLRZ), MEAN_NET = MEAN_ASR - MEAN_OLR;
+
+  /* zero crossings of the net curve, linearly interpolated */
+  function crossing(from,to){
+    for (let i=from;i!==to;i+= (to>from?1:-1)){
+      const j = i + (to>from?1:-1);
+      if (NETZ[i]===0) return LAT[i];
+      if (NETZ[i]*NETZ[j] < 0)
+        return LAT[i] + (LAT[j]-LAT[i])*NETZ[i]/(NETZ[i]-NETZ[j]);
+    }
+    return null;
+  }
+  const xN = crossing(9,18), xS = crossing(9,0);
 
   /* northward transport, PW, by cumulative integration from the South Pole */
   const A_EARTH = 6.371e6;
   function transport(removeMean){
     const off = removeMean ? MEAN_NET : 0;
     const step = 0.5, out = [];
-    let F = 0, prevP = -90, prevV = (interp(NETZ,-90)-off)*Math.cos(rad(-90));
+    let F = 0, prevV = (interp(NETZ,-90)-off)*Math.cos(rad(-90));
     out.push([-90,0]);
     for (let p=-90+step; p<=90.0001; p+=step){
       const v = (interp(NETZ,p)-off)*Math.cos(rad(p));
       F += 2*Math.PI*A_EARTH*A_EARTH*(prevV+v)/2*rad(step);
       out.push([p, F/1e15]);
-      prevP = p; prevV = v;
+      prevV = v;
     }
     return out;
   }
   let fMode = 'raw';
 
-  /* ══════════ 3 · seasonal response ══════════ */
+  /* ══════════ 3 · six places ══════════ */
+  const SITES = [
+    {n:'Congo basin',        sub:'rainforest, deep convection', lat:-5,  a:0.30, olr:234},
+    {n:'W Pacific warm pool',sub:'ITCZ, 15 km cloud tops',      lat: 5,  a:0.32, olr:212},
+    {n:'Sahel',              sub:'seasonal savanna',            lat:15,  a:0.28, olr:272},
+    {n:'Central Sahara',     sub:'bright, dry, cloud-free',     lat:23,  a:0.36, olr:290},
+    {n:'Southern Ocean',     sub:'permanent stratocumulus',     lat:-55, a:0.42, olr:212},
+    {n:'Greenland ice sheet',sub:'high, bright and cold',       lat:72,  a:0.68, olr:175}
+  ].map(s => { s.Q = Q(s.lat); s.asr = s.Q*(1-s.a); s.net = s.asr - s.olr; return s; });
+
+  let view = 'asr';
+  function drawSites(){
+    const host = $('siteBars'); host.innerHTML = '';
+    const key = view==='asr' ? 'asr' : view==='olr' ? 'olr' : 'net';
+    const col = view==='asr' ? C('--sun-deep') : view==='olr' ? C('--earth-deep') : null;
+    const rows = SITES.slice().sort((a,b)=>b[key]-a[key]);
+    const mx = Math.max(...rows.map(r=>Math.abs(r[key])));
+    rows.forEach(r => {
+      const v = r[key];
+      const d = document.createElement('div'); d.className = 'barrow';
+      const c = col || (v>=0 ? C('--sun-deep') : C('--earth-deep'));
+      d.innerHTML = '<span class="nm">'+r.n+'</span>'+
+        '<span class="tr"><span class="fl" style="width:'+(100*Math.abs(v)/mx).toFixed(1)+
+        '%;background:'+c+'"></span></span>'+
+        '<span class="vv">'+(v>0&&key==='net'?'+':'')+v.toFixed(0)+' W/m²</span>';
+      host.appendChild(d);
+    });
+    const lab = document.createElement('p');
+    lab.style.cssText = 'font-size:13px;color:var(--text-muted);margin:10px 0 0';
+    lab.textContent = view==='asr'
+      ? 'Absorbed solar, Q·(1−α), W/m². The Sahara absorbs 46 less than the Sahel a few degrees south — two-thirds of that gap is albedo, one-third is latitude.'
+      : view==='olr'
+      ? 'Outgoing longwave, W/m². The order has almost inverted: the desert now leads by a wide margin, the deep-convective sites are last.'
+      : 'Net radiation, ASR − OLR, W/m². Three of these six places run a permanent deficit at the top of the atmosphere.';
+    host.appendChild(lab);
+
+    const tb = $('siteTable'); tb.innerHTML = '';
+    SITES.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td><b style="color:var(--text-primary)">'+r.n+'</b><br>'+
+        '<span style="font-size:12.5px;color:var(--text-muted)">'+r.sub+'</span></td>'+
+        '<td>'+Math.abs(r.lat)+'° '+(r.lat<0?'S':'N')+'</td>'+
+        '<td class="num">'+r.Q.toFixed(0)+'</td><td class="num">'+r.a.toFixed(2)+'</td>'+
+        '<td class="num">'+r.asr.toFixed(0)+'</td><td class="num">'+r.olr+'</td>'+
+        '<td class="num" style="color:'+(r.net>=0?C('--sun-deep'):C('--earth-deep'))+';font-weight:600">'+
+        (r.net>0?'+':'')+r.net.toFixed(0)+'</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  /* ══════════ 4 · zonal chart ══════════ */
+  function drawZonal(){
+    const s = $('zonal'); clear(s);
+    const L=62, R=770, T=28, B=372;
+    const vmax = 340;
+    const X = p => L + (p+90)/180*(R-L);
+    const Y = v => B - v/vmax*(B-T);
+    const line=C('--line'), muted=C('--text-muted'), sec=C('--text-secondary'),
+          sun=C('--sun'), sunD=C('--sun-deep'),
+          earth=C('--earth'), earthD=C('--earth-deep'), acc=C('--accent');
+
+    for (let v=0;v<=300;v+=50){
+      el('line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:line,'stroke-width':1,opacity:.5},s);
+      tx(s,{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11.5,fill:muted},v);
+    }
+    tx(s,{x:L-8,y:T-8,'text-anchor':'end','font-size':11.5,fill:muted},'W/m²');
+    for (let p=-90;p<=90;p+=30){
+      el('line',{x1:X(p),y1:T,x2:X(p),y2:B,stroke:line,'stroke-width':1,opacity:.4},s);
+      tx(s,{x:X(p),y:B+18,'text-anchor':'middle','font-size':11.5,fill:muted},
+         p===0?'Eq':(Math.abs(p)+'°'+(p<0?'S':'N')));
+    }
+
+    const path = vals => {
+      let d = 'M '+X(LAT[0]).toFixed(1)+' '+Y(vals[0]).toFixed(1);
+      for (let i=1;i<LAT.length;i++) d += ' L '+X(LAT[i]).toFixed(1)+' '+Y(vals[i]).toFixed(1);
+      return d;
+    };
+    /* sample finely so the sign split is clean, then fill with hairlines */
+    const N = 360, sASR=[], sOLR=[], sLAT=[];
+    for (let k=0;k<=N;k++){ const p=-90+180*k/N; sLAT.push(p);
+      sASR.push(interp(ASRZ,p)); sOLR.push(interp(OLRZ,p)); }
+    for (let k=0;k<=N;k++){
+      const up = sASR[k] > sOLR[k];
+      el('line',{x1:X(sLAT[k]),y1:Y(sASR[k]),x2:X(sLAT[k]),y2:Y(sOLR[k]),
+                 stroke: up?sun:earth, 'stroke-width':(R-L)/N+0.6, opacity:.30},s);
+    }
+
+    el('path',{d:path(ASRZ),fill:'none',stroke:sunD,'stroke-width':2.8,'stroke-linejoin':'round'},s);
+    el('path',{d:path(OLRZ),fill:'none',stroke:earthD,'stroke-width':2.8,'stroke-linejoin':'round'},s);
+
+    [xN,xS].forEach(p=>{
+      if (p===null) return;
+      el('line',{x1:X(p),y1:T,x2:X(p),y2:B,stroke:acc,'stroke-width':1.4,'stroke-dasharray':'5 4'},s);
+      tx(s,{x:X(p),y:T-8,'text-anchor':'middle','font-size':11.5,fill:acc,'font-weight':600},
+         Math.abs(p).toFixed(0)+'°'+(p<0?'S':'N'));
+    });
+
+    tx(s,{x:X(-2),y:Y(interp(ASRZ,0))-12,'text-anchor':'middle','font-size':12.5,fill:sunD,'font-weight':600},
+       'absorbed solar');
+    tx(s,{x:X(-2),y:Y(interp(OLRZ,0))+20,'text-anchor':'middle','font-size':12.5,fill:earthD,'font-weight':600},
+       'outgoing longwave');
+    tx(s,{x:X(-8),y:Y(285),'text-anchor':'middle','font-size':12,fill:sunD,'font-weight':600},'SURPLUS');
+    tx(s,{x:X(-72),y:Y(120),'text-anchor':'middle','font-size':12,fill:earthD,'font-weight':600},'DEFICIT');
+    tx(s,{x:X(72),y:Y(120),'text-anchor':'middle','font-size':12,fill:earthD,'font-weight':600},'DEFICIT');
+    tx(s,{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':12.5,fill:sec},'Latitude');
+
+    /* net curve on a second, offset baseline */
+    const nb = 482, nsc = 0.28;
+    el('line',{x1:L,y1:nb,x2:R,y2:nb,stroke:line,'stroke-width':1},s);
+    let dn = '';
+    LAT.forEach((p,i)=> dn += (i?' L ':'M ')+X(p).toFixed(1)+' '+(nb-NETZ[i]*nsc).toFixed(1));
+    el('path',{d:dn,fill:'none',stroke:acc,'stroke-width':2},s);
+    tx(s,{x:L,y:nb-38,'font-size':11.5,fill:acc,'font-weight':600},'net = ASR − OLR');
+    tx(s,{x:R,y:nb-38,'text-anchor':'end','font-size':11,fill:muted},
+       '+60 … −105 W/m², vertical scale exaggerated');
+
+    $('mASR').textContent  = MEAN_ASR.toFixed(0)+' W/m²';
+    $('mOLR').textContent  = MEAN_OLR.toFixed(0)+' W/m²';
+    $('crossN').textContent = xN===null?'—':(xN.toFixed(0)+'° N');
+    $('crossS').textContent = xS===null?'—':(Math.abs(xS).toFixed(0)+'° S');
+    $('resid').textContent  = (MEAN_NET>0?'+':'')+MEAN_NET.toFixed(1);
+  }
+
+  /* ══════════ 6 · seasonal response ══════════ */
   const OMEGA = 2*Math.PI/3.1557e7;      /* rad per second */
   const AFORCE = 130, LAMBDA = 9;        /* W/m2 and W/m2/K */
   const RHOC = {water: 4.1e6, soil: 2.0e6};
@@ -491,7 +831,7 @@ up? &rarr;</a></p>
     const h = Math.pow(10, +$('depth').value);
     const Cc = RHOC[material]*h;
     const amp = AFORCE/Math.sqrt(LAMBDA*LAMBDA + Math.pow(Cc*OMEGA,2));
-    const lag = Math.atan2(Cc*OMEGA, LAMBDA);       /* radians */
+    const lag = Math.atan2(Cc*OMEGA, LAMBDA);
     return {h, Cc, amp, lagMonths: lag/(2*Math.PI)*12};
   }
 
@@ -501,13 +841,11 @@ up? &rarr;</a></p>
     const L=64, R=706, T=28, B=306;
     const X = m => L + m/12*(R-L);
     const line=C('--line'), muted=C('--text-muted'), sec=C('--text-secondary'),
-          sunD=C('--sun-deep'), sun=C('--sun'), earthD=C('--earth-deep'),
-          acc=C('--accent'), prim=C('--text-primary');
+          sunD=C('--sun-deep'), earthD=C('--earth-deep'), acc=C('--accent');
     const mid = (T+B)/2;
-    const Yf = v => mid - v/AFORCE*(mid-T)*0.92;                 /* forcing axis */
-    const Ya = v => mid - v/Math.max(st.amp,0.4)*(mid-T)*0.92;   /* temperature axis, autoscaled */
+    const Yf = v => mid - v/AFORCE*(mid-T)*0.92;
+    const Ya = v => mid - v/Math.max(st.amp,0.4)*(mid-T)*0.92;
 
-    /* grid */
     el('line',{x1:L,y1:mid,x2:R,y2:mid,stroke:line,'stroke-width':1.4},s);
     const MN = ['J','F','M','A','M','J','J','A','S','O','N','D'];
     for (let m=0;m<=12;m++){
@@ -515,11 +853,9 @@ up? &rarr;</a></p>
       if (m<12) tx(s,{x:X(m+0.5),y:B+18,'text-anchor':'middle','font-size':11.5,fill:muted},MN[m]);
     }
 
-    /* solstice marker */
     el('line',{x1:X(6.1),y1:T,x2:X(6.1),y2:B,stroke:sunD,'stroke-width':1.4,'stroke-dasharray':'5 4',opacity:.8},s);
     tx(s,{x:X(6.1)+6,y:T+12,'font-size':11.5,fill:sunD},'summer solstice');
 
-    /* curves */
     let df='', dt='';
     for (let k=0;k<=240;k++){
       const m = 12*k/240;
@@ -531,7 +867,6 @@ up? &rarr;</a></p>
     el('path',{d:df,fill:'none',stroke:sunD,'stroke-width':2.2,opacity:.8},s);
     el('path',{d:dt,fill:'none',stroke:earthD,'stroke-width':3},s);
 
-    /* peak of the response */
     const pm = (6.1 + st.lagMonths) % 12;
     el('circle',{cx:X(pm),cy:Ya(st.amp),r:5,fill:earthD},s);
     if (st.lagMonths > 0.25){
@@ -541,7 +876,6 @@ up? &rarr;</a></p>
          st.lagMonths.toFixed(1)+' month lag');
     }
 
-    /* axes labels */
     tx(s,{x:L-8,y:Yf(AFORCE)+4,'text-anchor':'end','font-size':11,fill:sunD},'+130');
     tx(s,{x:L-8,y:Yf(-AFORCE)+4,'text-anchor':'end','font-size':11,fill:sunD},'−130');
     tx(s,{x:L-8,y:mid+4,'text-anchor':'end','font-size':11,fill:muted},'0');
@@ -554,17 +888,15 @@ up? &rarr;</a></p>
     el('rect',{x:L-16,y:B+31,width:11,height:4,fill:sunD},s);
     el('rect',{x:X(6.6)-16,y:B+31,width:11,height:4,fill:earthD},s);
 
-    /* readouts */
     const h = st.h;
     $('depthOut').textContent = h<1 ? (h*100).toFixed(0)+' cm' : h.toFixed(h<10?1:0)+' m';
     $('capOut').textContent   = st.Cc.toExponential(1).replace('e+','e');
     $('ampOut').textContent   = (2*st.amp).toFixed(1)+' K';
-    $('lagOut').textContent   = st.lagMonths<0.1 ? '&lt; 0.1 mo' : st.lagMonths.toFixed(1)+' mo';
     $('lagOut').innerHTML     = st.lagMonths<0.1 ? '&lt; 0.1 mo' : st.lagMonths.toFixed(1)+' mo';
     $('depthUnit').textContent = material==='water' ? 'of water' : 'of soil';
   }
 
-  /* ══════════ 4 · transport ══════════ */
+  /* ══════════ 7 · transport ══════════ */
   function drawTransport(){
     const s = $('transport'); clear(s);
     const F = transport(fMode==='adj');
@@ -573,7 +905,7 @@ up? &rarr;</a></p>
     const X = p => L + (p+90)/180*(R-L);
     const Y = v => (T+B)/2 - v/vmax*((B-T)/2);
     const line=C('--line'), muted=C('--text-muted'), sec=C('--text-secondary'),
-          sunD=C('--sun-deep'), earthD=C('--earth-deep'), acc=C('--accent'), prim=C('--text-primary');
+          sunD=C('--sun-deep'), earthD=C('--earth-deep'), acc=C('--accent');
 
     for (let v=-6;v<=6;v+=2){
       el('line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:line,'stroke-width':v===0?1.4:1,opacity:v===0?1:.45},s);
@@ -586,7 +918,6 @@ up? &rarr;</a></p>
          p===0?'Eq':(Math.abs(p)+'°'+(p<0?'S':'N')));
     }
 
-    /* shaded area under the curve, coloured by direction */
     F.forEach(([p,v])=>{
       el('line',{x1:X(p),y1:Y(0),x2:X(p),y2:Y(v),
                  stroke:v>=0?sunD:earthD,'stroke-width':(R-L)/F.length+0.5,opacity:.22},s);
@@ -595,7 +926,6 @@ up? &rarr;</a></p>
     F.forEach(([p,v],i)=> d += (i?' L ':'M ')+X(p).toFixed(1)+' '+Y(v).toFixed(1));
     el('path',{d:d,fill:'none',stroke:acc,'stroke-width':2.8},s);
 
-    /* peaks */
     let pN=F[0], pS=F[0];
     F.forEach(r=>{ if (r[1]>pN[1]) pN=r; if (r[1]<pS[1]) pS=r; });
     [[pN,sunD,'northward'],[pS,earthD,'southward']].forEach(([r,col,nm])=>{
@@ -606,7 +936,6 @@ up? &rarr;</a></p>
          'at '+Math.abs(r[0]).toFixed(0)+'°'+(r[0]<0?'S':'N'));
     });
 
-    /* closure */
     const close = F[F.length-1][1];
     el('circle',{cx:X(90),cy:Y(close),r:4.5,fill:'none',stroke:acc,'stroke-width':2},s);
     tx(s,{x:R-4,y:Y(close)-12,'text-anchor':'end','font-size':11.5,
@@ -621,10 +950,8 @@ up? &rarr;</a></p>
     $('closeOut').textContent = (close>0?'+':'')+close.toFixed(2)+' PW';
     if (fMode==='raw'){ $('residTxt').textContent = (MEAN_NET>0?'+':'')+MEAN_NET.toFixed(1);
       $('residPW').textContent = Math.abs(close).toFixed(1); }
-    return F;
   }
 
-  /* ══════════ 5 · atmosphere / ocean split ══════════ */
   /* oceanic component, approximate annual mean after Fasullo & Trenberth (2008), PW */
   const OCEAN = [[-90,0],[-80,-0.05],[-70,-0.15],[-60,-0.35],[-50,-0.60],[-40,-0.85],[-30,-1.00],
                  [-20,-0.85],[-10,-0.35],[0,0.40],[10,1.30],[20,1.70],[30,1.50],[40,1.00],
@@ -645,7 +972,7 @@ up? &rarr;</a></p>
 
     for (let v=-5;v<=5;v+=1){
       el('line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:line,'stroke-width':v===0?1.4:1,opacity:v===0?1:.3},s);
-      if (v%1===0) tx(s,{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:muted},(v>0?'+':'')+v);
+      tx(s,{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:muted},(v>0?'+':'')+v);
     }
     tx(s,{x:L-8,y:T-8,'text-anchor':'end','font-size':11,fill:muted},'PW');
     for (let p=-90;p<=90;p+=30){
@@ -655,9 +982,9 @@ up? &rarr;</a></p>
     }
 
     const mk = fn => { let d=''; F.forEach(([p,v],i)=>{ d += (i?' L ':'M ')+X(p).toFixed(1)+' '+Y(fn(p,v)).toFixed(1); }); return d; };
-    el('path',{d:mk((p,v)=>v),        fill:'none',stroke:acc,  'stroke-width':2.8},s);
-    el('path',{d:mk((p,v)=>oceanAt(p)),fill:'none',stroke:earthD,'stroke-width':2.4},s);
-    el('path',{d:mk((p,v)=>v-oceanAt(p)),fill:'none',stroke:atmo,'stroke-width':2.4,'stroke-dasharray':'7 4'},s);
+    el('path',{d:mk((p,v)=>v),           fill:'none',stroke:acc,   'stroke-width':2.8},s);
+    el('path',{d:mk(p=>oceanAt(p)),      fill:'none',stroke:earthD,'stroke-width':2.4},s);
+    el('path',{d:mk((p,v)=>v-oceanAt(p)),fill:'none',stroke:atmo,  'stroke-width':2.4,'stroke-dasharray':'7 4'},s);
 
     tx(s,{x:X(52),y:Y(4.4),'font-size':12.5,fill:acc,'font-weight':600},'total');
     tx(s,{x:X(46),y:Y(2.6),'font-size':12.5,fill:atmo,'font-weight':600},'atmosphere');
@@ -666,14 +993,14 @@ up? &rarr;</a></p>
     tx(s,{x:L,y:B+40,'font-size':11.5,fill:muted},'northward positive');
   }
 
-  /* ══════════ 6 · regional anomalies ══════════ */
+  /* ══════════ 8 · regional anomalies ══════════ */
   const ZONAL60 = -1.0;
   const STA = [
-    {n:'Bergen',    c:'Norway',           lat:'60.4° N', t: 8.6},
-    {n:'Anchorage', c:'Alaska, USA',      lat:'61.2° N', t: 3.0},
-    {n:'Whitehorse',c:'Yukon, Canada',    lat:'60.7° N', t:-0.1},
-    {n:'Nuuk',      c:'Greenland',        lat:'64.2° N', t:-0.7},
-    {n:'Yakutsk',   c:'Sakha, Russia',    lat:'62.0° N', t:-8.8}
+    {n:'Bergen',    c:'Norway',        lat:'60.4° N', t: 8.6},
+    {n:'Anchorage', c:'Alaska, USA',   lat:'61.2° N', t: 3.0},
+    {n:'Whitehorse',c:'Yukon, Canada', lat:'60.7° N', t:-0.1},
+    {n:'Nuuk',      c:'Greenland',     lat:'64.2° N', t:-0.7},
+    {n:'Yakutsk',   c:'Sakha, Russia', lat:'62.0° N', t:-8.8}
   ].map(d => { d.a = d.t - ZONAL60; return d; });
 
   function drawAnom(){
@@ -706,7 +1033,7 @@ up? &rarr;</a></p>
   }
 
   /* ══════════ wiring ══════════ */
-  const redraw = () => { drawSeason(); drawTransport(); drawSplit(); drawAnom(); };
+  const redraw = () => { drawSites(); drawZonal(); drawSeason(); drawTransport(); drawSplit(); drawAnom(); };
 
   $('themeBtn').onclick = function(){
     const dark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -714,6 +1041,13 @@ up? &rarr;</a></p>
     this.textContent = dark ? 'Dark' : 'Light';
     redraw();
   };
+  $('sitePills').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    view = b.dataset.v;
+    [...$('sitePills').querySelectorAll('button')].forEach(x =>
+      x.setAttribute('aria-pressed', String(x === b)));
+    drawSites();
+  });
   $('depth').addEventListener('input', drawSeason);
   $('matPills').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;

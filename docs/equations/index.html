@@ -49,9 +49,9 @@ a.back:hover { color: #14403f; }
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART I</span>
       <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">The Earth's energy budget</h2>
       <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">2.1 – 2.13</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">2.1 – 2.13 + §2.1.5</span>
     </div>
-    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">Two ideas run through this block: the planet must radiate away exactly what it absorbs, and an infrared-absorbing atmosphere forces the surface to sit hotter than that balance temperature.</p>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">Two ideas run through this block: the planet must radiate away exactly what it absorbs, and an infrared-absorbing atmosphere forces the surface to sit hotter than that balance temperature. The last three entries are standard relations from §2.1.2 and §2.1.5 rather than numbered equations in the text.</p>
 
     <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
 
@@ -183,6 +183,36 @@ a.back:hover { color: #14403f; }
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The slab is always colder than the surface by the fixed ratio \(2^{-1/4} \approx 0.84\) — the vertical temperature contrast the greenhouse effect requires.</div>
         </div>
         <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>a</sub> / T<sub>s</sub> = 0.84 always</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">§2.1.2</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Emission level and lapse rate</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T_s = T_e + \Gamma\, z_e$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The greenhouse effect stated as geometry. Top-of-atmosphere balance pins the emission temperature at \(T_e\); the surface is warmer by the lapse rate times the height of the level that radiates to space. Adding CO<sub>2</sub> raises \(z_e\), and the whole profile shifts up with it.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Γ — lapse rate, ≈ 6.5 K km⁻¹<br />z<sub>e</sub> — emission level, ≈ 5.1 km<br />⇒ T<sub>s</sub> ≈ 288 K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">§2.1.5</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Column energy budget</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\partial E_s}{\partial t} = R_{TOA} - F_{transport}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">A local imbalance at the top of the atmosphere is either stored or exported. Storage dominates on seasonal timescales; on the annual mean it nearly vanishes and transport carries the whole thing.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">E<sub>s</sub> — stored energy, J m⁻²<br />R<sub>TOA</sub> — net radiation, W m⁻²<br />global mean today ≈ +0.6 W m⁻²</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">§2.1.5</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Meridional heat transport</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$F(\varphi) = 2\pi a^{2}\int_{-\pi/2}^{\varphi} R_{TOA}(\varphi')\cos\varphi'\,\mathrm{d}\varphi'$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Nobody measures petawatts crossing a latitude circle. The transport is <em>inferred</em> by integrating the satellite radiation imbalance from one pole; F must return to zero at the other, and it is the failure to do so that reveals the observational error.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">a — Earth radius, 6371 km<br />peak ≈ 5.5 PW near 35–40°<br />1 PW = 10¹⁵ W</div>
       </div>
 
     </div>
