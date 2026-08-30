@@ -61,6 +61,34 @@
   .card .card-links a:hover { text-decoration: underline; }
   .card .card-links a.tasks { color: var(--muted); }
   .card .card-links span.pending { color: var(--muted); font-size: 0.85rem; font-style: italic; }
+  .lecture-grid .card { cursor: pointer; }
+  .lecture-grid .card.is-clickable {
+    position: relative;
+    overflow: hidden;
+  }
+  .lecture-grid .card .card-hit {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 12px;
+  }
+  .lecture-grid .card .card-hit:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .lecture-grid .card.is-clickable > *:not(.card-hit) {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .lecture-grid .card .card-links {
+    margin-top: 0.2rem;
+  }
+  .lecture-grid .card .card-links span {
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
   .links-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
   a.canvas-link {
     display: inline-block;
@@ -156,7 +184,7 @@
   <p class="subtitle">Interactive explanations and animations, grouped by lecture and in the order they are used.</p>
 
   <h3 class="lecture"><span class="lec">Lecture 2</span> The Earth&rsquo;s Energy Budget <span class="rule"></span></h3>
-  <div class="grid">
+  <div class="grid lecture-grid">
     <div class="card">
       <div class="num">Part 1</div>
       <h2>Thermal Emitters</h2>
@@ -216,7 +244,7 @@
   </div>
 
   <h3 class="lecture"><span class="lec">Lecture 3</span> Climate at a Local Scale <span class="rule"></span></h3>
-  <div class="grid">
+  <div class="grid lecture-grid">
     <div class="card">
       <div class="num">Part 1</div>
       <h2>Surface Energy Balance</h2>
@@ -260,7 +288,7 @@
   </div>
 
   <h3 class="lecture"><span class="lec">Lecture 4</span> Global Cycles: Water and Carbon <span class="rule"></span></h3>
-  <div class="grid">
+  <div class="grid lecture-grid">
     <div class="card">
       <div class="num">Part 1</div>
       <h2>The Water Balance</h2>
@@ -296,7 +324,7 @@
   </div>
 
   <h3 class="lecture"><span class="lec">Lecture 5</span> Modelling the Climate System <span class="rule"></span></h3>
-  <div class="grid">
+  <div class="grid lecture-grid">
     <div class="card">
       <div class="num">Part 1</div>
       <h2>Discretising the Planet</h2>
@@ -340,7 +368,7 @@
   </div>
 
   <h3 class="lecture"><span class="lec">Lecture 6</span> Response of the Climate System to Perturbations <span class="rule"></span></h3>
-  <div class="grid">
+  <div class="grid lecture-grid">
     <div class="card">
       <div class="num">Part 1</div>
       <h2>Forcing and Feedback</h2>
@@ -391,6 +419,58 @@
     </div>
   </div>
 
+  <h3 class="lecture"><span class="lec">Lecture 7</span> Climate Change: the Past and the Present <span class="rule"></span></h3>
+  <div class="grid lecture-grid">
+    <div class="card">
+      <div class="num">Part 1</div>
+      <h2>Forced and Internal Variability</h2>
+      <p>Why the same trend is obvious globally and invisible in B&oslash;.</p>
+      <div class="card-links">
+        <a href="past-present/forced-and-internal.html">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Part 2</div>
+      <h2>Modes of Internal Variability</h2>
+      <p>ENSO, NAO, SAM, PDO and AMO, with a live Pacific cross-section.</p>
+      <div class="card-links">
+        <a href="past-present/modes-of-variability.html">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Part 3</div>
+      <h2>Orbital Forcing and the Glacial Cycles</h2>
+      <p>An exact insolation calculator, and where the 100-kyr cycle comes from.</p>
+      <div class="card-links">
+        <a href="past-present/orbital-forcing.html">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Part 4</div>
+      <h2>Abrupt Change</h2>
+      <p>Dansgaard&ndash;Oeschger events, and a conveyor with two stable states.</p>
+      <div class="card-links">
+        <a href="past-present/abrupt-change.html">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Part 5</div>
+      <h2>The Holocene and the Last 2000 Years</h2>
+      <p>How big natural variability is in a world that looks like ours.</p>
+      <div class="card-links">
+        <a href="past-present/holocene-2000-years.html">Open &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="num">Part 6</div>
+      <h2>Detection and Attribution</h2>
+      <p>Fit the fingerprints yourself, and see what the last century needs.</p>
+      <div class="card-links">
+        <a href="past-present/attribution.html">Open &rarr;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="links-row">
     <a class="canvas-link" href="equations/">Equation summary</a>
   </div>
@@ -431,5 +511,30 @@
 
   <footer class="credit">EE501 · Course materials originally developed by Hans Renssen, former course coordinator.</footer>
 </main>
+<script>
+  (function () {
+    const lectureCards = document.querySelectorAll('.lecture-grid .card');
+    lectureCards.forEach((card) => {
+      const openLink = card.querySelector('.card-links a[href]');
+      if (!openLink) return;
+
+      const href = openLink.getAttribute('href');
+      if (!href) return;
+
+      const title = (card.querySelector('h2')?.textContent || 'material').trim();
+      const hit = document.createElement('a');
+      hit.className = 'card-hit';
+      hit.href = href;
+      hit.setAttribute('aria-label', 'Open ' + title);
+      card.prepend(hit);
+      card.classList.add('is-clickable');
+
+      const links = card.querySelector('.card-links');
+      if (links) {
+        links.innerHTML = '<span>Open material &rarr;</span>';
+      }
+    });
+  })();
+</script>
 </body>
 </html>
