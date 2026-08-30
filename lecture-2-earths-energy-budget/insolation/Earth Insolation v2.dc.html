@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="../../docs/lecture-2-earths-energy-budget/insolation/support.js"></script>
 </head>
 <body>
 <x-dc>
@@ -17,9 +17,9 @@
 </template>
 <helmet>
   <meta name="design_doc_mode" content="canvas">
-  <meta name="ext-resource-dependency" content="./animations.jsx">
-  <meta name="ext-resource-dependency" content="./insolation-scene-v2.jsx">
-  <script src="./earth-rotation-gif.js"></script>
+  <meta name="ext-resource-dependency" content="../../docs/lecture-2-earths-energy-budget/insolation/animations.jsx">
+  <meta name="ext-resource-dependency" content="../../docs/lecture-2-earths-energy-budget/insolation/insolation-scene-v2.jsx">
+  <script src="../../docs/lecture-2-earths-energy-budget/insolation/earth-rotation-gif.js"></script>
   <style>
     body { margin: 0; background: #111; }
     a { color: #3d6e94; }
@@ -27,9 +27,9 @@
   </style>
 </helmet>
 <div style="position:relative; width:100%; height:100vh; background:#0a0a0a;">
-  <x-import component-from-global-scope="Stage" from="./animations.jsx" width="1920" height="2420" duration="36.5" background="#faf7f0" loop="true" autoplay="true" hint-size="100%,100%">
+  <x-import component-from-global-scope="Stage" from="../../docs/lecture-2-earths-energy-budget/insolation/animations.jsx" width="1920" height="2420" duration="36.5" background="#faf7f0" loop="true" autoplay="true" hint-size="100%,100%">
 
-  <x-import component-from-global-scope="InsolationScene" from="./insolation-scene-v2.jsx" show-orbit-view="{{ showOrbitView }}" exaggerate-orbit="{{ exaggerateOrbit }}" day-cycle-speed="{{ dayCycleSpeed }}" show-sky-path="{{ showSkyPath }}" show-fig211="{{ showFig211 }}" show-annual-total="{{ showAnnualTotal }}" show-equations="{{ showEquations }}" hint-size="100%,100%"</x-import></x-import>
+  <x-import component-from-global-scope="InsolationScene" from="../../docs/lecture-2-earths-energy-budget/insolation/insolation-scene-v2.jsx" show-orbit-view="{{ showOrbitView }}" exaggerate-orbit="{{ exaggerateOrbit }}" day-cycle-speed="{{ dayCycleSpeed }}" show-sky-path="{{ showSkyPath }}" show-fig211="{{ showFig211 }}" show-annual-total="{{ showAnnualTotal }}" show-equations="{{ showEquations }}" hint-size="100%,100%"</x-import></x-import>
 </div>
 
 </x-dc>
