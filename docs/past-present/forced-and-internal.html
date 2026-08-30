@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forced and internal variability</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f; --ice:#7fb3d5;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad; --ice:#6fa2c4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Climate change: past and present &middot; 1 of 6</p>
+
+<header>
+  <div>
+    <h1>Forced and internal variability</h1>
+    <p class="sub">Lecture&nbsp;6 asked what the climate does when you push it. This lecture asks a harder
+    question: when you look at a climate record, <em>how do you know whether anything pushed it at all?</em>
+    Part of what a record contains is a response to something outside the system. The rest the system did by
+    itself. This page is about telling those apart &mdash; and about why that is far easier for the globe than
+    for B&oslash;.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Two kinds of variation</h3>
+  <p class="cap">The distinction runs through the whole lecture, and it is a distinction about
+  <em>causes</em>, not about size.</p>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin-top:0"><b>Forced variability</b> is driven by a change in an
+      <em>external forcing</em> &mdash; something that acts on the climate system without being part of it.
+      Insolation, volcanic aerosol, the CO<sub>2</sub> humans put in the air.</p>
+      <p class="note">Because the cause sits outside the system, you can in principle name it. Forced
+      variability has an <b>ultimate cause</b>: the eruption happened, the orbit changed, the emissions
+      occurred.</p>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0"><b>Internal variability</b> is generated by the interactions
+      <em>between</em> the components of the system &mdash; atmosphere with ocean, ocean with sea ice, all of
+      it with the land surface. No external push is required. It happens in a model with every forcing held
+      perfectly constant.</p>
+      <p class="note">Here there is no ultimate cause to find. You can trace the chain of events &mdash; the
+      trade winds slackened, so the thermocline flattened, so the eastern Pacific warmed &mdash; and that chain
+      is the <b>proximate cause</b>. Asking what caused the first link is not a well-posed question.</p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 210" role="img" aria-label="Schematic contrasting a forcing arrow entering the climate system with an internal loop that stays inside it"><g id="fiG"></g></svg>
+
+  <p class="note"><b>The test.</b> Can the climate system change it by responding? If it cannot, it is a
+  forcing. This is the same test used in
+  <a href="../perturbations/forcing-and-feedback.html">Lecture&nbsp;6, page&nbsp;1</a> &mdash; and it carries
+  the same awkward rider. <b>The boundary is a choice.</b> Treat the ice sheets as part of the system and a
+  glacial cycle is an internally amplified response; treat them as fixed and the same ice sheets are a
+  boundary condition. Same ice, same physics, different question. You will meet this again on
+  <a href="orbital-forcing.html">page&nbsp;3</a>, where it decides what the astronomical theory is actually
+  claiming.</p>
+
+  <div class="q"><b>So where does a feedback belong?</b> Neither category. Forced variability is the input,
+  internal variability is what the system does unprompted, and feedbacks set the gain on both. A world with
+  strong feedbacks has both a large forced response <em>and</em> loud internal variability &mdash; which is
+  precisely why the two are hard to separate.</div>
+</div>
+
+<div class="card">
+  <h3>Why internal variability exists at all</h3>
+  <p class="cap">One sentence of dynamics, with three consequences that run the rest of the lecture.</p>
+
+  <p class="note" style="margin-top:0">The equations of the atmosphere and ocean &mdash; the seven you met in
+  <a href="../atmospheric-equations/">Lecture&nbsp;5</a> &mdash; are non-linear. Systems of this kind are
+  <b>sensitive to small perturbations</b>: two states differing by an amount too small to measure will, after
+  a while, differ by an amount as large as the variability itself. Nothing has to push the system for it to
+  wander. The wandering is what the equations do.</p>
+
+  <div class="two">
+    <div>
+      <svg viewBox="0 0 430 258" role="img" aria-label="Two trajectories of a chaotic system starting from almost identical states, diverging after some time"><g id="lzG"></g></svg>
+    </div>
+    <div>
+      <div class="ctrl" style="margin-top:6px">
+        <label for="pert"><span>Initial difference between the two runs</span> <b id="pertv">10<sup>&minus;6</sup></b></label>
+        <input type="range" id="pert" min="-9" max="-1" step="0.5" value="-6">
+        <div class="hint">Drag it and watch where the curves separate. Making the starting error a thousand
+        times smaller does not buy a thousand times more forecast &mdash; it buys a fixed extra interval,
+        because the error grows exponentially. That is why weather forecasts have a horizon, and why it is
+        about two weeks whatever the observing network costs.</div>
+      </div>
+      <div class="readout" id="lzRead"></div>
+    </div>
+  </div>
+
+  <p class="note"><b>Three consequences, all of them about what you are entitled to expect.</b></p>
+  <ul class="pl">
+    <li><b>Weather forecasts have a finite horizon.</b> It is a property of the equations, not of the
+    computer.</li>
+    <li><b>Two simulations of the same model with the same forcing are not the same simulation.</b> They
+    contain different realisations of internal variability. Neither is wrong. This is why modern experiments
+    are run as <em>ensembles</em>.</li>
+    <li><b>A model is not expected to reproduce the timing of an unforced event.</b> If a model puts a cold
+    decade in the 1690s and the record puts it in the 1450s, that is not by itself a model failure &mdash; it
+    is the reason <a href="../climate-models/evaluation.html">Lecture&nbsp;5&rsquo;s</a> validation compares
+    <em>statistics</em> rather than dates. You will see this used in earnest on
+    <a href="holocene-2000-years.html">page&nbsp;5</a>.</li>
+  </ul>
+
+  <div class="warnbox"><b>What chaos does not mean.</b> An unpredictable trajectory can still have a
+  perfectly predictable <em>climate</em>. You cannot say what the weather in Bø will be on 3 March 2043; you
+  can say a great deal about the distribution it will be drawn from. Climate projection is a boundary-value
+  problem, weather forecasting an initial-value problem, and they fail for different reasons.</div>
+</div>
+
+<h2 class="sec">The demonstration this page is built around</h2>
+
+<div class="card demo">
+  <h3>Signal and noise</h3>
+  <p class="cap">Same forced trend everywhere. Only the amount of internal variability changes. Watch how
+  long it takes before you could tell the trend was there.</p>
+
+  <p class="note" style="margin-top:0">The magnitude of internal variability is a strong function of the
+  <b>spatial and temporal scale</b> you look at. Averaging over a large area cancels variability that is
+  regional and out of phase; averaging over many years cancels variability that is fast. The forced signal
+  survives both averagings, because it is the same sign everywhere and it accumulates. That asymmetry is the
+  entire basis of detecting climate change &mdash; and it is why the global mean temperature curve is the
+  famous one.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Look at</span>
+    <button class="ghost" data-sc="global" aria-pressed="true">Global mean</button>
+    <button class="ghost" data-sc="hemi">Hemispheric</button>
+    <button class="ghost" data-sc="cont">Continental (Europe)</button>
+    <button class="ghost" data-sc="grid">One grid box, mid-latitude land</button>
+    <button class="ghost" data-sc="arctic">One grid box, Arctic sea-ice edge</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="sig"><span>Internal variability &sigma;</span> <b id="sigv">0.11 K</b></label>
+      <input type="range" id="sig" min="0.05" max="2" step="0.01" value="0.11">
+      <div class="hint">Standard deviation of the annual mean, with the forcing held fixed.</div>
+    </div>
+    <div class="ctrl">
+      <label for="trend"><span>Forced trend</span> <b id="trendv">0.20 K/decade</b></label>
+      <input type="range" id="trend" min="0" max="0.6" step="0.01" value="0.20">
+      <div class="hint">Uniform in space here. In reality it is larger at high latitudes &mdash; which partly
+      offsets the noise.</div>
+    </div>
+    <div class="ctrl">
+      <label for="win"><span>Averaging window</span> <b id="winv">1 yr</b></label>
+      <input type="range" id="win" min="1" max="31" step="2" value="1">
+      <div class="hint">A running mean. It suppresses the noise but not the trend.</div>
+    </div>
+    <div class="ctrl">
+      <label for="nens"><span>Ensemble members</span> <b id="nensv">1</b></label>
+      <input type="range" id="nens" min="1" max="12" step="1" value="1">
+      <div class="hint">Same model, same forcing, different initial conditions.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="Ensemble of temperature time series combining a forced trend with internal variability, with the ensemble mean and the time of emergence marked"><g id="snG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Signal at year 60</div><div class="v" id="kSig">1.20</div><div class="s">K, forced</div></div>
+    <div class="kpi"><div class="k">Noise, after averaging</div><div class="v" id="kNoi">0.11</div><div class="s">K, 1&sigma;</div></div>
+    <div class="kpi"><div class="k">Signal-to-noise</div><div class="v" id="kSnr">10.9</div><div class="s">at year 60</div></div>
+    <div class="kpi"><div class="k">Time of emergence</div><div class="v" id="kToe">12</div><div class="s">years to S/N = 2</div></div>
+  </div>
+
+  <div class="readout" id="snRead"></div>
+
+  <div class="q"><b>Try this before moving on.</b> Set the scale to <em>one grid box, Arctic sea-ice
+  edge</em> with a single member and a one-year window. The trend is invisible. Now raise the trend to 0.6 K
+  per decade &mdash; roughly what the Arctic is actually doing &mdash; and it reappears. The Arctic is both
+  the noisiest place on the planet and the fastest-warming, and which of those wins depends entirely on how
+  many years you have.</div>
+
+  <div class="warnbox"><b>Read the arithmetic, not just the picture.</b> The noise falls as
+  1/&radic;n with the length of the averaging window, while the signal grows <em>linearly</em> with time.
+  Signal-to-noise therefore grows like t&thinsp;<sup>3/2</sup> for a trend measured over its own record. Long
+  records are worth disproportionately more than good ones &mdash; which is the argument for palaeoclimate,
+  and the subject of the rest of this lecture.</div>
+</div>
+
+<div class="card">
+  <h3>How loud is internal variability, really?</h3>
+  <p class="cap">Representative standard deviations of the annual mean surface air temperature in
+  unforced control simulations. These are the numbers behind the presets above.</p>
+
+  <table>
+    <thead><tr><th>Scale</th><th class="num">&sigma; (K)</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Global mean</td><td class="num">~0.1</td>
+        <td>Almost everything cancels. What is left is mostly ENSO redistributing heat between ocean and
+        atmosphere.</td></tr>
+      <tr><td class="nm">Hemispheric</td><td class="num">~0.15</td>
+        <td>Slightly less cancellation, and the two hemispheres are not in phase.</td></tr>
+      <tr><td class="nm">Continental (Europe)</td><td class="num">~0.4&ndash;0.5</td>
+        <td>One circulation regime covers the whole area. A blocked winter is blocked everywhere at once.</td></tr>
+      <tr><td class="nm">Single grid box, mid-latitude land</td><td class="num">~0.6&ndash;0.8</td>
+        <td>Weather. Nothing left to average against.</td></tr>
+      <tr><td class="nm">Single grid box, sea-ice edge</td><td class="num">1.5&ndash;2.5</td>
+        <td>The ice edge moves. Open water and ice differ by tens of degrees in surface temperature, so a small
+        shift in position is an enormous local anomaly.</td></tr>
+      <tr><td class="nm">Deep ocean, any area</td><td class="num">&lt;0.05</td>
+        <td>Enormous heat capacity, tiny fluxes. Slow and quiet &mdash; the reason it is the best place to
+        look for an accumulated imbalance.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>The pattern is the point.</b> Variability is loudest exactly where the local feedbacks
+  are strongest &mdash; the sea-ice margin, the upwelling zones, the monsoon fringe. The same amplification
+  that makes those regions respond strongly to a forcing also makes them noisy without one. You cannot buy
+  sensitivity without buying noise, and
+  <a href="../perturbations/physical-feedbacks.html">Lecture&nbsp;6, page&nbsp;4</a> explains why.</p>
+</div>
+
+<div class="card">
+  <h3>Every process has a timescale, and that is how you tell them apart</h3>
+  <p class="cap">Forcings and internal processes occupy different bands. If a record has power at 41,000
+  years, that is not the ocean.</p>
+
+  <svg viewBox="0 0 880 436" role="img" aria-label="Logarithmic timescale axis from days to hundreds of millions of years with forcings above and internal processes below"><g id="tsG"></g></svg>
+
+  <p class="note"><b>How to use this diagram.</b> It is the lecture&rsquo;s table of contents, and it is also
+  a diagnostic. Reading a record, ask first <em>what is the timescale of the variation</em>, then look at the
+  bar chart for what can possibly operate there. A 41-kyr cycle can only be obliquity: nothing internal to the
+  climate system has a clock that slow and that precise. A 3&ndash;7 year oscillation cannot be orbital:
+  nothing external varies that fast. The ambiguous band &mdash; decades to centuries &mdash; is exactly where
+  the last millennium sits, and exactly why <a href="attribution.html">page&nbsp;6</a> needs a formal
+  method rather than an eyeball.</p>
+
+  <div class="q"><b>Question to hold onto.</b> Solar variability and the AMO both have power near
+  60&ndash;90 years. One is a forcing and one is internal. From a single temperature record, could you tell
+  which produced an observed 80-year swing? <em>No &mdash; and that is why attribution uses spatial
+  fingerprints rather than timing.</em></div>
+</div>
+
+<div class="card">
+  <h3>Where this lecture goes</h3>
+  <p class="cap">Six pages, arranged by timescale &mdash; fastest first, then back through the
+  archives, then home to the present.</p>
+  <table>
+    <thead><tr><th>Page</th><th>Timescale</th><th>The question it answers</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><a href="modes-of-variability.html">2 &middot; Modes of variability</a></td><td class="num">yr&ndash;decade</td>
+        <td>What does the system do on its own, and why does it do it in a handful of recognisable patterns?</td></tr>
+      <tr><td class="nm"><a href="orbital-forcing.html">3 &middot; Orbital forcing</a></td><td class="num">10&ndash;100 kyr</td>
+        <td>What made the ice ages, and why is the answer not simply &ldquo;insolation&rdquo;?</td></tr>
+      <tr><td class="nm"><a href="abrupt-change.html">4 &middot; Abrupt change</a></td><td class="num">decades</td>
+        <td>How can a slow forcing produce a 10&nbsp;K jump in twenty years?</td></tr>
+      <tr><td class="nm"><a href="holocene-2000-years.html">5 &middot; Holocene and last 2000 yr</a></td><td class="num">100&ndash;10 kyr</td>
+        <td>How large is natural variability in a world that looks like ours?</td></tr>
+      <tr><td class="nm"><a href="attribution.html">6 &middot; Detection and attribution</a></td><td class="num">century</td>
+        <td>Given all of the above, how do we know the last century is not just more of it?</td></tr>
+    </tbody>
+  </table>
+  <p class="note">The last page is the point of the first five. Every earlier page is establishing the size,
+  the shape and the pace of what the climate does <em>unprompted</em>, so that the final page has something
+  to compare the twentieth century against.</p>
+</div>
+
+<p class="foot">After Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;5.1&ndash;5.2, and the accompanying figures 5.1 (median standard deviation of annual mean surface air
+temperature in CMIP5 control simulations, after Hawkins and Sutton, 2012) and 5.2 (dominant timescales of
+external forcings and internal processes). The standard deviations tabulated above are representative values
+of the magnitudes shown in Fig.&nbsp;5.1 rather than values read from a single model or a single map; the
+demonstration uses them to set the noise amplitude, and its purpose is to show the <em>scaling</em> of
+signal-to-noise with area and averaging length, not to reproduce a particular observed record. The synthetic
+series combine a linear forced trend with a first-order autoregressive noise of lag-1 correlation 0.35, which
+is a reasonable approximation for annual mean surface air temperature over land and understates the
+persistence of ocean-dominated regions. The chaotic-divergence panel integrates the Lorenz (1963) system with
+the standard parameters &sigma;&nbsp;=&nbsp;10, &rho;&nbsp;=&nbsp;28, &beta;&nbsp;=&nbsp;8/3; it is an
+illustration of sensitive dependence on initial conditions, not a climate model.
+&nbsp;&middot;&nbsp; Next: <a href="modes-of-variability.html">the modes of internal variability &rarr;</a></p>
+
+<div class="nav">
+  <a href="../">&larr; EE501 course page</a>
+  <a href="modes-of-variability.html">2 &middot; Modes of internal variability &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(p,x1,y1,x2,y2,col,w){
+    put(p,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:col,'stroke-width':w||2});
+    const a=Math.atan2(y2-y1,x2-x1),h=7;
+    put(p,'polygon',{points:[x2,y2,x2-h*Math.cos(a-0.42),y2-h*Math.sin(a-0.42),
+      x2-h*Math.cos(a+0.42),y2-h*Math.sin(a+0.42)].join(' '),fill:col});
+  }
+
+  /* ── 1 · forced vs internal schematic ───────────────────────── */
+  (function(){
+    const g=$('fiG'); if(!g) return;
+    function box(x,y,w,h,label,sub){
+      put(g,'rect',{x:x,y:y,width:w,height:h,rx:12,fill:'var(--surface-2)',stroke:'var(--line)'});
+      put(g,'text',{x:x+w/2,y:y+22,'text-anchor':'middle','font-size':12.5,
+        fill:'var(--text-muted)','letter-spacing':'.06em'},label);
+      if(sub) put(g,'text',{x:x+w/2,y:y+h-14,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},sub);
+    }
+    // left panel: forced
+    box(40,42,340,140,'CLIMATE SYSTEM');
+    put(g,'text',{x:40,y:26,'font-size':13,fill:'var(--frc)',
+      'font-weight':600},'Forced variability');
+    arrow(g,300,18,300,58,'var(--frc)',2.4);
+    put(g,'text',{x:312,y:36,'font-size':11.5,fill:'var(--frc)'},'external forcing');
+    ['atmosphere','ocean','ice','land'].forEach((n,i)=>{
+      const cx=88+i*78;
+      put(g,'circle',{cx:cx,cy:112,r:26,fill:'var(--surface-1)',stroke:'var(--line-soft)'});
+      put(g,'text',{x:cx,y:116,'text-anchor':'middle','font-size':9.5,fill:'var(--text-secondary)'},n);
+    });
+    put(g,'text',{x:210,y:172,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
+      'cause lies outside the box → ultimate cause');
+
+    // right panel: internal
+    box(500,42,340,140,'CLIMATE SYSTEM');
+    put(g,'text',{x:500,y:26,'font-size':13,fill:'var(--ocean)',
+      'font-weight':600},'Internal variability');
+    put(g,'text',{x:840,y:26,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},
+      'forcing held constant');
+    const cs=[548,626,704,782];
+    cs.forEach((cx,i)=>{
+      put(g,'circle',{cx:cx,cy:112,r:26,fill:'var(--surface-1)',stroke:'var(--line-soft)'});
+      put(g,'text',{x:cx,y:116,'text-anchor':'middle','font-size':9.5,fill:'var(--text-secondary)'},
+        ['atmosphere','ocean','ice','land'][i]);
+    });
+    for(let i=0;i<3;i++){
+      arrow(g,cs[i]+27,104,cs[i+1]-27,104,'var(--ocean)',1.8);
+      arrow(g,cs[i+1]-27,122,cs[i]+27,122,'var(--ocean)',1.8);
+    }
+    put(g,'path',{d:'M548 86 C 548 60, 782 60, 782 86',fill:'none',stroke:'var(--ocean)',
+      'stroke-width':1.6,'stroke-dasharray':'4 4'});
+    put(g,'text',{x:670,y:172,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
+      'only the chain of events → proximate cause');
+    put(g,'line',{x1:440,y1:20,x2:440,y2:196,stroke:'var(--line)','stroke-dasharray':'3 5'});
+  })();
+
+  /* ── 2 · Lorenz divergence ──────────────────────────────────── */
+  (function(){
+    const g=$('lzG'), rd=$('lzRead'), sl=$('pert'), lab=$('pertv'); if(!g) return;
+    function run(x0){
+      const s=10,r=28,b=8/3,dt=0.006,N=5000;
+      let x=x0,y=1,z=20; const out=[];
+      for(let i=0;i<N;i++){
+        const dx=s*(y-x), dy=x*(r-z)-y, dz=x*y-b*z;
+        const xm=x+dx*dt/2, ym=y+dy*dt/2, zm=z+dz*dt/2;
+        x+=(s*(ym-xm))*dt; y+=(xm*(r-zm)-ym)*dt; z+=(xm*ym-b*zm)*dt;
+        out.push(x);
+      }
+      return out;
+    }
+    function draw(){
+      const eps=Math.pow(10,parseFloat(sl.value));
+      lab.innerHTML='10<sup>&minus;'+(-parseFloat(sl.value)).toFixed(1).replace(/\.0$/,'')+'</sup>';
+      const A=run(1), B=run(1+eps);
+      clr(g);
+      const L=42,R=418,T=18,Bo=196;
+      const X=i=>L+(R-L)*(i/A.length), Y=v=>Bo-(Bo-T)*((v+20)/40);
+      put(g,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--grid)'});
+      function path(arr,col,w){
+        let d='';
+        for(let i=0;i<arr.length;i+=3) d+=(d?'L':'M')+X(i).toFixed(1)+' '+Y(arr[i]).toFixed(1);
+        put(g,'path',{d:d,fill:'none',stroke:col,'stroke-width':w,'stroke-linejoin':'round'});
+      }
+      path(A,'var(--lo)',1.5); path(B,'var(--hi)',1.5);
+      // divergence point: first index where |A-B| > 3
+      let di=A.length-1;
+      for(let i=0;i<A.length;i++){ if(Math.abs(A[i]-B[i])>4){ di=i; break; } }
+      put(g,'line',{x1:X(di),y1:T,x2:X(di),y2:Bo,stroke:'var(--warn)','stroke-width':1.6,
+        'stroke-dasharray':'4 4'});
+      put(g,'text',{x:X(di)+5,y:T+12,'font-size':10.5,fill:'var(--warn)'},'forecast lost');
+      put(g,'text',{x:L,y:Bo+18,'font-size':10.5,fill:'var(--text-muted)'},'time →');
+      put(g,'text',{x:L,y:T-4,'font-size':11,fill:'var(--text-secondary)'},
+        'two runs, identical equations and forcing');
+      put(g,'rect',{x:L,y:Bo+30,width:12,height:3,fill:'var(--lo)'});
+      put(g,'text',{x:L+18,y:Bo+34,'font-size':10.5,fill:'var(--text-muted)'},'run A');
+      put(g,'rect',{x:L+80,y:Bo+30,width:12,height:3,fill:'var(--hi)'});
+      put(g,'text',{x:L+98,y:Bo+34,'font-size':10.5,fill:'var(--text-muted)'},'run B');
+      const frac=di/A.length;
+      rd.innerHTML='The two runs stay indistinguishable for <b class="big">'+(frac*100).toFixed(0)+
+        '&thinsp;%</b> of the record, then separate completely and never re-synchronise. '+
+        'Each factor of ten you take off the starting error buys the same small extra stretch, '+
+        'never a proportional one.';
+    }
+    sl.oninput=draw; draw();
+  })();
+
+  /* ── 3 · signal and noise ───────────────────────────────────── */
+  (function(){
+    const g=$('snG'); if(!g) return;
+    const SC={
+      global:{s:0.11,t:0.20,n:'the global mean'},
+      hemi:{s:0.16,t:0.20,n:'a hemispheric mean'},
+      cont:{s:0.45,t:0.24,n:'a continental mean such as Europe'},
+      grid:{s:0.70,t:0.24,n:'a single mid-latitude land grid box'},
+      arctic:{s:1.80,t:0.55,n:'a single grid box at the Arctic sea-ice edge'}
+    };
+    let cur='global';
+    const sl={sig:$('sig'),trend:$('trend'),win:$('win'),nens:$('nens')};
+    // deterministic pseudo-random so the picture is stable while sliding
+    function rng(seed){ let s=seed>>>0; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+    function gauss(r){ let u=0,v=0; while(u===0)u=r(); while(v===0)v=r();
+      return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+    const NY=80, PHI=0.35;
+    const RAW=[]; // 12 members of unit-variance AR(1) noise, fixed
+    for(let m=0;m<12;m++){
+      const r=rng(97+m*7919); let x=gauss(r); const a=[];
+      const sc=Math.sqrt(1-PHI*PHI);
+      for(let i=0;i<NY;i++){ x=PHI*x+sc*gauss(r); a.push(x); }
+      RAW.push(a);
+    }
+    function smooth(a,w){
+      if(w<=1) return a.slice();
+      const h=(w-1)/2, o=[];
+      for(let i=0;i<a.length;i++){
+        let s=0,n=0;
+        for(let j=Math.max(0,i-h);j<=Math.min(a.length-1,i+h);j++){ s+=a[j]; n++; }
+        o.push(s/n);
+      }
+      return o;
+    }
+    function draw(){
+      const sig=parseFloat(sl.sig.value), tr=parseFloat(sl.trend.value)/10,
+            w=parseInt(sl.win.value), ne=parseInt(sl.nens.value);
+      $('sigv').textContent=sig.toFixed(2)+' K';
+      $('trendv').textContent=(tr*10).toFixed(2)+' K/decade';
+      $('winv').textContent=w+' yr';
+      $('nensv').textContent=ne;
+      clr(g);
+      const L=64,R=700,T=26,B=330;
+      const vmax=Math.max(2.2, tr*NY+3*sig), vmin=-Math.max(1.2,3*sig);
+      const X=i=>L+(R-L)*(i/(NY-1)), Y=v=>B-(B-T)*((v-vmin)/(vmax-vmin));
+      for(let v=Math.ceil(vmin);v<=vmax;v++){
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)'});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+      }
+      for(let i=0;i<=NY;i+=20){
+        put(g,'text',{x:X(Math.min(i,NY-1)),y:B+18,'text-anchor':'middle','font-size':11,
+          fill:'var(--text-muted)'},i);
+      }
+      put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},'years since the forcing was switched on');
+      put(g,'text',{x:L-8,y:T-8,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},'K');
+      put(g,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--text-muted)','stroke-width':1.2});
+
+      const forced=[]; for(let i=0;i<NY;i++) forced.push(tr*i);
+      const mem=[];
+      for(let m=0;m<ne;m++){
+        const raw=RAW[m].map((v,i)=>forced[i]+sig*v);
+        mem.push(smooth(raw,w));
+      }
+      mem.forEach(a=>{
+        let d='';
+        for(let i=0;i<NY;i++) d+=(i?'L':'M')+X(i).toFixed(1)+' '+Y(a[i]).toFixed(1);
+        put(g,'path',{d:d,fill:'none',stroke:'var(--text-muted)','stroke-width':1.1,opacity:0.55});
+      });
+      if(ne>1){
+        const em=[];
+        for(let i=0;i<NY;i++){ let s=0; mem.forEach(a=>s+=a[i]); em.push(s/ne); }
+        let d='';
+        for(let i=0;i<NY;i++) d+=(i?'L':'M')+X(i).toFixed(1)+' '+Y(em[i]).toFixed(1);
+        put(g,'path',{d:d,fill:'none',stroke:'var(--hi)','stroke-width':2.4});
+      }
+      let df='';
+      for(let i=0;i<NY;i++) df+=(i?'L':'M')+X(i).toFixed(1)+' '+Y(forced[i]).toFixed(1);
+      put(g,'path',{d:df,fill:'none',stroke:'var(--acc)','stroke-width':2.6,'stroke-dasharray':'7 4'});
+
+      // effective noise: AR(1) variance reduction under an w-year running mean, then ensemble
+      let eff=sig;
+      if(w>1){
+        let num=0;
+        for(let i=-(w-1);i<=(w-1);i++) num+=(w-Math.abs(i))*Math.pow(PHI,Math.abs(i));
+        eff=sig*Math.sqrt(num)/w;
+      }
+      eff=eff/Math.sqrt(ne);
+      const snr=(tr*(NY-20))/eff;
+      let toe=NaN;
+      if(tr>0){ toe=2*eff/tr; }
+      $('kSig').textContent=(tr*(NY-20)).toFixed(2);
+      $('kNoi').textContent=eff.toFixed(2);
+      $('kSnr').textContent=isFinite(snr)?snr.toFixed(1):'0.0';
+      $('kToe').textContent=(isFinite(toe)&&toe<400)?Math.round(toe):'—';
+      if(isFinite(toe)&&toe<NY){
+        put(g,'line',{x1:X(toe),y1:T,x2:X(toe),y2:B,stroke:'var(--warn)','stroke-width':1.6,
+          'stroke-dasharray':'4 4'});
+        put(g,'text',{x:X(toe)+5,y:T+12,'font-size':11,fill:'var(--warn)'},'emergence');
+      }
+      // legend
+      const lx=716;
+      put(g,'rect',{x:lx,y:44,width:14,height:3,fill:'var(--acc)'});
+      put(g,'text',{x:lx+20,y:48,'font-size':11.5,fill:'var(--text-muted)'},'forced signal');
+      put(g,'rect',{x:lx,y:68,width:14,height:2,fill:'var(--text-muted)'});
+      put(g,'text',{x:lx+20,y:72,'font-size':11.5,fill:'var(--text-muted)'},'members');
+      put(g,'rect',{x:lx,y:92,width:14,height:3,fill:'var(--hi)'});
+      put(g,'text',{x:lx+20,y:96,'font-size':11.5,fill:'var(--text-muted)'},'ensemble mean');
+      put(g,'text',{x:lx,y:132,'font-size':11.5,fill:'var(--text-secondary)'},'noise × 1/√n');
+      put(g,'text',{x:lx,y:150,'font-size':11.5,fill:'var(--text-secondary)'},'signal × t');
+
+      const rd=$('snRead');
+      const s=SC[cur];
+      rd.innerHTML='Looking at <b>'+s.n+'</b>. A single annual value carries a noise of <b>'+
+        sig.toFixed(2)+'&thinsp;K</b>; after a '+w+'-year mean over '+ne+' member'+(ne>1?'s':'')+
+        ' that falls to <b class="big">'+eff.toFixed(2)+'&thinsp;K</b>. '+
+        (tr>0
+          ? 'The forced signal reaches twice that after about <b class="big">'+
+            (isFinite(toe)?Math.round(toe):'—')+'</b> years — that is the '+
+            '<b>time of emergence</b>, the age at which the record starts to be evidence rather than weather.'
+          : 'With no forcing there is nothing to emerge: everything you see is the system talking to itself.');
+    }
+    document.querySelectorAll('[data-sc]').forEach(b=>{
+      b.onclick=()=>{
+        document.querySelectorAll('[data-sc]').forEach(o=>o.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        cur=b.dataset.sc;
+        sl.sig.value=SC[cur].s; sl.trend.value=SC[cur].t;
+        draw();
+      };
+    });
+    Object.values(sl).forEach(s=>s.oninput=draw);
+    draw();
+  })();
+
+  /* ── 4 · timescale spectrum ─────────────────────────────────── */
+  (function(){
+    const g=$('tsG'); if(!g) return;
+    const L=200,R=856,T=54,B=386;
+    // log10 of years: -2 (days) .. 8.5
+    const lo=-2.4, hi=8.6;
+    const X=l=>L+(R-L)*((l-lo)/(hi-lo));
+    const TICKS=[[-2.4,'day'],[-0.6,'season'],[0,'year'],[1,'decade'],[2,'century'],
+      [3,'millennium'],[4,'10 kyr'],[5,'100 kyr'],[6,'1 Myr'],[7,'10 Myr'],[8,'100 Myr']];
+    TICKS.forEach(t=>{
+      put(g,'line',{x1:X(t[0]),y1:T-8,x2:X(t[0]),y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:X(t[0]),y:B+18,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},t[1]);
+    });
+    put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'characteristic timescale (logarithmic)');
+
+    const FORC=[
+      ['Volcanic eruptions',-0.3,1.2,'var(--frc)'],
+      ['Solar cycle',0.9,1.15,'var(--frc)'],
+      ['Anthropogenic GHG',1.4,2.6,'var(--frc)'],
+      ['Precession',4.28,4.40,'var(--frc)'],
+      ['Obliquity',4.60,4.63,'var(--frc)'],
+      ['Eccentricity',4.98,5.62,'var(--frc)'],
+      ['Plate tectonics, weathering',6.5,8.5,'var(--frc)'],
+      ['Solar luminosity',8.2,8.6,'var(--frc)']
+    ];
+    const INT=[
+      ['Weather, storm tracks',-2.3,-1.0,'var(--ocean)'],
+      ['ENSO',0.3,0.9,'var(--ocean)'],
+      ['NAO, SAM',-0.5,1.3,'var(--ocean)'],
+      ['PDO, AMO',1.2,2.0,'var(--ocean)'],
+      ['Ocean mixed layer',0.0,1.2,'var(--ocean)'],
+      ['Thermohaline circulation',2.3,3.3,'var(--ocean)'],
+      ['Deep-ocean overturning',2.5,3.5,'var(--ocean)'],
+      ['Ice sheets',3.3,5.2,'var(--ice)'],
+      ['Vegetation, soil carbon',0.5,3.2,'var(--acc)'],
+      ['Carbonate compensation',3.7,4.2,'var(--acc)']
+    ];
+    put(g,'text',{x:L-12,y:T+4,'text-anchor':'end','font-size':11.5,fill:'var(--frc)',
+      'font-weight':600},'EXTERNAL FORCING');
+    FORC.forEach((f,i)=>{
+      const y=T+16+i*15;
+      put(g,'rect',{x:X(f[1]),y:y-6,width:Math.max(3,X(f[2])-X(f[1])),height:9,rx:4.5,
+        fill:f[3],opacity:.75});
+      put(g,'text',{x:L-12,y:y+2,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-secondary)'},f[0]);
+    });
+    const y0=T+16+FORC.length*15+10;
+    put(g,'line',{x1:L-190,y1:y0-6,x2:R,y2:y0-6,stroke:'var(--line)','stroke-dasharray':'3 4'});
+    put(g,'text',{x:L-12,y:y0+10,'text-anchor':'end','font-size':11.5,fill:'var(--ocean)',
+      'font-weight':600},'INTERNAL DYNAMICS');
+    INT.forEach((f,i)=>{
+      const y=y0+22+i*15;
+      put(g,'rect',{x:X(f[1]),y:y-6,width:Math.max(3,X(f[2])-X(f[1])),height:9,rx:4.5,
+        fill:f[3],opacity:.75});
+      put(g,'text',{x:L-12,y:y+2,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-secondary)'},f[0]);
+    });
+    // ambiguity band
+    put(g,'rect',{x:X(1.2),y:T-8,width:X(2.6)-X(1.2),height:B-T+8,fill:'var(--warn)',opacity:.09});
+    put(g,'text',{x:(X(1.2)+X(2.6))/2,y:T-14,'text-anchor':'middle','font-size':11,
+      fill:'var(--warn)','font-weight':600},'where attribution is hard');
+  })();
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

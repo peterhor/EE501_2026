@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detection and attribution</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f; --ice:#7fb3d5;
+    --ghg:#c8443a; --aer:#2a78d6; --nat:#7a7f45;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad; --ice:#6fa2c4;
+    --ghg:#d9564c; --aer:#3987e5; --nat:#9aa05c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3:first-of-type::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="holocene-2000-years.html">&larr; The Holocene and the last 2000 years</a> &nbsp;&middot;&nbsp;
+Climate change: past and present &middot; 6 of 6</p>
+
+<header>
+  <div>
+    <h1>Detection and attribution</h1>
+    <p class="sub">Five pages of establishing what the climate does on its own, so that this page can ask
+    the only question that needed all of it: <em>is the last century something the climate could have done by
+    itself?</em> The answer is a number with an uncertainty on it, produced by a method, and the method is
+    what this page is about.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>What the instrumental record says</h3>
+  <p class="cap">Before any interpretation: the observations, and the three things about them that
+  matter.</p>
+
+  <ul class="pl">
+    <li><b>The trend.</b> A linear fit to the global mean surface temperature over <b>1901&ndash;2012</b> gives
+    a rise of <b>0.89&nbsp;&deg;C</b> across that period. Three independently constructed datasets, with
+    different corrections for changing instruments, ship intakes and station moves, agree on it within their
+    stated uncertainty.</li>
+    <li><b>It is not steady.</b> There is a rapid rise to about 1940, a plateau to the mid-1970s, and a
+    steeper rise since. Both departures from a straight line matter, and both have explanations you already
+    have the pieces for.</li>
+    <li><b>It is almost everywhere.</b> The warming appears in nearly every region, but not uniformly:
+    <b>faster over land than over ocean</b>, and fastest at high northern latitudes.</li>
+  </ul>
+
+  <svg viewBox="0 0 880 250" role="img" aria-label="Schematic of the global mean temperature record since 1850 with the main features labelled"><g id="obsG"></g></svg>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin-top:0"><b>Why land warms faster than ocean.</b> Two reasons, both from
+      earlier lectures. The ocean has an enormous heat capacity and mixes heat downward, so it lags &mdash;
+      that is the transient-response argument of
+      <a href="../perturbations/transient-response.html">Lecture&nbsp;6</a>. And over land, water is limited:
+      a surface that cannot evaporate must dispose of extra energy as sensible heat, which means a temperature
+      rise. That is the Bowen ratio of
+      <a href="../local-scale/turbulent-fluxes.html">Lecture&nbsp;3</a>, applied to a whole
+      continent.</p>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0"><b>Why the mid-century plateau.</b> Sulphate aerosol emissions
+      grew rapidly in the post-war decades and their negative forcing partly offset the greenhouse
+      forcing &mdash; see the ledger in
+      <a href="../perturbations/forcing-agents.html">Lecture&nbsp;6, page&nbsp;2</a>. Internal variability
+      contributed as well; the Pacific and Atlantic modes of
+      <a href="modes-of-variability.html">page&nbsp;2</a> can add or remove a tenth of a degree from a
+      decadal mean. <b>Two candidate explanations for one feature</b> &mdash; which is exactly the situation
+      a formal method is needed for.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>One thing that requires no statistics at all</h3>
+  <p class="cap">The origin of the CO<sub>2</sub> increase is not an inference from a model. It is a
+  measurement, several times over.</p>
+
+  <table>
+    <thead><tr><th>Evidence</th><th>What it shows</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Mass balance</td>
+        <td>Roughly twice as much carbon has been emitted from fossil fuels and land-use change as has
+        accumulated in the atmosphere. The atmospheric rise is not merely consistent with emissions &mdash;
+        it is <em>smaller</em> than them, because land and ocean absorb the rest. See the airborne fraction in
+        <a href="../global-cycles/carbon-budget.html">Lecture&nbsp;4</a>.</td></tr>
+      <tr><td class="nm">Carbon-13</td>
+        <td>Plants discriminate against <sup>13</sup>C, so fossil carbon is isotopically light. Atmospheric
+        &delta;<sup>13</sup>C has been falling as CO<sub>2</sub> rises &mdash; exactly what adding
+        plant-derived carbon does, and the opposite of what ocean outgassing would do.</td></tr>
+      <tr><td class="nm">Carbon-14</td>
+        <td>Fossil carbon is millions of years old and contains no <sup>14</sup>C at all. Atmospheric
+        <sup>14</sup>C/<sup>12</sup>C fell measurably before nuclear testing overwhelmed the signal.</td></tr>
+      <tr><td class="nm">Atmospheric oxygen</td>
+        <td>Burning carbon consumes oxygen. Atmospheric O<sub>2</sub> is declining in the precise ratio that
+        combustion requires. Volcanoes and the ocean do not consume oxygen.</td></tr>
+      <tr><td class="nm">The ocean is acidifying</td>
+        <td>If the ocean were the source of the extra CO<sub>2</sub>, its carbon content and pH would be
+        going the other way. Both are moving as they must if the ocean is a <em>sink</em> &mdash; the
+        carbonate chemistry of <a href="../global-cycles/ocean-carbon.html">Lecture&nbsp;4,
+        page&nbsp;3</a>.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>Read that table as a structure, not a list.</b> Five independent lines, each of which
+  would have to be wrong in a different way for the conclusion to fail, and each of which would have to be
+  wrong in a direction that happens to agree with the other four. That is why the word used for this
+  particular conclusion is <b>unequivocal</b> &mdash; a word that appears very rarely in the assessment
+  reports, and never lightly.</p>
+
+  <div class="q"><b>Be careful to keep two claims apart.</b> &ldquo;The CO<sub>2</sub> rise is
+  anthropogenic&rdquo; is settled by the table above. &ldquo;The warming is anthropogenic&rdquo; is a
+  different claim, and it needs the rest of this page. Conflating them is the commonest way this argument is
+  presented badly, in both directions.</div>
+</div>
+
+<h2 class="sec">The method</h2>
+
+<div class="card">
+  <h3>Detection and attribution are two different steps</h3>
+  <p class="cap">The vocabulary is precise and it is worth learning exactly.</p>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin-top:0"><b>Detection</b> is showing that an observed change is
+      <em>inconsistent with internal variability alone</em>. It is a statement about a null hypothesis, and it
+      names no cause. Everything on pages&nbsp;1, 2 and 5 exists to make this step possible: you cannot
+      declare something inconsistent with internal variability until you have quantified internal
+      variability.</p>
+      <p class="note"><b>Attribution</b> is showing that the observed change is consistent with a
+      particular combination of causes, <em>and inconsistent with plausible alternatives</em>. Both halves are
+      required. Consistency with one explanation proves nothing on its own; you must also fail to be
+      consistent with the others.</p>
+    </div>
+    <div>
+      <svg viewBox="0 0 430 220" role="img" aria-label="Diagram of the detection and attribution logic: observations decomposed into scaled responses to individual forcings plus internal variability"><g id="daG"></g></svg>
+    </div>
+  </div>
+
+  <div class="eq"><b>T(t) &nbsp;=&nbsp; &beta;<sub>1</sub> Resp<sub>1</sub>(t) &nbsp;+&nbsp;
+    &beta;<sub>2</sub> Resp<sub>2</sub>(t) &nbsp;+&nbsp; &hellip; &nbsp;+&nbsp; u(t)</b>
+    <span class="u"><br>T is the observed record; Resp<sub>i</sub> is the modelled <em>pattern</em> of the
+    response to forcing i &mdash; the <b>fingerprint</b>; &beta;<sub>i</sub> is a scaling coefficient; u is
+    internal variability, whose statistics come from long control simulations</span></div>
+
+  <p class="note"><b>The trick, and it is a good one.</b> The models supply the <em>shape</em> of each
+  response &mdash; its pattern in space, in season, in the vertical, and in time. The observations supply the
+  <em>amplitude</em>, through the fitted &beta;. So the conclusion does not depend on the models having the
+  right climate sensitivity: if a model warms too much, its fingerprint is too large, and the fitted &beta;
+  simply comes out below one. What the models must get right is the shape, which is far more robust than the
+  amplitude.</p>
+
+  <ul class="pl">
+    <li><b>&beta; significantly greater than zero</b> &rarr; that forcing&rsquo;s response is
+    <em>detected</em> in the observations.</li>
+    <li><b>&beta; consistent with one</b> &rarr; the model&rsquo;s amplitude is consistent with the
+    observations; no rescaling needed.</li>
+    <li><b>&beta; significantly different from one</b> &rarr; the response is there but the model has it too
+    strong or too weak. Useful information, not a refutation.</li>
+    <li><b>&beta; consistent with zero</b> &rarr; that forcing cannot be shown to have contributed over the
+    period analysed.</li>
+  </ul>
+
+  <div class="warnbox"><b>Why a fingerprint is spatial and not just a time series.</b> Solar and greenhouse
+  forcing both warm the surface, so their time series look similar and are hard to separate. But they do
+  different things elsewhere: greenhouse warming cools the stratosphere while solar warming heats it; it
+  warms nights more than days; it warms the Arctic disproportionately. Those differences are the fingerprint,
+  and they are what makes the separation possible. <b>The one-dimensional version below is a teaching
+  simplification of a method that is genuinely multi-dimensional.</b></div>
+</div>
+
+<div class="card demo">
+  <h3>Fit the fingerprints yourself</h3>
+  <p class="cap">Three modelled responses, one record to explain. Move the sliders until the black
+  observation curve is reproduced, then let the least-squares fit tell you how close you got &mdash; and how
+  well each coefficient is actually determined.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="bG"><span>&beta;<sub>GHG</sub> &mdash; greenhouse gases</span> <b id="bGv">0.00</b></label>
+      <input type="range" id="bG" min="-0.5" max="2.5" step="0.01" value="0" style="accent-color:var(--ghg)">
+      <div class="hint">Scales the modelled greenhouse response.</div>
+    </div>
+    <div class="ctrl">
+      <label for="bA"><span>&beta;<sub>other anth</sub> &mdash; mainly aerosols</span> <b id="bAv">0.00</b></label>
+      <input type="range" id="bA" min="-0.5" max="2.5" step="0.01" value="0" style="accent-color:var(--aer)">
+      <div class="hint">A cooling response. Note what happens to &beta;<sub>GHG</sub> when you change it.</div>
+    </div>
+    <div class="ctrl">
+      <label for="bN"><span>&beta;<sub>natural</sub> &mdash; volcanoes and Sun</span> <b id="bNv">0.00</b></label>
+      <input type="range" id="bN" min="-0.5" max="2.5" step="0.01" value="0" style="accent-color:var(--nat)">
+      <div class="hint">Contains the eruptions; almost no trend.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns">
+    <button class="ghost" id="fitBtn">Compute the least-squares fit</button>
+    <button class="ghost" id="natBtn">Try natural forcings only</button>
+    <button class="ghost" id="zeroBtn">Reset to zero</button>
+    <button class="ghost" id="newObs">Draw a new realisation of internal variability</button>
+  </div>
+
+  <svg viewBox="0 0 880 430" role="img" aria-label="Observed temperature record with the fitted combination of scaled forcing responses, the individual scaled responses, and the residual"><g id="fpG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Residual RMS</div><div class="v" id="kRms">0.00</div><div class="s">K &mdash; internal variability is 0.11</div></div>
+    <div class="kpi"><div class="k">Variance explained</div><div class="v" id="kR2">0</div><div class="s">%</div></div>
+    <div class="kpi"><div class="k">Warming 1950&ndash;2020 explained</div><div class="v" id="kExp">0.00</div><div class="s">K of the observed 0.99</div></div>
+    <div class="kpi"><div class="k">Best-fit &beta;<sub>GHG</sub></div><div class="v" id="kBest">&mdash;</div><div class="s">with 2&sigma; range</div></div>
+  </div>
+
+  <svg viewBox="0 0 880 252" role="img" aria-label="Fitted scaling coefficients for greenhouse gases, other anthropogenic forcings and natural forcings, with their uncertainty ranges"><g id="barG"></g></svg>
+
+  <div class="readout" id="fpRead"></div>
+
+  <div class="q"><b>Three things to notice while you are doing it.</b>
+  <ul class="pl" style="margin-top:8px">
+    <li>Press <em>Try natural forcings only</em>. You can match the volcanic dips beautifully and you cannot
+    produce the trend at all, at any scaling. <b>The natural forcings have no trend to give.</b> That is a
+    detection result: the observations are inconsistent with natural forcing plus internal variability.</li>
+    <li>Now raise &beta;<sub>GHG</sub> alone until the end of the record matches. The early twentieth century
+    is now too warm and the mid-century plateau has vanished. Bring in
+    &beta;<sub>other&nbsp;anth</sub> and both come right. <b>The aerosol term is what makes the shape work</b>,
+    and it is why the two are hard to separate: pushing one up and the other down leaves the total nearly
+    unchanged.</li>
+    <li>Look at the error bars, and read them carefully. &beta;<sub>GHG</sub> comes out well determined and
+    far from zero &mdash; that is the detection result. &beta;<sub>other&nbsp;anth</sub> has a much wider
+    range, because its response has nearly the same shape as the greenhouse one and the data cannot fully
+    separate them. And &beta;<sub>natural</sub> is also well determined, which is <em>not</em> a result about
+    the warming: it is well determined because the volcanic dips are sharp and unmistakable. <b>Multiply
+    &beta;<sub>natural</sub> by the trend of the natural response and you get essentially nothing.</b> A
+    forcing can be confidently detected and still contribute nothing to the trend.</li>
+  </ul></div>
+
+  <div class="warnbox"><b>What is real here and what is not.</b> The regression, the least-squares
+  solution, the uncertainty ranges and the degeneracy between the greenhouse and aerosol terms are all real
+  and are computed live from the series you see. The <em>series themselves</em> are produced by the same
+  zero-dimensional energy balance model as <a href="holocene-2000-years.html">page&nbsp;5</a>, driven by
+  representative forcing histories, and the &ldquo;observations&rdquo; are one of those responses plus
+  synthetic internal variability &mdash; so this demonstrates the <em>method</em>, not the published result.
+  A real detection and attribution study uses spatial fields from many models, and control simulations
+  thousands of years long to characterise u(t).</div>
+</div>
+
+<div class="card demo">
+  <h3>How to get any trend you like</h3>
+  <p class="cap">The counter-demonstration, and it is worth two minutes. Drag the two ends of the window
+  across a record that has a known, constant underlying trend.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="w0"><span>Window start</span> <b id="w0v">1970</b></label>
+      <input type="range" id="w0" min="1880" max="2005" step="1" value="1970">
+      <div class="hint">The underlying forcing history never changes.</div>
+    </div>
+    <div class="ctrl">
+      <label for="w1"><span>Window end</span> <b id="w1v">2020</b></label>
+      <input type="range" id="w1" min="1895" max="2020" step="1" value="2020">
+      <div class="hint">Try 1998 to 2012 and see what you can claim.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 300" role="img" aria-label="A synthetic temperature record with a constant underlying trend, and the very different trends obtained from different short windows"><g id="cpG"></g></svg>
+
+  <div class="readout" id="cpRead"></div>
+
+  <div class="q"><b>The lesson, stated so it survives contact with an argument.</b> Every trend you can
+  produce from this record is arithmetically correct. The record has one true forced trend throughout, and
+  short windows recover almost anything. <b>The defence is not to distrust the arithmetic; it is to ask
+  whether the window was chosen before or after looking at the data</b>, and to attach an uncertainty that
+  accounts for the internal variability of <a href="forced-and-internal.html">page&nbsp;1</a>. Note that the
+  ends of the most-quoted such window, 1998 and 2012, are a very strong El&nbsp;Ni&ntilde;o and a
+  La&nbsp;Ni&ntilde;a &mdash; look them up on <a href="modes-of-variability.html">page&nbsp;2</a>.</div>
+</div>
+
+<div class="card">
+  <h3>What the assessment actually concludes, and what the words mean</h3>
+  <p class="cap">Calibrated language, used consistently, and often misread.</p>
+
+  <table>
+    <thead><tr><th>Statement</th><th>What kind of claim it is</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">The anthropogenic origin of the CO<sub>2</sub> rise is <em>unequivocal</em></td>
+        <td>A statement of fact, from the five independent lines of evidence above. Not a probability.</td></tr>
+      <tr><td class="nm">Observations are <em>inconsistent</em> with internal variability alone on decadal
+        to centennial timescales</td>
+        <td>A <b>detection</b> result. The null hypothesis of &ldquo;the climate did this by itself&rdquo;
+        is rejected.</td></tr>
+      <tr><td class="nm">Anthropogenic forcing is <em>required</em> to explain the observed warming</td>
+        <td>An <b>attribution</b> result: consistent with the anthropogenic fingerprint, inconsistent with
+        every alternative combination tested.</td></tr>
+      <tr><td class="nm">The greenhouse-gas contribution is <em>clearly detected</em>, and the best estimate
+        of the human contribution to recent warming is close to the whole of it</td>
+        <td>The fitted &beta;, with its range &mdash; exactly the quantity you produced in the
+        demonstration.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>On the word <em>likely</em>.</b> In this literature it is calibrated: it means a
+  probability greater than about two-thirds, <em>very likely</em> greater than 90&thinsp;%,
+  <em>extremely likely</em> greater than 95&thinsp;%. It is not hedging. A statement without such a
+  qualifier is generally a stronger claim, not a weaker one.</p>
+
+  <div class="q"><b>The honest limits, which are also part of the result.</b> Attribution is strongest for
+  the global mean and for large-scale patterns, weaker for regional trends, and weakest for individual
+  events &mdash; because the signal-to-noise argument of page&nbsp;1 works against you at every step down in
+  scale. Attribution of a single flood or heatwave is a real and growing field, but it makes a different and
+  more careful claim: not &ldquo;this event was caused by climate change&rdquo; but &ldquo;an event like this
+  became this much more likely&rdquo;.</div>
+</div>
+
+<div class="card">
+  <h3>The lecture in one argument</h3>
+  <p class="cap">Six pages, one chain of reasoning. It is worth being able to reproduce this out loud.</p>
+
+  <svg viewBox="0 0 880 260" role="img" aria-label="The chain of reasoning of the whole lecture, from internal variability to attribution"><g id="chainG"></g></svg>
+
+  <ul class="pl">
+    <li><b>The climate varies without being pushed</b>, and the amount depends strongly on the scale you
+    look at. &mdash; <a href="forced-and-internal.html">page&nbsp;1</a></li>
+    <li><b>That variability has structure</b>, in a handful of named modes with known patterns, magnitudes
+    and timescales. &mdash; <a href="modes-of-variability.html">page&nbsp;2</a></li>
+    <li><b>It also responds to forcing</b>, and the cleanest case &mdash; orbital &mdash; shows the response
+    is amplified, non-linear, and unlike the forcing. &mdash; <a href="orbital-forcing.html">page&nbsp;3</a></li>
+    <li><b>It contains thresholds</b>, so the response can be abrupt even when the forcing is not. &mdash;
+    <a href="abrupt-change.html">page&nbsp;4</a></li>
+    <li><b>In a world like ours the natural amplitudes are small</b> &mdash; a few tenths of a degree over
+    centuries, and regionally asynchronous. &mdash; <a href="holocene-2000-years.html">page&nbsp;5</a></li>
+    <li><b>Therefore</b> the twentieth-century change can be tested against all of that, quantitatively, and
+    it fails to be explicable without an anthropogenic term. &mdash; this page</li>
+  </ul>
+
+  <p class="note"><b>Notice what the argument does not rest on.</b> Not on any single model being right; not
+  on the temperature record alone; not on the assumption that the past is a guide to the future. It rests on
+  having measured how large natural variability is, and on the forced responses having distinguishable
+  shapes. That is why the palaeoclimate half of this lecture is not background material &mdash; it is the
+  denominator of the final calculation.</p>
+
+  <div class="q"><b>Where the course goes next.</b> This lecture ends at the present. The next one takes
+  the same apparatus &mdash; the forcings of <a href="../perturbations/forcing-agents.html">Lecture&nbsp;6</a>,
+  the sensitivity of <a href="../perturbations/feedback-parameter.html">its page&nbsp;3</a>, the transient
+  response of <a href="../perturbations/transient-response.html">its page&nbsp;5</a>, and the models of
+  <a href="../climate-models/">Lecture&nbsp;5</a> &mdash; and runs it forward.</div>
+</div>
+
+<p class="foot">After Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;5.4 (Figs.&nbsp;5.40&ndash;5.44), covering the instrumental record and its trends as assessed by
+Hartmann et&nbsp;al. (2014) &mdash; the quoted 1901&ndash;2012 global mean linear trend of 0.89&nbsp;&deg;C and
+the land&ndash;ocean contrast &mdash; the natural-only against all-forcing model comparison of Jones
+et&nbsp;al. (2013), the formulation of the detection and attribution regression given in that chapter, and
+the scaling coefficients for greenhouse gases, other anthropogenic forcings and natural forcings reported by
+Jones et&nbsp;al. (2013). The evidence for the anthropogenic origin of the atmospheric CO<sub>2</sub> rise is
+standard and is set out in Ciais et&nbsp;al. (2013). The calibrated-uncertainty vocabulary is that of the
+IPCC assessment reports.
+<b>Both demonstrations on this page are synthetic, and deliberately so.</b> The three fingerprints are
+responses of the same zero-dimensional energy balance model used on
+<a href="holocene-2000-years.html">page&nbsp;5</a> &mdash;
+&lambda;<sub>f</sub>&nbsp;=&nbsp;&minus;1.26&nbsp;W&nbsp;m<sup>&minus;2</sup>&nbsp;K<sup>&minus;1</sup>, a
+200&nbsp;m slab &mdash; driven separately by a greenhouse forcing rising to
++3.2&nbsp;W&nbsp;m<sup>&minus;2</sup>, an other-anthropogenic forcing falling to about
+&minus;1.1&nbsp;W&nbsp;m<sup>&minus;2</sup>, and a natural forcing containing the eruptions of 1883, 1902,
+1963, 1982 and 1991 together with a small solar variation; these magnitudes match the ledger of
+<a href="../perturbations/forcing-agents.html">Lecture&nbsp;6, page&nbsp;2</a>. The
+&ldquo;observations&rdquo; are the sum of those three with unit coefficients plus first-order autoregressive
+noise of standard deviation 0.11&nbsp;K, the global-mean internal variability of
+<a href="forced-and-internal.html">page&nbsp;1</a>. The regression, the ordinary least-squares solution and
+the 2&sigma; uncertainties derived from the residual variance and the normal equations are computed live and
+are genuine; the degeneracy you will find between the greenhouse and aerosol coefficients is a real property
+of that design matrix and a real difficulty in the published studies. Note that the ordinary least-squares
+standard errors shown assume independent residuals, whereas internal variability is autocorrelated, so the
+plotted ranges are somewhat narrower than a proper treatment would give; published studies use the
+covariance structure of long control simulations instead, and their ranges are correspondingly wider. Because the true coefficients are 1 by
+construction, this demonstrates how the method behaves rather than reproducing any published value. The
+observed 1950&ndash;2020 warming used as a reference in the readout is that of the synthetic record, not of
+an observational dataset.
+&nbsp;&middot;&nbsp; Back to the <a href="../">course page</a>.</p>
+
+<div class="nav">
+  <a href="holocene-2000-years.html">&larr; 5 &middot; The Holocene and the last 2000 years</a>
+  <a href="../">EE501 course page &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(p,x1,y1,x2,y2,col,w){
+    put(p,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
+    const a=Math.atan2(y2-y1,x2-x1),h=6+(w||2);
+    put(p,'polygon',{points:[x2,y2,x2-h*Math.cos(a-0.4),y2-h*Math.sin(a-0.4),
+      x2-h*Math.cos(a+0.4),y2-h*Math.sin(a+0.4)].join(' '),fill:col});
+  }
+
+  /* ── shared: the energy balance model and the three forcings ── */
+  const Y0=1850, Y1=2020, N=Y1-Y0+1;
+  const LAM=-1.26, C=4.18e6*200, SPY=3.1557e7;
+  function integrate(F){
+    let T=0; const out=[];
+    for(let i=0;i<N;i++){ T+=SPY*(F[i]+LAM*T)/C; out.push(T); }
+    const m=out.reduce((s,v)=>s+v,0)/N;
+    return out.map(v=>v-m);          // work in anomalies about the record mean
+  }
+  const VOLC=[[1883,3.0],[1902,2.2],[1963,2.0],[1982,2.4],[1991,3.0],[1856,2.0],[1875,1.6]];
+  const Fghg=[],Faer=[],Fnat=[];
+  for(let i=0;i<N;i++){
+    const y=Y0+i;
+    Fghg.push(3.2*Math.pow(Math.max(0,(y-1850))/170,2.2));
+    Faer.push(-1.15*(1/(1+Math.exp(-(y-1955)/16)))*(y>1990?1-0.16*(y-1990)/30:1));
+    let v=0; VOLC.forEach(e=>{ if(y>=e[0]) v-=e[1]*Math.exp(-(y-e[0])/1.5); });
+    v+=0.10*Math.sin(2*Math.PI*(y-1900)/95)-0.03;
+    Fnat.push(v);
+  }
+  const Rghg=integrate(Fghg), Raer=integrate(Faer), Rnat=integrate(Fnat);
+
+  function rng(seed){let s=seed>>>0;return ()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+  function gauss(r){let u=0,v=0;while(u===0)u=r();while(v===0)v=r();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  function noise(seed,sd){
+    const r=rng(seed); let x=gauss(r); const a=[]; const phi=0.4, sc=Math.sqrt(1-phi*phi);
+    for(let i=0;i<N;i++){ x=phi*x+sc*gauss(r); a.push(x*sd); }
+    const m=a.reduce((s,v)=>s+v,0)/N;
+    return a.map(v=>v-m);
+  }
+
+  /* ── 1 · observed record schematic ──────────────────────────── */
+  (function(){
+    const g=$('obsG'); if(!g) return;
+    const nz=noise(20259,0.11);
+    const OBS=Rghg.map((v,i)=>v+Raer[i]+Rnat[i]+nz[i]);
+    const L=70,R=852,T=52,B=196;
+    const X=y=>L+(R-L)*((y-Y0)/(Y1-Y0));
+    const lo=Math.min(...OBS)-0.12, hi=Math.max(...OBS)+0.12;
+    const Y=v=>B-(B-T)*((v-lo)/(hi-lo));
+    for(let v=-0.5;v<=1.0;v+=0.5){
+      put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)'});
+      put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},v.toFixed(1));
+    }
+    for(let y=1850;y<=2020;y+=25){
+      put(g,'line',{x1:X(y),y1:T,x2:X(y),y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:X(y),y:B+18,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},y);
+    }
+    let d='';
+    OBS.forEach((v,i)=>d+=(i?'L':'M')+X(Y0+i).toFixed(1)+' '+Y(v).toFixed(1));
+    put(g,'path',{d:d,fill:'none',stroke:'var(--text-primary)','stroke-width':1.4});
+    // smoothed
+    let sm=[];
+    for(let i=0;i<N;i++){
+      let s=0,n=0;
+      for(let j=Math.max(0,i-5);j<=Math.min(N-1,i+5);j++){s+=OBS[j];n++;}
+      sm.push(s/n);
+    }
+    let d2='';
+    sm.forEach((v,i)=>d2+=(i?'L':'M')+X(Y0+i).toFixed(1)+' '+Y(v).toFixed(1));
+    put(g,'path',{d:d2,fill:'none',stroke:'var(--hi)','stroke-width':2.4});
+    put(g,'text',{x:L,y:26,'font-size':12,fill:'var(--warn)','font-weight':600},
+      'SCHEMATIC — an energy-balance reconstruction, not an observational dataset');
+    put(g,'text',{x:L,y:T-6,'font-size':11.5,fill:'var(--text-secondary)'},
+      'global mean temperature anomaly, K');
+    [[1915,'rapid rise'],[1955,'mid-century plateau'],[1995,'steep rise']].forEach((m,i)=>{
+      put(g,'text',{x:X(m[0]),y:B+40+(i%2?14:0),'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},m[1]);
+    });
+    put(g,'text',{x:R,y:B+40,'text-anchor':'end','font-size':11,fill:'var(--hi)','font-weight':600},
+      '11-year mean');
+  })();
+
+  /* ── 2 · detection/attribution logic diagram ────────────────── */
+  (function(){
+    const g=$('daG'); if(!g) return;
+    function box(x,y,w,h,c,l1,l2){
+      put(g,'rect',{x:x,y:y,width:w,height:h,rx:9,fill:c,opacity:.20,stroke:c});
+      put(g,'text',{x:x+w/2,y:y+h/2+(l2?-3:4),'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-primary)','font-weight':600},l1);
+      if(l2) put(g,'text',{x:x+w/2,y:y+h/2+13,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-secondary)'},l2);
+    }
+    box(14,84,96,54,'var(--text-muted)','observed','T(t)');
+    put(g,'text',{x:124,y:116,'font-size':16,fill:'var(--text-primary)'},'=');
+    box(140,16,116,44,'var(--ghg)','β₁ · greenhouse');
+    box(140,72,116,44,'var(--aer)','β₂ · aerosols');
+    box(140,128,116,44,'var(--nat)','β₃ · natural');
+    box(140,182,116,32,'var(--text-muted)','+ u(t) internal');
+    put(g,'text',{x:272,y:40,'font-size':11,fill:'var(--text-muted)'},'fingerprints');
+    put(g,'text',{x:272,y:56,'font-size':11,fill:'var(--text-muted)'},'from models:');
+    put(g,'text',{x:272,y:72,'font-size':11,fill:'var(--text-muted)'},'shape only');
+    put(g,'text',{x:272,y:112,'font-size':11,fill:'var(--text-primary)','font-weight':600},'β from');
+    put(g,'text',{x:272,y:128,'font-size':11,fill:'var(--text-primary)','font-weight':600},
+      'the data');
+    put(g,'text',{x:272,y:200,'font-size':11,fill:'var(--text-muted)'},'from control');
+    put(g,'text',{x:272,y:214,'font-size':11,fill:'var(--text-muted)'},'runs');
+    arrow(g,110,111,136,111,'var(--text-muted)',1.6);
+  })();
+
+  /* ── 3 · fingerprint regression ─────────────────────────────── */
+  (function(){
+    const g=$('fpG'), bar=$('barG'); if(!g) return;
+    const sl={G:$('bG'),A:$('bA'),N:$('bN')};
+    let seed=7717;
+    let OBS=Rghg.map((v,i)=>v+Raer[i]+Rnat[i]+noise(seed,0.11)[i]);
+    let best=null;
+
+    function solve3(M,v){
+      // Gaussian elimination on a 3×3 system; returns x and the inverse
+      const A=M.map((r,i)=>r.concat([v[i]]).concat([0,0,0]));
+      for(let i=0;i<3;i++) A[i][4+i]=1;
+      for(let c=0;c<3;c++){
+        let p=c;
+        for(let r=c+1;r<3;r++) if(Math.abs(A[r][c])>Math.abs(A[p][c])) p=r;
+        const t=A[c]; A[c]=A[p]; A[p]=t;
+        const d=A[c][c];
+        for(let k=0;k<7;k++) A[c][k]/=d;
+        for(let r=0;r<3;r++) if(r!==c){
+          const f=A[r][c];
+          for(let k=0;k<7;k++) A[r][k]-=f*A[c][k];
+        }
+      }
+      return {x:[A[0][3],A[1][3],A[2][3]],
+              inv:[[A[0][4],A[0][5],A[0][6]],[A[1][4],A[1][5],A[1][6]],[A[2][4],A[2][5],A[2][6]]]};
+    }
+    function lsq(){
+      const P=[Rghg,Raer,Rnat];
+      const M=[[0,0,0],[0,0,0],[0,0,0]], v=[0,0,0];
+      for(let a=0;a<3;a++){
+        for(let b=0;b<3;b++){ let s=0; for(let i=0;i<N;i++) s+=P[a][i]*P[b][i]; M[a][b]=s; }
+        let s=0; for(let i=0;i<N;i++) s+=P[a][i]*OBS[i]; v[a]=s;
+      }
+      const r=solve3(M,v);
+      let ss=0;
+      for(let i=0;i<N;i++){
+        const f=r.x[0]*Rghg[i]+r.x[1]*Raer[i]+r.x[2]*Rnat[i];
+        ss+=(OBS[i]-f)*(OBS[i]-f);
+      }
+      const s2=ss/(N-3);
+      const se=[Math.sqrt(s2*r.inv[0][0]),Math.sqrt(s2*r.inv[1][1]),Math.sqrt(s2*r.inv[2][2])];
+      return {b:r.x,se:se};
+    }
+
+    function draw(){
+      const bG=+sl.G.value, bA=+sl.A.value, bN=+sl.N.value;
+      $('bGv').textContent=bG.toFixed(2);
+      $('bAv').textContent=bA.toFixed(2);
+      $('bNv').textContent=bN.toFixed(2);
+      const FIT=[], RES=[];
+      for(let i=0;i<N;i++){
+        const f=bG*Rghg[i]+bA*Raer[i]+bN*Rnat[i];
+        FIT.push(f); RES.push(OBS[i]-f);
+      }
+      clr(g);
+      const L=70,R=852,T=48,B=280;
+      const X=y=>L+(R-L)*((y-Y0)/(Y1-Y0));
+      const all=OBS.concat(FIT).concat([-0.7,0.9]);
+      const lo=Math.min(...all)-0.1, hi=Math.max(...all)+0.1;
+      const Y=v=>B-(B-T)*((v-lo)/(hi-lo));
+      for(let v=-1;v<=1.5;v+=0.5){
+        if(v<lo||v>hi) continue;
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)'});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      for(let y=1850;y<=2020;y+=25){
+        put(g,'line',{x1:X(y),y1:T,x2:X(y),y2:B,stroke:'var(--grid)'});
+      }
+      // scaled components
+      function line(arr,sc,col,w,dash){
+        let d='';
+        for(let i=0;i<N;i++) d+=(i?'L':'M')+X(Y0+i).toFixed(1)+' '+Y(arr[i]*sc).toFixed(1);
+        const a={d:d,fill:'none',stroke:col,'stroke-width':w};
+        if(dash) a['stroke-dasharray']=dash;
+        put(g,'path',a);
+      }
+      line(Rghg,bG,'var(--ghg)',1.5,'5 3');
+      line(Raer,bA,'var(--aer)',1.5,'5 3');
+      line(Rnat,bN,'var(--nat)',1.5,'5 3');
+      let d='';
+      OBS.forEach((v,i)=>d+=(i?'L':'M')+X(Y0+i).toFixed(1)+' '+Y(v).toFixed(1));
+      put(g,'path',{d:d,fill:'none',stroke:'var(--text-primary)','stroke-width':1.6});
+      line(FIT,1,'var(--acc)',2.8);
+      put(g,'text',{x:L,y:T-24,'font-size':12.5,fill:'var(--text-primary)','font-weight':600},
+        'black: the record to be explained   ·   green: your fitted total');
+      put(g,'text',{x:L,y:T-8,'font-size':11,fill:'var(--text-muted)'},
+        'dashed: the individual scaled responses, K');
+
+      // residual panel
+      const T2=306,B2=396;
+      put(g,'rect',{x:L,y:T2,width:R-L,height:B2-T2,fill:'var(--surface-2)',opacity:.6});
+      const rmx=1.3;                       // fixed, so improvement in the fit is visible
+      const Y2=v=>(T2+B2)/2-((B2-T2)/2-8)*(v/rmx);
+      put(g,'line',{x1:L,y1:Y2(0),x2:R,y2:Y2(0),stroke:'var(--text-muted)'});
+      put(g,'rect',{x:L,y:Y2(0.22),width:R-L,height:Y2(-0.22)-Y2(0.22),
+        fill:'var(--acc)',opacity:.14});
+      let dr='';
+      RES.forEach((v,i)=>dr+=(i?'L':'M')+X(Y0+i).toFixed(1)+' '+Y2(v).toFixed(1));
+      put(g,'path',{d:dr,fill:'none',stroke:'var(--warn)','stroke-width':1.4});
+      put(g,'text',{x:L+5,y:T2+14,'font-size':11.5,fill:'var(--warn)','font-weight':600},
+        'residual — what your fit fails to explain');
+      put(g,'text',{x:R-5,y:T2+14,'text-anchor':'end','font-size':10.5,fill:'var(--acc)'},
+        'green band: ±2σ of internal variability');
+      for(let y=1850;y<=2020;y+=25)
+        put(g,'text',{x:X(y),y:B2+18,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},y);
+
+      const rms=Math.sqrt(RES.reduce((s,v)=>s+v*v,0)/N);
+      const om=OBS.reduce((s,v)=>s+v,0)/N;
+      const tot=OBS.reduce((s,v)=>s+(v-om)*(v-om),0);
+      const r2=Math.max(0,1-RES.reduce((s,v)=>s+v*v,0)/tot);
+      $('kRms').textContent=rms.toFixed(3);
+      $('kR2').textContent=(r2*100).toFixed(0);
+      const obsW=OBS[2020-Y0]-OBS[1950-Y0], fitW=FIT[2020-Y0]-FIT[1950-Y0];
+      $('kExp').textContent=(fitW>=0?'+':'−')+Math.abs(fitW).toFixed(2);
+      document.querySelector('#kExp').parentNode.querySelector('.s').innerHTML=
+        'K of the record&rsquo;s '+obsW.toFixed(2);
+
+      // bars
+      clr(bar);
+      if(best){
+        const names=['β GHG','β other anthropogenic','β natural'];
+        const cols=['var(--ghg)','var(--aer)','var(--nat)'];
+        const L2=150,R2=790,T3=62;
+        const X2=v=>L2+(R2-L2)*((v+1)/3.5);
+        for(let v=-1;v<=2.5;v+=0.5){
+          put(bar,'line',{x1:X2(v),y1:T3-14,x2:X2(v),y2:T3+128,stroke:'var(--grid)'});
+          put(bar,'text',{x:X2(v),y:T3+150,'text-anchor':'middle','font-size':10.5,
+            fill:'var(--text-muted)'},v.toFixed(1));
+        }
+        put(bar,'line',{x1:X2(0),y1:T3-14,x2:X2(0),y2:T3+128,stroke:'var(--text-muted)',
+          'stroke-width':1.6});
+        put(bar,'line',{x1:X2(1),y1:T3-14,x2:X2(1),y2:T3+128,stroke:'var(--acc)',
+          'stroke-dasharray':'4 4','stroke-width':1.6});
+        put(bar,'text',{x:X2(1),y:T3-20,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--acc)','font-weight':600},'β = 1');
+        put(bar,'text',{x:X2(0),y:T3-20,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)','font-weight':600},'β = 0');
+        best.b.forEach((b,i)=>{
+          const y=T3+14+i*40, s=2*best.se[i];
+          put(bar,'text',{x:L2-12,y:y+4,'text-anchor':'end','font-size':11.5,
+            fill:cols[i],'font-weight':600},names[i]);
+          put(bar,'line',{x1:X2(b-s),y1:y,x2:X2(b+s),y2:y,stroke:cols[i],'stroke-width':3});
+          put(bar,'line',{x1:X2(b-s),y1:y-7,x2:X2(b-s),y2:y+7,stroke:cols[i],'stroke-width':2});
+          put(bar,'line',{x1:X2(b+s),y1:y-7,x2:X2(b+s),y2:y+7,stroke:cols[i],'stroke-width':2});
+          put(bar,'circle',{cx:X2(b),cy:y,r:5.5,fill:cols[i]});
+          put(bar,'text',{x:R2+8,y:y+4,'font-size':11,fill:'var(--text-muted)'},
+            b.toFixed(2)+' ± '+s.toFixed(2));
+        });
+        put(bar,'text',{x:L2-12,y:24,'text-anchor':'end','font-size':11.5,
+          fill:'var(--text-primary)','font-weight':600},'best fit');
+        put(bar,'text',{x:L2,y:24,'font-size':11.5,fill:'var(--text-muted)'},
+          'scaling coefficients with their 2σ ranges');
+        put(bar,'text',{x:(L2+R2)/2,y:T3+174,'text-anchor':'middle','font-size':11,
+          fill:'var(--text-muted)'},'scaling coefficient β');
+        $('kBest').textContent=best.b[0].toFixed(2);
+      } else {
+        put(bar,'text',{x:440,y:100,'text-anchor':'middle','font-size':13,
+          fill:'var(--text-muted)'},'Press “Compute the least-squares fit” to see the fitted coefficients');
+        $('kBest').textContent='—';
+      }
+
+      let msg;
+      if(bG===0&&bA===0&&bN===0)
+        msg='Nothing switched on: the residual <em>is</em> the record, and its root-mean-square is '+
+          '<b class="big">'+rms.toFixed(2)+'&thinsp;K</b> against an internal variability of 0.11. '+
+          'Anything that leaves a residual much bigger than 0.11 is failing to explain the record.';
+      else if(bG<0.15&&bN>0.3)
+        msg='Natural forcing alone. The volcanic dips line up nicely — you can see the fit catching '+
+          '1883, 1963, 1982 and 1991 — but the residual still has the entire trend in it, at '+
+          '<b class="big">'+rms.toFixed(2)+'&thinsp;K</b> RMS, and it is a <em>structured</em> residual, '+
+          'not noise. <b>No scaling of the natural forcings can produce a trend they do not contain.</b>';
+      else
+        msg='Residual RMS <b class="big">'+rms.toFixed(3)+'&thinsp;K</b> against the 0.11&thinsp;K of '+
+          'internal variability, explaining <b>'+(r2*100).toFixed(0)+'&thinsp;%</b> of the variance. '+
+          (rms<0.135
+            ? '<b>That residual is indistinguishable from internal variability</b> — this combination is a '+
+              'satisfactory explanation of the record. Now check the error bars below and ask which '+
+              'coefficients you could have got badly wrong without noticing.'
+            : 'The residual is still larger than internal variability, so something in this combination '+
+              'is wrong. Look at <em>where</em> the residual is large — that is which part of the record '+
+              'the fit is failing on.');
+      $('fpRead').innerHTML=msg;
+    }
+    Object.values(sl).forEach(x=>x.oninput=draw);
+    $('fitBtn').onclick=()=>{
+      best=lsq();
+      sl.G.value=best.b[0]; sl.A.value=best.b[1]; sl.N.value=best.b[2]; draw();
+    };
+    $('natBtn').onclick=()=>{ sl.G.value=0; sl.A.value=0; sl.N.value=1; draw(); };
+    $('zeroBtn').onclick=()=>{ sl.G.value=0; sl.A.value=0; sl.N.value=0; best=null; draw(); };
+    $('newObs').onclick=()=>{
+      seed=(seed*1103515245+12345)>>>0;
+      OBS=Rghg.map((v,i)=>v+Raer[i]+Rnat[i]+noise(seed,0.11)[i]);
+      best=null; draw();
+    };
+    draw();
+  })();
+
+  /* ── 4 · cherry-picking widget ──────────────────────────────── */
+  (function(){
+    const g=$('cpG'); if(!g) return;
+    const w0=$('w0'), w1=$('w1');
+    const REC=Rghg.map((v,i)=>v+Raer[i]+Rnat[i]+noise(4519,0.13)[i]);
+    // true forced trend over the record
+    function trend(a,b){
+      let n=0,sx=0,sy=0,sxx=0,sxy=0;
+      for(let y=a;y<=b;y++){
+        const x=y, v=REC[y-Y0];
+        n++; sx+=x; sy+=v; sxx+=x*x; sxy+=x*v;
+      }
+      return (n*sxy-sx*sy)/(n*sxx-sx*sx);
+    }
+    function draw(){
+      let a=+w0.value, b=+w1.value;
+      if(b<a+10){ b=a+10; w1.value=b; }
+      $('w0v').textContent=a; $('w1v').textContent=b;
+      clr(g);
+      const L=70,R=852,T=48,B=234;
+      const X=y=>L+(R-L)*((y-Y0)/(Y1-Y0));
+      const lo=Math.min(...REC)-0.12, hi=Math.max(...REC)+0.12;
+      const Y=v=>B-(B-T)*((v-lo)/(hi-lo));
+      put(g,'rect',{x:X(a),y:T,width:X(b)-X(a),height:B-T,fill:'var(--acc)',opacity:.10});
+      for(let v=-1;v<=1.5;v+=0.5){
+        if(v<lo||v>hi) continue;
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)'});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      for(let y=1850;y<=2020;y+=25){
+        put(g,'line',{x1:X(y),y1:T,x2:X(y),y2:B,stroke:'var(--grid)'});
+        put(g,'text',{x:X(y),y:B+18,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},y);
+      }
+      let d='';
+      REC.forEach((v,i)=>d+=(i?'L':'M')+X(Y0+i).toFixed(1)+' '+Y(v).toFixed(1));
+      put(g,'path',{d:d,fill:'none',stroke:'var(--text-primary)','stroke-width':1.4});
+      const tr=trend(a,b), full=trend(1880,2020);
+      // fitted line in the window
+      let sy=0,n=0;
+      for(let y=a;y<=b;y++){ sy+=REC[y-Y0]; n++; }
+      const my=sy/n, mx=(a+b)/2;
+      put(g,'line',{x1:X(a),y1:Y(my+tr*(a-mx)),x2:X(b),y2:Y(my+tr*(b-mx)),
+        stroke:'var(--hi)','stroke-width':3});
+      // full-record trend for comparison
+      let sy2=0;
+      for(let y=1880;y<=2020;y++) sy2+=REC[y-Y0];
+      const my2=sy2/141, mx2=1950;
+      put(g,'line',{x1:X(1880),y1:Y(my2+full*(1880-mx2)),x2:X(2020),y2:Y(my2+full*(2020-mx2)),
+        stroke:'var(--acc)','stroke-width':2,'stroke-dasharray':'6 4'});
+      put(g,'text',{x:L,y:T-22,'font-size':12.5,fill:'var(--text-primary)','font-weight':600},
+        'One synthetic record — the same forced signal throughout, whatever window you pick');
+      put(g,'text',{x:L,y:T-7,'font-size':11,fill:'var(--text-muted)'},
+        'red: trend over your window   ·   dashed green: trend over 1880–2020');
+      put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'year');
+      const per=tr*10;
+      $('cpRead').innerHTML='Over <b>'+a+'–'+b+'</b> ('+(b-a)+' years) the trend is '+
+        '<b class="big">'+(per>=0?'+':'−')+Math.abs(per).toFixed(3)+'</b> K per decade. '+
+        'Over the full 1880–2020 record it is <b>'+(full*10>=0?'+':'−')+
+        Math.abs(full*10).toFixed(3)+'</b> K per decade. '+
+        (b-a<20
+          ? '<b>A window this short tells you almost nothing.</b> The internal variability of '+
+            'page 1 has a standard deviation comparable to the whole signal over this interval, and the '+
+            'trend you compute is mostly a measurement of which years you picked.'
+          : (per<full*10*0.6
+            ? 'Notice that this window gives a substantially <em>smaller</em> trend than the record as a '+
+              'whole — and nothing in the underlying forcing changed to justify that.'
+            : 'A window of this length starts to recover the underlying trend, because the noise has had '+
+              'time to average down while the signal accumulated.'));
+    }
+    w0.oninput=draw; w1.oninput=draw; draw();
+  })();
+
+  /* ── 5 · chain of reasoning ─────────────────────────────────── */
+  (function(){
+    const g=$('chainG'); if(!g) return;
+    const S=[['1','the climate varies\nwithout being pushed','var(--ocean)'],
+      ['2','that variability has\nnamed patterns','var(--ocean)'],
+      ['3','forcing produces an\namplified, non-linear response','var(--frc)'],
+      ['4','the response can be\nabrupt: thresholds','var(--warn)'],
+      ['5','in a world like ours,\nnatural change is small','var(--acc)'],
+      ['6','so the last century\nneeds another term','var(--hi)']];
+    const w=126, gap=20, x0=32, y=76;
+    S.forEach((s,i)=>{
+      const x=x0+i*(w+gap);
+      put(g,'rect',{x:x,y:y,width:w,height:96,rx:11,fill:s[2],opacity:.14,stroke:s[2]});
+      put(g,'text',{x:x+w/2,y:y+22,'text-anchor':'middle','font-size':11,
+        fill:s[2],'font-weight':700},'PAGE '+s[0]);
+      s[1].split('\n').forEach((ln,k)=>
+        put(g,'text',{x:x+w/2,y:y+48+k*15,'text-anchor':'middle','font-size':11.5,
+          fill:'var(--text-primary)'},ln));
+      if(i<S.length-1) arrow(g,x+w+3,y+48,x+w+gap-3,y+48,'var(--text-muted)',1.8);
+    });
+    put(g,'text',{x:440,y:38,'text-anchor':'middle','font-size':13,
+      fill:'var(--text-secondary)'},
+      'each step is a measurement, and the last one is only possible because of the first five');
+    put(g,'text',{x:440,y:212,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},
+      'the palaeoclimate half of the lecture is the denominator of the final calculation');
+  })();
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>
