@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The transient response</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="physical-feedbacks.html">&larr; The physical feedbacks</a> &nbsp;&middot;&nbsp;
+Response of the climate system to perturbations &middot; 5 of 6</p>
+
+<header>
+  <div>
+    <h1>The transient response</h1>
+    <p class="sub">Everything so far has been about equilibrium &mdash; where the system ends up. Nobody lives
+    at equilibrium. This page adds the one term that turns an answer into a trajectory, and explains why forty
+    years of warming still does not tell you the climate sensitivity.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Adding time</h3>
+  <p class="cap">The same energy balance as <a href="feedback-parameter.html">page&nbsp;3</a>, with the left
+  side no longer set to zero.</p>
+
+  <p class="note" style="margin-top:0">At equilibrium the imbalance &Delta;R is zero because the system has
+  finished adjusting. Before then it is not zero &mdash; and where does that energy go? Into heating something.
+  Represent everything thermally connected as a single slab of heat capacity C<sub>s</sub>, and the imbalance
+  becomes a rate of change:</p>
+
+  <div class="eq"><b>C<sub>s</sub> dT<sub>s</sub>/dt &nbsp;=&nbsp; &Delta;Q &nbsp;+&nbsp;
+    &lambda;<sub>f</sub> &Delta;T<sub>s</sub></b>
+    <span class="u"><br>C<sub>s</sub> in J K<sup>&minus;1</sup> m<sup>&minus;2</sup>; for a slab of water of
+    depth h, C<sub>s</sub> = &rho;c<sub>w</sub>h with &rho;c<sub>w</sub> = 4.18&times;10<sup>6</sup>
+    J m<sup>&minus;3</sup> K<sup>&minus;1</sup></span></div>
+
+  <p class="note">For a forcing switched on at t = 0 and held constant, this has an exact solution &mdash; and
+  it is worth seeing written out, because every term in it says something:</p>
+
+  <div class="eq">&Delta;T<sub>s</sub>(t) = &minus;(&Delta;Q/&lambda;<sub>f</sub>)
+    &middot; (1 &minus; e<sup>&minus;t/&tau;</sup>)
+    &nbsp;&nbsp;with&nbsp;&nbsp; <b>&tau; = &minus;C<sub>s</sub>/&lambda;<sub>f</sub></b></div>
+
+  <table>
+    <thead><tr><th>Piece</th><th>What it says</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">&minus;&Delta;Q/&lambda;<sub>f</sub></td>
+        <td>The equilibrium answer, unchanged. Heat capacity does not alter <em>where</em> you end up.</td></tr>
+      <tr><td class="nm">(1 &minus; e<sup>&minus;t/&tau;</sup>)</td>
+        <td>The fraction of it realised so far. 63&thinsp;% at t = &tau;, 86&thinsp;% at 2&tau;,
+        95&thinsp;% at 3&tau;.</td></tr>
+      <tr><td class="nm">&tau; = &minus;C<sub>s</sub>/&lambda;<sub>f</sub></td>
+        <td>The bit that catches people out. <b>The response time depends on the sensitivity.</b> A more
+        sensitive climate &mdash; smaller |&lambda;<sub>f</sub>| &mdash; is not just warmer at the end, it is
+        also <em>slower</em> to get there. Both effects work in the same direction, and together they are why
+        the early years of a warming look so alike.</td></tr>
+      <tr><td class="nm">initial slope</td>
+        <td>At t = 0, &Delta;T<sub>s</sub> = 0, so dT<sub>s</sub>/dt = &Delta;Q/C<sub>s</sub>. The feedback
+        parameter has dropped out entirely. <b>The first years of warming carry no information about climate
+        sensitivity at all.</b></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card demo">
+  <h3>Run it</h3>
+  <p class="cap">Two climates, differing only in sensitivity, driven by the same forcing. Watch them separate
+  &mdash; and notice how long it takes before they do.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Forcing</span>
+    <button class="ghost" data-sc="step" aria-pressed="true">Step: 2 &times; CO&#8322;</button>
+    <button class="ghost" data-sc="ramp">1&thinsp;%/yr to 2 &times;</button>
+    <button class="ghost" data-sc="volc">Volcanic eruption</button>
+    <button class="ghost" data-sc="solar">Solar cycle</button>
+    <button class="ghost" data-sc="stop">Ramp, then hold</button>
+    <button class="ghost" data-sc="zero">Ramp, then remove</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="lamA"><span>&lambda;<sub>f</sub>, climate A</span> <b id="lamAv">&minus;1.85</b></label>
+      <input type="range" id="lamA" min="-3" max="-0.5" step="0.01" value="-1.85"
+        style="accent-color:var(--lo)">
+      <div class="hint">&minus;1.85 gives 2 K for a doubling.</div>
+    </div>
+    <div class="ctrl">
+      <label for="lamB"><span>&lambda;<sub>f</sub>, climate B</span> <b id="lamBv">&minus;0.93</b></label>
+      <input type="range" id="lamB" min="-3" max="-0.5" step="0.01" value="-0.93"
+        style="accent-color:var(--hi)">
+      <div class="hint">&minus;0.93 gives 4 K &mdash; twice as sensitive.</div>
+    </div>
+    <div class="ctrl">
+      <label for="depth"><span>Depth of the slab</span> <b id="depthv">200 m</b></label>
+      <input type="range" id="depth" min="10" max="1000" step="5" value="200">
+      <div class="hint">200 m of water over the whole globe gives C<sub>s</sub> = 8.4&times;10<sup>8</sup>.</div>
+    </div>
+    <div class="ctrl">
+      <label for="years"><span>Length of run</span> <b id="yearsv">150 yr</b></label>
+      <input type="range" id="years" min="20" max="400" step="5" value="150">
+      <div class="hint">Long enough to reach equilibrium? Check &tau; below.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 420" role="img" aria-label="Forcing and temperature response over time for two climates of different sensitivity, with the radiative imbalance below"><g id="trG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">&tau;, climate A</div><div class="v" id="kTauA">&mdash;</div><div class="s">years</div></div>
+    <div class="kpi"><div class="k">&tau;, climate B</div><div class="v" id="kTauB">&mdash;</div><div class="s">years</div></div>
+    <div class="kpi"><div class="k">Years to tell apart</div><div class="v" id="kSep">&mdash;</div><div class="s">until they differ by 0.2 K</div></div>
+    <div class="kpi"><div class="k">Realised at the end</div><div class="v" id="kReal">&mdash;</div><div class="s">fraction of equilibrium, A / B</div></div>
+  </div>
+
+  <div class="readout" id="trRO"></div>
+
+  <p class="q"><b>Question.</b> With the default settings the two curves are almost on top of each other for the
+  first fifteen years, and one of them is heading for twice the warming of the other. What is the practical
+  consequence?
+  <span style="color:var(--text-muted)">That watching the early response of the climate system does not
+  identify the sensitivity. The initial slope is &Delta;Q/C<sub>s</sub>, which contains no
+  &lambda;<sub>f</sub> at all. This is the honest technical reason why several decades of excellent
+  observations have not collapsed the 1.5&ndash;4.5 K range, and it should be your answer whenever someone
+  says the uncertainty must be carelessness.</span></p>
+
+  <p class="q"><b>Question.</b> Load <b>Volcanic eruption</b>. The forcing peaks at &minus;3
+  W m<sup>&minus;2</sup>, comparable in size to a CO<sub>2</sub> doubling, yet the cooling is only a few tenths
+  of a kelvin. Where did the response go?
+  <span style="color:var(--text-muted)">Nowhere &mdash; it never had time to develop. The forcing is gone in
+  about three years and &tau; is fifteen or more, so the system realises only a small fraction of the
+  equilibrium response before the push is withdrawn. Set the slab depth to 10 m and the cooling becomes much
+  larger and sharper: a shallow system responds quickly to a brief forcing. This is the same argument as the
+  eleven-year solar cycle on <a href="forcing-agents.html">page&nbsp;2</a>, and it is why volcanoes make the
+  temperature record noisy without changing its trend.</span></p>
+
+  <p class="q"><b>Question.</b> Load <b>Ramp, then hold</b>: the forcing rises and then stays constant, which is
+  what happens if concentrations stop rising. The temperature keeps climbing for decades afterwards. What is
+  that warming, and can it be avoided?
+  <span style="color:var(--text-muted)">It is <b>committed warming</b> &mdash; the part of the equilibrium
+  response already forced but not yet realised, currently in transit into the ocean. It cannot be avoided by
+  emitting less, because it has already been paid for; only by reducing the forcing itself. The radiative
+  imbalance in the lower panel is the measurable signature of it, and it is about
+  <b>0.9 W m<sup>&minus;2</sup></b> in the real world today, almost all of it going into the
+  ocean.</span></p>
+</div>
+
+<h2 class="sec">Two numbers, not one</h2>
+
+<div class="card">
+  <h3>Equilibrium climate sensitivity and transient climate response</h3>
+  <p class="cap">Two definitions that get confused constantly, and mean quite different things.</p>
+  <table>
+    <thead><tr><th>&nbsp;</th><th>ECS</th><th>TCR</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Definition</td>
+        <td>Warming after the system has fully re-equilibrated to a doubled CO<sub>2</sub> concentration.</td>
+        <td>Warming averaged over years 60&ndash;80 of a run in which CO<sub>2</sub> increases at
+        1&thinsp;% per year, reaching double at year 70.</td></tr>
+      <tr><td class="nm">Typical range</td><td class="num">1.5&ndash;4.5 K</td><td class="num">1.4&ndash;2.5 K</td></tr>
+      <tr><td class="nm">Depends on</td><td>&lambda;<sub>f</sub> only.</td>
+        <td>&lambda;<sub>f</sub> <em>and</em> how fast the ocean takes up heat.</td></tr>
+      <tr><td class="nm">Better constrained?</td><td>No &mdash; it requires an extrapolation nobody can
+        observe.</td>
+        <td>Yes, because it is much closer to what the last century has actually done to the planet.</td></tr>
+      <tr><td class="nm">Which one you want</td>
+        <td>For the eventual state: sea level, ice sheets, the long commitment.</td>
+        <td>For this century: it is roughly what you get by 2100 under a rising forcing.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>TCR is always smaller than ECS</b>, and the gap is set entirely by ocean heat uptake. Run
+  the demonstration with <b>1&thinsp;%/yr to 2&times;</b> and compare the warming at year 70 with the
+  equilibrium value: the ratio is typically 0.5&ndash;0.7. That missing half is not gone. It is in the pipeline,
+  and the ocean is holding it.</p>
+</div>
+
+<div class="card">
+  <h3>Why one slab is not enough</h3>
+  <p class="cap">The single-C<sub>s</sub> model gets the shape right and the tail wrong, in a way that matters
+  for anything beyond a century.</p>
+
+  <svg viewBox="0 0 880 260" role="img" aria-label="A two-layer ocean schematic showing a fast mixed layer coupled to a slow deep ocean, and the resulting two-timescale response"><g id="boxG"></g></svg>
+
+  <ul class="pl">
+    <li><b>The ocean is not one slab.</b> A mixed layer of 50&ndash;100 m responds in years. Below it, water is
+    exchanged with the deep ocean over centuries. So the real response has at least <b>two timescales</b>: a
+    fast one that gets you most of the way in a few decades, and a slow one that takes centuries to close the
+    rest.</li>
+    <li><b>The consequence.</b> Fit a single exponential to the first fifty years of a warming and you will
+    underestimate the eventual equilibrium, because you have measured the fast timescale and assumed it is the
+    only one. Estimates of ECS from the historical record are biased low for exactly this reason.</li>
+    <li><b>And &lambda;<sub>f</sub> itself drifts.</b> Feedbacks depend on <em>where</em> the warming is,
+    not just how much of it there is. In the first decades the warming is concentrated where the ocean mixes
+    least &mdash; and that pattern engages different cloud feedbacks from the eventual, more uniform one. The
+    effective &lambda;<sub>f</sub> inferred from the historical record is therefore not the
+    &lambda;<sub>f</sub> that will govern the equilibrium. This is called the <b>pattern effect</b>, and it is
+    one of the more recent additions to this subject.</li>
+  </ul>
+
+  <div class="warnbox"><b>Which does not make the slab model useless.</b> It gives the right initial slope, the
+  right equilibrium, the right qualitative dependence of response time on sensitivity, and the correct
+  explanation of why volcanoes and solar cycles produce so little response. That is a good return on one
+  ordinary differential equation, and it is exactly the argument for the model hierarchy in
+  <a href="../climate-models/hierarchy.html">Lecture&nbsp;5</a>: use the simplest model that contains the
+  process you are asking about.</div>
+</div>
+
+<div class="card">
+  <h3>Forcing, response and what is still owed</h3>
+  <p class="cap">The three numbers to leave the lecture with.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Net forcing today</div><div class="v">&asymp; 2.7</div>
+      <div class="s">W m<sup>&minus;2</sup>, vs 1750</div></div>
+    <div class="kpi"><div class="k">Warming realised</div><div class="v">&asymp; 1.2</div>
+      <div class="s">K, observed</div></div>
+    <div class="kpi"><div class="k">Imbalance</div><div class="v">&asymp; 0.9</div>
+      <div class="s">W m<sup>&minus;2</sup>, into the ocean</div></div>
+    <div class="kpi"><div class="k">Still owed</div><div class="v">&asymp; 0.7</div>
+      <div class="s">K at today's forcing</div></div>
+  </div>
+  <p class="note">Put those together and the arithmetic of
+  <a href="feedback-parameter.html">page&nbsp;3</a> checks out: &Delta;R = &Delta;Q +
+  &lambda;<sub>f</sub>&Delta;T<sub>s</sub> gives 0.9 &asymp; 2.7 + &lambda;<sub>f</sub> &times; 1.2, so
+  &lambda;<sub>f</sub> &asymp; &minus;1.5 W m<sup>&minus;2</sup> K<sup>&minus;1</sup>, and an equilibrium
+  warming of about 1.9 K for the forcing already applied. That is a climate sensitivity estimated from three
+  measurements and one linear equation &mdash; and it lands inside the assessed range.</p>
+  <p class="note"><b>Then read the caveats and mistrust it slightly.</b> The forcing has the aerosol
+  uncertainty of <a href="forcing-agents.html">page&nbsp;2</a> in it, and the pattern effect above says the
+  &lambda;<sub>f</sub> you infer this way is probably too negative. Both corrections push the answer upward.
+  The calculation is worth doing precisely because you can see every assumption in it.</p>
+</div>
+
+<p class="foot">After Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>, ch. 4.1.4
+(Eqs. 4.14&ndash;4.16, Fig. 4.8). The demonstration integrates C<sub>s</sub> dT/dt = &Delta;Q +
+&lambda;<sub>f</sub>&Delta;T forward with a fortnightly step, which is far finer than needed for the timescales
+involved; the analytic solution is recovered exactly for the step forcing. Default values follow Goosse's
+worked example: C<sub>s</sub> = 8.36&times;10<sup>8</sup> J K<sup>&minus;1</sup> m<sup>&minus;2</sup>
+(200 m of water spread over the whole globe) and &lambda;<sub>f</sub> of &minus;1.85 and &minus;0.93
+W m<sup>&minus;2</sup> K<sup>&minus;1</sup>, giving 2 K and 4 K for a doubling. Goosse uses &Delta;Q = 3.8
+W m<sup>&minus;2</sup>; 3.7 is used here for consistency with the rest of these pages. The volcanic scenario is
+a 3 W m<sup>&minus;2</sup> reduction decaying with a one-year e-folding, roughly Pinatubo; the solar scenario is
+a &plusmn;0.09 W m<sup>&minus;2</sup> eleven-year sinusoid. The present-day figures in the closing card are
+approximate current values: net anthropogenic ERF and observed warming relative to 1850&ndash;1900 from AR6, and
+an Earth energy imbalance near 0.9 W m<sup>&minus;2</sup> from the ocean heat content record. The two-layer
+schematic is qualitative.
+&nbsp;&middot;&nbsp; Next: <a href="biogeochemical-feedbacks.html">biogeochemical feedbacks &rarr;</a></p>
+
+<div class="nav">
+  <a href="physical-feedbacks.html">&larr; 4 &middot; The physical feedbacks</a>
+  <a href="biogeochemical-feedbacks.html">6 &middot; Biogeochemical feedbacks &rarr;</a>
+</div>
+
+</div>
+
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(g,x1,y1,x2,y2,col,w){
+    const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1, ux=dx/L, uy=dy/L, h=8.5;
+    put(g,'line',{x1:x1,y1:y1,x2:x2-ux*h,y2:y2-uy*h,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
+    put(g,'polygon',{points:[[x2,y2],[x2-ux*h-uy*4.4,y2-uy*h+ux*4.4],[x2-ux*h+uy*4.4,y2-uy*h-ux*4.4]]
+      .map(p=>p.join(',')).join(' '),fill:col});
+  }
+
+  /* ── transient integrator ───────────────────────────────────── */
+  (function(){
+    const RHOC=4.18e6, YR=3.156e7, DQ2X=3.7;
+    let scen='step';
+    const FORC={
+      step:  {f:t=>t>=0?DQ2X:0, n:'a step of 3.7 W m⁻², applied at year 0 and held'},
+      ramp:  {f:t=>5.4*Math.log(Math.pow(1.01,Math.min(t,70))), n:'CO₂ rising 1 % per year, doubling at year 70, constant after'},
+      volc:  {f:t=>t>=5?-3.0*Math.exp(-(t-5)/1.0):0, n:'an explosive eruption at year 5, aerosol decaying with a one-year e-folding'},
+      solar: {f:t=>0.09*Math.sin(2*Math.PI*t/11), n:'the eleven-year solar cycle, ±0.09 W m⁻²'},
+      stop:  {f:t=>2.7*Math.min(t,80)/80, n:'a forcing ramped to 2.7 W m⁻² over 80 years, then held constant'},
+      zero:  {f:t=>t<80?2.7*t/80:0, n:'the same ramp, with the forcing removed entirely at year 80'}
+    };
+    function integrate(lam,Cs,T,dt){
+      const n=Math.round(T/dt);
+      const out=new Float64Array(n+1), R=new Float64Array(n+1);
+      let x=0;
+      for(let i=0;i<=n;i++){
+        const t=i*dt, Q=FORC[scen].f(t);
+        out[i]=x; R[i]=Q+lam*x;
+        x += (Q+lam*x)/Cs*YR*dt;
+      }
+      return {T:out,R:R,dt:dt,n:n};
+    }
+    function draw(){
+      const lamA=+$('lamA').value, lamB=+$('lamB').value;
+      const h=+$('depth').value, YRS=+$('years').value;
+      const Cs=RHOC*h;
+      $('lamAv').textContent=lamA.toFixed(2);
+      $('lamBv').textContent=lamB.toFixed(2);
+      $('depthv').textContent=h+' m';
+      $('yearsv').textContent=YRS+' yr';
+      const dt=Math.max(0.02, YRS/3000);
+      const A=integrate(lamA,Cs,YRS,dt), B=integrate(lamB,Cs,YRS,dt);
+      const tauA=-Cs/lamA/YR, tauB=-Cs/lamB/YR;
+
+      const g=$('trG'); clr(g);
+      const L=70,R=830;
+      const X=t=>L+(R-L)*(t/YRS);
+
+      /* forcing panel */
+      const fT=34, fB=112;
+      let fmin=0, fmax=0.5;
+      for(let i=0;i<=A.n;i++){ const q=FORC[scen].f(i*dt); if(q<fmin)fmin=q; if(q>fmax)fmax=q; }
+      fmin=Math.min(fmin*1.15,-0.2); fmax=Math.max(fmax*1.15,0.5);
+      const FY=v=>fB-(fB-fT)*((v-fmin)/(fmax-fmin));
+      put(g,'line',{x1:L,y1:FY(0),x2:R,y2:FY(0),stroke:'var(--text-muted)','stroke-width':1});
+      let df='';
+      for(let i=0;i<=A.n;i+=Math.max(1,Math.round(A.n/900))){
+        const t=i*dt; df+=(df?'L':'M')+X(t).toFixed(1)+' '+FY(FORC[scen].f(t)).toFixed(1);
+      }
+      put(g,'path',{d:df,fill:'none',stroke:'var(--frc)','stroke-width':2.2});
+      put(g,'text',{x:L,y:fT-8,'font-size':12,fill:'var(--text-secondary)'},'Forcing ΔQ, W m⁻²');
+      put(g,'text',{x:L-8,y:FY(fmax)+10,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},fmax.toFixed(1));
+      put(g,'text',{x:L-8,y:FY(0)+4,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},'0');
+
+      /* temperature panel */
+      const tT=152, tB=316;
+      let tmax=0.5, tmin=0;
+      for(let i=0;i<=A.n;i++){
+        tmax=Math.max(tmax,A.T[i],B.T[i]); tmin=Math.min(tmin,A.T[i],B.T[i]);
+      }
+      const eqA=-DQ2X/lamA, eqB=-DQ2X/lamB;
+      if(scen==='step'){ tmax=Math.max(tmax,eqA,eqB)*1.08; }
+      tmax*=1.1; tmin=Math.min(tmin*1.15,-0.05);
+      const TY=v=>tB-(tB-tT)*((v-tmin)/(tmax-tmin));
+      const step=(tmax-tmin)>6?2:((tmax-tmin)>2.4?1:0.5);
+      for(let v=Math.ceil(tmin/step)*step;v<=tmax;v+=step){
+        put(g,'line',{x1:L,y1:TY(v),x2:R,y2:TY(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:TY(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(step<1?1:0));
+      }
+      put(g,'line',{x1:L,y1:TY(0),x2:R,y2:TY(0),stroke:'var(--text-muted)','stroke-width':1.2});
+      for(let t=0;t<=YRS;t+=(YRS>200?50:(YRS>80?25:10))){
+        put(g,'line',{x1:X(t),y1:tT,x2:X(t),y2:tB,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X(t),y:tB+18,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},t);
+      }
+      if(scen==='step'){
+        [[eqA,'var(--lo)'],[eqB,'var(--hi)']].forEach(e=>{
+          put(g,'line',{x1:L,y1:TY(e[0]),x2:R,y2:TY(e[0]),stroke:e[1],'stroke-width':1.2,
+            'stroke-dasharray':'5 4',opacity:.6});
+        });
+        put(g,'text',{x:R-4,y:TY(eqB)-6,'text-anchor':'end','font-size':10.5,fill:'var(--hi)'},
+          'equilibrium '+eqB.toFixed(1)+' K');
+        put(g,'text',{x:R-4,y:TY(eqA)-6,'text-anchor':'end','font-size':10.5,fill:'var(--lo)'},
+          'equilibrium '+eqA.toFixed(1)+' K');
+        // initial slope
+        const sl=DQ2X/Cs*YR;
+        const t1=Math.min(YRS*0.35, tmax/sl);
+        put(g,'line',{x1:X(0),y1:TY(0),x2:X(t1),y2:TY(sl*t1),stroke:'var(--text-muted)',
+          'stroke-width':1.3,'stroke-dasharray':'3 3'});
+        put(g,'text',{x:X(t1)+6,y:TY(sl*t1),'font-size':10.5,fill:'var(--text-muted)'},
+          'initial slope ΔQ/Cs — the same for both');
+      }
+      function line(S,col){
+        let d='';
+        for(let i=0;i<=S.n;i+=Math.max(1,Math.round(S.n/900))){
+          d+=(d?'L':'M')+X(i*dt).toFixed(1)+' '+TY(S.T[i]).toFixed(1);
+        }
+        put(g,'path',{d:d,fill:'none',stroke:col,'stroke-width':2.4});
+      }
+      line(A,'var(--lo)'); line(B,'var(--hi)');
+      put(g,'text',{x:L,y:tT-10,'font-size':12,fill:'var(--text-secondary)'},
+        'Surface temperature change, K');
+      put(g,'rect',{x:L+8,y:tT+6,width:12,height:3,fill:'var(--lo)'});
+      put(g,'text',{x:L+26,y:tT+11,'font-size':11,fill:'var(--text-secondary)'},
+        'A: λf = '+lamA.toFixed(2)+', τ = '+tauA.toFixed(0)+' yr');
+      put(g,'rect',{x:L+8,y:tT+24,width:12,height:3,fill:'var(--hi)'});
+      put(g,'text',{x:L+26,y:tT+29,'font-size':11,fill:'var(--text-secondary)'},
+        'B: λf = '+lamB.toFixed(2)+', τ = '+tauB.toFixed(0)+' yr');
+
+      /* imbalance panel */
+      const rT=352, rB=404;
+      let rmax=0.2, rmin=0;
+      for(let i=0;i<=A.n;i++){ rmax=Math.max(rmax,A.R[i],B.R[i]); rmin=Math.min(rmin,A.R[i],B.R[i]); }
+      rmax*=1.1; rmin=Math.min(rmin*1.1,-0.1);
+      const RY=v=>rB-(rB-rT)*((v-rmin)/(rmax-rmin));
+      put(g,'line',{x1:L,y1:RY(0),x2:R,y2:RY(0),stroke:'var(--text-muted)','stroke-width':1});
+      [[A,'var(--lo)'],[B,'var(--hi)']].forEach(p=>{
+        let d='';
+        for(let i=0;i<=p[0].n;i+=Math.max(1,Math.round(p[0].n/900))){
+          d+=(d?'L':'M')+X(i*dt).toFixed(1)+' '+RY(p[0].R[i]).toFixed(1);
+        }
+        put(g,'path',{d:d,fill:'none',stroke:p[1],'stroke-width':1.8,opacity:.9});
+      });
+      put(g,'text',{x:L,y:rT-6,'font-size':12,fill:'var(--text-secondary)'},
+        'Radiative imbalance ΔR, W m⁻² — the heat going into the ocean');
+      put(g,'text',{x:R,y:rB+16,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'years');
+
+      /* KPIs */
+      $('kTauA').textContent=tauA.toFixed(0);
+      $('kTauB').textContent=tauB.toFixed(0);
+      let sep='never';
+      for(let i=0;i<=A.n;i++){
+        if(Math.abs(A.T[i]-B.T[i])>0.2){ sep=(i*dt).toFixed(0); break; }
+      }
+      $('kSep').textContent=sep==='never'?'>'+YRS:sep;
+      const fA=eqA!==0?A.T[A.n]/eqA:0, fB2=eqB!==0?B.T[B.n]/eqB:0;
+      $('kReal').textContent=(scen==='step')
+        ? (fA*100).toFixed(0)+' / '+(fB2*100).toFixed(0)+' %' : '—';
+
+      let m='Driving both climates with '+FORC[scen].n+'. ';
+      if(scen==='step'){
+        m+='Climate A reaches <b>'+A.T[A.n].toFixed(2)+' K</b> of its '+eqA.toFixed(2)+
+           ' K equilibrium; climate B reaches <b>'+B.T[B.n].toFixed(2)+' K</b> of '+eqB.toFixed(2)+
+           '. Note the response times: '+tauA.toFixed(0)+' and '+tauB.toFixed(0)+
+           ' years. <b>The more sensitive climate is also the slower one</b>, because τ = −Cs/λf. '+
+           'They stay within 0.2 K of each other for '+(sep==='never'?'the whole run':sep+' years')+'.';
+      } else if(scen==='ramp'){
+        // TCR: mean of years 60-80
+        let sA=0,sB=0,c=0;
+        for(let i=0;i<=A.n;i++){ const t=i*dt; if(t>=60&&t<=80){sA+=A.T[i];sB+=B.T[i];c++;} }
+        if(c) m+='Transient climate response — the mean of years 60 to 80 — is <b>'+(sA/c).toFixed(2)+
+          ' K</b> for A and <b>'+(sB/c).toFixed(2)+' K</b> for B, against equilibrium values of '+
+          eqA.toFixed(2)+' and '+eqB.toFixed(2)+
+          '. <b>TCR is roughly half to two-thirds of ECS</b>, and the gap is the ocean.';
+        else m+='Extend the run past year 80 to read off the transient climate response.';
+      } else if(scen==='volc'){
+        let mn=0; for(let i=0;i<=A.n;i++) mn=Math.min(mn,A.T[i]);
+        m+='Peak cooling in climate A is <span class="big">'+mn.toFixed(2)+
+           ' K</span> from a forcing that briefly reached −3 W m⁻² — comparable to a CO₂ doubling. '+
+           'Almost none of the equilibrium response is realised, because the forcing lasts ~3 years and '+
+           'τ is '+tauA.toFixed(0)+'. Drag the slab depth down to 10 m and watch the response grow.';
+      } else if(scen==='solar'){
+        let mx=0; for(let i=0;i<=A.n;i++) mx=Math.max(mx,Math.abs(A.T[i]));
+        m+='The temperature swings by only <b>±'+mx.toFixed(3)+' K</b> — the ocean filters out a forcing '+
+           'that reverses every five and a half years. This is why an eleven-year cycle is so hard to detect '+
+           'in the temperature record even though the forcing is real and regular.';
+      } else if(scen==='stop'){
+        const dTend=A.T[A.n]-A.T[Math.round(80/dt)];
+        m+='The forcing stops rising at year 80, and climate A keeps warming by a further <b>'+
+           dTend.toFixed(2)+' K</b> after that. That is <b>committed warming</b>: already forced, not yet '+
+           'realised. The imbalance panel shows it draining away as the system catches up.';
+      } else {
+        m+='The forcing is removed entirely at year 80 — an idealisation of instantly returning the '+
+           'atmosphere to pre-industrial composition. The temperature falls back, but over decades, not '+
+           'instantly: the heat has to come <em>out</em> of the ocean at the same rate it went in. In reality '+
+           'CO₂ cannot be removed like this, which is the point of the idealisation.';
+      }
+      $('trRO').innerHTML=m;
+    }
+    ['lamA','lamB','depth','years'].forEach(id=>$(id).addEventListener('input',draw));
+    document.querySelectorAll('[data-sc]').forEach(b=>{
+      b.onclick=()=>{
+        scen=b.dataset.sc;
+        document.querySelectorAll('[data-sc]').forEach(o=>o.setAttribute('aria-pressed',o===b));
+        if(scen==='volc'||scen==='solar'){ $('years').value=Math.min(+$('years').value,60); }
+        if(scen==='ramp'||scen==='stop'||scen==='zero'){ $('years').value=Math.max(+$('years').value,150); }
+        draw();
+      };
+    });
+    draw();
+  })();
+
+  /* ── two-layer schematic ────────────────────────────────────── */
+  (function(){
+    const g=$('boxG');
+    put(g,'text',{x:20,y:24,'font-size':12.5,fill:'var(--text-secondary)'},
+      'One slab gives one timescale. The ocean has at least two, and they differ by a factor of about thirty.');
+    // atmosphere
+    put(g,'rect',{x:60,y:52,width:340,height:34,rx:8,fill:'var(--surface-2)',stroke:'var(--line-soft)'});
+    put(g,'text',{x:230,y:74,'text-anchor':'middle','font-size':12.5,
+      fill:'var(--text-primary)'},'atmosphere + land surface — months');
+    // mixed layer
+    put(g,'rect',{x:60,y:94,width:340,height:48,rx:8,fill:'var(--ocean)',opacity:.28});
+    put(g,'rect',{x:60,y:94,width:340,height:48,rx:8,fill:'none',stroke:'var(--ocean)'});
+    put(g,'text',{x:230,y:116,'text-anchor':'middle','font-size':12.5,
+      fill:'var(--text-primary)'},'ocean mixed layer, 50–100 m');
+    put(g,'text',{x:230,y:133,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--ocean)','font-weight':600},'τ ≈ 5–15 years');
+    // deep
+    put(g,'rect',{x:60,y:150,width:340,height:78,rx:8,fill:'var(--deep)',opacity:.30});
+    put(g,'rect',{x:60,y:150,width:340,height:78,rx:8,fill:'none',stroke:'var(--deep)'});
+    put(g,'text',{x:230,y:182,'text-anchor':'middle','font-size':12.5,
+      fill:'var(--text-primary)'},'deep ocean, ~3700 m');
+    put(g,'text',{x:230,y:200,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--deep)','font-weight':600},'τ ≈ 300–1000 years');
+    arrow(g,410,120,410,168,'var(--warn)',2);
+    arrow(g,436,168,436,124,'var(--warn)',1.4);
+    put(g,'text',{x:448,y:150,'font-size':11.5,fill:'var(--warn)'},'slow exchange');
+    arrow(g,230,44,230,50,'var(--frc)',2);
+    put(g,'text',{x:244,y:44,'font-size':11.5,fill:'var(--frc)'},'ΔQ');
+
+    // response curves
+    const L=560,R=846,T=52,B=222;
+    const X=t=>L+(R-L)*(t/500);
+    const Y=v=>B-(B-T)*(v/1.05);
+    put(g,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--text-muted)','stroke-width':1});
+    put(g,'line',{x1:L,y1:Y(1),x2:R,y2:Y(1),stroke:'var(--grid)','stroke-width':1});
+    put(g,'text',{x:L-6,y:Y(1)+4,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},'1');
+    function cv(f,col,w,dash){
+      let d='';
+      for(let i=0;i<=200;i++){ const t=500*i/200; d+=(i?'L':'M')+X(t).toFixed(1)+' '+Y(f(t)).toFixed(1); }
+      const a={d:d,fill:'none',stroke:col,'stroke-width':w};
+      if(dash) a['stroke-dasharray']=dash;
+      put(g,'path',a);
+    }
+    cv(t=>1-Math.exp(-t/15),'var(--ocean)',1.8,'4 4');
+    cv(t=>0.6*(1-Math.exp(-t/15))+0.4*(1-Math.exp(-t/400)),'var(--text-primary)',2.4);
+    put(g,'text',{x:L,y:T-12,'font-size':12,fill:'var(--text-secondary)'},'Fraction of equilibrium reached');
+    put(g,'text',{x:L+8,y:Y(0.94),'font-size':10.5,fill:'var(--ocean)'},'one slab');
+    put(g,'text',{x:L+120,y:Y(0.55),'font-size':10.5,fill:'var(--text-primary)'},'two layers');
+    put(g,'text',{x:R,y:B+18,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},'500 years');
+    put(g,'text',{x:L,y:B+18,'font-size':10.5,fill:'var(--text-muted)'},'0');
+    put(g,'text',{x:L,y:B+38,'font-size':11,fill:'var(--text-muted)'},
+      'Fit the first 50 years of the solid curve with');
+    put(g,'text',{x:L,y:B+52,'font-size':11,fill:'var(--text-muted)'},
+      'one exponential and you will get the wrong end point.');
+  })();
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

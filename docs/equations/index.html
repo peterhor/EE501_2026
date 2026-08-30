@@ -40,6 +40,7 @@ a.back:hover { color: #14403f; }
       <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART II</span><span style="font-size: 17px;">Surface fluxes</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">2.34 – 2.37</span></div>
       <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART III</span><span style="font-size: 17px;">Carbon cycle</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">2.40 – 2.49</span></div>
       <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART IV</span><span style="font-size: 17px;">Radiative forcing</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">4.1 – 4.3</span></div>
+      <div style="background: #faf8f3; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #8a8574;">PART V</span><span style="font-size: 17px;">Feedback and response</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1f6b6b;">4.4 – 4.16</span></div>
     </div>
   </div>
 
@@ -426,11 +427,97 @@ a.back:hover { color: #14403f; }
     </div>
   </div>
 
+  <!-- PART V -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART V</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">Feedback and response</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">4.4 – 4.16</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">How a forcing \(\Delta Q\) becomes a temperature change. Downward fluxes are positive throughout, so \(\lambda_f\) must be negative for the system to reach an equilibrium at all. Reference value: a doubling of CO₂ gives \(\Delta Q \approx 3.7\) W m⁻².</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.4</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Radiative imbalance and the feedback parameter</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta R = \Delta Q + \lambda_f \Delta T_s$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The linearisation the whole of Chapter 4 rests on: every feedback in the system, collapsed into one slope. \(\Delta R\) is the energy currently accumulating — about 0.9 W m⁻² today, almost all of it entering the ocean.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔR — imbalance, W m⁻²<br />λ<sub>f</sub> — feedback parameter, W m⁻² K⁻¹<br />downward positive</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.5</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Equilibrium temperature change</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T_s = -\frac{1}{\lambda_f}\,\Delta Q$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Set \(\Delta R = 0\). The quantity \((-1/\lambda_f)\) is the <em>climate sensitivity</em> in K per W m⁻². Defined against a CO₂ doubling it is the equilibrium climate sensitivity, likely 1.5–4.5 °C.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ECS 1.5 – 4.5 K<br />⇒ λ<sub>f</sub> between −2.5 and −0.8</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.7</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Decomposition into direct physical feedbacks</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\lambda_f = \sum_i \lambda_i = \lambda_0 + \lambda_L + \lambda_w + \lambda_c + \lambda_\alpha$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Blackbody, lapse rate, water vapour, cloud, surface albedo. Circulation changes and biogeochemical feedbacks are excluded by construction.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">λ<sub>0</sub> = −3.2 &nbsp; λ<sub>w</sub> = +1.8<br />λ<sub>L</sub> = −0.8 &nbsp; λ<sub>c</sub> = +0.68<br />λ<sub>α</sub> = +0.26 &nbsp; ⇒ λ<sub>f</sub> ≈ −1.26</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.10</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Blackbody (Planck) response</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\lambda_0 = \frac{\partial R}{\partial T} = -4\sigma T_e^{3}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Differentiate the top-of-atmosphere balance (Eq. 2.4) assuming uniform warming. With \(T_e = 255\) K this gives −3.8; radiative transfer calculations refine it to −3.2 W m⁻² K⁻¹. Alone it gives \(\Delta T_{s,0} = -\Delta Q/\lambda_0 \approx 1.2\) K per doubling.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>e</sub> — emission temperature, 255 K<br />σ = 5.67 × 10⁻⁸ W m⁻² K⁻⁴<br />the only negative feedback that is large</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.13</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">The climate feedback factor</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T_s = \frac{1}{1 + \dfrac{\lambda_L + \lambda_w + \lambda_c + \lambda_\alpha}{\lambda_0}}\;\Delta T_{s,0} = f_f\,\Delta T_{s,0}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">How much larger the real response is than the blackbody one. \(f_f &gt; 1\) means amplification. With the standard values \(f_f \approx 2.5\). Because this is a hyperbola in \(\lambda_f\), a symmetric uncertainty in the feedbacks gives a lopsided range in \(\Delta T_s\).</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">f<sub>f</sub> ≈ 2.5<br />ΔT<sub>s,0</sub> ≈ 1.16 K<br />⇒ ΔT<sub>s</sub> ≈ 2.9 K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.14</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Transient response</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$C_s \frac{\mathrm{d}\Delta T_s}{\mathrm{d}t} = \Delta Q + \lambda_f \Delta T_s$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Eq. 4.4 with the imbalance heating a slab of heat capacity \(C_s\) instead of being discarded. This is Eq. 3.x of the zero-dimensional model, linearised about the present state.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">C<sub>s</sub> — heat capacity, J K⁻¹ m⁻²<br />200 m of water: 8.36 × 10⁸<br />ρc<sub>w</sub> = 4.18 × 10⁶ J m⁻³ K⁻¹</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #b0431f; padding-top: 4px;">4.15<br />4.16</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Solution for a step forcing</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T_s(t) = -\frac{\Delta Q}{\lambda_f}\left(1 - e^{-t/\tau}\right), \qquad \tau = -\frac{C_s}{\lambda_f}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">At \(t = \tau\) the system has realised 63 % of its equilibrium response. Note that \(\tau\) contains \(\lambda_f\): <b>a more sensitive climate is also a slower one</b>. At \(t = 0\) the slope is \(\Delta Q/C_s\), independent of \(\lambda_f\) — which is why the early years of a warming carry no information about climate sensitivity.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">τ — response time, s<br />λ<sub>f</sub> = −1.85 ⇒ τ ≈ 14 yr<br />λ<sub>f</sub> = −0.93 ⇒ τ ≈ 28 yr</div>
+      </div>
+
+    </div>
+  </div>
+
   <div style="width: 100%; max-width: 1060px; margin-top: 32px; background: #faf8f3; border: 1px solid #ddd8cb; padding: 36px 40px; display: flex; flex-direction: column; gap: 18px;">
     <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #b0431f;">Notes on scope</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; font-size: 16.5px; line-height: 1.6; color: #4a4638;">
       <p style="margin: 0;">The Chapter 3 PDF supplied ends at Eq. 3.30 (RMS error metric for model validation), so Eqs. 3.42–3.43 are not in it. Chapter 2 likewise ends at Eq. 2.49 — Part III covers 2.40 through 2.49. Send the missing pages and they'll be added here.</p>
       <p style="margin: 0;">Equations 4.2 and 4.3 are written with square roots, the standard IPCC form for CH₄ and N₂O; the text layer of the PDF drops radical symbols. All numerical values are as printed in Goosse et al. (2010).</p>
+    <p style="margin: 0;">Part V uses ΔQ = 3.7 W m⁻² for a CO₂ doubling and λ<sub>0</sub> = −3.2 W m⁻² K⁻¹, following AR5 and the values Goosse quotes from Soden and Held (2006). The textbook's own worked examples use 3.8 for both, so its climate sensitivities come out slightly larger. Equations 4.6, 4.8, 4.9, 4.11 and 4.12 are intermediate steps and are folded into the entries above rather than listed separately.</p>
     </div>
   </div>
 

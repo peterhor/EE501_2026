@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biogeochemical feedbacks</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --atm:#c8443a; --land:#6f9134; --oce:#1f6fb2; --rock:#8a6b45; --meth:#9159b8;
+    --sed:#a08258; --ice:#8ab6d6;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --atm:#d9564c; --land:#87a944; --oce:#2f83c9; --rock:#a08258; --meth:#a771cc;
+    --sed:#b59a72; --ice:#9cc4de;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="transient-response.html">&larr; The transient response</a> &nbsp;&middot;&nbsp;
+Response of the climate system to perturbations &middot; 6 of 6</p>
+
+<header>
+  <div>
+    <h1>Biogeochemical and biogeophysical feedbacks</h1>
+    <p class="sub">The feedbacks of <a href="physical-feedbacks.html">page&nbsp;4</a> all acted through
+    radiation, in years. These act through the carbon cycle and through living things, over decades to millions
+    of years &mdash; and for an ecologist they are the ones that involve you.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Two words that sound the same and are not</h3>
+  <p class="cap">The distinction is about which pathway the vegetation acts through.</p>
+  <div class="two">
+    <div>
+      <p class="note" style="margin:0"><b>Biogeo<u>chemical</u></b> &mdash; the biosphere changes the
+      <em>composition</em> of the atmosphere.</p>
+      <ul class="pl">
+        <li>Forests take up CO<sub>2</sub>; warming soils release it; thawing permafrost releases both
+        CO<sub>2</sub> and CH<sub>4</sub>.</li>
+        <li>The climate effect runs through a greenhouse forcing, so it is <em>global</em> whatever the
+        latitude of the vegetation that caused it.</li>
+      </ul>
+    </div>
+    <div>
+      <p class="note" style="margin:0"><b>Biogeo<u>physical</u></b> &mdash; the biosphere changes the
+      <em>physical properties</em> of the surface.</p>
+      <ul class="pl">
+        <li>Albedo, roughness, rooting depth, how much water is transpired &mdash; all the surface parameters
+        from <a href="../local-scale/surface-properties.html">Lecture&nbsp;3</a>.</li>
+        <li>The effect is felt most strongly <em>where it happens</em>, and it can have the opposite sign to
+        the biogeochemical effect on the same patch of ground.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Some of these feedbacks operate with no climate change at all.</b> The ocean and the land
+  biosphere absorb carbon simply because the atmospheric concentration has risen, whether or not the planet has
+  warmed. Separating <em>that</em> response from the response to warming is what the next demonstration is
+  about, and it is the single most consequential distinction in this whole area.</p>
+</div>
+
+<h2 class="sec">Carbon and climate</h2>
+
+<div class="card">
+  <h3>Splitting the carbon response in two</h3>
+  <p class="cap">Everything emitted goes somewhere. Bookkeeping first, then the two ways the sinks
+  respond.</p>
+
+  <div class="eq">C<sub>E</sub> = &Delta;C<sub>A</sub> + &Delta;C<sub>O</sub> + &Delta;C<sub>L</sub>
+    <span class="u"><br>emitted = stays in the air + taken up by the ocean + stored on land, all in PgC</span></div>
+
+  <p class="note" style="margin-top:14px">This is the budget from
+  <a href="../global-cycles/carbon-budget.html">Lecture&nbsp;4</a> and nothing on this page changes it. What is
+  new is asking <em>why</em> the sinks take what they take, and there are exactly two reasons:</p>
+
+  <div class="eq">&Delta;C<sub>L</sub> = <span style="color:var(--land)">&beta;<sub>L</sub></span>
+    &Delta;C<sub>A</sub> + <span style="color:var(--pos)">&gamma;<sub>L</sub></span> &Delta;T
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    &Delta;C<sub>O</sub> = <span style="color:var(--oce)">&beta;<sub>O</sub></span>
+    &Delta;C<sub>A</sub> + <span style="color:var(--pos)">&gamma;<sub>O</sub></span> &Delta;T</div>
+
+  <table>
+    <thead><tr><th>Parameter</th><th>Name</th><th>Mechanism</th><th class="num">Sign</th></tr></thead>
+    <tbody>
+      <tr><td class="nm" style="color:var(--land)">&beta;</td><td>concentration&ndash;carbon</td>
+        <td>Higher CO<sub>2</sub> drives uptake directly: more dissolves into the sea, and plants photosynthesise
+        faster &mdash; the CO<sub>2</sub> fertilisation effect. This works without any warming.</td>
+        <td class="num" style="color:var(--neg)">positive &beta;<br>= damping</td></tr>
+      <tr><td class="nm" style="color:var(--pos)">&gamma;</td><td>climate&ndash;carbon</td>
+        <td>Warming <em>reduces</em> uptake: warm water holds less CO<sub>2</sub> and stratifies, and warm soil
+        respires faster. Both sinks weaken as the planet heats.</td>
+        <td class="num" style="color:var(--pos)">negative &gamma;<br>= amplifying</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>The sign convention is a trap worth pausing on.</b> A <em>positive</em> &beta; means more
+  carbon is removed from the air, which damps the perturbation. A <em>negative</em> &gamma; means less carbon
+  is removed as it warms, which amplifies it. So a positive number describes a negative feedback and a negative
+  number a positive one, which is exactly the sort of thing that gets misread in an exam. Read the mechanism,
+  not the sign.</p>
+</div>
+
+<div class="card demo">
+  <h3>How much of what we emit stays in the air?</h3>
+  <p class="cap">Emit a fixed amount of carbon, let the sinks respond both ways, and let the resulting
+  CO<sub>2</sub> warm the planet, which changes the sinks again. Solve the loop.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Preset</span>
+    <button class="ghost" data-cc="std" aria-pressed="true">Best estimate</button>
+    <button class="ghost" data-cc="nogamma">No climate&ndash;carbon feedback</button>
+    <button class="ghost" data-cc="strong">Strong land response</button>
+    <button class="ghost" data-cc="weak">Weak sinks</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="emit"><span>Cumulative emission C<sub>E</sub></span> <b id="emitv">1000 PgC</b></label>
+      <input type="range" id="emit" min="100" max="3000" step="25" value="1000">
+      <div class="hint">About 700 PgC emitted so far. 1000 more is roughly a business-as-usual century.</div>
+    </div>
+    <div class="ctrl">
+      <label for="bL"><span>&beta;<sub>L</sub> land, PgC/ppm</span> <b id="bLv">1.35</b></label>
+      <input type="range" id="bL" min="0" max="3" step="0.05" value="1.35" style="accent-color:var(--land)">
+      <div class="hint">CO<sub>2</sub> fertilisation. Wide model spread.</div>
+    </div>
+    <div class="ctrl">
+      <label for="bO"><span>&beta;<sub>O</sub> ocean, PgC/ppm</span> <b id="bOv">1.13</b></label>
+      <input type="range" id="bO" min="0" max="3" step="0.05" value="1.13" style="accent-color:var(--oce)">
+      <div class="hint">Set by carbonate buffering &mdash; the Revelle factor.</div>
+    </div>
+    <div class="ctrl">
+      <label for="gL"><span>&gamma;<sub>L</sub> land, PgC/K</span> <b id="gLv">&minus;79</b></label>
+      <input type="range" id="gL" min="-200" max="20" step="1" value="-79" style="accent-color:var(--pos)">
+      <div class="hint">Soil respiration, drought, fire, permafrost.</div>
+    </div>
+    <div class="ctrl">
+      <label for="gO"><span>&gamma;<sub>O</sub> ocean, PgC/K</span> <b id="gOv">&minus;30</b></label>
+      <input type="range" id="gO" min="-90" max="10" step="1" value="-30" style="accent-color:var(--pos)">
+      <div class="hint">Solubility falls and the surface stratifies.</div>
+    </div>
+    <div class="ctrl">
+      <label for="ecs"><span>Climate sensitivity</span> <b id="ecsv">3.0 K</b></label>
+      <input type="range" id="ecs" min="1.5" max="4.5" step="0.1" value="3.0" style="accent-color:var(--atm)">
+      <div class="hint">Per CO<sub>2</sub> doubling, from <a href="feedback-parameter.html">page&nbsp;3</a>.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 330" role="img" aria-label="Where emitted carbon ends up, split between atmosphere, ocean and land, with and without the climate-carbon feedback"><g id="ccG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Airborne fraction</div><div class="v" id="kAF">&mdash;</div><div class="s">of what was emitted</div></div>
+    <div class="kpi"><div class="k">CO&#8322; reached</div><div class="v" id="kCO2">&mdash;</div><div class="s">ppm</div></div>
+    <div class="kpi"><div class="k">Warming</div><div class="v" id="kDT">&mdash;</div><div class="s">K, at equilibrium</div></div>
+    <div class="kpi"><div class="k">Feedback gain</div><div class="v" id="kGain">&mdash;</div><div class="s">vs no &gamma; response</div></div>
+  </div>
+
+  <div class="readout" id="ccRO"></div>
+
+  <p class="q"><b>Question.</b> Press <b>No climate&ndash;carbon feedback</b>, note the warming, then go back
+  to the best estimate. The extra warming that appears came from no extra emission at all. Where did it come
+  from?
+  <span style="color:var(--text-muted)">From carbon that would have been absorbed and was not. Warming makes
+  soil respire faster and makes seawater hold less CO<sub>2</sub>, so a larger share of the same emission stays
+  airborne, raising the concentration, raising the warming. It is a loop identical in structure to the water
+  vapour feedback on <a href="physical-feedbacks.html">page&nbsp;4</a> &mdash; but it operates through the
+  carbon cycle rather than through radiation, which is why it is not in &lambda;<sub>f</sub> and why
+  &ldquo;climate sensitivity&rdquo; quoted for a fixed CO<sub>2</sub> concentration systematically understates
+  the response to an <em>emission</em>.</span></p>
+
+  <p class="q"><b>Question.</b> Drag &gamma;<sub>L</sub> towards &minus;200 PgC K<sup>&minus;1</sup>. The
+  airborne fraction climbs sharply and then the whole thing becomes very sensitive to small changes. What is
+  happening, and what would it look like in the real world?
+  <span style="color:var(--text-muted)">The loop gain is approaching one. Beyond a certain point the land does
+  not merely absorb less &mdash; it becomes a net <em>source</em>, and the system runs away within the limits of
+  this simple model. Some models did produce a dieback of the Amazon with roughly this behaviour in the 2000s.
+  It is not the consensus expectation, but the spread in &gamma;<sub>L</sub> across models is genuinely a factor
+  of four, and the tail of that distribution is where this lives.</span></p>
+</div>
+
+<h2 class="sec">Feedbacks with a biosphere in them</h2>
+
+<div class="card">
+  <h3>Permafrost and methane</h3>
+  <p class="cap">The largest single carbon store that is not currently exchanging with the atmosphere, sitting
+  in the region that is warming fastest.</p>
+  <ul class="pl">
+    <li>Permafrost soils hold roughly <b>1500 PgC</b> &mdash; about twice what is in the atmosphere now, frozen
+    and biologically unavailable.</li>
+    <li>Thaw makes it available to microbes. In <b>dry, aerobic</b> conditions the product is CO<sub>2</sub>;
+    in <b>waterlogged, anaerobic</b> conditions it is CH<sub>4</sub>, which is a far stronger absorber per
+    molecule but lasts about a decade.</li>
+    <li>Which of the two you get depends on drainage, and therefore on vegetation, topography and thaw
+    rate &mdash; which is why permafrost carbon release is an <em>ecological</em> question, not just a
+    thermal one.</li>
+    <li>The loop is positive and it is <b>effectively irreversible</b> on human timescales: carbon that took ten
+    thousand years to freeze in does not refreeze if the temperature comes back down.</li>
+  </ul>
+  <p class="note">The methane budget itself &mdash; sources, sinks, the ten-year lifetime, the hydrate
+  reservoir &mdash; is on the <a href="../global-cycles/land-rock-methane.html">land, rock and methane page</a>
+  from Lecture&nbsp;4, and is not repeated here. What is new on this page is only that a warming climate moves
+  the source terms.</p>
+</div>
+
+<div class="card">
+  <h3>Tundra and taiga: the same warming, two opposite effects</h3>
+  <p class="cap">The cleanest available example of biogeochemical and biogeophysical pulling in different
+  directions on the same hectare.</p>
+
+  <svg viewBox="0 0 880 300" role="img" aria-label="Signal flow graph of the tundra-taiga feedback, alongside a schematic of snow-covered forest against snow-covered tundra"><g id="ttG"></g></svg>
+
+  <p class="note" style="margin-top:0"><b>The biogeophysical effect.</b> Warming lets trees establish on
+  what was tundra. A snow-covered forest is much darker than snow-covered tundra &mdash; the canopy sticks up
+  through the snow and the dark needles dominate the view from space. Albedo falls from perhaps 0.75 to 0.25,
+  more absorbed sunlight, more warming, more trees. Positive, regional, and strongest in <b>spring</b>, when
+  there is both snow and strong sun.</p>
+  <p class="note"><b>The biogeochemical effect.</b> The same trees are also accumulating carbon, drawing
+  CO<sub>2</sub> out of the atmosphere. Negative, and global.</p>
+  <p class="note"><b>Which wins depends on latitude</b>, and at high latitudes the albedo effect generally
+  does &mdash; boreal afforestation can warm the planet. The
+  <a href="../local-scale/surface-properties.html">surface properties page</a> has the albedo values behind
+  this, and the fact that they matter so much here is a good argument for why that page exists.</p>
+
+  <div class="warnbox"><b>This is where the course's two halves meet.</b> Everything in this lecture up to now
+  has been a global mean. A treeline advancing across the Finnmarksvidda is a change in
+  <a href="../local-scale/energy-balance.html">the local surface energy balance</a>, driven by ecology,
+  feeding back on the climate that drove it. The case studies at the start of the semester &mdash; Arctic
+  vegetation, alpine ecosystems &mdash; are describing one arm of this loop.</div>
+</div>
+
+<div class="card">
+  <h3>Vegetation and the monsoon: the Sahara</h3>
+  <p class="cap">A biogeophysical feedback strong enough to have produced an abrupt, essentially irreversible
+  change in a major region &mdash; and one you are about to simulate.</p>
+
+  <svg viewBox="0 0 880 210" role="img" aria-label="Signal flow graph of the vegetation-precipitation feedback in the Sahara"><g id="sahFlow"></g></svg>
+
+  <p class="note" style="margin-top:0">Between about 9 and 6 thousand years ago the Sahara was vegetated, with
+  lakes and large mammals. The orbital forcing that supported it &mdash; stronger Northern Hemisphere summer
+  insolation, and so a stronger African monsoon &mdash; declined slowly and smoothly over millennia. The
+  vegetation did not. It collapsed over a few centuries.</p>
+  <ul class="pl">
+    <li>Less vegetation &rarr; higher albedo &rarr; less absorbed solar &rarr; weaker ascent and a weaker
+    monsoon &rarr; less rain &rarr; less vegetation. Two minus signs: a positive loop.</li>
+    <li>The loop is strong enough to support <b>two stable states</b> under the same insolation, so the system
+    can sit in either and will not cross between them until the forcing passes a threshold.</li>
+    <li>Once it crosses, the change is <em>set by the feedback, not by the forcing</em> &mdash; which is the
+    fourth caveat from <a href="feedback-parameter.html">page&nbsp;3</a>, made concrete.</li>
+  </ul>
+  <p class="note"><b><a href="../sahara/">PC Lab&nbsp;3</a> is this feedback</b>, in a model you can push
+  yourself. Do the lab knowing what you are looking for: a slowly changing forcing, a response that refuses to
+  be slow, and a state you cannot get back to by reversing the forcing.</p>
+</div>
+
+<h2 class="sec">The slow stabilisers</h2>
+
+<div class="card demo">
+  <h3>Carbonate compensation</h3>
+  <p class="cap">The ocean's own thermostat on alkalinity, and the reason atmospheric CO<sub>2</sub> has never
+  wandered very far over tens of millions of years. Double the input from rivers and watch the sea floor deal
+  with it.</p>
+
+  <p class="note" style="margin-top:0">The chemistry is on the
+  <a href="../global-cycles/ocean-carbon.html">oceanic carbon cycle page</a> and is not repeated here. Three
+  facts from it are all you need:</p>
+  <div class="eq">[CO<sub>3</sub><sup>2&minus;</sup>] &asymp; Alk &minus; DIC
+    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+    K<sub>CaCO3</sub> = [CO<sub>3</sub><sup>2&minus;</sup>]<sub>sat</sub>[Ca<sup>2+</sup>]<sub>sat</sub>
+    <span class="u"><br>carbonate falls with depth, solubility rises with pressure &mdash; so somewhere in
+    between is the <b>saturation horizon</b></span></div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="riv"><span>River input of CaCO<sub>3</sub></span> <b id="rivv">0.13 PgC/yr</b></label>
+      <input type="range" id="riv" min="0.04" max="0.30" step="0.005" value="0.13">
+      <div class="hint">Set by continental weathering. Doubling it is Goosse's thought experiment.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 380" role="img" aria-label="The calcium carbonate budget of the ocean and the position of the saturation horizon before and after a change in river input"><g id="carbG"></g></svg>
+
+  <div class="readout" id="carbRO"></div>
+
+  <p class="q"><b>Question.</b> The new steady state has burial exactly matching the new river input, and it
+  gets there by moving the saturation horizon. Why does that constitute a <em>negative</em> feedback?
+  <span style="color:var(--text-muted)">Because the perturbation triggers a change that removes the
+  perturbation. More river input raises alkalinity, which raises [CO<sub>3</sub><sup>2&minus;</sup>], which
+  deepens the saturation horizon, which exposes more sea floor to supersaturated water, which preserves more
+  CaCO<sub>3</sub> in the sediment, which takes the extra alkalinity back out. The loop closes on itself with
+  an odd number of inversions. It is slow &mdash; the adjustment takes of the order of ten thousand years,
+  because that is how long it takes to turn over the ocean's carbonate inventory &mdash; and it caps the
+  resulting CO<sub>2</sub> change at something like 30 ppm rather than several hundred.</span></p>
+</div>
+
+<div class="card">
+  <h3>Weathering, tectonics and the very long run</h3>
+  <p class="cap">Two hypotheses about the same set of arrows, one stabilising and one not, and both still
+  argued about.</p>
+
+  <div class="two">
+    <div>
+      <svg viewBox="0 0 440 220" role="img" aria-label="Signal flow graph of the negative weathering thermostat"><g id="wthFlow"></g></svg>
+      <p class="note" style="margin-top:4px"><b>The thermostat &mdash; negative.</b> Uplift exposes fresh
+      silicate rock; weathering consumes CO<sub>2</sub>; CO<sub>2</sub> falls; the climate cools and dries;
+      cooler, drier conditions weather more slowly. The perturbation is moderated. This is the standard
+      explanation for why Earth has had liquid water for four billion years while the Sun brightened by
+      30&thinsp;%.</p>
+    </div>
+    <div>
+      <svg viewBox="0 0 440 220" role="img" aria-label="Signal flow graph of the positive glacial erosion feedback"><g id="eroFlow"></g></svg>
+      <p class="note" style="margin-top:4px"><b>The erosion hypothesis &mdash; positive.</b> If weathering is
+      limited not by temperature but by the <em>supply</em> of fresh rock, then cooling helps: glaciers grind
+      rock and expose new surfaces, weathering rises, CO<sub>2</sub> falls further, and it cools more. Same
+      variables, different rate-limiting step, opposite sign.</p>
+    </div>
+  </div>
+
+  <p class="note"><b>Which is right is not settled</b>, and Goosse says so. It is a good example of a feedback
+  whose <em>sign</em> depends on which process you believe is rate-limiting &mdash; and therefore of why the
+  loop diagrams from <a href="forcing-and-feedback.html">page&nbsp;1</a> are an argument about physics on each
+  link, not a piece of notation. Both operate over hundreds of thousands to millions of years, so neither is
+  any use whatsoever on the timescale of the rest of this course. Their relevance is that they set the
+  background state everything else happens against.</p>
+</div>
+
+<h2 class="sec">Everything, on one axis</h2>
+
+<div class="card">
+  <h3>The feedbacks of this lecture, by timescale</h3>
+  <p class="cap">Sixteen loops, six orders of magnitude of time, and one useful way to hold them all at
+  once.</p>
+
+  <svg viewBox="0 0 880 520" role="img" aria-label="All the feedbacks discussed in the lecture placed on a logarithmic timescale axis and coloured by sign"><g id="ladG"></g></svg>
+
+  <p class="note"><b>Read the diagram vertically, at the timescale of your question.</b> Ask about next summer's
+  heatwave and only the top few bars are engaged. Ask about 2100 and you have everything down to the ocean
+  circulation. Ask about the fate of the Greenland ice sheet and you need the millennial band, where several of
+  the loops are irreversible. Nothing here is a single number called &ldquo;climate sensitivity&rdquo;; what
+  there is, is a different effective sensitivity for every timescale you might care about, and it increases as
+  you go down the page.</p>
+
+  <p class="note"><b>Read it horizontally and you get the other lesson.</b> Red dominates. Most of the loops in
+  the climate system amplify, and the reason the planet is nonetheless stable is that one negative feedback
+  &mdash; the Planck response, the plain fact that hot things radiate &mdash; is larger than all the amplifiers
+  put together. Climate stability rests on &sigma;T<sup>4</sup>, and on very little else.</p>
+</div>
+
+<div class="card">
+  <h3>What to take out of the lecture</h3>
+  <ul class="pl">
+    <li>A <b>forcing</b> comes from outside the system; a <b>feedback</b> is the system's own response acting
+    back on itself. Which is which depends on where you draw the boundary, and you have to say.</li>
+    <li><b>Radiative forcing</b> makes unlike perturbations comparable. The anthropogenic total since 1750 is
+    about <b>+2.3 W m<sup>&minus;2</sup></b>, made of roughly +3.3 of greenhouse gases and about &minus;1 of
+    aerosols.</li>
+    <li><b>&Delta;R = &Delta;Q + &lambda;<sub>f</sub>&Delta;T<sub>s</sub></b>. At equilibrium
+    &Delta;T<sub>s</sub> = &minus;&Delta;Q/&lambda;<sub>f</sub>, and &lambda;<sub>f</sub> must be negative for
+    the planet to have a climate.</li>
+    <li><b>&lambda;<sub>0</sub> = &minus;3.2</b> alone gives 1.16 K per doubling. Adding water vapour, lapse
+    rate, cloud and albedo gives about &minus;1.26 and <b>2.9 K</b>. That is where the gap between
+    Lecture&nbsp;5's 1.1 K and the models' 3 K went.</li>
+    <li>Because &Delta;T = &minus;&Delta;Q/&lambda;<sub>f</sub> is a hyperbola, symmetric uncertainty in
+    &lambda;<sub>f</sub> gives a <b>lopsided</b> range in warming. <b>Cloud</b> supplies most of that
+    uncertainty; water vapour and lapse rate largely cancel each other's.</li>
+    <li>Heat capacity does not change the destination, only the journey. The <b>initial slope contains no
+    sensitivity information at all</b>, which is why decades of observation have not settled the question.</li>
+    <li>The carbon cycle and the biosphere add loops that the radiative framework does not contain, and almost
+    all of them <b>amplify</b>. Several are irreversible.</li>
+  </ul>
+</div>
+
+<p class="foot">After Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>, ch. 4.3
+(Figs. 4.13&ndash;4.16), with the carbonate chemistry of ch. 2.3.4 and Eqs. 4.17&ndash;4.20. The
+carbon&ndash;climate demonstration uses the &beta;&ndash;&gamma; framework of Friedlingstein et al. (2006); the
+default parameters &beta;<sub>L</sub> = 1.35 and &beta;<sub>O</sub> = 1.13 PgC ppm<sup>&minus;1</sup>,
+&gamma;<sub>L</sub> = &minus;79 and &gamma;<sub>O</sub> = &minus;30 PgC K<sup>&minus;1</sup> are close to the
+C4MIP multi-model means, and the inter-model spread on &gamma;<sub>L</sub> in that intercomparison was about a
+factor of four, which the slider range reflects. The calculation solves for a <em>steady state</em> in which the
+warming has fully developed, using 2.12 PgC per ppm and a logarithmic CO<sub>2</sub>&ndash;temperature relation;
+it is a diagnostic of the feedback, not a projection, and its airborne fraction should not be compared directly
+with the observed transient value of about 0.45. The CaCO<sub>3</sub> budget is Fig. 4.13 after Sarmiento and
+Gruber (2006): 0.13 PgC yr<sup>&minus;1</sup> from rivers, 1.0 produced, 0.5 dissolved in the water column, 0.5
+delivered to the sediment of which 0.37 redissolves and 0.13 is buried. The saturation-horizon depths shown are
+a schematic linear mapping from the preserved fraction, chosen to put the present-day horizon near 3500 m; the
+direction and the rebalancing are the physics, the depths are illustrative. The 30 ppm response to a doubled
+river input is Goosse's quoted estimate. Timescales in the closing ladder are order-of-magnitude ranges compiled
+from the whole chapter.
+&nbsp;&middot;&nbsp; Back to the <a href="../">course page</a>.</p>
+
+<div class="nav">
+  <a href="transient-response.html">&larr; 5 &middot; The transient response</a>
+  <a href="../">EE501 course page &rarr;</a>
+</div>
+
+</div>
+
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(g,x1,y1,x2,y2,col,w){
+    const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1, ux=dx/L, uy=dy/L, h=8.5;
+    put(g,'line',{x1:x1,y1:y1,x2:x2-ux*h,y2:y2-uy*h,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
+    put(g,'polygon',{points:[[x2,y2],[x2-ux*h-uy*4.4,y2-uy*h+ux*4.4],[x2-ux*h+uy*4.4,y2-uy*h-ux*4.4]]
+      .map(p=>p.join(',')).join(' '),fill:col});
+  }
+  /* compact 4-node flow graph, scalable to a chosen width */
+  function flow(g,x0,W,nodes,signs,title,yTop){
+    const prod=signs.reduce((a,b)=>a*b,1);
+    const col=prod>0?'var(--pos)':'var(--neg)';
+    const bw=W/4.35, gap=(W-4*bw)/3;
+    const yt=yTop, yb=yTop+52;
+    const xs=[0,1,2,3].map(i=>x0+i*(bw+gap)+bw/2);
+    nodes.forEach((n,i)=>{
+      const lines=n.split('|');
+      put(g,'rect',{x:xs[i]-bw/2,y:yt,width:bw,height:52,rx:9,fill:'var(--surface-2)',
+        stroke:'var(--line-soft)'});
+      lines.forEach((t,k)=>put(g,'text',{x:xs[i],y:(lines.length===1?yt+31:yt+22)+k*15,
+        'text-anchor':'middle','font-size':11.5,fill:'var(--text-primary)'},t));
+    });
+    for(let i=0;i<3;i++){
+      const sc=signs[i]>0?'var(--pos)':'var(--neg)';
+      arrow(g,xs[i]+bw/2+2,yt+26,xs[i+1]-bw/2-2,yt+26,sc,1.8);
+      put(g,'text',{x:(xs[i]+xs[i+1])/2,y:yt+18,'text-anchor':'middle','font-size':15,fill:sc,
+        'font-weight':700},signs[i]>0?'+':'−');
+    }
+    const sc3=signs[3]>0?'var(--pos)':'var(--neg)';
+    const yl=yb+34;
+    put(g,'path',{d:'M '+xs[3]+' '+yb+' C '+xs[3]+' '+yl+', '+xs[0]+' '+yl+', '+xs[0]+' '+(yb+2),
+      fill:'none',stroke:sc3,'stroke-width':1.8});
+    arrow(g,xs[0]+34,yl-8,xs[0]+2,yb+4,sc3,1.8);
+    put(g,'text',{x:(xs[0]+xs[3])/2,y:yl+2,'text-anchor':'middle','font-size':15,fill:sc3,
+      'font-weight':700},signs[3]>0?'+':'−');
+    put(g,'circle',{cx:(xs[0]+xs[3])/2,cy:yt-22,r:14,fill:'none',stroke:col,'stroke-width':1.8});
+    put(g,'text',{x:(xs[0]+xs[3])/2,y:yt-16,'text-anchor':'middle','font-size':17,fill:col,
+      'font-weight':700},prod>0?'+':'−');
+    if(title) put(g,'text',{x:x0,y:yt-44,'font-size':12.5,fill:'var(--text-secondary)'},title);
+  }
+
+  /* ── 1 · carbon–climate feedback ────────────────────────────── */
+  (function(){
+    const PPM=2.12, C0=280;
+    const PRE={
+      std:     {bL:1.35, bO:1.13, gL:-79, gO:-30},
+      nogamma: {bL:1.35, bO:1.13, gL:0,   gO:0},
+      strong:  {bL:2.40, bO:1.13, gL:-120,gO:-30},
+      weak:    {bL:0.60, bO:0.80, gL:-120,gO:-45}
+    };
+    function solve(CE,bL,bO,gL,gO,ecs){
+      let dA=CE*0.5;
+      for(let i=0;i<400;i++){
+        const dppm=dA/PPM;
+        const C=Math.max(20,C0+dppm);
+        const dT=(ecs/Math.LN2)*Math.log(C/C0);
+        const dL=bL*dppm+gL*dT;
+        const dO=bO*dppm+gO*dT;
+        const nxt=CE-dL-dO;
+        dA=dA+0.25*(nxt-dA);          // damped fixed point
+        if(!isFinite(dA)) return null;
+        dA=Math.max(0,Math.min(CE*1.6,dA));
+      }
+      const dppm=dA/PPM, C=C0+dppm;
+      const dT=(ecs/Math.LN2)*Math.log(Math.max(20,C)/C0);
+      return {dA:dA, dL:bL*dppm+gL*dT, dO:bO*dppm+gO*dT, C:C, dT:dT, af:dA/CE};
+    }
+    function draw(){
+      const CE=+$('emit').value, bL=+$('bL').value, bO=+$('bO').value,
+            gL=+$('gL').value, gO=+$('gO').value, ecs=+$('ecs').value;
+      $('emitv').textContent=CE+' PgC';
+      $('bLv').textContent=bL.toFixed(2);
+      $('bOv').textContent=bO.toFixed(2);
+      $('gLv').textContent=(gL>=0?'+':'−')+Math.abs(gL);
+      $('gOv').textContent=(gO>=0?'+':'−')+Math.abs(gO);
+      $('ecsv').textContent=ecs.toFixed(1)+' K';
+      const S=solve(CE,bL,bO,gL,gO,ecs);
+      const S0=solve(CE,bL,bO,0,0,ecs);
+
+      const g=$('ccG'); clr(g);
+      const L=70, R=470, T=62, B=286;
+      const scale=(B-T)/(CE*1.15);
+      function stack(x,w,S,lab,sub){
+        let acc=0;
+        const parts=[
+          {n:'stays in the air', v:Math.max(S.dA,0), c:'var(--atm)'},
+          {n:'ocean',            v:Math.max(S.dO,0), c:'var(--oce)'},
+          {n:'land',             v:Math.max(S.dL,0), c:'var(--land)'}
+        ];
+        parts.forEach(p=>{
+          const h=p.v*scale;
+          put(g,'rect',{x:x,y:B-(acc+p.v)*scale,width:w,height:Math.max(h,0.6),fill:p.c,opacity:.85});
+          if(h>18) put(g,'text',{x:x+w/2,y:B-(acc+p.v/2)*scale+4,'text-anchor':'middle',
+            'font-size':11.5,fill:'#fff','font-weight':600},p.v.toFixed(0));
+          acc+=p.v;
+        });
+        // negative land/ocean (a source)
+        [{v:S.dL,c:'var(--land)'},{v:S.dO,c:'var(--oce)'}].forEach((p,i)=>{
+          if(p.v<0){
+            put(g,'rect',{x:x,y:B,width:w,height:Math.min(-p.v*scale,B*0.18),fill:p.c,opacity:.5});
+            put(g,'text',{x:x+w/2,y:B+16+i*14,'text-anchor':'middle','font-size':10.5,
+              fill:'var(--pos)'},'net source');
+          }
+        });
+        put(g,'text',{x:x+w/2,y:B+34,'text-anchor':'middle','font-size':12.5,
+          fill:'var(--text-primary)','font-weight':600},lab);
+        put(g,'text',{x:x+w/2,y:B+50,'text-anchor':'middle','font-size':11.5,
+          fill:'var(--text-muted)'},sub);
+      }
+      put(g,'line',{x1:L-16,y1:B,x2:R,y2:B,stroke:'var(--text-muted)','stroke-width':1.2});
+      put(g,'line',{x1:L+8,y1:B-CE*scale,x2:R,y2:B-CE*scale,stroke:'var(--text-muted)',
+        'stroke-width':1.2,'stroke-dasharray':'5 4'});
+      put(g,'text',{x:R,y:B-CE*scale-6,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},'emitted '+CE+' PgC');
+      if(S0) stack(L+20,120,S0,'β only','no warming response');
+      if(S)  stack(L+220,120,S,'β and γ','the real case');
+      put(g,'text',{x:L-16,y:T-24,'font-size':12,fill:'var(--text-secondary)'},
+        'Where the carbon ends up, PgC');
+      [['stays in the air','var(--atm)'],['ocean uptake','var(--oce)'],
+       ['land uptake','var(--land)']].forEach((l,i)=>{
+        put(g,'rect',{x:L-16+i*128,y:T-16,width:11,height:11,rx:2,fill:l[1],opacity:.85});
+        put(g,'text',{x:L-2+i*128,y:T-6,'font-size':11,fill:'var(--text-secondary)'},l[0]);
+      });
+
+      /* right: airborne fraction against gamma_L */
+      const L2=560,R2=846,T2=54,B2=286;
+      const gmin=-200, gmax=20;
+      const X2=v=>L2+(R2-L2)*((v-gmin)/(gmax-gmin));
+      const Y2=v=>B2-(B2-T2)*(v/1.0);
+      for(let v=0;v<=1;v+=0.25){
+        put(g,'line',{x1:L2,y1:Y2(v),x2:R2,y2:Y2(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L2-8,y:Y2(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(2));
+      }
+      [-200,-150,-100,-50,0].forEach(v=>{
+        put(g,'line',{x1:X2(v),y1:T2,x2:X2(v),y2:B2,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X2(v),y:B2+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},v);
+      });
+      let d='';
+      for(let i=0;i<=140;i++){
+        const v=gmin+(gmax-gmin)*i/140;
+        const s=solve(CE,bL,bO,v,gO,ecs);
+        if(!s) continue;
+        const af=Math.max(0,Math.min(1,s.af));
+        d+=(d?'L':'M')+X2(v).toFixed(1)+' '+Y2(af).toFixed(1);
+      }
+      put(g,'path',{d:d,fill:'none',stroke:'var(--atm)','stroke-width':2.4});
+      if(S) put(g,'circle',{cx:X2(gL),cy:Y2(Math.max(0,Math.min(1,S.af))),r:6,fill:'var(--atm)',
+        stroke:'var(--surface-1)','stroke-width':2});
+      put(g,'text',{x:L2,y:T2-18,'font-size':12,fill:'var(--text-secondary)'},
+        'Airborne fraction against γL');
+      put(g,'text',{x:(L2+R2)/2,y:B2+36,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},'γL, PgC per K');
+      put(g,'text',{x:L2,y:B2+56,'font-size':11,fill:'var(--text-muted)'},
+        'Steeper towards the left: the loop gain is rising.');
+
+      if(S){
+        $('kAF').textContent=(S.af*100).toFixed(0)+' %';
+        $('kCO2').textContent=S.C.toFixed(0);
+        $('kDT').textContent=S.dT.toFixed(2)+' K';
+        $('kGain').textContent=S0? '×'+(S.dT/Math.max(S0.dT,0.01)).toFixed(2) : '—';
+        let m='Of <b>'+CE+' PgC</b> emitted, <b>'+S.dA.toFixed(0)+'</b> stays airborne — an airborne fraction '+
+          'of <span class="big">'+(S.af*100).toFixed(0)+'&thinsp;%</span> — bringing CO₂ to <b>'+
+          S.C.toFixed(0)+' ppm</b> and the equilibrium warming to <b>'+S.dT.toFixed(2)+' K</b>. ';
+        if(S0 && Math.abs(gL)+Math.abs(gO)>1){
+          const extra=S.dT-S0.dT;
+          m+='With the climate–carbon feedback switched off the same emission would give '+
+             S0.dT.toFixed(2)+' K, so the loop adds <b>'+extra.toFixed(2)+' K</b> — a '+
+             ((S.dT/S0.dT-1)*100).toFixed(0)+'&thinsp;% amplification, from no additional emission at all.';
+        } else {
+          m+='With γ = 0 the sinks respond only to concentration, not to warming. This is the "β only" case, '+
+             'and it is what a model without an interactive carbon cycle assumes.';
+        }
+        if(S.af>0.9) m+=' <b style="color:var(--pos)">The sinks have nearly stopped working.</b> '+
+          'At this loop gain the model is close to the edge of what the linearisation can describe.';
+        $('ccRO').innerHTML=m;
+      }
+    }
+    ['emit','bL','bO','gL','gO','ecs'].forEach(id=>$(id).addEventListener('input',()=>{
+      document.querySelectorAll('[data-cc]').forEach(o=>o.setAttribute('aria-pressed',false)); draw();
+    }));
+    document.querySelectorAll('[data-cc]').forEach(b=>{
+      b.onclick=()=>{
+        const p=PRE[b.dataset.cc];
+        $('bL').value=p.bL; $('bO').value=p.bO; $('gL').value=p.gL; $('gO').value=p.gO;
+        document.querySelectorAll('[data-cc]').forEach(o=>o.setAttribute('aria-pressed',o===b));
+        draw();
+      };
+    });
+    draw();
+  })();
+
+  /* ── 2 · tundra–taiga ───────────────────────────────────────── */
+  (function(){
+    const g=$('ttG');
+    flow(g,20,470,
+      ['warming','trees advance|into tundra','snow-season|albedo','absorbed|solar'],
+      [1,-1,-1,1],
+      'Trees mask the snow, the surface darkens, and the warming is amplified.',
+      70);
+    // schematic: snow over tundra vs snow over forest
+    const X0=540;
+    put(g,'text',{x:X0,y:58,'font-size':12.5,fill:'var(--text-secondary)'},'Same snow, different albedo');
+    [[X0,'tundra','0.75',0],[X0+160,'forest','0.25',1]].forEach(s=>{
+      const x=s[0];
+      put(g,'rect',{x:x,y:150,width:140,height:70,rx:6,fill:'var(--surface-2)'});
+      put(g,'rect',{x:x,y:150,width:140,height:26,fill:'#fff'});
+      put(g,'rect',{x:x,y:150,width:140,height:26,fill:'none',stroke:'var(--ice)','stroke-width':1.2});
+      put(g,'text',{x:x+6,y:167,'font-size':10.5,fill:'var(--ice)','font-weight':600},'snow');
+      put(g,'rect',{x:x,y:176,width:140,height:44,fill:'var(--rock)',opacity:.35});
+      if(s[3]){
+        for(let i=0;i<6;i++){
+          const tx=x+14+i*22;
+          put(g,'polygon',{points:[tx+',108 ',tx-9+',150 ',tx+9+',150'].join(''),
+            fill:'var(--land)',opacity:.9});
+          put(g,'rect',{x:tx-2,y:150,width:4,height:14,fill:'var(--rock)'});
+        }
+      }
+      // incoming / reflected
+      arrow(g,x+16,72,x+40,s[3]?110:148,'var(--warn)',1.8);
+      const rw=s[3]?1.2:2.8;
+      arrow(g,x+44,s[3]?110:148,x+70,72,'var(--warn)',rw);
+      put(g,'text',{x:x+70,y:242,'text-anchor':'middle','font-size':12.5,
+        fill:'var(--text-primary)'},s[1]);
+      put(g,'text',{x:x+70,y:260,'text-anchor':'middle','font-size':12,
+        fill:'var(--acc)','font-weight':600},'α ≈ '+s[2]);
+    });
+    put(g,'text',{x:X0,y:288,'font-size':11.5,fill:'var(--text-muted)'},
+      'The canopy sticks out through the snow. From space, boreal forest in March is dark.');
+  })();
+
+  /* ── 3 · Sahara flow ────────────────────────────────────────── */
+  (function(){
+    const g=$('sahFlow');
+    flow(g,20,840,
+      ['vegetation|cover','surface albedo','absorbed solar|and ascent','monsoon rainfall'],
+      [-1,-1,1,1],
+      'Sahara vegetation–precipitation — two minus signs, so the loop amplifies. This is PC Lab 3.',
+      64);
+  })();
+
+  /* ── 4 · carbonate compensation ─────────────────────────────── */
+  (function(){
+    const PROD=1.0, WCOL=0.5, TOSED=0.5;
+    function draw(){
+      const R=+$('riv').value;
+      $('rivv').textContent=R.toFixed(3)+' PgC/yr';
+      const burial=R;                       // steady state: burial = river input
+      const sedDiss=Math.max(0,TOSED-burial);
+      const fPres=burial/TOSED;
+      const zSat=3500+3000*(fPres-0.26);
+      const dppm=(R/0.13-1)*30;             // Goosse: doubling ⇒ ~30 ppm
+
+      const g=$('carbG'); clr(g);
+      /* left: the box budget */
+      const L=40, W=380, TOP=60, SEA=300;
+      put(g,'rect',{x:L,y:TOP,width:W,height:SEA-TOP,rx:8,fill:'var(--oce)',opacity:.16});
+      put(g,'rect',{x:L,y:SEA,width:W,height:34,rx:4,fill:'var(--sed)',opacity:.55});
+      put(g,'text',{x:L+8,y:SEA+22,'font-size':11.5,fill:'var(--text-primary)'},'sediment');
+      put(g,'text',{x:L+8,y:TOP+18,'font-size':11.5,fill:'var(--oce)','font-weight':600},'ocean');
+      // rivers
+      arrow(g,L-16,TOP+26,L+40,TOP+26,'var(--land)',1.6+R*10);
+      put(g,'text',{x:L-18,y:TOP+14,'font-size':11,fill:'var(--land)'},'rivers '+R.toFixed(2));
+      // production and export
+      put(g,'text',{x:L+70,y:TOP+50,'font-size':11,fill:'var(--text-secondary)'},
+        'CaCO₃ produced '+PROD.toFixed(2));
+      arrow(g,L+120,TOP+58,L+120,SEA-8,'var(--text-primary)',2);
+      put(g,'text',{x:L+128,y:TOP+120,'font-size':11,fill:'var(--text-muted)'},
+        'water-column');
+      put(g,'text',{x:L+128,y:TOP+134,'font-size':11,fill:'var(--text-muted)'},
+        'dissolution '+WCOL.toFixed(2));
+      put(g,'text',{x:L+128,y:SEA-14,'font-size':11,fill:'var(--text-primary)'},
+        'to sediment '+TOSED.toFixed(2));
+      // saturation horizon
+      const zy=3500===0?0:TOP+(SEA-TOP)*Math.max(0.05,Math.min(0.95,zSat/5500));
+      put(g,'line',{x1:L,y1:zy,x2:L+W,y2:zy,stroke:'var(--warn)','stroke-width':2,
+        'stroke-dasharray':'7 4'});
+      put(g,'text',{x:L+W-6,y:zy-7,'text-anchor':'end','font-size':11.5,fill:'var(--warn)',
+        'font-weight':600},'saturation horizon ≈ '+zSat.toFixed(0)+' m');
+      const zy0=TOP+(SEA-TOP)*(3500/5500);
+      put(g,'line',{x1:L,y1:zy0,x2:L+W,y2:zy0,stroke:'var(--text-muted)','stroke-width':1,
+        'stroke-dasharray':'3 3',opacity:.7});
+      put(g,'text',{x:L+6,y:zy0-6,'font-size':10.5,fill:'var(--text-muted)'},'present day');
+      put(g,'text',{x:L,y:TOP-30,'font-size':12,fill:'var(--text-secondary)'},
+        'Above the horizon water is supersaturated and CaCO₃ is preserved; below it, undersaturated,');
+      put(g,'text',{x:L,y:TOP-14,'font-size':12,fill:'var(--text-secondary)'},
+        'and it dissolves. Move the horizon and you change how much of the sea floor preserves carbonate.');
+      // sediment fate bar
+      const by=SEA+44, bw=W;
+      put(g,'rect',{x:L,y:by,width:bw*fPres,height:22,fill:'var(--sed)',opacity:.9});
+      put(g,'rect',{x:L+bw*fPres,y:by,width:bw*(1-fPres),height:22,fill:'var(--oce)',opacity:.5});
+      put(g,'text',{x:L+4,y:by+16,'font-size':11,fill:'#fff','font-weight':600},
+        'buried '+burial.toFixed(2));
+      put(g,'text',{x:L+bw-4,y:by+16,'text-anchor':'end','font-size':11,
+        fill:'var(--text-primary)'},'redissolved '+sedDiss.toFixed(2));
+      put(g,'text',{x:L,y:by+40,'font-size':11,fill:'var(--text-muted)'},
+        'Of the 0.50 PgC/yr delivered to the sediment.');
+
+      /* right: response over time */
+      const L2=500,R2=846,T2=60,B2=300;
+      const X=t=>L2+(R2-L2)*(t/40000);
+      const bmax=0.32;
+      const Y=v=>B2-(B2-T2)*(v/bmax);
+      for(let v=0;v<=0.3;v+=0.1){
+        put(g,'line',{x1:L2,y1:Y(v),x2:R2,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L2-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      [0,10000,20000,30000,40000].forEach(t=>{
+        put(g,'line',{x1:X(t),y1:T2,x2:X(t),y2:B2,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X(t),y:B2+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},(t/1000)+'k');
+      });
+      // input steps at t=0 from 0.13 to R; burial relaxes with tau = 8 kyr
+      const TAU=8000;
+      let di='', db='';
+      for(let i=0;i<=200;i++){
+        const t=40000*i/200;
+        di+=(i?'L':'M')+X(t).toFixed(1)+' '+Y(t<2000?0.13:R).toFixed(1);
+        const b=t<2000?0.13:0.13+(R-0.13)*(1-Math.exp(-(t-2000)/TAU));
+        db+=(i?'L':'M')+X(t).toFixed(1)+' '+Y(b).toFixed(1);
+      }
+      put(g,'path',{d:di,fill:'none',stroke:'var(--land)','stroke-width':2.2});
+      put(g,'path',{d:db,fill:'none',stroke:'var(--sed)','stroke-width':2.4});
+      put(g,'text',{x:L2,y:T2-18,'font-size':12,fill:'var(--text-secondary)'},
+        'River input and CaCO₃ burial, PgC/yr');
+      put(g,'text',{x:R2-4,y:Y(R)-8,'text-anchor':'end','font-size':11,fill:'var(--land)'},'input');
+      put(g,'text',{x:R2-4,y:Y(R)+18,'text-anchor':'end','font-size':11,fill:'var(--sed)'},'burial');
+      put(g,'text',{x:(L2+R2)/2,y:B2+36,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},'years');
+      put(g,'text',{x:L2,y:B2+58,'font-size':11,fill:'var(--text-muted)'},
+        'Burial chases the input over ~10 000 years — far too slow to');
+      put(g,'text',{x:L2,y:B2+72,'font-size':11,fill:'var(--text-muted)'},
+        'help with anything happening this century.');
+
+      const mult=R/0.13;
+      let m='River input <b>×'+mult.toFixed(2)+'</b>. At the new steady state, burial must match it exactly, '+
+        'so <b>'+burial.toFixed(2)+' PgC/yr</b> accumulates instead of 0.13 and only <b>'+
+        sedDiss.toFixed(2)+'</b> redissolves. The system achieves that by moving the saturation horizon to '+
+        '<span class="big">'+zSat.toFixed(0)+' m</span>'+
+        (zSat>3500?' — deeper, exposing more sea floor to supersaturated water.'
+                  :' — shallower, so more of the sea floor dissolves what lands on it.')+' ';
+      if(Math.abs(mult-2)<0.06) m+='<b>This is Goosse\'s thought experiment.</b> Doubling the river input '+
+        'moves 0.13 PgC/yr more carbonate into the sediment and changes atmospheric CO₂ by only about '+
+        '<b>30 ppm</b> — the feedback has absorbed almost all of a very large perturbation.';
+      else m+='The resulting change in atmospheric CO₂ is of the order of <b>'+
+        (dppm>=0?'+':'')+dppm.toFixed(0)+' ppm</b> — small, because that is what a stabilising feedback does.';
+      $('carbRO').innerHTML=m;
+    }
+    $('riv').addEventListener('input',draw);
+    draw();
+  })();
+
+  /* ── 5 · weathering / erosion flow graphs ───────────────────── */
+  flow($('wthFlow'),14,412,
+    ['atmospheric|CO₂','temperature|and rainfall','silicate|weathering','CO₂ removed'],
+    [1,1,1,-1],
+    '',64);
+  flow($('eroFlow'),14,412,
+    ['atmospheric|CO₂','temperature','glacier extent|and erosion','fresh rock|exposed'],
+    [1,-1,1,-1],
+    '',64);
+
+  /* ── 6 · the timescale ladder ───────────────────────────────── */
+  (function(){
+    const g=$('ladG');
+    // t in years, log10
+    const F=[
+      {n:'Cloud adjustment',            a:0.003, b:0.05,  s:'+', w:'page 4'},
+      {n:'Water vapour',                a:0.02,  b:0.3,   s:'+', w:'page 4'},
+      {n:'Lapse rate',                  a:0.03,  b:0.5,   s:'−', w:'page 4'},
+      {n:'Planck response',             a:0.01,  b:1,     s:'−', w:'page 3 — the stabiliser'},
+      {n:'Soil moisture',               a:0.05,  b:1,     s:'+', w:'page 4'},
+      {n:'Snow albedo',                 a:0.3,   b:5,     s:'+', w:'page 4'},
+      {n:'Sea ice: albedo and insulation',a:1,   b:30,    s:'+', w:'page 4'},
+      {n:'Ocean mixed layer heat uptake',a:5,    b:30,    s:'−', w:'page 5'},
+      {n:'Land carbon: soil respiration',a:5,    b:200,   s:'+', w:'page 6'},
+      {n:'Ocean carbon uptake',         a:10,    b:500,   s:'−', w:'page 6'},
+      {n:'Tundra–taiga treeline',       a:30,    b:500,   s:'+', w:'page 6'},
+      {n:'Vegetation–monsoon (Sahara)',  a:50,   b:1000,  s:'+', w:'PC Lab 3'},
+      {n:'Ocean overturning (AMOC)',    a:50,    b:2000,  s:'+', w:'page 4'},
+      {n:'Permafrost carbon',           a:50,    b:5000,  s:'+', w:'page 6'},
+      {n:'Deep ocean heat uptake',      a:300,   b:3000,  s:'−', w:'page 5'},
+      {n:'Ice sheets',                  a:1000,  b:100000,s:'+', w:'page 4'},
+      {n:'Carbonate compensation',      a:5000,  b:50000, s:'−', w:'page 6'},
+      {n:'Silicate weathering',         a:100000,b:5e6,   s:'−', w:'page 6'}
+    ];
+    const L=250,R=800,T=60,rh=24;
+    const lmin=Math.log10(0.002), lmax=Math.log10(1e7);
+    const X=t=>L+(R-L)*((Math.log10(t)-lmin)/(lmax-lmin));
+    const TICKS=[[0.0027,'day'],[0.019,'week'],[0.083,'month'],[1,'year'],[10,'decade'],
+                 [100,'century'],[1000,'1 kyr'],[1e5,'100 kyr'],[1e7,'10 Myr']];
+    TICKS.forEach(tk=>{
+      put(g,'line',{x1:X(tk[0]),y1:T-10,x2:X(tk[0]),y2:T+F.length*rh+6,
+        stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:X(tk[0]),y:T-16,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},tk[1]);
+    });
+    F.forEach((f,i)=>{
+      const y=T+i*rh;
+      const col=f.s==='+'?'var(--pos)':'var(--neg)';
+      put(g,'text',{x:L-14,y:y+16,'text-anchor':'end','font-size':12,
+        fill:'var(--text-primary)'},f.n);
+      put(g,'rect',{x:X(f.a),y:y+5,width:Math.max(X(f.b)-X(f.a),3),height:rh-11,rx:5,
+        fill:col,opacity:.75});
+      put(g,'text',{x:X(f.b)+8,y:y+17,'font-size':11,fill:col,'font-weight':700},f.s);
+      put(g,'text',{x:X(f.b)+22,y:y+17,'font-size':10.5,fill:'var(--text-muted)'},f.w);
+    });
+    put(g,'text',{x:20,y:32,'font-size':12.5,fill:'var(--text-secondary)'},
+      'Every feedback in the lecture, on a logarithmic time axis. Red amplifies, blue damps.');
+    const yb=T+F.length*rh+28;
+    put(g,'rect',{x:L,y:yb,width:14,height:10,rx:2,fill:'var(--pos)',opacity:.75});
+    put(g,'text',{x:L+22,y:yb+9,'font-size':11.5,fill:'var(--text-secondary)'},'amplifying');
+    put(g,'rect',{x:L+110,y:yb,width:14,height:10,rx:2,fill:'var(--neg)',opacity:.75});
+    put(g,'text',{x:L+132,y:yb+9,'font-size':11.5,fill:'var(--text-secondary)'},'damping');
+    put(g,'text',{x:20,y:yb+30,'font-size':11.5,fill:'var(--text-muted)'},
+      'Ranges are orders of magnitude, not precise limits. Several of the amplifying loops below a century are effectively irreversible.');
+  })();
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

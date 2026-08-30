@@ -24,6 +24,8 @@ Goosse2010_textbook/*
 energy_fluxes/Lecture2-Teacher-outline.html
 local_energy_balance/Lecture3-Teacher-outline.html
 hydro_and_carbon_cycle/Lecture4-Teacher-outline.html
+climate_models/Lecture5-Teacher-outline.html
+response_to_perturbations/Lecture6-Teacher-outline.html
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
@@ -42,3 +44,5 @@ support.js
 energy_fluxes/Lecture 2 - The Earths Energy Budget.pptx
 local_energy_balance/Lecture3-Climate-at-a-local-scale2025.pptx
 hydro_and_carbon_cycle/Lecture4-Global-cycles-of-water-and-carbon2025.pptx
+climate_models/Lecture5-Modelling-the-climate-system2025.pptx
+response_to_perturbations/Lecture6-Response-of-the-climate-system-to-perturbations2025.pptx
