@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From one layer to a real atmosphere</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --sun:#eb6834; --sun-soft:#fdeae1; --sun-deep:#c14a1c;
+    --earth:#2a78d6; --earth-soft:#e2edfb; --earth-deep:#1c5cab;
+    --atmo:#3f9488; --atmo-soft:#e0f0ec; --atmo-deep:#2b7267;
+    --ground:#8a5a2e;
+    --accent:#4a3aa7; --good:#0ca30c;
+    --grid:#e6e5df;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --sun:#d95926; --sun-soft:#3a2318; --sun-deep:#eb6834;
+    --earth:#3987e5; --earth-soft:#152436; --earth-deep:#86b6ef;
+    --atmo:#4db3a4; --atmo-soft:#12302b; --atmo-deep:#7ad4c4;
+    --ground:#a06c39;
+    --accent:#9085e9; --good:#0ca30c;
+    --grid:#2e2e2b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--surface-0); color:var(--text-primary);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:34px 22px 90px}
+  header.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:10px}
+  h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:16px;max-width:64ch;margin:0}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  h2{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);
+     margin:0 0 14px;font-weight:600}
+  h3{font-size:18px;margin:0 0 8px;letter-spacing:-.01em}
+  section{margin:0 0 26px}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:22px 24px}
+  .card + .card{margin-top:14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p strong, li strong{color:var(--text-primary);font-weight:600}
+  ul{margin:0 0 12px;padding-left:20px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  .eq{background:var(--surface-2);border-radius:10px;padding:16px 18px;margin:14px 0;
+      font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+      font-size:21px;text-align:center;color:var(--text-primary);letter-spacing:.01em;overflow-x:auto}
+  .eq small{display:block;font-family:inherit;font-size:13px;color:var(--text-muted);margin-top:8px;letter-spacing:0}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 20px;margin:14px 0 4px}
+  .def{font-size:14px;color:var(--text-secondary)}
+  .def b{color:var(--text-primary);font-family:"Iowan Old Style",Georgia,serif;font-size:16px;margin-right:6px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr} .three{grid-template-columns:1fr}}
+  .tile{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:18px 20px}
+  .tile .lab{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+  .tile .val{font-size:27px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .tile .note{font-size:13px;color:var(--text-secondary);margin-top:6px}
+  .sunv .val{color:var(--sun-deep)} .earthv .val{color:var(--earth-deep)} .atmov .val{color:var(--atmo-deep)}
+  figure{margin:18px 0 6px}
+  figcaption{font-size:13px;color:var(--text-muted);margin-top:10px;text-align:center}
+  svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  .ctl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+  .ctl label{font-size:13px;color:var(--text-secondary);min-width:140px}
+  input[type=range]{flex:1;min-width:190px;accent-color:var(--atmo)}
+  .readout{font-variant-numeric:tabular-nums;font-weight:600;min-width:126px;text-align:right}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary)}
+  th{color:var(--text-muted);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--text-secondary)}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin:2px 0 10px}
+  .callout{border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:14px 0;font-size:15px;color:var(--text-secondary)}
+  .callout b{color:var(--text-primary)}
+  .callout.warn{border-left-color:var(--sun-deep)}
+  details{margin-top:10px}
+  summary{cursor:pointer;font-size:13px;color:var(--text-muted)}
+  summary:hover{color:var(--text-primary)}
+  .foot{color:var(--text-muted);font-size:13px;margin-top:34px;border-top:1px solid var(--line-soft);padding-top:16px}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:5px;font-size:13.5px}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+</style>
+<style>
+  /* ── additions used by the four "global view" pages ── */
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0 4px}
+  .kv .k{background:var(--surface-2);border-radius:10px;padding:12px 14px}
+  .kv .k .n{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)}
+  .kv .k .v{font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:3px}
+  .kv .k .d{font-size:12.5px;color:var(--text-muted);margin-top:3px;line-height:1.45}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .pills button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface-1);
+    color:var(--text-secondary);border-radius:999px;padding:6px 13px;cursor:pointer}
+  .pills button:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .q{border-left:3px solid var(--sun-deep);background:var(--surface-2);border-radius:0 10px 10px 0;
+    padding:13px 17px;margin:14px 0 0;font-size:14.5px;color:var(--text-secondary)}
+  .q > b{color:var(--text-primary)}
+  .q .k{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--sun-deep);font-weight:700;margin-bottom:4px}
+  .q details{margin-top:8px}
+  .q summary{color:var(--text-muted)}
+  .q .ans{margin-top:8px;font-size:14px;color:var(--text-secondary)}
+  .num-in{font:inherit;font-size:15px;width:92px;padding:5px 8px;border:1px solid var(--line);
+    border-radius:8px;background:var(--surface-1);color:var(--text-primary);
+    font-variant-numeric:tabular-nums;text-align:right}
+  .ok{color:var(--good);font-weight:600}
+  .bad{color:var(--sun-deep);font-weight:600}
+  .barrow{display:grid;grid-template-columns:112px 1fr 74px;gap:10px;align-items:center;
+    font-size:13.5px;margin-bottom:7px}
+  .barrow .nm{color:var(--text-primary)}
+  .barrow .tr{background:var(--surface-2);border-radius:5px;height:15px;overflow:hidden}
+  .barrow .fl{display:block;height:100%;border-radius:5px}
+  .barrow .vv{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-secondary)}
+  .seriesnav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;font-size:12.5px}
+  .seriesnav a,.seriesnav span{padding:5px 11px;border-radius:999px;border:1px solid var(--line-soft);
+    text-decoration:none;color:var(--text-muted);background:var(--surface-1)}
+  .seriesnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .seriesnav span.here{background:var(--accent);border-color:var(--accent);color:#fff}
+  .foot a{color:var(--accent)}
+  .card p:last-child, .card ul:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp; <a href="greenhouse-effect.html">&larr; Why the surface is warmer than space</a></p>
+
+<header class="top">
+  <div>
+    <h1>From one layer to a real atmosphere</h1>
+    <p class="sub">Part 1 of 3 of the <b>global view</b> &mdash; the second half of Lecture 2. The slab model
+    on the previous page ends with a warning: one temperature, one emissivity, no convection. This page
+    removes those assumptions one at a time and shows what each was hiding. Goosse et al. (2010)
+    &sect;2.1.2&ndash;2.1.3.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="seriesnav">
+  <span class="here">1 &middot; A real atmosphere</span>
+  <a href="geography.html">2 &middot; The geography of the budget</a>
+  <a href="global-budget.html">3 &middot; The complete ledger</a>
+</div>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; What the slab hid</a>
+  <a href="#s2">2 &middot; Vertical structure</a>
+  <a href="#s3">3 &middot; The emission level</a>
+  <a href="#s4">4 &middot; Stacking slabs</a>
+  <a href="#s5">5 &middot; One &epsilon; is a lie</a>
+  <a href="#s6">6 &middot; Non-radiative fluxes</a>
+</div>
+
+<!-- ───────────── 1 ───────────── -->
+<section id="s1">
+  <h2>1 &middot; Three assumptions, and what each one costs</h2>
+  <div class="card">
+    <h3>Where the grey slab runs out</h3>
+    <p>The leaky-atmosphere model gets a long way on almost nothing:
+    T<sub>s</sub> = [2/(2&minus;&epsilon;)]<sup>1/4</sup>&nbsp;T<sub>e</sub>. But to reproduce the observed
+    288&nbsp;K it needs &epsilon; &asymp; 0.77, while the real atmosphere absorbs about <b>90&nbsp;%</b> of the
+    surface's infrared. Put the honest &epsilon; in and the model overshoots by 8&nbsp;K. Something
+    structural is missing, not just a tuned number.</p>
+    <table>
+      <thead><tr><th>Assumption in the slab model</th><th>What the real atmosphere does</th><th>Where it bites</th></tr></thead>
+      <tbody>
+        <tr><td><b>One temperature</b> T<sub>a</sub> for the whole atmosphere</td><td>Temperature falls about 6.5&nbsp;K per km through the troposphere</td><td>&sect;2&ndash;3 &mdash; and it turns out to be the <em>whole mechanism</em></td></tr>
+        <tr><td><b>One layer</b></td><td>Every level absorbs what the level below emits, and re-emits colder</td><td>&sect;4</td></tr>
+        <tr><td><b>One emissivity</b> &epsilon;, identical at every wavelength</td><td>Strong absorption in narrow bands, near-transparency between them</td><td>&sect;5 &mdash; the atmospheric window</td></tr>
+        <tr><td><b>Radiation only</b></td><td>Convection and evaporation carry 104 of the 161 W&nbsp;m<sup>&minus;2</sup> off the surface</td><td>&sect;6</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>The claim this page builds to.</b> The greenhouse effect is not "heat trapped
+    under a blanket". It is this: <b>the planet radiates to space from an altitude, and that altitude is
+    cold.</b> Add greenhouse gas and the altitude rises; because temperature falls with height, the planet
+    then emits <em>less</em>, and the whole profile must warm until 239&nbsp;W&nbsp;m<sup>&minus;2</sup>
+    leaves again. Everything below is a way of making that sentence precise.</div>
+  </div>
+</section>
+
+<!-- ───────────── 2 ───────────── -->
+<section id="s2">
+  <h2>2 &middot; The vertical structure of the atmosphere</h2>
+  <div class="card">
+    <h3>Four layers, defined by which way the temperature goes</h3>
+    <p>The layers are not defined by composition &mdash; below about 90&nbsp;km the air is well mixed and has
+    essentially the same composition throughout. They are defined by the <b>sign of the temperature
+    gradient</b>, and each reversal marks a different heat source.</p>
+    <figure><svg id="profile" viewBox="0 0 800 470" role="img" aria-label="Vertical temperature profile of the atmosphere from the surface to 90 km, showing troposphere, stratosphere, mesosphere and thermosphere"></svg>
+      <figcaption>US Standard Atmosphere (1976). Horizontal axis temperature, vertical axis altitude. The
+      shaded column on the right is the fraction of atmospheric mass lying below each level.</figcaption>
+    </figure>
+    <div class="kv">
+      <div class="k"><div class="n">Troposphere</div><div class="v">0&ndash;11 km</div>
+        <div class="d">heated <em>from below</em>; cools at 6.5 K/km; holds 80&nbsp;% of the mass and almost all the water</div></div>
+      <div class="k"><div class="n">Stratosphere</div><div class="v">11&ndash;50 km</div>
+        <div class="d">heated <em>from within</em> by ozone absorbing UV; warms with height, so it does not overturn</div></div>
+      <div class="k"><div class="n">Mesosphere</div><div class="v">50&ndash;85 km</div>
+        <div class="d">too little ozone to heat it, enough CO<sub>2</sub> to radiate; falls to the coldest temperature on Earth, ~187 K</div></div>
+      <div class="k"><div class="n">Thermosphere</div><div class="v">&gt; 85 km</div>
+        <div class="d">extreme UV and X-rays ionise a very thin gas: high temperature, negligible heat content</div></div>
+    </div>
+    <p style="margin-top:14px">Two facts carry into the rest of the lecture. The <b>lapse rate</b>
+    &Gamma; &asymp; 6.5&nbsp;K&nbsp;km<sup>&minus;1</sup> in the troposphere &mdash; the exchange rate between
+    altitude and temperature. And that <b>80&nbsp;% of the mass, and so almost all the greenhouse absorbers,
+    sit in the bottom 11&nbsp;km</b>. That is where the action is.</p>
+    <div class="q"><span class="k">Ask yourself</span>
+      <b>Why does the troposphere cool with height while the stratosphere warms with height?</b>
+      <details><summary>Answer</summary><div class="ans">Because of where the heat enters. The troposphere is
+      heated at its base &mdash; the surface absorbs 161&nbsp;W&nbsp;m<sup>&minus;2</sup> of sunlight &mdash;
+      so warm air ends up under cold air, which is unstable, and convection follows. The stratosphere is
+      heated in its middle by ozone absorbing ultraviolet, so warm air sits on top of cold air, which is
+      stable. "Strato-" is not decoration: it is stratified. That is why aircraft cruise at its base, and why
+      volcanic aerosols injected into it linger for years while tropospheric ones rain out in days.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 3 ───────────── -->
+<section id="s3">
+  <h2>3 &middot; The emission level &mdash; the actual mechanism</h2>
+  <div class="card">
+    <h3>Space sees 255 K. Where is that?</h3>
+    <p>This is one deduction, and it is the most important one on the page. Satellites measure the outgoing
+    longwave flux: <b>239&nbsp;W&nbsp;m<sup>&minus;2</sup></b>. Invert Stefan&ndash;Boltzmann and that flux
+    corresponds to <b>255&nbsp;K</b>. But 255&nbsp;K is not the temperature of anything at ground level
+    &mdash; the surface averages 288&nbsp;K. So the radiation escaping to space is not coming <em>from</em>
+    the surface. It is coming from wherever in the atmosphere the temperature happens to be 255&nbsp;K.</p>
+    <div class="eq">z<sub>e</sub> = (T<sub>s</sub> &minus; T<sub>e</sub>) / &Gamma; = (288 &minus; 255) / 6.5 &asymp; 5.1 km
+      <small>the effective emission level &mdash; mid-troposphere, around the 500 hPa surface</small></div>
+    <p>Now run the argument the other way, which is how the greenhouse effect actually works. The emission
+    temperature is pinned at 255&nbsp;K, because energy balance at the top of the atmosphere pins the
+    outgoing flux at 239&nbsp;W&nbsp;m<sup>&minus;2</sup>. Then the surface temperature is not a free
+    parameter at all:</p>
+    <div class="eq">T<sub>s</sub> = T<sub>e</sub> + &Gamma; &middot; z<sub>e</sub>
+      <small>the surface is warm because the emission level is high and the air below it lies on a slope</small></div>
+    <p>Adding CO<sub>2</sub> makes the atmosphere opaque a little higher up, so <b>z<sub>e</sub> rises</b>.
+    At the new, higher level it is colder, so the planet emits less than 239 &mdash; it is now gaining
+    energy. The whole profile warms until the emission level is back at 255&nbsp;K, and because the profile
+    shifted upward bodily, the surface has warmed by &Gamma;&nbsp;&middot;&nbsp;&Delta;z<sub>e</sub>.</p>
+
+    <h3 style="margin-top:22px">Try it &mdash; move the emission level and the lapse rate</h3>
+    <div class="ctl">
+      <label for="ze">Emission level z<sub>e</sub></label>
+      <input type="range" id="ze" min="0" max="9" step="0.05" value="5.1">
+      <span class="readout" id="zeOut">5.08 km</span>
+    </div>
+    <div class="ctl">
+      <label for="gam">Lapse rate &Gamma;</label>
+      <input type="range" id="gam" min="0" max="10" step="0.1" value="6.5">
+      <span class="readout" id="gamOut">6.5 K/km</span>
+    </div>
+    <div class="pills">
+      <button id="btnNow" type="button">Today</button>
+      <button id="btnCO2" type="button">Double CO&#8322;: z<sub>e</sub> + 150 m</button>
+      <button id="btnIso" type="button">Isothermal, &Gamma; = 0</button>
+    </div>
+    <figure><svg id="emis" viewBox="0 0 800 380" role="img" aria-label="Diagram of the troposphere showing the effective emission level and the surface temperature that follows from it"></svg>
+      <figcaption>The sloping line is the temperature profile; the dashed level is where the atmosphere
+      becomes transparent to space. Outgoing longwave is pinned at 239&nbsp;W&nbsp;m<sup>&minus;2</sup> by
+      energy balance, so the emission level is pinned at 255&nbsp;K &mdash; and the surface temperature
+      follows from the geometry.</figcaption>
+    </figure>
+    <div class="three">
+      <div class="tile"><div class="lab">Surface temperature</div><div class="val" id="tsOut">288 K</div>
+        <div class="note" id="tsC">15.0 &deg;C</div></div>
+      <div class="tile"><div class="lab">Greenhouse warming</div><div class="val" id="ghOut">+33 K</div>
+        <div class="note">T<sub>s</sub> &minus; T<sub>e</sub>, all of it &Gamma;&middot;z<sub>e</sub></div></div>
+      <div class="tile earthv"><div class="lab">Outgoing longwave</div><div class="val">239 W/m&sup2;</div>
+        <div class="note">unchanged by either slider &mdash; that is the whole point</div></div>
+    </div>
+    <div class="callout"><b>Read the two sliders against each other.</b> The greenhouse effect needs
+    <em>both</em> an opaque atmosphere (large z<sub>e</sub>) and a temperature that falls with height (large
+    &Gamma;). Set &Gamma;&nbsp;=&nbsp;0 &mdash; an isothermal atmosphere &mdash; and the surface warming
+    vanishes no matter how much CO<sub>2</sub> you add, because raising the emission level no longer takes
+    you anywhere colder. This is also why the stratosphere, where temperature <em>rises</em> with height,
+    <b>cools</b> as CO<sub>2</sub> increases while the troposphere warms. A brighter Sun would warm both.
+    That contrast is one of the strongest attribution arguments there is.</div>
+    <div class="q"><span class="k">Ask yourself</span>
+      <b>Doubling CO<sub>2</sub> lifts the emission level by only about 150 m. Why is that enough to matter?</b>
+      <details><summary>Answer</summary><div class="ans">Because it gets multiplied by the lapse rate:
+      0.150&nbsp;km &times; 6.5&nbsp;K&nbsp;km<sup>&minus;1</sup> &asymp; 1&nbsp;K of direct warming &mdash;
+      almost exactly the textbook no-feedback response to doubled CO<sub>2</sub>
+      (3.7&nbsp;W&nbsp;m<sup>&minus;2</sup> of forcing divided by the
+      3.8&nbsp;W&nbsp;m<sup>&minus;2</sup>&nbsp;K<sup>&minus;1</sup> Planck response). Feedbacks, water vapour
+      above all, then multiply it by roughly three. Note what this reframes: the headline number is not
+      "CO<sub>2</sub> traps 3&nbsp;K". It is "CO<sub>2</sub> raises the exhaust pipe 150 metres, and water
+      vapour does the rest."</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 4 ───────────── -->
+<section id="s4">
+  <h2>4 &middot; Stacking slabs</h2>
+  <div class="card">
+    <h3>What if the blanket had <em>n</em> layers?</h3>
+    <p>Before doing anything wavelength-resolved there is a cheap way to see where multiple levels take you
+    &mdash; and it is Exercise 1 of the chapter. Stack <em>n</em> layers, each transparent to sunlight,
+    each perfectly opaque to infrared, each in radiative equilibrium with its neighbours. Work down from the
+    top and the arithmetic telescopes:</p>
+    <div class="eq">&sigma;T<sub>k</sub><sup>4</sup> = k &middot; &sigma;T<sub>e</sub><sup>4</sup>
+      &nbsp;&nbsp;&rArr;&nbsp;&nbsp; T<sub>s</sub> = (n+1)<sup>1/4</sup> T<sub>e</sub>
+      <small>layers counted k = 1 at the top downward to k = n; the surface behaves as layer n+1</small></div>
+    <div class="ctl">
+      <label for="nlay">Number of opaque layers</label>
+      <input type="range" id="nlay" min="0" max="6" step="1" value="1">
+      <span class="readout" id="nOut">n = 1</span>
+    </div>
+    <figure><svg id="stack" viewBox="0 0 800 400" role="img" aria-label="Stack of opaque atmospheric layers with the equilibrium temperature of each"></svg>
+      <figcaption>Each layer sits at k<sup>1/4</sup>&nbsp;T<sub>e</sub>. The top layer is always at
+      255&nbsp;K, because it is the one space sees &mdash; exactly the constraint from &sect;3.</figcaption>
+    </figure>
+    <div class="three">
+      <div class="tile"><div class="lab">Surface</div><div class="val" id="stackTs">303 K</div><div class="note" id="stackTsC">30.3 &deg;C</div></div>
+      <div class="tile"><div class="lab">Warming over T<sub>e</sub></div><div class="val" id="stackDt">+48 K</div><div class="note">the greenhouse effect of n layers</div></div>
+      <div class="tile"><div class="lab">Next layer would add</div><div class="val" id="stackNext">+32 K</div><div class="note">going from n to n+1 &mdash; note that it never saturates</div></div>
+    </div>
+    <div class="callout warn"><b>Where this model is right, and where it lies.</b> Right: opacity and surface
+    warmth go together, and it gives the runaway intuition &mdash; Venus, with an enormously opaque
+    CO<sub>2</sub> atmosphere, sits at 737&nbsp;K on a T<sub>e</sub> of 232&nbsp;K, which this model would
+    need roughly a hundred layers to produce. Wrong: it predicts warming that keeps growing with n and
+    <em>never saturates</em>, because every layer is perfectly opaque at every wavelength. The real
+    atmosphere has holes in it. That is the next section, and it is why Earth's climate sensitivity is a few
+    kelvin rather than a few hundred.</div>
+    <p style="margin-top:6px"><b>Connect it back:</b> n&nbsp;=&nbsp;0 reproduces the bare rock and
+    n&nbsp;=&nbsp;1 reproduces the opaque slab (2<sup>1/4</sup>&nbsp;T<sub>e</sub> = 303&nbsp;K) from
+    <a href="greenhouse-effect.html">the previous page</a>. Same family of models, one parameter further.</p>
+  </div>
+</section>
+
+<!-- ───────────── 5 ───────────── -->
+<section id="s5">
+  <h2>5 &middot; Why a single &epsilon; is a lie</h2>
+  <div class="card">
+    <h3>Absorption happens in bands, not everywhere</h3>
+    <p>A greenhouse gas absorbs infrared only at wavelengths matching a vibration or rotation of its
+    molecule. Each gas therefore has its own set of narrow bands, and the atmosphere's opacity is whatever
+    those bands happen to add up to. Between them &mdash; particularly between about <b>8 and
+    13&nbsp;&micro;m</b> &mdash; the air is nearly transparent and surface radiation goes <b>straight to
+    space</b>. That gap is the <b>atmospheric window</b>, and it carries roughly 40 of the
+    398&nbsp;W&nbsp;m<sup>&minus;2</sup> the surface emits.</p>
+    <div class="pills" id="gasPills">
+      <button type="button" data-g="all" aria-pressed="true">All gases</button>
+      <button type="button" data-g="H2O" aria-pressed="false">H&#8322;O</button>
+      <button type="button" data-g="CO2" aria-pressed="false">CO&#8322;</button>
+      <button type="button" data-g="O3" aria-pressed="false">O&#8323;</button>
+      <button type="button" data-g="CH4" aria-pressed="false">CH&#8324;</button>
+      <button type="button" data-g="N2O" aria-pressed="false">N&#8322;O</button>
+    </div>
+    <figure><svg id="bands" viewBox="0 0 800 530" role="img" aria-label="Schematic atmospheric absorption spectrum from 0.2 to 70 micrometres broken down by greenhouse gas, with the 8 to 13 micrometre window marked"></svg>
+      <figcaption><b>Schematic</b>, following the classic total-column figure: band positions and relative
+      shapes are right, the exact depths are not a radiative-transfer calculation. Log wavelength axis. The
+      two faint curves along the top are the solar and terrestrial emission bands, drawn only so you can see
+      which absorber sits under which.</figcaption>
+    </figure>
+    <div class="kv">
+      <div class="k"><div class="n">The window</div><div class="v">8&ndash;13 &micro;m</div>
+        <div class="d">near-transparent, and it sits almost exactly on the peak of the 288 K Planck curve at 10.1 &micro;m &mdash; the planet's best escape route</div></div>
+      <div class="k"><div class="n">CO<sub>2</sub>'s main band</div><div class="v">15 &micro;m</div>
+        <div class="d">the bending mode; already saturated at its centre, which is why forcing grows with the <em>logarithm</em> of concentration</div></div>
+      <div class="k"><div class="n">Ozone in the window</div><div class="v">9.6 &micro;m</div>
+        <div class="d">one band only, but placed in the middle of the window &mdash; disproportionately effective for its abundance</div></div>
+      <div class="k"><div class="n">Water vapour</div><div class="v">most of the rest</div>
+        <div class="d">rotation band beyond 18 &micro;m plus the 6.3 &micro;m bending band; supplies about half of the total greenhouse effect</div></div>
+    </div>
+    <div class="callout"><b>Two consequences worth saying out loud.</b> First, <b>saturation</b>: the centre
+    of the 15&nbsp;&micro;m CO<sub>2</sub> band already absorbs everything there is to absorb, so extra
+    CO<sub>2</sub> can only work at the band's <em>edges</em>. That is the physical origin of the logarithmic
+    forcing law &mdash; each doubling adds the same 3.7&nbsp;W&nbsp;m<sup>&minus;2</sup>. Second, <b>why
+    methane punches so far above its weight</b>: its 7.7&nbsp;&micro;m band sits where little else absorbs,
+    so every molecule works on virgin territory. Per molecule CH<sub>4</sub> is some 30 times the greenhouse
+    agent CO<sub>2</sub> is, and it is band placement rather than chemistry that does it.</div>
+    <div class="q"><span class="k">Ask yourself</span>
+      <b>Nitrogen and oxygen are 99&nbsp;% of the atmosphere. Why is neither on this chart?</b>
+      <details><summary>Answer</summary><div class="ans">Because N<sub>2</sub> and O<sub>2</sub> are
+      <em>symmetric diatomic</em> molecules: stretching them does not shift the distribution of charge, so
+      there is no oscillating dipole for an infrared photon to couple to. A molecule needs three or more
+      atoms, or two different ones, to absorb in the infrared. Which is why the greenhouse effect is run
+      entirely by trace species &mdash; and why an atmosphere can be almost perfectly transparent to its own
+      planet's heat while being perfectly opaque to the eye.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── 6 ───────────── -->
+<section id="s6">
+  <h2>6 &middot; The half of the surface budget that is not radiation</h2>
+  <div class="card">
+    <h3>Convection and evaporation close the balance</h3>
+    <p>Everything so far has been radiation. But if radiation were the <em>only</em> transport, the
+    troposphere would settle at a lapse rate of roughly 10&ndash;16&nbsp;K&nbsp;km<sup>&minus;1</sup> and a
+    surface near 333&nbsp;K. That profile is convectively unstable: warm air beneath cold air overturns.
+    Convection is not a correction applied to the radiative picture &mdash; it is what sets the lapse rate to
+    6.5&nbsp;K&nbsp;km<sup>&minus;1</sup> in the first place, and therefore what fixes the &Gamma; you were
+    sliding in &sect;3.</p>
+    <div class="kv">
+      <div class="k"><div class="n">Radiative equilibrium alone</div><div class="v">&asymp; 333 K</div>
+        <div class="d">surface temperature with no convection &mdash; some 45 K too hot</div></div>
+      <div class="k"><div class="n">Latent heat flux</div><div class="v">84 W/m&sup2;</div>
+        <div class="d">evaporation: water leaves the surface and releases its heat kilometres up, where it condenses</div></div>
+      <div class="k"><div class="n">Sensible heat flux</div><div class="v">20 W/m&sup2;</div>
+        <div class="d">thermals: air heated by contact with the surface and carried up mechanically</div></div>
+      <div class="k"><div class="n">Net radiation at surface</div><div class="v">105 W/m&sup2;</div>
+        <div class="d">161 solar in, minus 56 net longwave out &mdash; and 104 of it leaves non-radiatively</div></div>
+    </div>
+    <p>So of the energy the surface must shed, <b>about half leaves without radiating at all</b>. This is the
+    single biggest reason radiation-only models overshoot: with no convective escape route, the surface has
+    to raise its temperature until &sigma;T<sup>4</sup> alone carries the entire load.</p>
+    <p><b>Where this goes next.</b> The two turbulent fluxes are the subject of
+    <a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Climate at a local scale, Part 2</a>, where they get
+    written as bulk formulas and measured site by site. Here they are simply the two arrows that make the
+    global ledger close &mdash; which is <a href="global-budget.html">Part 3 of this series</a>.</p>
+    <div class="q"><span class="k">Ask yourself (from the slides)</span>
+      <b>What is meant by "non-radiative exchanges"?</b>
+      <details><summary>Answer</summary><div class="ans">Everything that moves energy without a photon:
+      conduction (molecular contact, effective only in the bottom millimetres of air), convection and
+      turbulence (sensible heat &mdash; bulk air movement carrying its heat with it), and above all the
+      latent heat of evaporation, which moves energy by moving <em>mass</em> and releases it somewhere else
+      entirely. Latent heat is the largest single non-radiative flux on the planet, and it is also the
+      coupling between the energy budget of this lecture and the water cycle of the next one.</div></details>
+    </div>
+  </div>
+</section>
+
+<p class="foot">Constants: &sigma; = 5.670374419 &times; 10<sup>&minus;8</sup> W m<sup>&minus;2</sup> K<sup>&minus;4</sup> &middot;
+S<sub>0</sub> = 1368 W m<sup>&minus;2</sup> and &alpha;<sub>p</sub> = 0.30, giving 239 W m<sup>&minus;2</sup>
+absorbed and T<sub>e</sub> = 255 K (the values used in Goosse et al.) &middot; observed T<sub>s</sub> = 288 K
+&middot; &Gamma; = 6.5 K km<sup>&minus;1</sup>. Temperature profile: US Standard Atmosphere (1976). Surface
+flux values (84, 20, 161, 398, 342 W m<sup>&minus;2</sup>) from Wild et al. (2013) as reproduced in Hartmann
+et al. (2014), IPCC AR5 WG1 Fig. 2.11 &mdash; the same set used in
+<a href="global-budget.html">Part 3</a>, and not quite the Trenberth et al. (2009) set quoted on
+<a href="greenhouse-effect.html">the greenhouse-effect page</a>. The absorption-band figure is schematic.
+Chapter reference: Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to
+Climate Dynamics and Climate Modelling</em>, Chapter 2 (climate.be/textbook).</p>
+
+<p class="foot">Continue to <a href="geography.html">Part 2 &mdash; the geography of the budget: why the
+Sahara is a radiative sink, and where the surplus goes &rarr;</a></p>
+
+</div>
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (t,a,parent) => { const e = document.createElementNS(NS,t);
+    for (const k in a) e.setAttribute(k, a[k]); if (parent) parent.appendChild(e); return e; };
+  const tx = (p,a,s) => { const t = el('text',a,p); t.textContent = s; return t; };
+  const C = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const clear = s => { while (s.firstChild) s.removeChild(s.firstChild); };
+
+  const SIG = 5.670374419e-8, S0 = 1368, ALB = 0.30;
+  const Te = Math.pow(S0*(1-ALB)/(4*SIG), 0.25);          /* 254.9 K */
+  const OLR = SIG*Math.pow(Te,4);                          /* 239 W/m2 */
+
+  /* ══════════ 2 · vertical temperature profile ══════════ */
+  /* US Standard Atmosphere 1976: [altitude km, temperature K, pressure hPa] */
+  const USSA = [[0,288.15,1013.25],[11,216.65,226.32],[20,216.65,54.75],[32,228.65,8.680],
+                [47,270.65,1.109],[51,270.65,0.669],[71,214.65,0.03956],[84.85,186.87,0.003734],
+                [90,186.87,0.001836]];
+
+  function drawProfile(){
+    const s = $('profile'); clear(s);
+    const W = 800, H = 470, L = 62, R = 660, T = 26, B = 418;
+    const Tmin = 175, Tmax = 300, Zmax = 90;
+    const X = t => L + (t - Tmin)/(Tmax - Tmin)*(R - L);
+    const Y = z => B - z/Zmax*(B - T);
+    const line = C('--line'), muted = C('--text-muted'), sec = C('--text-secondary'),
+          prim = C('--text-primary'), earth = C('--earth'), sun = C('--sun'),
+          atmo = C('--atmo'), s2 = C('--surface-2');
+
+    /* layer bands */
+    const bands = [[0,11,'Troposphere', earth],[11,50,'Stratosphere', atmo],
+                   [50,85,'Mesosphere', sun],[85,90,'Thermosphere', muted]];
+    bands.forEach(([z0,z1,nm,col],i) => {
+      el('rect',{x:L,y:Y(z1),width:R-L,height:Y(z0)-Y(z1),fill:col,opacity:i%2?0.055:0.10},s);
+      tx(s,{x:R-8,y:(Y(z0)+Y(z1))/2+4,'text-anchor':'end','font-size':12,fill:col,'font-weight':600},nm);
+    });
+
+    /* grid + axes */
+    for (let t=180;t<=300;t+=20){
+      el('line',{x1:X(t),y1:T,x2:X(t),y2:B,stroke:line,'stroke-width':1,opacity:.45},s);
+      tx(s,{x:X(t),y:B+18,'text-anchor':'middle','font-size':11.5,fill:muted},t+' K');
+    }
+    for (let z=0;z<=90;z+=15){
+      el('line',{x1:L,y1:Y(z),x2:R,y2:Y(z),stroke:line,'stroke-width':1,opacity:.35},s);
+      tx(s,{x:L-9,y:Y(z)+4,'text-anchor':'end','font-size':11.5,fill:muted},z);
+    }
+    tx(s,{x:L-40,y:T-8,'font-size':11.5,fill:muted},'km');
+    tx(s,{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':12.5,fill:sec},'Temperature');
+
+    /* the profile itself */
+    const d = USSA.map((p,i)=>(i?'L':'M')+X(p[1]).toFixed(1)+' '+Y(p[0]).toFixed(1)).join(' ');
+    el('path',{d:d,fill:'none',stroke:prim,'stroke-width':2.6,'stroke-linejoin':'round'},s);
+
+    /* boundary markers */
+    [[11,'Tropopause'],[51,'Stratopause'],[85,'Mesopause']].forEach(([z,nm])=>{
+      el('line',{x1:L,y1:Y(z),x2:R,y2:Y(z),stroke:prim,'stroke-width':1,'stroke-dasharray':'4 4',opacity:.55},s);
+      tx(s,{x:L+7,y:Y(z)-6,'font-size':11.5,fill:prim,'font-weight':600},nm);
+    });
+
+    /* lapse-rate annotation on the troposphere */
+    tx(s,{x:X(243),y:Y(7.5),'font-size':12,fill:earth,'font-weight':600},'Γ = 6.5 K/km');
+    tx(s,{x:X(243),y:Y(7.5)+15,'font-size':11,fill:muted},'set by convection, not radiation');
+    tx(s,{x:X(240),y:Y(33),'font-size':11,fill:atmo},'ozone absorbs UV → warms');
+    tx(s,{x:X(196),y:Y(70),'font-size':11,fill:sun},'CO₂ radiates → cools');
+
+    /* mass column: width proportional to pressure */
+    const MX = 700, MW = 62;
+    tx(s,{x:MX,y:T-8,'font-size':11.5,fill:muted},'mass');
+    let up = 'M '+MX+' '+Y(0);
+    for (let z=0;z<=90;z+=0.5){
+      let i=0; while (i<USSA.length-2 && USSA[i+1][0]<z) i++;
+      const f = (z-USSA[i][0])/(USSA[i+1][0]-USSA[i][0]);
+      const p = Math.exp(Math.log(USSA[i][2]) + f*(Math.log(USSA[i+1][2])-Math.log(USSA[i][2])));
+      up += ' L '+(MX + MW*p/1013.25).toFixed(2)+' '+Y(z).toFixed(2);
+    }
+    up += ' L '+MX+' '+Y(90)+' Z';
+    el('path',{d:up,fill:sec,opacity:.30},s);
+    el('line',{x1:MX,y1:Y(0),x2:MX,y2:Y(90),stroke:line,'stroke-width':1},s);
+    [[11,'80 %'],[32,'99 %'],[48,'99.9 %']].forEach(([z,lb])=>{
+      el('line',{x1:MX,y1:Y(z),x2:MX+MW,y2:Y(z),stroke:muted,'stroke-width':1,'stroke-dasharray':'3 3'},s);
+      tx(s,{x:MX+2,y:Y(z)-5,'font-size':10.5,fill:muted},lb+' below');
+    });
+  }
+
+  /* ══════════ 3 · emission level ══════════ */
+  function drawEmis(){
+    const s = $('emis'); clear(s);
+    const ze = +$('ze').value, G = +$('gam').value;
+    const Ts = Te + G*ze;
+    const W=800,H=380,L=74,R=560,T=30,B=316, Zmax=12;
+    const Tlo = Math.min(200, Ts - G*Zmax - 4), Thi = Math.max(305, Ts + 12);
+    const X = t => L + (t-Tlo)/(Thi-Tlo)*(R-L);
+    const Y = z => B - z/Zmax*(B-T);
+    const line=C('--line'), muted=C('--text-muted'), sec=C('--text-secondary'),
+          prim=C('--text-primary'), earth=C('--earth'), earthD=C('--earth-deep'),
+          sun=C('--sun-deep'), ground=C('--ground'), acc=C('--accent');
+
+    /* frame */
+    el('rect',{x:L,y:T,width:R-L,height:B-T,fill:C('--surface-2'),opacity:.55},s);
+    for (let z=0;z<=12;z+=2){
+      el('line',{x1:L,y1:Y(z),x2:R,y2:Y(z),stroke:line,'stroke-width':1,opacity:.5},s);
+      tx(s,{x:L-9,y:Y(z)+4,'text-anchor':'end','font-size':11.5,fill:muted},z+(z===12?' km':''));
+    }
+    const tstep = (Thi-Tlo)>140 ? 40 : 20;
+    for (let t=Math.ceil(Tlo/tstep)*tstep;t<=Thi;t+=tstep){
+      el('line',{x1:X(t),y1:T,x2:X(t),y2:B,stroke:line,'stroke-width':1,opacity:.35},s);
+      tx(s,{x:X(t),y:B+18,'text-anchor':'middle','font-size':11.5,fill:muted},t+' K');
+    }
+    /* ground */
+    el('rect',{x:L,y:B,width:R-L,height:12,fill:ground,opacity:.55},s);
+
+    /* profile line */
+    el('line',{x1:X(Ts),y1:Y(0),x2:X(Ts-G*Zmax),y2:Y(Zmax),
+               stroke:prim,'stroke-width':2.6,'stroke-linecap':'round'},s);
+
+    /* shading below the emission level = the greenhouse slab */
+    if (ze>0.02){
+      el('path',{d:'M '+X(Te)+' '+Y(ze)+' L '+X(Ts)+' '+Y(0)+' L '+X(Te)+' '+Y(0)+' Z',
+                 fill:earth,opacity:.20},s);
+    }
+
+    /* emission level */
+    el('line',{x1:L,y1:Y(ze),x2:R+150,y2:Y(ze),stroke:earthD,'stroke-width':2,'stroke-dasharray':'6 5'},s);
+    el('circle',{cx:X(Te),cy:Y(ze),r:5.5,fill:earthD},s);
+    tx(s,{x:L+8,y:Y(ze)-9,'font-size':12.5,fill:earthD,'font-weight':600},
+       'emission level  zₑ = '+ze.toFixed(2)+' km,  T = 255 K');
+
+    /* arrow to space */
+    const ax = R+95;
+    el('path',{d:'M '+ax+' '+Y(ze)+' L '+ax+' '+(T-12),stroke:earthD,'stroke-width':2.4},s);
+    el('path',{d:'M '+(ax-6)+' '+(T-4)+' L '+ax+' '+(T-16)+' L '+(ax+6)+' '+(T-4)+' Z',fill:earthD},s);
+    tx(s,{x:ax+11,y:(T+Y(ze))/2-6,'font-size':12.5,fill:earthD,'font-weight':600},'to space');
+    tx(s,{x:ax+11,y:(T+Y(ze))/2+11,'font-size':12.5,fill:earthD},'239 W/m²');
+    tx(s,{x:ax+11,y:(T+Y(ze))/2+27,'font-size':11,fill:muted},'fixed by TOA balance');
+
+    /* surface temperature callout */
+    el('circle',{cx:X(Ts),cy:Y(0),r:5.5,fill:sun},s);
+    tx(s,{x:X(Ts)+10,y:Y(0)-10,'font-size':13,fill:sun,'font-weight':600},
+       'Tₛ = '+Ts.toFixed(1)+' K');
+    /* the vertical drop annotation */
+    if (G>0.05 && ze>0.3){
+      el('line',{x1:X(Ts)+2,y1:Y(0),x2:X(Ts)+2,y2:Y(ze),stroke:acc,'stroke-width':1,'stroke-dasharray':'3 3'},s);
+      tx(s,{x:X(Ts)+8,y:Y(ze/2)+4,'font-size':11.5,fill:acc},
+         'Γ·zₑ = '+(G*ze).toFixed(1)+' K');
+    }
+    tx(s,{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':12.5,fill:sec},'Temperature');
+
+    /* readouts */
+    $('zeOut').textContent = ze.toFixed(2)+' km';
+    $('gamOut').textContent = G.toFixed(1)+' K/km';
+    $('tsOut').textContent  = Ts.toFixed(1)+' K';
+    $('tsC').textContent    = (Ts-273.15).toFixed(1)+' °C';
+    $('ghOut').textContent  = (Ts-Te>=0?'+':'')+(Ts-Te).toFixed(1)+' K';
+  }
+
+  /* ══════════ 4 · n opaque layers ══════════ */
+  function drawStack(){
+    const s = $('stack'); clear(s);
+    const n = +$('nlay').value;
+    const W=800,H=400;
+    const line=C('--line'), muted=C('--text-muted'), prim=C('--text-primary'),
+          earth=C('--earth'), earthD=C('--earth-deep'), sun=C('--sun-deep'),
+          ground=C('--ground'), s2=C('--surface-2');
+    const Ts = Math.pow(n+1,0.25)*Te;
+
+    const x0=170, x1=560, topY=54, surfY=344;
+    /* space label + outgoing arrow */
+    tx(s,{x:x0,y:24,'font-size':12.5,fill:muted},'space');
+    el('line',{x1:x0-40,y1:34,x2:x1+40,y2:34,stroke:line,'stroke-width':1,'stroke-dasharray':'5 5'},s);
+    const ax = x1+70;
+    el('path',{d:'M '+ax+' '+(topY+6)+' L '+ax+' 14',stroke:earthD,'stroke-width':2.4},s);
+    el('path',{d:'M '+(ax-6)+' 22 L '+ax+' 10 L '+(ax+6)+' 22 Z',fill:earthD},s);
+    tx(s,{x:ax+10,y:26,'font-size':12.5,fill:earthD,'font-weight':600},'239 W/m²');
+
+    /* incoming solar */
+    el('path',{d:'M 108 14 L 108 '+(surfY-4),stroke:sun,'stroke-width':2.4},s);
+    el('path',{d:'M 102 '+(surfY-14)+' L 108 '+(surfY-2)+' L 114 '+(surfY-14)+' Z',fill:sun},s);
+    tx(s,{x:16,y:26,'font-size':12.5,fill:sun,'font-weight':600},'239 W/m² solar');
+    tx(s,{x:16,y:42,'font-size':11,fill:muted},'passes every layer');
+
+    /* layers */
+    const gap = n>0 ? (surfY-topY-24)/Math.max(n,1) : 0;
+    for (let k=1;k<=n;k++){
+      const y = topY + (k-1)*gap;
+      const Tk = Math.pow(k,0.25)*Te;
+      el('rect',{x:x0,y:y,width:x1-x0,height:20,rx:5,fill:earth,
+                 opacity:0.20+0.10*Math.min(k,5)},s);
+      el('rect',{x:x0,y:y,width:x1-x0,height:20,rx:5,fill:'none',stroke:earthD,'stroke-width':1,opacity:.55},s);
+      tx(s,{x:x0+12,y:y+14.5,'font-size':12.5,fill:prim,'font-weight':600},'layer '+k);
+      tx(s,{x:x1-12,y:y+14.5,'text-anchor':'end','font-size':12.5,fill:earthD,'font-weight':600},
+         Tk.toFixed(0)+' K  ('+(Tk-273.15).toFixed(0)+' °C)');
+      /* up and down arrows from this layer */
+      el('path',{d:'M '+(x0-22)+' '+(y+18)+' L '+(x0-22)+' '+(y-10),stroke:earthD,'stroke-width':1.4,opacity:.8},s);
+      el('path',{d:'M '+(x1+18)+' '+(y+2)+' L '+(x1+18)+' '+(y+30),stroke:earthD,'stroke-width':1.4,opacity:.8},s);
+    }
+    if (n===0) tx(s,{x:(x0+x1)/2,y:(topY+surfY)/2,'text-anchor':'middle','font-size':13,fill:muted},
+                  'no atmosphere — the surface radiates straight to space');
+
+    /* surface */
+    el('rect',{x:x0-40,y:surfY,width:(x1+40)-(x0-40),height:26,rx:5,fill:ground,opacity:.55},s);
+    tx(s,{x:x0-28,y:surfY+17.5,'font-size':12.5,fill:prim,'font-weight':600},'surface');
+    tx(s,{x:x1+28,y:surfY+17.5,'text-anchor':'end','font-size':13.5,fill:sun,'font-weight':700},
+       Ts.toFixed(0)+' K  ('+(Ts-273.15).toFixed(0)+' °C)');
+
+    $('nOut').textContent = 'n = '+n;
+    $('stackTs').textContent = Ts.toFixed(0)+' K';
+    $('stackTsC').textContent = (Ts-273.15).toFixed(1)+' °C';
+    $('stackDt').textContent = '+'+(Ts-Te).toFixed(0)+' K';
+    $('stackNext').textContent = '+'+((Math.pow(n+2,0.25)-Math.pow(n+1,0.25))*Te).toFixed(0)+' K';
+  }
+
+  /* ══════════ 5 · absorption bands ══════════ */
+  /* Schematic band model: tau(lambda) = sum of log-normal absorbers. */
+  const GAS = {
+    H2O: {label:'H₂O', bands:[[0.94,0.05,0.5],[1.13,0.05,0.7],[1.38,0.07,1.5],[1.87,0.08,2.0],
+                                   [2.7,0.09,3.0],[6.3,0.13,4.0],[30,0.55,6.0],[100,0.9,8.0],[10,0.25,0.15]]},
+    CO2: {label:'CO₂', bands:[[2.0,0.03,0.4],[2.7,0.03,0.8],[4.3,0.05,5.0],[10.4,0.03,0.15],[15,0.13,6.0]]},
+    O3:  {label:'O₃',  bands:[[0.25,0.16,6.0],[0.32,0.05,1.0],[0.6,0.20,0.12],[9.6,0.035,1.6],[14,0.06,0.3]]},
+    CH4: {label:'CH₄', bands:[[3.3,0.05,0.8],[7.7,0.05,0.9]]},
+    N2O: {label:'N₂O', bands:[[4.5,0.04,0.7],[7.8,0.04,0.5],[17,0.05,0.3]]},
+    O2:  {label:'O₂, N₂', bands:[[0.15,0.25,8.0],[0.69,0.012,0.3],[0.762,0.012,0.6]]}
+  };
+  const ORDER = ['H2O','CO2','O3','CH4','N2O','O2'];
+  let pick = 'all';
+
+  const tau = (lam, bands) => bands.reduce((a,[c,w,d]) =>
+    a + d*Math.exp(-Math.pow(Math.log(lam/c)/w, 2)), 0);
+  const tauAll = lam => ORDER.reduce((a,g)=>a+tau(lam,GAS[g].bands),0);
+
+  function drawBands(){
+    const s = $('bands'); clear(s);
+    const W=800,H=500,L=58,R=772;
+    const lo=Math.log(0.2), hi=Math.log(70);
+    const X = lam => L + (Math.log(lam)-lo)/(hi-lo)*(R-L);
+    const line=C('--line'), muted=C('--text-muted'), sec=C('--text-secondary'),
+          prim=C('--text-primary'), earth=C('--earth'), earthD=C('--earth-deep'),
+          sun=C('--sun'), sunD=C('--sun-deep'), acc=C('--accent'), good=C('--good'), s2=C('--surface-2');
+
+    /* --- window shading across the whole figure --- */
+    el('rect',{x:X(8),y:16,width:X(13)-X(8),height:462,fill:good,opacity:.09},s);
+    tx(s,{x:(X(8)+X(13))/2,y:12,'text-anchor':'middle','font-size':11.5,fill:good,'font-weight':700},
+       'atmospheric window');
+
+    /* --- top strip: normalised Planck curves, for alignment only --- */
+    const planck = (lam,T) => { const a=1.191042e8, b=1.4387769e4;
+      return a/(Math.pow(lam,5)*(Math.exp(b/(lam*T))-1)); };
+    [[5772,sun],[288,earth]].forEach(([T,col])=>{
+      let mx=0; const pts=[];
+      for (let i=0;i<=260;i++){ const lam=Math.exp(lo+(hi-lo)*i/260); const v=planck(lam,T)*lam;
+        pts.push([lam,v]); if (v>mx) mx=v; }
+      let d='M '+X(0.2)+' 62';
+      pts.forEach(([lam,v])=> d+=' L '+X(lam).toFixed(1)+' '+(62-36*v/mx).toFixed(1));
+      d+=' L '+X(70)+' 62 Z';
+      el('path',{d:d,fill:col,opacity:.30},s);
+    });
+    tx(s,{x:X(0.5),y:36,'text-anchor':'middle','font-size':11,fill:sunD,'font-weight':600},'Sun 5772 K');
+    tx(s,{x:X(11),y:36,'text-anchor':'middle','font-size':11,fill:earthD,'font-weight':600},'Earth 288 K');
+
+    /* --- main transmittance curve --- */
+    const cy0=82, cy1=204;
+    el('rect',{x:L,y:cy0,width:R-L,height:cy1-cy0,fill:s2,opacity:.5},s);
+    let d='M '+L+' '+cy1;
+    for (let i=0;i<=560;i++){ const lam=Math.exp(lo+(hi-lo)*i/560);
+      const tr=Math.exp(-tauAll(lam));
+      d+=' L '+X(lam).toFixed(2)+' '+(cy1-(cy1-cy0)*tr).toFixed(2); }
+    d+=' L '+R+' '+cy1+' Z';
+    el('path',{d:d,fill:acc,opacity:.55},s);
+    el('line',{x1:L,y1:cy0,x2:R,y2:cy0,stroke:line,'stroke-width':1},s);
+    el('line',{x1:L,y1:cy1,x2:R,y2:cy1,stroke:line,'stroke-width':1},s);
+    tx(s,{x:L-6,y:cy0+5,'text-anchor':'end','font-size':10.5,fill:muted},'1');
+    tx(s,{x:L-6,y:cy1+4,'text-anchor':'end','font-size':10.5,fill:muted},'0');
+    tx(s,{x:L,y:cy0-8,'font-size':12.5,fill:prim,'font-weight':600},
+       'Total transmittance of the atmosphere');
+    tx(s,{x:R,y:cy0-8,'text-anchor':'end','font-size':11,fill:muted},'fraction of radiation that gets all the way through');
+
+    /* --- per-gas rows --- */
+    const rowH=40, top=224;
+    ORDER.forEach((g,i)=>{
+      const y0=top+i*rowH, y1=y0+rowH-9;
+      const on = (pick==='all'||pick===g);
+      el('line',{x1:L,y1:y1,x2:R,y2:y1,stroke:line,'stroke-width':1,opacity:.7},s);
+      let dd='M '+L+' '+y1;
+      for (let k=0;k<=560;k++){ const lam=Math.exp(lo+(hi-lo)*k/560);
+        const ab=1-Math.exp(-tau(lam,GAS[g].bands));
+        dd+=' L '+X(lam).toFixed(2)+' '+(y1-(rowH-11)*ab).toFixed(2); }
+      dd+=' L '+R+' '+y1+' Z';
+      el('path',{d:dd,fill:on?earthD:muted,opacity:on?(pick===g?0.85:0.55):0.14},s);
+      tx(s,{x:L-6,y:y1-3,'text-anchor':'end','font-size':12,'font-weight':600,
+            fill:on?prim:muted,opacity:on?1:0.45},GAS[g].label);
+    });
+
+    /* --- x axis --- */
+    const ay=470;
+    el('line',{x1:L,y1:ay,x2:R,y2:ay,stroke:line,'stroke-width':1},s);
+    [0.2,0.3,0.5,1,2,3,5,10,15,20,30,50,70].forEach(v=>{
+      el('line',{x1:X(v),y1:ay,x2:X(v),y2:ay+5,stroke:muted,'stroke-width':1},s);
+      tx(s,{x:X(v),y:ay+18,'text-anchor':'middle','font-size':11,fill:muted},v);
+    });
+    tx(s,{x:(L+R)/2,y:ay+34,'text-anchor':'middle','font-size':12.5,fill:sec},
+       'Wavelength (µm), logarithmic');
+    /* band regime labels */
+    tx(s,{x:X(0.3),y:ay+34,'text-anchor':'middle','font-size':11,fill:muted},'UV');
+    tx(s,{x:X(0.55),y:ay+34,'text-anchor':'middle','font-size':11,fill:muted},'vis');
+    tx(s,{x:X(25),y:ay+34,'text-anchor':'middle','font-size':11,fill:muted},'thermal infrared');
+  }
+
+  /* ══════════ wiring ══════════ */
+  const redraw = () => { drawProfile(); drawEmis(); drawStack(); drawBands(); };
+
+  $('themeBtn').onclick = function(){
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    this.textContent = dark ? 'Dark' : 'Light';
+    redraw();
+  };
+
+  $('ze').addEventListener('input', drawEmis);
+  $('gam').addEventListener('input', drawEmis);
+  $('nlay').addEventListener('input', drawStack);
+  $('btnNow').onclick = () => { $('ze').value = 5.1; $('gam').value = 6.5; drawEmis(); };
+  $('btnCO2').onclick = () => { $('ze').value = (Math.min(9, +$('ze').value + 0.15)).toFixed(2); drawEmis(); };
+  $('btnIso').onclick = () => { $('gam').value = 0; drawEmis(); };
+
+  $('gasPills').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    pick = b.dataset.g;
+    [...$('gasPills').querySelectorAll('button')].forEach(x =>
+      x.setAttribute('aria-pressed', String(x === b)));
+    drawBands();
+  });
+
+  redraw();
+})();
+</script>
+</body>
+</html>

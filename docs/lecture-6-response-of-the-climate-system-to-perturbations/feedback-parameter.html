@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The feedback parameter</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --planck:#3f6f8f; --wv:#2a78d6; --lr:#9159b8; --cld:#d98324; --alb:#1baf7a;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --planck:#5b8dad; --wv:#3987e5; --lr:#a771cc; --cld:#e09a44; --alb:#199e70;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:21px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .chk{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--text-secondary);
+    cursor:pointer;user-select:none}
+  .chk input{width:15px;height:15px}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="forcing-agents.html">&larr; The forcing agents</a> &nbsp;&middot;&nbsp;
+Response of the climate system to perturbations &middot; 3 of 6</p>
+
+<header>
+  <div>
+    <h1>The feedback parameter</h1>
+    <p class="sub">One equation collapses every feedback in the climate system into a single number, and that
+    number turns a forcing in W m<sup>&minus;2</sup> into a temperature in kelvin. This page builds it out of
+    five terms and shows why the last one ruins everything.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>The linearisation, and what it buys</h3>
+  <p class="cap">The honest answer to &ldquo;how much will it warm?&rdquo; requires a full model. This is the
+  approximation that lets you reason about the answer without one.</p>
+
+  <p class="note" style="margin-top:0">Apply a forcing &Delta;Q. The system starts to warm. As it does, dozens
+  of things change &mdash; humidity, cloud, ice cover, lapse rate &mdash; and each of them alters the radiative
+  fluxes at the tropopause. The bet we make is that the <em>net</em> effect of all of them can be written as
+  proportional to the global mean surface temperature change and nothing else:</p>
+
+  <div class="eq"><b>&Delta;R &nbsp;=&nbsp; &Delta;Q &nbsp;+&nbsp; &lambda;<sub>f</sub> &Delta;T<sub>s</sub></b>
+    <span class="u"><br>&Delta;R = imbalance in the radiative budget [W m<sup>&minus;2</sup>], downward
+    positive &nbsp;&middot;&nbsp; &lambda;<sub>f</sub> = climate feedback parameter
+    [W m<sup>&minus;2</sup> K<sup>&minus;1</sup>]</span></div>
+
+  <ul class="pl">
+    <li><b>&Delta;Q</b> is what you did to the system &mdash; the whole of
+    <a href="forcing-agents.html">page&nbsp;2</a> in one number.</li>
+    <li><b>&lambda;<sub>f</sub>&Delta;T<sub>s</sub></b> is what the system does back. All of it, every feedback,
+    condensed into one slope.</li>
+    <li><b>&Delta;R</b> is what is left over &mdash; the energy currently accumulating in the system. It is not
+    a bookkeeping term: it is measurable, it is about 0.9 W m<sup>&minus;2</sup> today, and almost all of it is
+    going into the ocean.</li>
+  </ul>
+
+  <p class="note"><b>Set &Delta;R = 0 and you have equilibrium</b>, which is the whole point of writing it this
+  way:</p>
+
+  <div class="eq">&Delta;T<sub>s</sub> = &minus; &Delta;Q / &lambda;<sub>f</sub>
+    <span class="u">&nbsp;&nbsp; at equilibrium, where the accumulation has stopped</span></div>
+
+  <p class="note">The quantity (&minus;1/&lambda;<sub>f</sub>) is the <b>climate sensitivity</b>: kelvin per
+  watt per square metre. Everything else on this page is an argument about its value.</p>
+</div>
+
+<div class="card">
+  <h3>Why &lambda;<sub>f</sub> must be negative</h3>
+  <p class="cap">Not a convention, and not an assumption &mdash; a condition for the planet to have a climate
+  at all.</p>
+
+  <svg viewBox="0 0 880 330" role="img" aria-label="Radiative imbalance plotted against surface temperature change for three values of the feedback parameter, showing where each reaches equilibrium"><g id="lineG"></g></svg>
+
+  <p class="note"><b>Read it as a restoring force.</b> Each line starts at &Delta;R = &Delta;Q when the
+  temperature has not yet moved, and the system warms as long as &Delta;R &gt; 0. If &lambda;<sub>f</sub> is
+  negative the line slopes down, crosses zero, and the warming stops there. The steeper the slope, the sooner
+  it crosses, and the smaller the warming.</p>
+
+  <p class="note">If &lambda;<sub>f</sub> were <em>positive</em>, the line would slope up and away: warming
+  would increase the imbalance, which would increase the warming. Nothing would stop it until some process
+  outside this linearisation intervened. That is a runaway, it is what happened to Venus, and the fact that
+  Earth's temperature has stayed within a few tens of kelvin for four billion years is a strong empirical claim
+  that &lambda;<sub>f</sub> &lt; 0 across a wide range of states.</p>
+
+  <div class="warnbox"><b>The sign trap.</b> &lambda;<sub>f</sub> is negative overall, but individual feedback
+  terms &lambda;<sub>i</sub> can be either sign. A <em>positive</em> &lambda;<sub>i</sub> makes
+  &lambda;<sub>f</sub> less negative, which makes &minus;1/&lambda;<sub>f</sub> larger, which means more
+  warming: an amplifying feedback. A <em>negative</em> &lambda;<sub>i</sub> damps. So &ldquo;positive
+  feedback&rdquo; and &ldquo;positive &lambda;<sub>i</sub>&rdquo; agree with each other &mdash; but both push
+  &lambda;<sub>f</sub> in the direction of instability, which is where the sign confusion comes from.</div>
+</div>
+
+<h2 class="sec">Building &lambda;<sub>f</sub> out of parts</h2>
+
+<div class="card">
+  <h3>The decomposition</h3>
+  <p class="cap">&lambda;<sub>f</sub> is a total derivative. Split it by the variable each process acts
+  through, and it becomes a sum you can estimate term by term.</p>
+
+  <div class="eq">&lambda;<sub>f</sub> = &part;R/&part;T<sub>s</sub> =
+    &sum;<sub>i</sub> (&part;R/&part;x<sub>i</sub>)(&part;x<sub>i</sub>/&part;T<sub>s</sub>)
+    &nbsp;=&nbsp;
+    <span style="color:var(--planck)">&lambda;<sub>0</sub></span> +
+    <span style="color:var(--lr)">&lambda;<sub>L</sub></span> +
+    <span style="color:var(--wv)">&lambda;<sub>w</sub></span> +
+    <span style="color:var(--cld)">&lambda;<sub>c</sub></span> +
+    <span style="color:var(--alb)">&lambda;<sub>&alpha;</sub></span></div>
+
+  <p class="note" style="margin-top:14px">Each term is a product of two things you can think about separately:
+  <b>how much does variable x change per kelvin of warming</b>, and <b>how much does the radiation budget care
+  about x</b>. Second-order terms &mdash; feedbacks on feedbacks &mdash; are neglected, which is fine for a
+  few kelvin and progressively less fine beyond that.</p>
+
+  <p class="note"><b>What is deliberately left out.</b> This decomposition covers the processes that act on the
+  tropopause budget through physics on a timescale of years to decades. Changes in ocean and atmospheric
+  circulation are not in it. Neither are the carbon-cycle and vegetation feedbacks of
+  <a href="biogeochemical-feedbacks.html">page&nbsp;6</a>, nor ice sheets, which are far too slow. When you
+  read a number for &ldquo;climate sensitivity&rdquo;, check which of these it includes &mdash; the answer
+  changes by a factor of two between the narrow and broad definitions.</p>
+</div>
+
+<div class="card">
+  <h3>&lambda;<sub>0</sub>: the one you can derive on the back of an envelope</h3>
+  <p class="cap">The blackbody or Planck response &mdash; the fact that a warmer planet radiates more. It is
+  the only feedback in the list that needs no modelling at all.</p>
+
+  <p class="note" style="margin-top:0">Start from the top-of-atmosphere balance you already know from
+  <a href="../lecture-2-earths-energy-budget/stefan-boltzmann.html">Lecture&nbsp;2</a>, differentiate it with respect to
+  temperature, and assume the whole troposphere warms uniformly so that &Delta;T<sub>s</sub> =
+  &Delta;T<sub>e</sub>:</p>
+
+  <div class="eq">&Delta;R = (1 &minus; &alpha;) S<sub>0</sub>/4 &minus; &sigma;T<sub>e</sub><sup>4</sup>
+    &nbsp;&nbsp;&rarr;&nbsp;&nbsp;
+    <b>&lambda;<sub>0</sub> = &part;R/&part;T = &minus;4&sigma;T<sub>e</sub><sup>3</sup></b>
+    <span class="u"><br>with T<sub>e</sub> = 255 K: &lambda;<sub>0</sub> = &minus;3.8 W m<sup>&minus;2</sup>
+    K<sup>&minus;1</sup>. Detailed radiative calculations give <b>&minus;3.2</b>.</span></div>
+
+  <p class="note">The difference between &minus;3.8 and &minus;3.2 is not an error. The envelope calculation
+  treats the planet as a single blackbody at one temperature; the real one emits from a range of altitudes and
+  temperatures, some of it through the atmospheric window straight from the surface, and the geographic
+  distribution of warming is not uniform. Models get &minus;3.2 and that is the number used from here on.</p>
+
+  <div class="eq"><b>If &lambda;<sub>0</sub> were the only feedback:</b>
+    &Delta;T<sub>s,0</sub> = &minus;&Delta;Q/&lambda;<sub>0</sub> = 3.7 / 3.2 =
+    <b>1.16 K</b> for a CO<sub>2</sub> doubling</div>
+
+  <p class="note"><b>This is the 1.1 K from <a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture&nbsp;5</a>.</b>
+  The zero-dimensional model on that page had exactly one feedback &mdash; this one &mdash; because
+  &alpha;<sub>p</sub> and &tau;<sub>a</sub> were fixed numbers you set by hand. Every kelvin of the difference
+  between 1.16 and the 3 K that models give is contributed by the four remaining terms.</p>
+</div>
+
+<div class="card demo">
+  <h3>Assemble the climate sensitivity</h3>
+  <p class="cap">Add the feedbacks one at a time. The waterfall on the left builds &lambda;<sub>f</sub>; the
+  curve on the right converts it into a warming. Watch what happens to the <em>spacing</em> of the steps as you
+  go &mdash; that is the whole story of why climate sensitivity is hard to pin down.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Preset</span>
+    <button class="ghost" data-p="planck">Planck only</button>
+    <button class="ghost" data-p="wv">+ water vapour</button>
+    <button class="ghost" data-p="all" aria-pressed="true">All five (best estimate)</button>
+    <button class="ghost" data-p="lowc">Low cloud feedback</button>
+    <button class="ghost" data-p="highc">High cloud feedback</button>
+    <button class="ghost" data-p="glacial">A glacial climate</button>
+  </div>
+
+  <div class="ctrls" id="lamCtrls"></div>
+
+  <div class="ctrls" style="margin-top:14px">
+    <div class="ctrl">
+      <label for="dq"><span>Forcing &Delta;Q</span> <b id="dqv">3.70</b></label>
+      <input type="range" id="dq" min="0.5" max="8" step="0.05" value="3.7" style="accent-color:var(--pos)">
+      <div class="hint">3.7 W m<sup>&minus;2</sup> is one CO<sub>2</sub> doubling. 2.3 is the anthropogenic
+      total to 2011.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="A waterfall chart building the total feedback parameter from its five components, beside the hyperbola that converts it into equilibrium climate sensitivity"><g id="asmG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">&lambda;<sub>f</sub></div><div class="v" id="kLam">&mdash;</div><div class="s">W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div></div>
+    <div class="kpi"><div class="k">Equilibrium &Delta;T<sub>s</sub></div><div class="v" id="kEcs">&mdash;</div><div class="s">for the chosen &Delta;Q</div></div>
+    <div class="kpi"><div class="k">Feedback factor f<sub>f</sub></div><div class="v" id="kFf">&mdash;</div><div class="s">&Delta;T<sub>s</sub> / &Delta;T<sub>s,0</sub></div></div>
+    <div class="kpi"><div class="k">Sensitivity</div><div class="v" id="kSens">&mdash;</div><div class="s">K per W m<sup>&minus;2</sup></div></div>
+  </div>
+
+  <div class="readout" id="asmRO"></div>
+
+  <p class="q"><b>Question.</b> Start from <b>Planck only</b> and add water vapour. The warming goes from 1.16 K
+  to about 2.6 K &mdash; an increase of 1.5 K from one feedback worth +1.8 W m<sup>&minus;2</sup>
+  K<sup>&minus;1</sup>. Now, from the full five-term estimate, add another +0.4 to the cloud term. The warming
+  jumps by nearly a kelvin, from an addition less than a quarter the size. Why is the second addition worth so
+  much more?
+  <span style="color:var(--text-muted)">Because &Delta;T = &minus;&Delta;Q/&lambda;<sub>f</sub> is a
+  <em>hyperbola</em>, not a line. Equal steps in &lambda;<sub>f</sub> produce increasingly large steps in
+  &Delta;T as &lambda;<sub>f</sub> approaches zero. The consequence, visible on the right-hand plot, is that a
+  symmetric uncertainty in &lambda;<sub>f</sub> maps into a strongly <b>asymmetric</b> uncertainty in the
+  warming. This is why every assessed sensitivity range has a long tail on the high side, and it is not a
+  statistical artefact &mdash; it is the shape of the function.</span></p>
+
+  <p class="q"><b>Question.</b> Load <b>A glacial climate</b>. The albedo feedback more than doubles and the
+  sensitivity rises. Does that mean the &ldquo;true&rdquo; climate sensitivity of the Earth is larger than we
+  think?
+  <span style="color:var(--text-muted)">No &mdash; it means there is no single true value. Feedback strengths
+  depend on the mean state they operate in. A world with ice sheets down to 45&deg;N has far more ice to lose
+  per kelvin than one with ice only in Greenland, so &lambda;<sub>&alpha;</sub> is larger. This is one of the
+  four caveats below, and it is the reason palaeoclimate estimates of sensitivity cannot simply be transplanted
+  onto the next century.</span></p>
+</div>
+
+<div class="card">
+  <h3>The feedback factor, and the reference every feedback is measured against</h3>
+  <p class="cap">An equivalent way of writing the same thing, and the one that makes the amplification
+  explicit.</p>
+
+  <div class="eq">&Delta;T<sub>s</sub> =
+    <span style="display:inline-block;vertical-align:middle;text-align:center">
+      <span style="border-bottom:1px solid currentColor;display:block;padding:0 8px">1</span>
+      <span style="display:block;padding:0 8px">1 + (&lambda;<sub>L</sub>+&lambda;<sub>w</sub>+&lambda;<sub>c</sub>+&lambda;<sub>&alpha;</sub>)/&lambda;<sub>0</sub></span>
+    </span>
+    &nbsp;&middot;&nbsp; &Delta;T<sub>s,0</sub>
+    &nbsp;=&nbsp; <b>f<sub>f</sub> &middot; &Delta;T<sub>s,0</sub></b></div>
+
+  <p class="note" style="margin-top:14px">f<sub>f</sub> is the <b>climate feedback factor</b>: the factor by
+  which the real system's response exceeds the bare blackbody response. With the standard values it is about
+  <b>2.5</b> &mdash; feedbacks roughly two and a half times the warming that physics alone would give. If
+  f<sub>f</sub> &gt; 1 the feedbacks amplify; if 0 &lt; f<sub>f</sub> &lt; 1 they damp.</p>
+
+  <table>
+    <thead><tr><th>Term</th><th class="num">&lambda;<sub>i</sub></th><th class="num">Spread</th>
+      <th>What it is, and where it is explained</th></tr></thead>
+    <tbody>
+      <tr><td class="nm" style="color:var(--planck)">&lambda;<sub>0</sub> Planck</td>
+        <td class="num">&minus;3.2</td><td class="num">small</td>
+        <td>A warmer surface radiates more. Derived above; the only one that needs no model.</td></tr>
+      <tr><td class="nm" style="color:var(--wv)">&lambda;<sub>w</sub> water vapour</td>
+        <td class="num">+1.8</td><td class="num">&plusmn;0.1<sup>&dagger;</sup></td>
+        <td>Clausius&ndash;Clapeyron at roughly constant relative humidity.
+        <a href="physical-feedbacks.html">Page&nbsp;4</a>.</td></tr>
+      <tr><td class="nm" style="color:var(--lr)">&lambda;<sub>L</sub> lapse rate</td>
+        <td class="num">&minus;0.8</td><td class="num">&plusmn;0.1<sup>&dagger;</sup></td>
+        <td>The upper tropical troposphere warms more than the surface, so the planet radiates more
+        efficiently. <a href="physical-feedbacks.html">Page&nbsp;4</a>.</td></tr>
+      <tr><td class="nm" style="color:var(--cld)">&lambda;<sub>c</sub> cloud</td>
+        <td class="num">+0.68</td><td class="num">&plusmn;0.4</td>
+        <td>Changes in cloud amount, height and brightness. The dominant uncertainty, by a wide margin.</td></tr>
+      <tr><td class="nm" style="color:var(--alb)">&lambda;<sub>&alpha;</sub> surface albedo</td>
+        <td class="num">+0.26</td><td class="num">&plusmn;0.08</td>
+        <td>Retreating snow and ice darken the surface. Small globally, about half the response at high
+        latitudes.</td></tr>
+      <tr><td class="nm">&lambda;<sub>f</sub> total</td><td class="num">&minus;1.26</td>
+        <td class="num">&plusmn;0.42</td>
+        <td>Giving 2.9 K for a doubling, with a range of roughly 2.2&ndash;4.4 K.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><sup>&dagger;</sup> <b>The dagger matters.</b> &plusmn;0.1 is the spread on the
+  <em>sum</em> &lambda;<sub>w</sub> + &lambda;<sub>L</sub>, not on either one separately. The two are strongly
+  anti-correlated: a model that warms the upper troposphere strongly gets a large negative lapse-rate feedback
+  <em>and</em> a large positive water-vapour feedback, because it is putting extra moisture exactly where the
+  atmosphere is driest and most sensitive to it. The errors cancel. This is the single most useful thing to
+  know about feedback uncertainty, and it is why the pair is nearly always quoted together.</p>
+</div>
+
+<h2 class="sec">The limits of the framework</h2>
+
+<div class="card">
+  <h3>Four things this one number cannot do</h3>
+  <p class="cap">Goosse states them plainly, and they are worth taking seriously before you quote a
+  sensitivity at anyone.</p>
+  <table>
+    <thead><tr><th class="num">&nbsp;</th><th>Limitation</th><th>Consequence</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td class="nm">No spatial information</td>
+        <td>&Delta;T<sub>s</sub> is a global mean. It says nothing about where the warming falls, how rainfall
+        redistributes, or what happens to storms. Ecology happens at
+        <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">the local scale</a>, and a global mean will not get you
+        there.</td></tr>
+      <tr><td class="num">2</td><td class="nm">Forcings are not equally efficient</td>
+        <td>The same &Delta;Q from black carbon and from CO<sub>2</sub> does not produce the same
+        &Delta;T<sub>s</sub>, because a forcing concentrated at high latitudes or in one hemisphere engages
+        different feedbacks. Sensitivity is defined against CO<sub>2</sub> for a reason.</td></tr>
+      <tr><td class="num">3</td><td class="nm">Feedbacks depend on the mean state</td>
+        <td>&lambda;<sub>&alpha;</sub> is much larger in a glacial world with ice to lose, and much smaller in
+        a world with none. Sensitivity is not a constant of the planet, and it drifts as the climate
+        changes.</td></tr>
+      <tr><td class="num">4</td><td class="nm">Thresholds break the linearisation</td>
+        <td>&Delta;R = &Delta;Q + &lambda;<sub>f</sub>&Delta;T<sub>s</sub> assumes a smooth proportional
+        response. Cross a threshold &mdash; a collapsing ice line, a monsoon that fails, a circulation that
+        stops &mdash; and the change is set by the system's own dynamics rather than by the size of the
+        forcing. That is what PC Labs <a href="../pc-lab-2-energy-balance-model/">2</a> and <a href="../pc-lab-3-abrupt-vegetation-change/">3</a> are
+        about.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>None of that makes the framework useless.</b> It makes it a first term. It tells you the
+  right order of magnitude, it tells you which feedbacks are worth arguing about, and it lets a two-line
+  calculation be checked against a model that took a million core-hours. That is a lot for one equation.</p>
+</div>
+
+<p class="foot">After Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>, ch. 4.1.2
+and 4.1.3 (Eqs. 4.4&ndash;4.13, Fig. 4.8). Feedback values are those of Soden and Held (2006) as quoted by
+Goosse: &lambda;<sub>0</sub> = &minus;3.2, &lambda;<sub>w</sub> = +1.8, &lambda;<sub>L</sub> = &minus;0.8,
+&lambda;<sub>c</sub> = +0.68 &plusmn; 0.4, &lambda;<sub>&alpha;</sub> = +0.26 &plusmn; 0.08 W m<sup>&minus;2</sup>
+K<sup>&minus;1</sup>, and the &plusmn;0.1 spread on the combined water-vapour-plus-lapse-rate term is the AR4
+inter-model standard deviation. The total &plusmn;0.42 is those spreads added in quadrature, which assumes the
+cloud and albedo terms are independent of the others &mdash; a convenient assumption rather than a demonstrated
+one. Summing the best estimates gives &lambda;<sub>f</sub> = &minus;1.26 W m<sup>&minus;2</sup> K<sup>&minus;1</sup>
+and 2.9 K for a 3.7 W m<sup>&minus;2</sup> doubling, which sits in the middle of the assessed 1.5&ndash;4.5 K
+range without having been tuned to. The glacial preset raises &lambda;<sub>&alpha;</sub> to +0.6 and is
+illustrative of state dependence, not a published estimate. Goosse's text uses &Delta;Q = 3.8 W m<sup>&minus;2</sup>
+and &lambda;<sub>0</sub> &asymp; &minus;3.8 from the envelope calculation, so his numbers differ slightly from
+these in the second decimal place.
+&nbsp;&middot;&nbsp; Next: <a href="physical-feedbacks.html">the physical feedbacks &rarr;</a></p>
+
+<div class="nav">
+  <a href="forcing-agents.html">&larr; 2 &middot; The forcing agents</a>
+  <a href="physical-feedbacks.html">4 &middot; The physical feedbacks &rarr;</a>
+</div>
+
+</div>
+
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+
+  /* ── 1 · dR vs dT stability lines ───────────────────────────── */
+  (function(){
+    const g=$('lineG');
+    const L=70,R=690,T=40,B=268;
+    const tmin=0, tmax=6, rmin=-2.5, rmax=4.4;
+    const X=t=>L+(R-L)*((t-tmin)/(tmax-tmin));
+    const Y=r=>B-(B-T)*((r-rmin)/(rmax-rmin));
+    for(let r=-2;r<=4;r++){
+      put(g,'line',{x1:L,y1:Y(r),x2:R,y2:Y(r),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:Y(r)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},r);
+    }
+    for(let t=0;t<=6;t++){
+      put(g,'line',{x1:X(t),y1:T,x2:X(t),y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:X(t),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},t);
+    }
+    put(g,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--text-muted)','stroke-width':1.4});
+    const dQ=3.7;
+    const CASES=[
+      {lam:-2.5, c:'var(--neg)',  n:'λf = −2.5  strongly damping'},
+      {lam:-1.26,c:'var(--acc)',  n:'λf = −1.26  best estimate'},
+      {lam:-0.82,c:'var(--warn)', n:'λf = −0.82  weakly damping'},
+      {lam: 0.3, c:'var(--pos)',  n:'λf = +0.3  runaway'}
+    ];
+    CASES.forEach(cs=>{
+      const t2=tmax, r2=dQ+cs.lam*t2;
+      put(g,'line',{x1:X(0),y1:Y(dQ),x2:X(t2),y2:Y(Math.max(rmin,Math.min(rmax,r2))),
+        stroke:cs.c,'stroke-width':2.4});
+      if(cs.lam<0){
+        const te=-dQ/cs.lam;
+        if(te<=tmax){
+          put(g,'circle',{cx:X(te),cy:Y(0),r:5.5,fill:cs.c,stroke:'var(--surface-1)','stroke-width':2});
+          put(g,'text',{x:X(te),y:Y(0)+22,'text-anchor':'middle','font-size':11.5,fill:cs.c,
+            'font-weight':600},te.toFixed(1)+' K');
+        }
+      }
+    });
+    put(g,'circle',{cx:X(0),cy:Y(dQ),r:5,fill:'var(--text-primary)'});
+    put(g,'text',{x:X(0)+10,y:Y(dQ)-8,'font-size':12.5,fill:'var(--text-primary)','font-weight':600},
+      'ΔQ = 3.7');
+    CASES.forEach((cs,i)=>{
+      put(g,'rect',{x:706,y:60+i*30,width:12,height:3,fill:cs.c});
+      put(g,'text',{x:726,y:66+i*30,'font-size':12,fill:'var(--text-secondary)'},cs.n);
+    });
+    put(g,'text',{x:L,y:T-16,'font-size':12,fill:'var(--text-secondary)'},
+      'Radiative imbalance ΔR against warming ΔTs — the system slides down its line until ΔR = 0');
+    put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
+      'ΔTs, K');
+    put(g,'text',{x:L-48,y:(T+B)/2,'font-size':11.5,fill:'var(--text-muted)','text-anchor':'middle',
+      transform:'rotate(-90 '+(L-48)+' '+((T+B)/2)+')'},'ΔR, W m⁻²');
+    put(g,'text',{x:706,y:196,'font-size':11.5,fill:'var(--text-muted)'},'The red line never');
+    put(g,'text',{x:706,y:212,'font-size':11.5,fill:'var(--text-muted)'},'crosses zero. There is');
+    put(g,'text',{x:706,y:228,'font-size':11.5,fill:'var(--text-muted)'},'no equilibrium to');
+    put(g,'text',{x:706,y:244,'font-size':11.5,fill:'var(--text-muted)'},'reach.');
+    put(g,'text',{x:L,y:B+62,'font-size':11.5,fill:'var(--text-muted)'},
+      'Halving |λf| doubles the eventual warming. The line does not get longer — it gets flatter, and takes far longer to cross.');
+  })();
+
+  /* ── 2 · the feedback assembler ─────────────────────────────── */
+  (function(){
+    const TERMS=[
+      {id:'p', n:'λ₀ Planck',        v:-3.2, min:-4.5, max:-2.4, c:'var(--planck)', fixed:true,
+       hint:'Fixed physics: −4σTe³, refined by radiative transfer.'},
+      {id:'w', n:'λw water vapour',  v: 1.8, min: 0,   max: 2.6, c:'var(--wv)',
+       hint:'Soden & Held (2006): +1.8. The largest single amplifier.'},
+      {id:'l', n:'λL lapse rate',    v:-0.8, min:-1.6, max: 0.4, c:'var(--lr)',
+       hint:'Negative in the global mean because the tropics dominate.'},
+      {id:'c', n:'λc cloud',         v: 0.68,min:-0.4, max: 1.8, c:'var(--cld)',
+       hint:'+0.68 ± 0.4. Nearly all of the spread between models is here.'},
+      {id:'a', n:'λα surface albedo',v: 0.26,min: 0,   max: 1.0, c:'var(--alb)',
+       hint:'+0.26 today; far larger in a world with more ice.'}
+    ];
+    const PRESETS={
+      planck:{w:0,   l:0,    c:0,    a:0},
+      wv:    {w:1.8, l:0,    c:0,    a:0},
+      all:   {w:1.8, l:-0.8, c:0.68, a:0.26},
+      lowc:  {w:1.8, l:-0.8, c:0.28, a:0.26},
+      highc: {w:1.8, l:-0.8, c:1.08, a:0.26},
+      glacial:{w:1.6,l:-0.7, c:0.68, a:0.60}
+    };
+    const cur={};
+    TERMS.forEach(t=>cur[t.id]=t.v);
+
+    (function build(){
+      const box=$('lamCtrls');
+      TERMS.forEach(t=>{
+        const d=document.createElement('div'); d.className='ctrl';
+        d.innerHTML='<label for="lam_'+t.id+'"><span>'+t.n+'</span> <b id="lamv_'+t.id+'"></b></label>'+
+          '<input type="range" id="lam_'+t.id+'" min="'+t.min+'" max="'+t.max+'" step="0.01" '+
+          'value="'+t.v+'" style="accent-color:'+t.c+'">'+
+          '<div class="hint">'+t.hint+'</div>';
+        box.appendChild(d);
+        d.querySelector('input').addEventListener('input',e=>{
+          cur[t.id]=+e.target.value;
+          document.querySelectorAll('[data-p]').forEach(o=>o.setAttribute('aria-pressed',false));
+          draw();
+        });
+      });
+    })();
+
+    $('dq').addEventListener('input',draw);
+    document.querySelectorAll('[data-p]').forEach(b=>{
+      b.onclick=()=>{
+        const p=PRESETS[b.dataset.p];
+        Object.keys(p).forEach(k=>{cur[k]=p[k]; $('lam_'+k).value=p[k];});
+        document.querySelectorAll('[data-p]').forEach(o=>o.setAttribute('aria-pressed',o===b));
+        draw();
+      };
+    });
+
+    function draw(){
+      const dQ=+$('dq').value;
+      $('dqv').textContent=dQ.toFixed(2);
+      TERMS.forEach(t=>{ $('lam_'+t.id).value=cur[t.id];
+        $('lamv_'+t.id).textContent=(cur[t.id]>=0?'+':'')+cur[t.id].toFixed(2); });
+      const lam=TERMS.reduce((s,t)=>s+cur[t.id],0);
+      const ecs = lam<-0.02 ? -dQ/lam : Infinity;
+      const t0  = -dQ/cur.p;
+      const ff  = lam<-0.02 ? cur.p/lam : Infinity;
+
+      const g=$('asmG'); clr(g);
+
+      /* -- left: waterfall -- */
+      const L=54,R=420,T=48,B=316;
+      const vmin=-4.6, vmax=0.6;
+      const Y=v=>B-(B-T)*((v-vmin)/(vmax-vmin));
+      for(let v=-4;v<=0;v++){
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+      }
+      put(g,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--text-muted)','stroke-width':1.3});
+      const bw=(R-L)/6.4, gap=bw*0.22;
+      let acc=0;
+      TERMS.forEach((t,i)=>{
+        const x=L+i*(bw+gap)+gap/2;
+        const y0=Y(acc), y1=Y(acc+cur[t.id]);
+        put(g,'rect',{x:x,y:Math.min(y0,y1),width:bw,height:Math.max(Math.abs(y1-y0),1.2),
+          fill:t.c,opacity:.88});
+        if(i>0) put(g,'line',{x1:x-gap,y1:y0,x2:x,y2:y0,stroke:'var(--text-muted)',
+          'stroke-width':1,'stroke-dasharray':'3 3'});
+        put(g,'text',{x:x+bw/2,y:Math.min(y0,y1)-6,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-primary)','font-variant-numeric':'tabular-nums'},
+          (cur[t.id]>=0?'+':'')+cur[t.id].toFixed(2));
+        put(g,'text',{x:x+bw/2,y:B+16,'text-anchor':'middle','font-size':11,fill:t.c,
+          'font-weight':600},t.n.split(' ')[0]);
+        acc+=cur[t.id];
+      });
+      const xt=L+5*(bw+gap)+gap/2;
+      put(g,'rect',{x:xt,y:Math.min(Y(0),Y(lam)),width:bw,height:Math.abs(Y(lam)-Y(0)),
+        fill:'var(--text-primary)',opacity:.85});
+      put(g,'text',{x:xt+bw/2,y:Math.min(Y(0),Y(lam))-6,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-primary)','font-weight':700,'font-variant-numeric':'tabular-nums'},
+        lam.toFixed(2));
+      put(g,'text',{x:xt+bw/2,y:B+16,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-primary)','font-weight':700},'λf');
+      put(g,'text',{x:L,y:T-18,'font-size':12,fill:'var(--text-secondary)'},
+        'Building λf, W m⁻² K⁻¹');
+      put(g,'text',{x:L,y:B+42,'font-size':11.5,fill:'var(--text-muted)'},
+        'Every bar above the axis is an amplifier: it makes λf less negative.');
+
+      /* -- right: sensitivity hyperbola -- */
+      const L2=500,R2=846,T2=48,B2=316;
+      const lmin=-3.4, lmax=-0.25;
+      const emin=0, emax=9;
+      const X2=v=>L2+(R2-L2)*((v-lmin)/(lmax-lmin));
+      const Y2=v=>B2-(B2-T2)*((v-emin)/(emax-emin));
+      for(let e=0;e<=8;e+=2){
+        put(g,'line',{x1:L2,y1:Y2(e),x2:R2,y2:Y2(e),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L2-8,y:Y2(e)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},e);
+      }
+      for(let v=-3;v<=-0.5;v+=0.5){
+        put(g,'line',{x1:X2(v),y1:T2,x2:X2(v),y2:B2,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X2(v),y:B2+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      // assessed band 1.5-4.5 K
+      put(g,'rect',{x:L2,y:Y2(4.5),width:R2-L2,height:Y2(1.5)-Y2(4.5),
+        fill:'var(--acc)',opacity:.10});
+      put(g,'text',{x:R2-6,y:Y2(4.5)+14,'text-anchor':'end','font-size':10.5,fill:'var(--acc)'},
+        'assessed 1.5–4.5 K');
+      let d='';
+      for(let i=0;i<=300;i++){
+        const v=lmin+(lmax-lmin)*i/300;
+        const e=-dQ/v;
+        if(e>emax){ d=''; continue; }
+        d+=(d?'L':'M')+X2(v).toFixed(1)+' '+Y2(e).toFixed(1);
+      }
+      put(g,'path',{d:d,fill:'none',stroke:'var(--pos)','stroke-width':2.4});
+      // uncertainty mapping at the best estimate
+      if(lam>lmin && lam<lmax){
+        const sig=0.42;
+        const lo=Math.min(lmax,lam+sig), hi=Math.max(lmin,lam-sig);
+        [[hi,'−1σ'],[lo,'+1σ']].forEach(p=>{
+          const e=-dQ/p[0];
+          if(e<emax){
+            put(g,'line',{x1:X2(p[0]),y1:Y2(0),x2:X2(p[0]),y2:Y2(e),
+              stroke:'var(--text-muted)','stroke-width':1,'stroke-dasharray':'3 3'});
+            put(g,'line',{x1:L2,y1:Y2(e),x2:X2(p[0]),y2:Y2(e),
+              stroke:'var(--text-muted)','stroke-width':1,'stroke-dasharray':'3 3'});
+            put(g,'text',{x:X2(p[0]),y:T2-6,'text-anchor':'middle','font-size':10,
+              fill:'var(--text-muted)'},p[1]+': '+e.toFixed(1)+' K');
+          }
+        });
+        if(ecs<emax){
+          put(g,'circle',{cx:X2(lam),cy:Y2(ecs),r:6,fill:'var(--pos)',
+            stroke:'var(--surface-1)','stroke-width':2});
+          put(g,'text',{x:X2(lam)-10,y:Y2(ecs)-10,'text-anchor':'end','font-size':13,
+            fill:'var(--text-primary)','font-weight':700},ecs.toFixed(2)+' K');
+        }
+      }
+      put(g,'text',{x:L2,y:T2-18,'font-size':12,fill:'var(--text-secondary)'},
+        'ΔTs = −ΔQ / λf — a hyperbola, not a line');
+      put(g,'text',{x:(L2+R2)/2,y:B2+38,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},'λf, W m⁻² K⁻¹');
+      put(g,'text',{x:L2,y:B2+62,'font-size':11.5,fill:'var(--text-muted)'},
+        'Symmetric error in λf → lopsided error in ΔT. The high tail is geometry, not pessimism.');
+      put(g,'text',{x:L2-40,y:(T2+B2)/2,'font-size':11.5,fill:'var(--text-muted)',
+        'text-anchor':'middle',transform:'rotate(-90 '+(L2-40)+' '+((T2+B2)/2)+')'},'ΔTs, K');
+
+      /* -- KPIs and readout -- */
+      $('kLam').textContent=lam.toFixed(2);
+      $('kEcs').textContent = isFinite(ecs)&&ecs>0 ? ecs.toFixed(2)+' K' : '∞';
+      $('kFf').textContent  = isFinite(ff)&&ff>0 ? ff.toFixed(2) : '∞';
+      $('kSens').textContent= isFinite(ecs) ? (ecs/dQ).toFixed(2) : '∞';
+
+      let m='';
+      if(lam>=-0.02){
+        m='<b style="color:var(--pos)">λf is no longer negative.</b> There is no equilibrium: the imbalance '+
+          'grows with the warming that produced it, and nothing in this framework stops it. That is a runaway, '+
+          'and it is why the sign of λf is not a detail.';
+      } else {
+        const sum=TERMS.slice(1).reduce((s,t)=>s+cur[t.id],0);
+        m='λ<sub>f</sub> = <b>'+lam.toFixed(2)+'</b> W m⁻² K⁻¹. A forcing of <b>'+dQ.toFixed(2)+
+          '</b> W m⁻² gives an equilibrium warming of <span class="big">'+ecs.toFixed(2)+' K</span>, '+
+          'which is <b>'+ff.toFixed(2)+' ×</b> the bare blackbody response of '+t0.toFixed(2)+' K. ';
+        if(Math.abs(sum)<0.05)
+          m+='With only the Planck response active this is the model from '+
+             '<a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture 5</a> — physically correct, and about a third '+
+             'of the real answer.';
+        else if(Math.abs(cur.w-1.8)<0.05 && Math.abs(cur.l)<0.05 && Math.abs(cur.c)<0.05)
+          m+='Water vapour alone more than doubles the response. This one feedback is the reason the greenhouse '+
+             'effect of CO₂ is not the whole story: CO₂ sets the temperature, and the temperature sets the water '+
+             'vapour, which does most of the trapping.';
+        else if(ecs>4.5)
+          m+='<b>Above the assessed range.</b> Note how little it took: the cloud term alone can carry you here. '+
+             'A model with this λf is not obviously wrong — it is at the edge of what the observed record can '+
+             'exclude, which is precisely the problem.';
+        else if(ecs<1.5)
+          m+='<b>Below the assessed range.</b> To get here you have had to suppress the amplifiers to values no '+
+             'model produces. It is much easier to make the climate too sensitive than not sensitive enough.';
+        else
+          m+='This sits inside the assessed 1.5–4.5 K. Now nudge only λ<sub>c</sub>, by ±0.4 — the published '+
+             'inter-model spread — and watch how much of that entire range one uncertain term can cover.';
+      }
+      $('asmRO').innerHTML=m;
+    }
+    draw();
+  })();
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

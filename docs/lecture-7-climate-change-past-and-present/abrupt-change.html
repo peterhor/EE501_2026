@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abrupt change and the ocean circulation</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f; --ice:#7fb3d5;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad; --ice:#6fa2c4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3:first-of-type::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="orbital-forcing.html">&larr; Orbital forcing</a> &nbsp;&middot;&nbsp;
+Climate change: past and present &middot; 4 of 6</p>
+
+<header>
+  <div>
+    <h1>Abrupt change and the ocean circulation</h1>
+    <p class="sub">Page&nbsp;3 dealt with a forcing that takes twenty thousand years to change sign. This
+    page deals with responses that take twenty <em>years</em>. Nothing external moves that fast, so the speed
+    has to come from inside the system &mdash; and that means a threshold. This is the part of the record that
+    changed how the field thinks about what climate can do.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Dansgaard&ndash;Oeschger events</h3>
+  <p class="cap">The observation that started it, and the four features of it that a mechanism has to
+  explain.</p>
+
+  <p class="note" style="margin-top:0">Greenland ice cores through the last glacial period contain about
+  twenty-five abrupt warmings. Each begins with a jump of roughly <b>8&ndash;16&nbsp;K in Greenland surface
+  temperature within a few decades</b> &mdash; in some cases within a single decade &mdash; followed by a
+  gradual cooling over centuries to a few thousand years, and then an abrupt return to the cold state. They
+  are named after Willi Dansgaard and Hans Oeschger, and they are numbered.</p>
+
+  <svg viewBox="0 0 880 300" role="img" aria-label="Schematic of the sawtooth shape of Dansgaard-Oeschger events in a Greenland ice core, with Heinrich events and the corresponding Antarctic signal"><g id="doG"></g></svg>
+
+  <table>
+    <thead><tr><th>Feature</th><th>What it rules out</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Enormous local amplitude &mdash; 8 to 16&nbsp;K</td>
+        <td>Any explanation in which Greenland simply follows a global mean. This is a regional
+        redistribution, and something must be moving a great deal of heat.</td></tr>
+      <tr><td class="nm">Extreme speed &mdash; decades</td>
+        <td>Ice sheets (too slow), orbital forcing (far too slow), CO<sub>2</sub> (it barely moves across a
+        D&ndash;O event). Only the atmosphere, sea ice and the ocean&rsquo;s upper circulation are fast
+        enough.</td></tr>
+      <tr><td class="nm">Sawtooth asymmetry &mdash; fast on, slow off</td>
+        <td>Any linear response to a symmetric forcing. Asymmetry in time means non-linearity, exactly as on
+        <a href="orbital-forcing.html">page&nbsp;3</a>.</td></tr>
+      <tr><td class="nm">Only during glacials</td>
+        <td>A mechanism that does not care about the background state. Whatever it is, it needs ice sheets,
+        or a cold North Atlantic, or both. The Holocene has nothing like it.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>And a fifth feature, which is the strongest clue of all.</b> The signal is not confined
+  to Greenland. It appears, with the right timing, in Chinese cave deposits (as monsoon strength), in South
+  American speleothems, in the tropical Atlantic (as a shift of the rain belt), and &mdash; crucially, and
+  with a different shape &mdash; in Antarctic ice. A mechanism has to explain the pattern, not just the
+  Greenland record.</p>
+</div>
+
+<div class="card">
+  <h3>Heinrich events, and the mechanism they point to</h3>
+  <p class="cap">A second kind of event, rarer and larger, that leaves an unambiguous physical trace.</p>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin-top:0">North Atlantic sediment cores contain a handful of thick layers of
+      coarse rock debris that no ocean current could have carried there. The only plausible delivery mechanism
+      is <b>icebergs</b>: rock ground off the bed by an ice sheet, rafted out to sea, and dropped as the ice
+      melted. These are <b>Heinrich events</b> &mdash; episodes of massive iceberg discharge, mainly from the
+      Laurentide ice sheet through Hudson Strait, occurring roughly every 5&ndash;10&nbsp;kyr during the last
+      glacial.</p>
+      <p class="note">They matter here for one reason: an armada of icebergs is a delivery of
+      <b>fresh water</b> to precisely the part of the ocean where deep water forms. And fresh water is
+      exactly what the deep circulation cannot tolerate.</p>
+    </div>
+    <div>
+      <svg viewBox="0 0 430 250" role="img" aria-label="Schematic of a Heinrich event: an ice sheet discharging icebergs into the North Atlantic and depositing debris layers in the sediment"><g id="heG"></g></svg>
+    </div>
+  </div>
+
+  <p class="note"><b>The chain of reasoning to hold onto.</b> Icebergs &rarr; fresh water in the North
+  Atlantic &rarr; the surface there becomes less dense &rarr; it stops sinking &rarr; the overturning
+  circulation weakens or stops &rarr; the northward heat transport it carries stops with it &rarr; the North
+  Atlantic region cools sharply while the Southern Ocean, no longer giving heat away, warms. Every link is
+  ordinary physics. The interesting part is that the middle step has a <em>threshold</em>.</p>
+</div>
+
+<div class="card">
+  <h3>What the overturning circulation actually is</h3>
+  <p class="cap">Enough of it to understand why it can have two states.</p>
+
+  <svg viewBox="0 0 880 320" role="img" aria-label="Schematic of the Atlantic overturning circulation showing warm surface flow northward, deep water formation, and cold return flow at depth"><g id="amocG"></g></svg>
+
+  <ul class="pl">
+    <li><b>Density is set by temperature and salinity.</b> Cold water is dense; salty water is dense. In the
+    North Atlantic both work in the same direction, and the surface water becomes dense enough to sink to
+    great depth.</li>
+    <li><b>The circulation carries heat.</b> Warm surface water flows north, releases heat to the atmosphere,
+    sinks, and returns south at depth. The northward heat transport in the Atlantic is of order
+    1&nbsp;PW &mdash; comparable to the entire anthropogenic energy imbalance many times over, delivered to
+    one region.</li>
+    <li><b>The circulation carries salt, too</b>, and that is what makes it interesting. Northward flow brings
+    salty subtropical water into the North Atlantic, which keeps the surface dense, which keeps the flow
+    going. <b>A positive feedback</b> &mdash; and by the sign rule of
+    <a href="../lecture-6-response-of-the-climate-system-to-perturbations/forcing-and-feedback.html">Lecture&nbsp;6</a>, a self-amplifying one.</li>
+    <li><b>Which means it can fail.</b> Weaken the flow enough and less salt arrives; less salt means less
+    dense surface water; less dense surface water means still weaker flow. Beyond a threshold, the loop runs
+    away and the circulation shuts down &mdash; and then the <em>same feedback</em> holds it shut.</li>
+  </ul>
+
+  <div class="q"><b>You have seen this shape before.</b> A positive feedback strong enough to create two
+  stable states, with an abrupt jump between them and a different threshold in each direction. That is exactly
+  the structure of <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a>, where vegetation and precipitation in the
+  Sahara feed each other. The physics is unrelated; the mathematics is identical. That is worth noticing,
+  because it means the behaviour is a property of the <em>feedback structure</em>, not of the ocean.</div>
+</div>
+
+<h2 class="sec">The demonstration this page is built around</h2>
+
+<div class="card demo">
+  <h3>The two states of the conveyor</h3>
+  <p class="cap">The Stommel two-box model &mdash; two equations, and every qualitative feature of the real
+  thing. Push fresh water into the northern box and watch what the circulation does about it.</p>
+
+  <div class="eq"><b>q = k(&alpha;&Delta;T &minus; &beta;&Delta;S)</b> &nbsp;&nbsp;&nbsp;
+    <b>V d(&Delta;S)/dt = 2H &minus; |q| &Delta;S</b>
+    <span class="u"><br>q is the overturning strength; &Delta;T and &Delta;S the low-minus-high-latitude
+    temperature and salinity differences; H the freshwater flux to the northern box. Temperature is held at
+    its equilibrium value, because the atmosphere restores it far faster than the ocean can change it.</span></div>
+
+  <p class="note" style="margin-top:0">Read the two equations against each other. The first says the flow is
+  driven by density, and salt <em>opposes</em> temperature. The second says the flow itself removes the
+  salinity contrast that is opposing it. A strong circulation flushes fresh water away and keeps itself
+  strong; a weak one lets fresh water accumulate and gets weaker. That is the whole model, and it is enough.</p>
+
+  <div class="ctrls">
+    <div class="ctrl" style="grid-column:1/-1">
+      <label for="fw"><span>Freshwater flux to the northern North Atlantic, H</span> <b id="fwv">0.10 Sv</b></label>
+      <input type="range" id="fw" min="0" max="0.6" step="0.005" value="0.10">
+      <div class="hint">1&nbsp;Sv = 10<sup>6</sup>&nbsp;m<sup>3</sup>&nbsp;s<sup>&minus;1</sup>. Present-day
+      net export of fresh water to the region is of order 0.1&nbsp;Sv; a Heinrich event delivers several
+      tenths on top of that.</div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div><svg viewBox="0 0 430 300" role="img" aria-label="Equilibrium overturning strength as a function of freshwater forcing, showing two stable branches and an unstable branch between them"><g id="hysG"></g></svg></div>
+    <div><svg viewBox="0 0 430 300" role="img" aria-label="Schematic of the two-box ocean model with the current circulation strength"><g id="boxG"></g></svg></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Overturning now</div><div class="v" id="kQ">18.5</div><div class="s">Sv</div></div>
+    <div class="kpi"><div class="k">Northward heat transport</div><div class="v" id="kHt">1.05</div><div class="s">PW</div></div>
+    <div class="kpi"><div class="k">Collapse threshold</div><div class="v" id="kThr">0.35</div><div class="s">Sv of freshwater</div></div>
+    <div class="kpi"><div class="k">Recovery threshold</div><div class="v" id="kRec">0.00</div><div class="s">Sv &mdash; note the difference</div></div>
+  </div>
+
+  <div class="readout" id="hysRead"></div>
+
+  <h3 style="font-size:15px;margin:22px 0 2px">Now run it in time</h3>
+  <p class="cap">The equilibrium diagram says where the system can sit. This says how it gets there, and how
+  long it takes.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Experiment</span>
+    <button class="ghost" data-ex="heinrich" aria-pressed="true">Heinrich event: 0.5 Sv for 800 yr</button>
+    <button class="ghost" data-ex="small">A smaller pulse: 0.25 Sv for 800 yr</button>
+    <button class="ghost" data-ex="sweep">Slow ramp up, then back down</button>
+    <button class="ghost" data-ex="ramp">Gradual increase, held</button>
+  </div>
+
+  <svg viewBox="0 0 880 320" role="img" aria-label="Time series of freshwater forcing and the resulting overturning strength for the selected experiment"><g id="tsG"></g></svg>
+
+  <div class="readout" id="tsRead"></div>
+
+  <div class="q"><b>The two things to take from the sweep experiment.</b> First, the collapse happens at a
+  freshwater flux far above the one at which the circulation will restart &mdash; the path up is not the path
+  down. That gap is <b>hysteresis</b>, and it is why the collapsed state persists after the icebergs have
+  gone. Second, look at the <em>rate</em>: the forcing is changing smoothly and slowly throughout, and the
+  response contains a near-vertical jump. <b>An abrupt change does not require an abrupt cause.</b></div>
+
+  <div class="warnbox"><b>What this model is and is not.</b> Two boxes, one salinity equation, no geography,
+  no wind, no eddies, no sea ice. It is a demonstration that the <em>structure</em> permits two states and a
+  threshold &mdash; nothing more. The real threshold is not known to a factor of two; comprehensive models
+  disagree with each other about how close the present circulation is to it, and some show no bistability at
+  all under present conditions. Treat the number 0.35&nbsp;Sv as an illustration, and treat anyone who quotes
+  a precise threshold for the real ocean with suspicion.</div>
+</div>
+
+<div class="card demo">
+  <h3>The bipolar seesaw</h3>
+  <p class="cap">Why the Antarctic record of the same events looks so different &mdash; and why that
+  difference is the best evidence that the ocean is the mechanism.</p>
+
+  <p class="note" style="margin-top:0">Greenland and Antarctic ice cores both record the millennial events,
+  but they do not look alike. Greenland has sharp sawteeth; Antarctica has smooth, rounded, smaller
+  undulations that reach their <em>maximum</em> at the moment Greenland jumps. Stocker and Johnsen (2003)
+  showed that a single idea explains this: if the overturning circulation transports heat northward across
+  the equator, then when it shuts down that heat stays in the south. The Southern Ocean is not a mirror of
+  the north &mdash; it is a <b>reservoir being filled and drained</b>, so it responds to the time
+  <em>integral</em> of the northern signal, not to the signal itself.</p>
+
+  <div class="eq">dT<sub>S</sub>/dt &nbsp;=&nbsp; (&minus;T<sub>N</sub> &minus; T<sub>S</sub>) / &tau;
+    <span class="u"><br>the southern temperature relaxes towards the negative of the northern one, with a
+    reservoir time constant &tau; of order 1000 years</span></div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="bsTau"><span>Southern reservoir time constant &tau;</span> <b id="bsTauv">1100 yr</b></label>
+      <input type="range" id="bsTau" min="100" max="2500" step="50" value="1100">
+      <div class="hint">Set it very short and the two records become mirror images. Set it long and the
+      southern signal turns into a smooth integral.</div>
+    </div>
+    <div class="ctrl">
+      <label for="bsGap"><span>Interval between events</span> <b id="bsGapv">1500 yr</b></label>
+      <input type="range" id="bsGap" min="700" max="4000" step="100" value="1500">
+      <div class="hint">Dansgaard&ndash;Oeschger events recur at intervals loosely clustered around
+      1500&nbsp;years.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 320" role="img" aria-label="Northern hemisphere sawtooth temperature signal and the resulting smoothed, antiphased southern hemisphere response"><g id="bsG"></g></svg>
+
+  <div class="readout" id="bsRead"></div>
+
+  <div class="q"><b>Check the phase relationship yourself.</b> Antarctic warming happens while Greenland is
+  <em>cold</em>, and Antarctic temperature peaks at the instant Greenland warms. That is not what a
+  common global forcing would produce, and it is not what an atmospheric teleconnection would produce either.
+  It is what a heat reservoir on the other side of a broken conveyor produces. This phasing, observed in
+  precisely dated ice cores from both poles, is why the ocean-circulation explanation is accepted.</div>
+</div>
+
+<h2 class="sec">The deglaciation: everything on this page, happening at once</h2>
+
+<div class="card">
+  <h3>From 21,000 years ago to now</h3>
+  <p class="cap">The best-observed large climate change in the record, and a rehearsal of every mechanism in
+  this lecture.</p>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="Schematic sequence of the last deglaciation showing insolation, CO2, Antarctic and Greenland temperature, and the Younger Dryas"><g id="degG"></g></svg>
+
+  <ul class="pl">
+    <li><b>It starts with insolation.</b> Northern summer insolation at 65&deg;N rises from its minimum
+    around 21&nbsp;ka. Check that on <a href="orbital-forcing.html">page&nbsp;3</a>: it is a rise of some
+    50&nbsp;W&nbsp;m<sup>&minus;2</sup> in summer at high northern latitude. The northern ice sheets begin to
+    retreat.</li>
+    <li><b>Then the Southern Ocean and CO<sub>2</sub> take over.</b> Antarctic temperature and atmospheric
+    CO<sub>2</sub> rise almost synchronously from about 18&nbsp;ka, and the global mean follows
+    <em>CO<sub>2</sub></em>, not northern insolation. Compilations of proxies from all latitudes show the
+    global mean lagging Antarctic temperature and CO<sub>2</sub>, which is the signature of a
+    Southern-Ocean-released, CO<sub>2</sub>-transmitted global signal.</li>
+    <li><b>Meltwater interrupts it.</b> The retreating ice sheets deliver enormous freshwater fluxes to the
+    North Atlantic. The circulation weakens; the north cools while the south keeps warming &mdash; the
+    seesaw, running in real time.</li>
+    <li><b>The Younger Dryas.</b> Between about 12.9 and 11.7&nbsp;ka the North Atlantic region returns
+    almost to glacial conditions for more than a thousand years, then exits in a matter of decades. It is the
+    last, and best dated, of the abrupt events.</li>
+    <li><b>Then it stops.</b> Once the ice sheets are gone there is no more meltwater, and the Holocene has no
+    D&ndash;O events at all. The mechanism did not disappear; the fuel did.</li>
+  </ul>
+
+  <div class="warnbox"><b>The lead&ndash;lag argument, done properly.</b> You will meet the claim that
+  &ldquo;CO<sub>2</sub> lags temperature, so CO<sub>2</sub> cannot cause warming&rdquo;. The premise is partly
+  true and the conclusion does not follow. At the start of a deglaciation, orbital forcing and Southern Ocean
+  changes release CO<sub>2</sub> first &mdash; CO<sub>2</sub> is a <em>feedback</em> there, as
+  <a href="orbital-forcing.html">page&nbsp;3</a> said. But once released it is a forcing on everything else,
+  and the <em>global mean</em> temperature lags it. A quantity can be caused by something and cause something
+  else; that is what an amplifier is. The modern situation is different again, since the CO<sub>2</sub> is
+  being added from outside the system &mdash; which is precisely the definition of a forcing from
+  <a href="forced-and-internal.html">page&nbsp;1</a>.</div>
+</div>
+
+<div class="card">
+  <h3>Why a lecture on the past ends up talking about the future</h3>
+  <p class="cap">The transferable result, stated carefully.</p>
+
+  <table>
+    <thead><tr><th>What the record establishes</th><th>What it does not establish</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">The climate system contains thresholds, and has crossed them</td>
+        <td>That any particular threshold is near today</td></tr>
+      <tr><td class="nm">Crossing one produces regional changes of ~10&nbsp;K in decades</td>
+        <td>That a future crossing would look like a past one; the background state is different</td></tr>
+      <tr><td class="nm">The freshwater balance of the North Atlantic is the relevant control</td>
+        <td>The value of the threshold, which models disagree about by a large factor</td></tr>
+      <tr><td class="nm">Recovery is not the reverse of collapse &mdash; hysteresis is real</td>
+        <td>How long a recovery would take, or whether the same two states exist in a warm world</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>The honest summary for a modern audience.</b> Greenland and West Antarctic meltwater is
+  freshening the North Atlantic now, and the observed circulation has probably weakened. Comprehensive models
+  project further weakening through this century and mostly do <em>not</em> project a collapse; they also
+  disagree with each other and with the palaeo record about how easily the real ocean switches states, which
+  is itself a reason for caution rather than comfort. The palaeoclimate contribution is not a prediction. It
+  is the demonstration that the possibility is physical.</p>
+
+  <div class="q"><b>What to carry to page&nbsp;5.</b> Everything on this page happened during a glacial or
+  a deglaciation. The next page asks what the climate does in a world that looks like ours &mdash; no ice
+  sheets to collapse, no meltwater, no D&ndash;O events. The amplitudes get much smaller, and the problem of
+  telling forced from internal gets correspondingly harder.</div>
+</div>
+
+<p class="foot">After Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;5.3.4&ndash;5.3.5 (Figs.&nbsp;5.28&ndash;5.31), covering Dansgaard&ndash;Oeschger events in the NGRIP
+&delta;<sup>18</sup>O record (North Greenland Ice Core Project Members, 2004), Heinrich events, the
+thermohaline circulation and the last deglaciation, with the deglacial proxy compilation of Shakun
+et&nbsp;al. (2012) and the EPICA Dome&nbsp;C CO<sub>2</sub> and Antarctic temperature series of Parrenin
+et&nbsp;al. (2013); the Ruddiman (2001) presentation of the same material is the source of the
+&ldquo;&gt;10&nbsp;K in 20 years&rdquo; framing used in the lecture.
+<b>The overturning demonstration is the two-box model of Stommel (1961)</b>, in the standard formulation with
+a fast-restored temperature contrast and a prognostic salinity contrast; the equilibrium branches shown are
+the exact roots of the resulting quadratic, and the time integration uses a 5-year step with an adjustment
+volume chosen to give a present-day adjustment time of about 270&nbsp;years. The parameters are tuned so
+that the &ldquo;on&rdquo; state carries about 18&nbsp;Sv and collapses near 0.35&nbsp;Sv of added fresh
+water; both are plausible values but neither is a measurement, and the caveat box above says so explicitly.
+The heat transport quoted alongside is a simple proportionality to q anchored at about 1&nbsp;PW for the
+present-day Atlantic. <b>The bipolar seesaw demonstration</b> implements the thermal seesaw of Stocker and
+Johnsen (2003): the southern temperature relaxes towards the negative of the northern signal with a single
+reservoir time constant, and the northern signal driving it is an idealised sawtooth of Dansgaard&ndash;Oeschger
+shape, not an ice-core record. The observed phase relationship it reproduces &mdash; Antarctic maxima at the
+time of Greenland warmings &mdash; is a real and well-dated feature of the paired ice-core records. The
+Greenland, Heinrich and deglaciation figures on this page are labelled schematics drawn to show the shape and
+sequence of events; no axis on them should be read as data.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not: <a href="provenance.html">the provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="holocene-2000-years.html">the Holocene and the last 2000 years &rarr;</a></p>
+
+<div class="nav">
+  <a href="orbital-forcing.html">&larr; 3 &middot; Orbital forcing</a>
+  <a href="holocene-2000-years.html">5 &middot; The Holocene and the last 2000 years &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(p,x1,y1,x2,y2,col,w){
+    put(p,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
+    const a=Math.atan2(y2-y1,x2-x1),h=6+(w||2);
+    put(p,'polygon',{points:[x2,y2,x2-h*Math.cos(a-0.4),y2-h*Math.sin(a-0.4),
+      x2-h*Math.cos(a+0.4),y2-h*Math.sin(a+0.4)].join(' '),fill:col});
+  }
+
+  /* ── 1 · D–O schematic ──────────────────────────────────────── */
+  (function(){
+    const g=$('doG'); if(!g) return;
+    const L=64,R=852;
+    const X=t=>L+(R-L)*(1-t/60);          // t in kyr BP, 60 → 0
+    // idealised D–O sawtooth in "Greenland temperature"
+    const EV=[59,55.8,54.2,49.3,46.9,45.3,43.4,41.5,39.9,38.2,36.6,35.5,33.7,32.5,
+      28.9,27.8,23.3,23.0,19.0,14.7,12.9];
+    function north(t){
+      let v=0;
+      EV.forEach(e=>{ if(t<=e){ const d=e-t; v=Math.max(v,Math.exp(-d/1.4)); } });
+      return v;
+    }
+    const T1=48,B1=150;
+    put(g,'text',{x:L,y:22,'font-size':12,fill:'var(--warn)','font-weight':600},
+      'SCHEMATIC — shape and sequence only, not ice-core data');
+    put(g,'rect',{x:L,y:T1,width:R-L,height:B1-T1,fill:'var(--surface-2)',opacity:.55});
+    let d='';
+    for(let i=0;i<=1200;i++){
+      const t=60*(1-i/1200);
+      const y=B1-(B1-T1)*north(t)*0.92-6;
+      d+=(i?'L':'M')+X(t).toFixed(1)+' '+y.toFixed(1);
+    }
+    put(g,'path',{d:d,fill:'none',stroke:'var(--hi)','stroke-width':1.6});
+    put(g,'text',{x:L+6,y:T1+16,'font-size':11.5,fill:'var(--hi)','font-weight':600},
+      'Greenland temperature — abrupt on, gradual off');
+    put(g,'text',{x:R-6,y:T1+16,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},
+      'each jump 8–16 K in a few decades');
+
+    // southern integral
+    const T2=176,B2=252;
+    put(g,'rect',{x:L,y:T2,width:R-L,height:B2-T2,fill:'var(--surface-2)',opacity:.55});
+    let s=0,d2='';
+    const tau=1.1;
+    for(let i=0;i<=1200;i++){
+      const t=60*(1-i/1200), dt=60/1200;
+      s+=((-(north(t)-0.42))-s)/tau*dt;
+      d2+=(i?'L':'M')+X(t).toFixed(1)+' '+(( (T2+B2)/2 ) - s*54).toFixed(1);
+    }
+    put(g,'path',{d:d2,fill:'none',stroke:'var(--ocean)','stroke-width':2});
+    put(g,'text',{x:L+6,y:T2+16,'font-size':11.5,fill:'var(--ocean)','font-weight':600},
+      'Antarctic temperature — smooth, out of phase, smaller');
+
+    // Heinrich markers
+    [16.8,24,31,38,45].forEach((h,i)=>{
+      put(g,'line',{x1:X(h),y1:T1-8,x2:X(h),y2:B2+6,stroke:'var(--deep)','stroke-dasharray':'3 4'});
+      put(g,'text',{x:X(h),y:T1-12,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--deep)','font-weight':600},'H'+(i+1));
+    });
+    for(let t=0;t<=60;t+=10){
+      put(g,'text',{x:X(t),y:B2+22,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},t===0?'now':t);
+    }
+    put(g,'text',{x:(L+R)/2,y:B2+40,'text-anchor':'middle','font-size':11,
+      fill:'var(--text-muted)'},'thousands of years before present');
+    put(g,'text',{x:L,y:B2+40,'font-size':11,fill:'var(--deep)'},
+      'H = Heinrich event (iceberg discharge)');
+  })();
+
+  /* ── 2 · Heinrich schematic ─────────────────────────────────── */
+  (function(){
+    const g=$('heG'); if(!g) return;
+    // ice sheet on the left, ocean to the right, sediment at the bottom
+    put(g,'rect',{x:10,y:120,width:410,height:74,fill:'var(--ocean)',opacity:.20});
+    put(g,'rect',{x:10,y:194,width:410,height:44,fill:'var(--gd,#8a6b45)',opacity:.20});
+    put(g,'rect',{x:10,y:194,width:410,height:12,fill:'var(--deep)',opacity:.55});
+    put(g,'text',{x:214,y:230,'text-anchor':'middle','font-size':11,fill:'var(--text-secondary)'},
+      'sediment: a layer of coarse ice-rafted debris');
+    put(g,'path',{d:'M10 120 L10 40 L120 46 L150 120 Z',fill:'var(--ice)',opacity:.85});
+    put(g,'text',{x:66,y:88,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-primary)','font-weight':600},'Laurentide');
+    put(g,'text',{x:66,y:103,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-primary)','font-weight':600},'ice sheet');
+    [[176,132],[228,126],[286,134],[340,128],[386,136]].forEach((p,i)=>{
+      put(g,'polygon',{points:(p[0]-13)+' '+(p[1]+9)+' '+p[0]+' '+(p[1]-11)+' '+
+        (p[0]+13)+' '+(p[1]+9),fill:'var(--ice)'});
+      arrow(g,p[0],p[1]+18,p[0],186,'var(--deep)',1.2);
+    });
+    arrow(g,152,110,196,112,'var(--ice)',3);
+    put(g,'text',{x:214,y:34,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-primary)','font-weight':600},'Heinrich event');
+    put(g,'text',{x:300,y:110,'text-anchor':'middle','font-size':11,fill:'var(--lo)'},
+      'icebergs → fresh water');
+    put(g,'text',{x:214,y:172,'text-anchor':'middle','font-size':11,
+      fill:'var(--text-secondary)'},'North Atlantic');
+  })();
+
+  /* ── 3 · AMOC schematic ─────────────────────────────────────── */
+  (function(){
+    const g=$('amocG'); if(!g) return;
+    const L=70,R=830,T=48,B=272;
+    put(g,'rect',{x:L,y:T,width:R-L,height:B-T,rx:6,fill:'var(--surface-2)'});
+    put(g,'text',{x:L,y:T-24,'font-size':12,fill:'var(--text-muted)'},
+      'Atlantic, south (left) to north (right) — schematic');
+    // warm surface flow northward
+    put(g,'path',{d:'M'+(L+20)+' '+(T+34)+' L'+(R-140)+' '+(T+34),fill:'none',
+      stroke:'var(--hi)','stroke-width':14,opacity:.6,'stroke-linecap':'round'});
+    arrow(g,R-200,T+34,R-130,T+34,'var(--hi)',3);
+    put(g,'text',{x:L+40,y:T+22,'font-size':12,fill:'var(--hi)','font-weight':600},
+      'warm, salty surface flow northward');
+    // sinking
+    put(g,'path',{d:'M'+(R-130)+' '+(T+40)+' C '+(R-100)+' '+(T+90)+', '+(R-90)+' '+(T+120)+', '+
+      (R-110)+' '+(T+150),fill:'none',stroke:'var(--deep)','stroke-width':10,opacity:.65});
+    put(g,'text',{x:R-118,y:T+96,'text-anchor':'end','font-size':11.5,
+      fill:'var(--deep)','font-weight':600},'deep water forms');
+    put(g,'text',{x:R-118,y:T+112,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},
+      'cold + salty = dense');
+    // return flow at depth
+    put(g,'path',{d:'M'+(R-115)+' '+(T+170)+' L'+(L+20)+' '+(T+170),fill:'none',
+      stroke:'var(--ocean)','stroke-width':12,opacity:.55,'stroke-linecap':'round'});
+    arrow(g,L+110,T+170,L+30,T+170,'var(--ocean)',3);
+    put(g,'text',{x:L+40,y:T+192,'font-size':12,fill:'var(--ocean)','font-weight':600},
+      'cold return flow at depth');
+    // heat release
+    for(let i=0;i<5;i++){
+      arrow(g,R-330+i*46,T+26,R-330+i*46,T-6,'var(--warn)',1.6);
+    }
+    put(g,'text',{x:R-240,y:T-16,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--warn)','font-weight':600},'≈1 PW of heat released to the atmosphere');
+    // freshwater
+    arrow(g,R-70,T-6,R-70,T+28,'var(--lo)',2.4);
+    put(g,'text',{x:R-64,y:T+8,'font-size':11.5,fill:'var(--lo)','font-weight':600},'fresh');
+    put(g,'text',{x:R-64,y:T+22,'font-size':11.5,fill:'var(--lo)','font-weight':600},'water');
+    // salt feedback loop
+    put(g,'path',{d:'M'+(L+180)+' '+(T+56)+' C '+(L+300)+' '+(T+96)+', '+(R-280)+' '+(T+96)+', '+
+      (R-170)+' '+(T+56),fill:'none',stroke:'var(--acc)','stroke-width':1.8,'stroke-dasharray':'6 4'});
+    put(g,'text',{x:(L+R)/2-30,y:T+112,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--acc)','font-weight':600},'flow brings salt north → surface stays dense → flow continues');
+    put(g,'text',{x:(L+R)/2-30,y:T+128,'text-anchor':'middle','font-size':11,
+      fill:'var(--acc)'},'a positive feedback: it can hold itself on, and it can hold itself off');
+  })();
+
+  /* ── 4 · Stommel model ──────────────────────────────────────── */
+  (function(){
+    const hys=$('hysG'), box=$('boxG'), ts=$('tsG'); if(!hys) return;
+    const A=20, C=285.7, VOL=2000;         // a, 2kβ, adjustment volume
+    const b=C/2;                            // kβ
+    const Hthr=A*A/(4*C);
+    function qOn(H){ const disc=A*A-4*C*H; return disc<0?null:(A+Math.sqrt(disc))/2; }
+    function qUn(H){ const disc=A*A-4*C*H; return disc<0?null:(A-Math.sqrt(disc))/2; }
+    function qOff(H){ return (A-Math.sqrt(A*A+4*C*H))/2; }
+
+    function drawHys(H,pt){
+      clr(hys);
+      const L=54,R=414,T=36,B=246;
+      const X=h=>L+(R-L)*(h/0.6), Y=q=>B-(B-T)*((q+6)/28);
+      for(let q=-5;q<=20;q+=5){
+        put(hys,'line',{x1:L,y1:Y(q),x2:R,y2:Y(q),stroke:'var(--grid)'});
+        put(hys,'text',{x:L-6,y:Y(q)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},q);
+      }
+      for(let h=0;h<=0.6;h+=0.2){
+        put(hys,'line',{x1:X(h),y1:T,x2:X(h),y2:B,stroke:'var(--grid)'});
+        put(hys,'text',{x:X(h),y:B+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},h.toFixed(1));
+      }
+      put(hys,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--text-muted)'});
+      function branch(f,col,dash,w){
+        let d='';
+        for(let i=0;i<=240;i++){
+          const h=0.6*i/240, q=f(h);
+          if(q===null) break;
+          d+=(d?'L':'M')+X(h).toFixed(1)+' '+Y(q).toFixed(1);
+        }
+        const a={d:d,fill:'none',stroke:col,'stroke-width':w||2.4};
+        if(dash) a['stroke-dasharray']=dash;
+        put(hys,'path',a);
+      }
+      branch(qOn,'var(--hi)');
+      branch(qUn,'var(--text-muted)','5 4',1.6);
+      branch(qOff,'var(--lo)');
+      put(hys,'text',{x:L+8,y:Y(19.5),'font-size':11,fill:'var(--hi)','font-weight':600},
+        'ON — stable');
+      put(hys,'text',{x:L+8,y:Y(1.6),'font-size':11,fill:'var(--text-muted)'},'unstable');
+      put(hys,'text',{x:L+8,y:Y(-3.4),'font-size':11,fill:'var(--lo)','font-weight':600},
+        'OFF / reversed — also stable');
+      // threshold
+      put(hys,'line',{x1:X(Hthr),y1:T,x2:X(Hthr),y2:B,stroke:'var(--warn)','stroke-dasharray':'4 4'});
+      put(hys,'text',{x:X(Hthr)-4,y:T+12,'text-anchor':'end','font-size':10.5,
+        fill:'var(--warn)','font-weight':600},'collapse');
+      // hysteresis arrows
+      arrow(hys,X(Hthr),Y(qOn(Hthr)),X(Hthr),Y(qOff(Hthr))+4,'var(--warn)',2);
+      arrow(hys,X(0.01),Y(qOff(0.01)),X(0.01),Y(qOn(0.01))-4,'var(--acc)',2);
+      put(hys,'text',{x:X(0.02)+4,y:Y(6),'font-size':10.5,fill:'var(--acc)'},'recovery only near H = 0');
+      if(pt) put(hys,'circle',{cx:X(pt.h),cy:Y(pt.q),r:6,fill:'var(--text-primary)',
+        stroke:'var(--surface-1)','stroke-width':2});
+      put(hys,'text',{x:L,y:T-16,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+        'Equilibrium overturning q');
+      put(hys,'text',{x:L,y:T-3,'font-size':10.5,fill:'var(--text-muted)'},'Sv, versus freshwater flux H');
+      put(hys,'text',{x:(L+R)/2,y:B+34,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},'freshwater flux H, Sv');
+    }
+    function drawBox(q){
+      clr(box);
+      const on=q>6;
+      put(box,'rect',{x:24,y:78,width:170,height:130,rx:10,fill:'var(--hi)',opacity:.22,
+        stroke:'var(--hi)'});
+      put(box,'text',{x:109,y:104,'text-anchor':'middle','font-size':12.5,
+        fill:'var(--text-primary)','font-weight':600},'low latitude');
+      put(box,'text',{x:109,y:122,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-secondary)'},'warm, salty');
+      put(box,'rect',{x:236,y:78,width:170,height:130,rx:10,fill:'var(--lo)',opacity:.22,
+        stroke:'var(--lo)'});
+      put(box,'text',{x:321,y:104,'text-anchor':'middle','font-size':12.5,
+        fill:'var(--text-primary)','font-weight':600},'high latitude');
+      put(box,'text',{x:321,y:122,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-secondary)'},'cold, fresher');
+      const w=Math.max(1.2,Math.min(8,Math.abs(q)*0.42));
+      const col=on?'var(--hi)':'var(--lo)';
+      if(q>=0){
+        arrow(box,194,112,236,112,col,w);
+        arrow(box,236,176,194,176,col,w);
+      } else {
+        arrow(box,236,112,194,112,col,w);
+        arrow(box,194,176,236,176,col,w);
+      }
+      put(box,'text',{x:215,y:150,'text-anchor':'middle','font-size':13,
+        fill:col,'font-weight':700},Math.abs(q).toFixed(1)+' Sv');
+      arrow(box,321,44,321,74,'var(--lo)',2.4);
+      put(box,'text',{x:330,y:60,'font-size':11.5,fill:'var(--lo)'},'freshwater H');
+      put(box,'text',{x:215,y:238,'text-anchor':'middle','font-size':12.5,
+        fill:on?'var(--acc)':'var(--warn)','font-weight':600},
+        on?'circulation ON — heat carried north':'circulation COLLAPSED — no northward heat');
+      put(box,'text',{x:215,y:262,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--text-muted)'},on?'North Atlantic region stays mild'
+          :'North Atlantic region cools by several K');
+      put(box,'text',{x:24,y:34,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+        'The two-box model');
+    }
+    function run(scn){
+      const N=800, dt=5;           // 4000 years
+      const H=[],Q=[];
+      let dS=2*0.10/qOn(0.10);
+      for(let i=0;i<N;i++){
+        const t=i*dt;
+        let h;
+        if(scn==='heinrich') h=(t>=500&&t<1300)?0.50:0.10;
+        else if(scn==='small') h=(t>=500&&t<1300)?0.25:0.10;
+        else if(scn==='sweep') h=t<2000?0.6*t/2000:0.6*(1-(t-2000)/2000);
+        else h=Math.min(0.45,0.10+0.35*t/2500);
+        const q=A-b*dS;
+        dS+=dt*(2*h-Math.abs(q)*dS)/VOL;
+        H.push(h); Q.push(q);
+      }
+      return {H:H,Q:Q,dt:dt};
+    }
+    function drawTs(scn){
+      const r=run(scn);
+      clr(ts);
+      const L=68,R=852,T=68,B=258;
+      const N=r.Q.length;
+      const X=i=>L+(R-L)*(i/(N-1));
+      const YQ=q=>B-(B-T)*((q+6)/28);
+      for(let q=-5;q<=20;q+=5){
+        put(ts,'line',{x1:L,y1:YQ(q),x2:R,y2:YQ(q),stroke:'var(--grid)'});
+        put(ts,'text',{x:L-8,y:YQ(q)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},q);
+      }
+      put(ts,'line',{x1:L,y1:YQ(0),x2:R,y2:YQ(0),stroke:'var(--text-muted)'});
+      // freshwater on its own scale, drawn as a band at the top
+      let dh='';
+      r.H.forEach((h,i)=>dh+=(i?'L':'M')+X(i).toFixed(1)+' '+(T-6-h*46).toFixed(1));
+      put(ts,'path',{d:dh,fill:'none',stroke:'var(--lo)','stroke-width':2});
+      put(ts,'text',{x:L,y:T-46,'font-size':11.5,fill:'var(--lo)','font-weight':600},
+        'freshwater flux H  (0 – 0.6 Sv)');
+      let dq='';
+      r.Q.forEach((q,i)=>dq+=(i?'L':'M')+X(i).toFixed(1)+' '+YQ(q).toFixed(1));
+      put(ts,'path',{d:dq,fill:'none',stroke:'var(--hi)','stroke-width':2.6});
+      put(ts,'text',{x:L+6,y:YQ(19),'font-size':11.5,fill:'var(--hi)','font-weight':600},
+        'overturning q, Sv');
+      for(let t=0;t<=4000;t+=500){
+        const i=t/r.dt;
+        put(ts,'line',{x1:X(i),y1:T,x2:X(i),y2:B,stroke:'var(--grid)'});
+        put(ts,'text',{x:X(i),y:B+18,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},t);
+      }
+      put(ts,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'years');
+      const qmin=Math.min(...r.Q), qend=r.Q[N-1];
+      let msg;
+      if(scn==='heinrich') msg='The pulse pushes the freshwater flux past the threshold and the circulation '+
+        'falls to <b class="big">'+qmin.toFixed(1)+' Sv</b>. When the pulse ends the forcing returns exactly '+
+        'to where it started — and the circulation does <b>not</b>. After 3000 further years it is at '+
+        '<b>'+qend.toFixed(1)+' Sv</b>. <b>The system remembers.</b>';
+      else if(scn==='small') msg='The same pulse shape, half the size. The circulation weakens to <b>'+
+        qmin.toFixed(1)+' Sv</b> and then recovers completely, ending at <b>'+qend.toFixed(1)+' Sv</b>. '+
+        'Below the threshold the response is reversible and roughly proportional to the forcing — which is '+
+        'exactly why the threshold is the interesting quantity, not the sensitivity.';
+      else if(scn==='sweep') msg='Ramp the forcing up slowly and the circulation weakens gradually, then '+
+        'falls off a cliff near <b>'+Hthr.toFixed(2)+' Sv</b>. Ramp it back down over the same path and it '+
+        'stays collapsed almost all the way to zero. The area between the two paths is the <b>hysteresis '+
+        'loop</b>, and it is the reason a transient meltwater event can leave a permanent mark.';
+      else msg='A gradual, monotonic increase — nothing sudden anywhere in the forcing. The circulation '+
+        'declines slowly, then collapses to <b class="big">'+qend.toFixed(1)+' Sv</b> in the space of a '+
+        'couple of centuries. <b>If you were monitoring q, you would have very little warning.</b>';
+      $('tsRead').innerHTML=msg;
+    }
+
+    const fw=$('fw');
+    function updateEq(){
+      const H=+fw.value;
+      $('fwv').textContent=H.toFixed(2)+' Sv';
+      const q=(H<=Hthr)?qOn(H):qOff(H);
+      drawHys(H,{h:H,q:q});
+      drawBox(q);
+      $('kQ').textContent=q.toFixed(1);
+      $('kHt').textContent=(Math.max(0,q)*0.057).toFixed(2);
+      $('kThr').textContent=Hthr.toFixed(2);
+      $('kRec').textContent='0.00';
+      $('hysRead').innerHTML=(H<=Hthr
+        ? 'At H = <b>'+H.toFixed(2)+' Sv</b> the circulation sits on the strong branch at '+
+          '<b class="big">'+q.toFixed(1)+' Sv</b>. Note that a <em>second</em> stable state exists at the '+
+          'same forcing, at <b>'+qOff(H).toFixed(1)+' Sv</b> — the system could be in either. Which one it '+
+          'is in depends on its history, not on the forcing.'
+        : 'Past the threshold there is only one equilibrium left, at <b class="big">'+q.toFixed(1)+
+          ' Sv</b>. The strong branch has ceased to exist — this is a <b>saddle-node bifurcation</b>, and '+
+          'crossing it is irreversible in the sense that turning the forcing back down does not undo it.')+
+        ' The threshold here is <b>'+Hthr.toFixed(2)+' Sv</b>; the circulation only re-starts once the '+
+        'freshwater flux is brought back essentially to zero.';
+    }
+    fw.oninput=updateEq;
+    let scn='heinrich';
+    document.querySelectorAll('[data-ex]').forEach(bt=>{
+      bt.onclick=()=>{
+        document.querySelectorAll('[data-ex]').forEach(o=>o.setAttribute('aria-pressed','false'));
+        bt.setAttribute('aria-pressed','true'); scn=bt.dataset.ex; drawTs(scn);
+      };
+    });
+    updateEq(); drawTs(scn);
+  })();
+
+  /* ── 5 · bipolar seesaw ─────────────────────────────────────── */
+  (function(){
+    const g=$('bsG'); if(!g) return;
+    const sl={tau:$('bsTau'),gap:$('bsGap')};
+    function draw(){
+      const tau=+sl.tau.value, gap=+sl.gap.value;
+      $('bsTauv').textContent=tau+' yr';
+      $('bsGapv').textContent=gap+' yr';
+      clr(g);
+      const L=70,R=852,T=44,B=250, YRS=12000, dt=10, N=YRS/dt;
+      const X=i=>L+(R-L)*(i/(N-1));
+      // north: sawtooth — abrupt rise, exponential decay, abrupt fall back
+      const NN=[],SS=[];
+      let s=0;
+      for(let i=0;i<N;i++){
+        const t=i*dt, ph=t%gap;
+        const on=ph<gap*0.55;
+        const n=on?Math.exp(-ph/(gap*0.35)):0;
+        NN.push(n);
+        s+=dt*((-(n-0.42))-s)/tau;
+        SS.push(s);
+      }
+      const smx=Math.max(...SS.map(Math.abs))||1;
+      const T1=T,B1=T+90, T2=T+118,B2=T+208;
+      put(g,'rect',{x:L,y:T1,width:R-L,height:B1-T1,fill:'var(--surface-2)',opacity:.5});
+      put(g,'rect',{x:L,y:T2,width:R-L,height:B2-T2,fill:'var(--surface-2)',opacity:.5});
+      let dn='';
+      NN.forEach((v,i)=>dn+=(i?'L':'M')+X(i).toFixed(1)+' '+(B1-6-(B1-T1-12)*v).toFixed(1));
+      put(g,'path',{d:dn,fill:'none',stroke:'var(--hi)','stroke-width':1.8});
+      let ds='';
+      SS.forEach((v,i)=>ds+=(i?'L':'M')+X(i).toFixed(1)+' '+
+        (((T2+B2)/2)-(B2-T2-16)/2*(v/smx)).toFixed(1));
+      put(g,'path',{d:ds,fill:'none',stroke:'var(--ocean)','stroke-width':2.2});
+      put(g,'text',{x:L+6,y:T1+15,'font-size':11.5,fill:'var(--hi)','font-weight':600},
+        'North (Greenland): abrupt warming, gradual cooling');
+      put(g,'text',{x:L+6,y:T2+15,'font-size':11.5,fill:'var(--ocean)','font-weight':600},
+        'South (Antarctica): the time integral of the north, with the sign reversed');
+      // mark the warming instants and the southern maxima
+      for(let t=0;t<YRS;t+=gap){
+        const i=Math.round(t/dt);
+        put(g,'line',{x1:X(i),y1:T1,x2:X(i),y2:B2,stroke:'var(--acc)','stroke-dasharray':'3 4'});
+      }
+      put(g,'text',{x:R,y:T1-10,'text-anchor':'end','font-size':10.5,fill:'var(--acc)'},
+        'green lines: the moment the north jumps');
+      for(let t=0;t<=YRS;t+=2000){
+        const i=Math.min(N-1,t/dt);
+        put(g,'text',{x:X(i),y:B2+18,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},t);
+      }
+      put(g,'text',{x:(L+R)/2,y:B2+38,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'years');
+      // find southern maximum offset relative to nearest north jump
+      let bestLag=0;
+      {
+        const i0=Math.round(gap*3/dt), i1=Math.round(gap*4/dt);
+        let mi=i0, mv=-1e9;
+        for(let i=i0;i<Math.min(i1,N);i++) if(SS[i]>mv){mv=SS[i];mi=i;}
+        bestLag=(mi-i0)*dt;
+      }
+      const lead=gap-bestLag;
+      $('bsRead').innerHTML='With a reservoir time constant of <b>'+tau+' years</b> and events every <b>'+
+        gap+' years</b>, the southern temperature reaches its maximum <b class="big">'+lead+
+        '</b> years before the next northern jump — that is, essentially <b>at</b> it. '+(tau<300
+          ? 'You have made the reservoir so leaky that the south is just a mirror of the north. That is not '+
+            'what the ice cores show.'
+          : 'The south warms throughout the northern cold phase, peaks as the north jumps, and then cools '+
+            'while the north is warm. <b>One equation, and the observed phase relationship falls out.</b>');
+    }
+    Object.values(sl).forEach(x=>x.oninput=draw);
+    draw();
+  })();
+
+  /* ── 6 · deglaciation schematic ─────────────────────────────── */
+  (function(){
+    const g=$('degG'); if(!g) return;
+    const L=76,R=852,T=56,B=340;
+    const X=t=>L+(R-L)*((22-t)/17);        // 22 ka → 5 ka
+    put(g,'text',{x:L,y:24,'font-size':12,fill:'var(--warn)','font-weight':600},
+      'SCHEMATIC — sequence and relative timing, not data');
+    for(let t=22;t>=5;t-=2){
+      put(g,'line',{x1:X(t),y1:T,x2:X(t),y2:B,stroke:'var(--grid)'});
+      put(g,'text',{x:X(t),y:B+18,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},t);
+    }
+    put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11,
+      fill:'var(--text-muted)'},'thousands of years before present');
+    function curve(f,col,y0,y1,lab,ly,w){
+      let d='';
+      for(let i=0;i<=340;i++){
+        const t=22-17*i/340, v=f(t);
+        d+=(i?'L':'M')+X(t).toFixed(1)+' '+(y1-(y1-y0)*v).toFixed(1);
+      }
+      put(g,'path',{d:d,fill:'none',stroke:col,'stroke-width':w||2});
+      put(g,'text',{x:L+6,y:ly,'font-size':11.5,fill:col,'font-weight':600},lab);
+    }
+    const sig=(t,c,k)=>1/(1+Math.exp((t-c)/k));
+    curve(t=>0.15+0.85*sig(t,15.5,2.6),'var(--frc)',T+6,T+62,
+      '65°N summer insolation — the trigger',T+18,1.8);
+    curve(t=>0.08+0.92*sig(t,14.2,2.2),'var(--acc)',T+74,T+130,
+      'CO₂: 180 → 265 ppm',T+86,2);
+    curve(t=>0.08+0.92*sig(t,15.0,2.4),'var(--ocean)',T+142,T+198,
+      'Antarctic temperature — rises with CO₂',T+154,2);
+    curve(t=>{
+      let v=0.05+0.95*sig(t,15.5,1.6);
+      // Younger Dryas 12.9–11.7 and the Oldest Dryas / H1 interval
+      if(t<12.9&&t>11.7) v-=0.62;
+      if(t<17.5&&t>15.0) v-=0.10;
+      return Math.max(0,v);
+    },'var(--hi)',T+210,T+266,'Greenland temperature — interrupted twice',T+222,2);
+    [[12.3,'Younger Dryas'],[16.2,'H1 meltwater']].forEach(ev=>{
+      put(g,'rect',{x:X(ev[0])-16,y:T,width:32,height:B-T,fill:'var(--lo)',opacity:.10});
+      put(g,'text',{x:X(ev[0]),y:T-8,'text-anchor':'middle','font-size':11,
+        fill:'var(--lo)','font-weight':600},ev[1]);
+    });
+  })();
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

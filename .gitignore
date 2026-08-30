@@ -21,20 +21,20 @@ Goosse2010_textbook/*
 # lecturer running orders / lecture outlines. Never published to docs/.
 *Teacher*.html
 *Teacher*.dc.html
-energy_fluxes/Lecture2-Teacher-outline.html
-local_energy_balance/Lecture3-Teacher-outline.html
-hydro_and_carbon_cycle/Lecture4-Teacher-outline.html
-climate_models/Lecture5-Teacher-outline.html
-response_to_perturbations/Lecture6-Teacher-outline.html
-climate_past_present/Lecture7-Teacher-outline.html
+lecture-2-earths-energy-budget/Lecture2-Teacher-outline.html
+lecture-3-climate-at-a-local-scale/Lecture3-Teacher-outline.html
+lecture-4-global-cycles-water-and-carbon/Lecture4-Teacher-outline.html
+lecture-5-modelling-the-climate-system/Lecture5-Teacher-outline.html
+lecture-6-response-of-the-climate-system-to-perturbations/Lecture6-Teacher-outline.html
+lecture-7-climate-change-past-and-present/Lecture7-Teacher-outline.html
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
 # "(Student)" bundles used for the public site. Kept out to avoid confusion.
 *.dc.html
-!atmospheric_components/Governing Equations of the Atmosphere.dc.html
-!insolation/Earth Insolation v2.dc.html
-!local_energy_balance/explorer-standalone-src.dc.html
+!lecture-5-modelling-the-climate-system/atmospheric-equations/Governing Equations of the Atmosphere.dc.html
+!lecture-2-earths-energy-budget/insolation/Earth Insolation v2.dc.html
+!lecture-3-climate-at-a-local-scale/explorer-standalone-src.dc.html
 doc-page.js
 support.js
 
@@ -42,10 +42,10 @@ support.js
 # its own copy of the runtime is required, not a stray duplicate.
 !docs/**/doc-page.js
 !docs/**/support.js
-energy_fluxes/Lecture 2 - The Earths Energy Budget.pptx
-local_energy_balance/Lecture3-Climate-at-a-local-scale2025.pptx
-hydro_and_carbon_cycle/Lecture4-Global-cycles-of-water-and-carbon2025.pptx
-climate_models/Lecture5-Modelling-the-climate-system2025.pptx
-response_to_perturbations/Lecture6-Response-of-the-climate-system-to-perturbations2025.pptx
-climate_past_present/Lecture7-Climate-change-past-and-present2025.pptx
-future_climate/Lecture8-Climate-change-the future2026.pptx
+lecture-2-earths-energy-budget/Lecture 2 - The Earths Energy Budget.pptx
+lecture-3-climate-at-a-local-scale/Lecture3-Climate-at-a-local-scale2025.pptx
+lecture-4-global-cycles-water-and-carbon/Lecture4-Global-cycles-of-water-and-carbon2025.pptx
+lecture-5-modelling-the-climate-system/Lecture5-Modelling-the-climate-system2025.pptx
+lecture-6-response-of-the-climate-system-to-perturbations/Lecture6-Response-of-the-climate-system-to-perturbations2025.pptx
+lecture-7-climate-change-past-and-present/Lecture7-Climate-change-past-and-present2025.pptx
+lecture-8-climate-change-the-future/Lecture8-Climate-change-the future2026.pptx
