@@ -301,8 +301,6 @@ Modelling the climate system &middot; 3 of 5</p>
   <h3>Reflection questions</h3>
   <p class="cap">Work them out from the panel above before you reveal anything.</p>
   <ol class="qs" id="qList"></ol>
-  <button class="ghost" id="solBtn" style="margin-top:12px">Reveal solutions</button>
-  <div id="solBody"></div>
 </div>
 
 <h2 class="sec">Take it further</h2>
@@ -330,6 +328,7 @@ Every figure on this page can be exported as PNG, and the underlying series as C
 &nbsp;&middot;&nbsp; Next: <a href="../components.html">components, coupling and scale &rarr;</a></p>
 
 </div>
+<script src="../../assets/reveal-answers.js"></script>
 <script>
 (function(){
   const $=id=>document.getElementById(id);
@@ -589,7 +588,7 @@ Every figure on this page can be exported as PNG, and the underlying series as C
     vol:{label:'Envelope volume', sym:'V', unit:'m³', min:500, max:6000, step:50, dec:0}
   };
 
-  const S=Object.assign({ex:0, mode:EXS[0].mode, showSolution:false}, P0);
+  const S=Object.assign({ex:0, mode:EXS[0].mode}, P0);
 
   /* ── derived quantities ────────────────────────────────────────── */
   function M(){
@@ -1155,7 +1154,7 @@ Every figure on this page can be exported as PNG, and the underlying series as C
       const b=document.createElement('button');
       b.className='ghost'; b.setAttribute('aria-pressed', i===S.ex?'true':'false');
       b.innerHTML='<b style="font-family:ui-monospace,Menlo,Consolas,monospace">'+e.tag+'</b> &nbsp;'+e.title;
-      b.onclick=()=>{ S.ex=i; S.mode=EXS[i].mode; S.showSolution=false; render(); };
+      b.onclick=()=>{ S.ex=i; S.mode=EXS[i].mode; render(); };
       row.appendChild(b);
     });
   }
@@ -1228,17 +1227,16 @@ Every figure on this page can be exported as PNG, and the underlying series as C
     $('analogy').textContent=ex.analogy;
     $('phenTitle').textContent=ex.phenTitle;
     $('phenomenon').textContent=ex.phenomenon;
-    $('qList').innerHTML=ex.qs.map(q=>'<li>'+q+'</li>').join('');
-    $('solBtn').textContent=S.showSolution?'Hide solutions':'Reveal solutions';
-    $('solBody').innerHTML=S.showSolution
-      ? ex.qs.map((q,i)=>'<div class="ans"><span class="al">'+'abcdef'[i]+')</span><span>'+
-          (ex.answers[i]||'')+'</span></div>').join('')
-      : '';
+    $('qList').innerHTML=ex.qs.map((q,i)=>'<li>'+q+
+      ((ex.answers[i]||'')
+        ? '<button type="button" class="rev" aria-expanded="false">Reveal answer</button>'+
+          '<span class="ans" hidden>'+(ex.answers[i]||'')+'</span>'
+        : '')+
+      '</li>').join('');
     renderReadouts(); renderWork(); draw();
   }
 
   /* ── wiring ────────────────────────────────────────────────────── */
-  $('solBtn').onclick=()=>{ S.showSolution=!S.showSolution; render(); };
   $('resetBtn').onclick=()=>{ EXS[S.ex].ctrls.forEach(k=>{ S[k]=P0[k]; }); render(); };
   $('dlPNG').onclick=()=>{ $('cvPlot').toBlob(b=>download('ee501_'+S.mode+'.png',b)); };
   $('dlCSV').onclick=()=>{ download('ee501_'+S.mode+'.csv', new Blob([csv()],{type:'text/csv'})); };

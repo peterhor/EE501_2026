@@ -27,6 +27,11 @@ lecture-4-global-cycles-water-and-carbon/Lecture4-Teacher-outline.html
 lecture-5-modelling-the-climate-system/Lecture5-Teacher-outline.html
 lecture-6-response-of-the-climate-system-to-perturbations/Lecture6-Teacher-outline.html
 lecture-7-climate-change-past-and-present/Lecture7-Teacher-outline.html
+lecture-8-climate-change-the-future/Lecture8-Teacher-outline.html
+
+# Instructor hub: the index over the lecture outlines above, plus any working
+# files kept beside it. Never published to docs/.
+teacher/
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
