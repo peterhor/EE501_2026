@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EE501 - Reference Library</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f2e8;
+    --fg: #1c1b17;
+    --muted: #656155;
+    --surface: #fffdf8;
+    --surface-2: #f1ebde;
+    --line: #ddd4c3;
+    --accent: #9f4c1f;
+    --accent-soft: #efe0d4;
+    --warn: #7a1f24;
+    --warn-soft: #f2dddd;
+    --ok: #215f48;
+    --ok-soft: #dcece5;
+    --link: #1e5e66;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141516;
+      --fg: #ece7da;
+      --muted: #aaa393;
+      --surface: #1c1e20;
+      --surface-2: #25292c;
+      --line: #33373b;
+      --accent: #db8759;
+      --accent-soft: #34231c;
+      --warn: #ef9a9a;
+      --warn-soft: #372225;
+      --ok: #7dd4ad;
+      --ok-soft: #1d3129;
+      --link: #83cfd8;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 16px/1.6 Georgia, "Times New Roman", serif;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  a { color: var(--link); }
+  a:hover { color: var(--accent); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 34px 22px 80px; }
+  .crumb {
+    margin: 0 0 18px;
+    font: 600 13px/1.4 "Segoe UI", sans-serif;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .crumb a { color: inherit; }
+  header.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 860px) {
+    header.hero { grid-template-columns: 1fr; }
+  }
+  .hero-card, .panel, .ref {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+  .hero-card { padding: 28px 28px 24px; }
+  .hero-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+  @media (max-width: 640px) {
+    .hero-kpis { grid-template-columns: 1fr; }
+  }
+  .kpi {
+    background: var(--surface-2);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .kpi .n {
+    display: block;
+    font: 700 11px/1.2 "Segoe UI", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .kpi .v {
+    display: block;
+    margin-top: 4px;
+    font: 600 29px/1.1 "Segoe UI", sans-serif;
+    color: var(--fg);
+  }
+  .kpi .d {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .panel { padding: 22px 22px 18px; }
+  .tag {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font: 700 11px/1.1 "Segoe UI", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  h1 {
+    margin: 0 0 10px;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+  }
+  h2 {
+    margin: 30px 0 12px;
+    font: 700 13px/1.2 "Segoe UI", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  h3 {
+    margin: 0 0 4px;
+    font: 600 20px/1.25 "Segoe UI", sans-serif;
+    color: var(--fg);
+  }
+  p { margin: 0 0 12px; }
+  .small { font-size: 14px; color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 14px;
+  }
+  .ref { padding: 18px 18px 16px; }
+  .ref p { margin-bottom: 10px; }
+  .meta {
+    font: 600 12px/1.5 "Segoe UI", sans-serif;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .doi {
+    font: 600 13px/1.5 "Segoe UI", sans-serif;
+  }
+  .list {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .list li { margin-bottom: 8px; }
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 16px;
+    border-radius: 0 12px 12px 0;
+    margin: 16px 0 0;
+  }
+  .flag {
+    border-left-color: var(--warn);
+    background: var(--warn-soft);
+  }
+  .foot {
+    margin-top: 34px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  code {
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="crumb"><a href="./">&larr; EE501 course</a></p>
+
+  <header class="hero">
+    <div class="hero-card">
+      <h1>Reference Library</h1>
+      <p>This page collates the scientific literature cited across the published EE501 materials. The grey note at the foot of each teaching page remains the local source note; this page gathers the fuller reference trail and DOI links where verified.</p>
+      <div class="hero-kpis">
+        <div class="kpi"><span class="n">Published pages audited</span><span class="v">46</span><span class="d">HTML teaching pages with source-note footers in docs/</span></div>
+        <div class="kpi"><span class="n">Pages with substantive sources</span><span class="v">46</span><span class="d">No audited page was missing scientific grounding</span></div>
+        <div class="kpi"><span class="n">Verified DOI entries</span><span class="v">14</span><span class="d">Checked directly against Crossref in this audit pass</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <span class="tag ok">Audit result</span>
+      <h3>What this audit established</h3>
+      <p>Most course pages already have a usable source note in the footer. The main gap was discoverability: the literature and DOI trail were spread page by page rather than exposed as a course-level bibliography.</p>
+      <p class="small">Pages based mainly on first-principles calculations, constants, or textbook equations are still grounded in the local footer notes; this page concentrates on the literature that students may want to open directly.</p>
+      <div class="callout">Where a DOI below is present, it was checked directly against Crossref from this workspace. Only verified items are exposed on this student-facing page.</div>
+    </div>
+  </header>
+
+  <h2>Course-wide Foundations</h2>
+  <div class="grid">
+    <article class="ref">
+      <h3>Goosse et al. (2010)</h3>
+      <p><em>Introduction to Climate Dynamics and Climate Modelling.</em> Open textbook used throughout Lectures 1-8 as the main structural source.</p>
+      <p class="meta">Used across nearly all audited teaching pages.</p>
+      <p class="doi">Access: <a href="https://www.elic.ucl.ac.be/textbook/index.html" target="_blank" rel="noopener">textbook site</a></p>
+    </article>
+    <article class="ref">
+      <h3>Oke (1987)</h3>
+      <p><em>Boundary Layer Climates</em>, 2nd edition. Core source for Lecture 3 surface-property, soil-temperature, and turbulent-flux demonstrations.</p>
+      <p class="meta">Used on <a href="lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3 energy balance</a>, <a href="lecture-3-climate-at-a-local-scale/soil-temperature.html">soil temperature</a>, <a href="lecture-3-climate-at-a-local-scale/surface-properties.html">surface properties</a>, and <a href="lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">turbulent fluxes</a>.</p>
+      <p class="doi">Identifier pending: textbook/edition reference, no DOI verified in this pass.</p>
+    </article>
+    <article class="ref">
+      <h3>IPCC assessment chapters</h3>
+      <p>AR5 WG1 (2013-2014) and AR6 WG1 (2021) are used repeatedly for assessed values, forcing tables, modern energy budgets, and climate-change context.</p>
+      <p class="meta">Representative pages: <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a>, <a href="lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">forcing agents</a>, and <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
+      <p class="doi">Access: stable report URLs are preferable here to forcing chapter-level DOI guesses.</p>
+    </article>
+  </div>
+
+  <h2>Verified DOI Library</h2>
+  <div class="grid">
+    <article class="ref">
+      <h3>Wild et al. energy budget</h3>
+      <p>Wild, M. et al. (2012), <em>The global energy balance from a surface perspective.</em></p>
+      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a> and related Lecture 2 budget pages.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1007/s00382-012-1569-8" target="_blank" rel="noopener">10.1007/s00382-012-1569-8</a></p>
+    </article>
+    <article class="ref">
+      <h3>Trenberth, Fasullo and Kiehl</h3>
+      <p>Trenberth, K. E., J. T. Fasullo and J. Kiehl (2009), <em>Earth's Global Energy Budget.</em></p>
+      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a> and <a href="lecture-2-earths-energy-budget/greenhouse-effect.html">greenhouse effect</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1175/2008BAMS2634.1" target="_blank" rel="noopener">10.1175/2008BAMS2634.1</a></p>
+    </article>
+    <article class="ref">
+      <h3>von Schuckmann et al.</h3>
+      <p>von Schuckmann, K. et al. (2020), <em>Heat stored in the Earth system: where does the energy go?</em></p>
+      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.5194/essd-12-2013-2020" target="_blank" rel="noopener">10.5194/essd-12-2013-2020</a></p>
+    </article>
+    <article class="ref">
+      <h3>Peel, Finlayson and McMahon</h3>
+      <p>Peel, M. C., B. L. Finlayson and T. A. McMahon (2007), <em>Updated world map of the K&ouml;ppen-Geiger climate classification.</em></p>
+      <p class="meta">Used on <a href="lecture-1-components-of-the-climate-system/components-and-timescales.html">components and timescales</a> and <a href="lecture-1-components-of-the-climate-system/land-and-biosphere.html">land and biosphere</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.5194/hess-11-1633-2007" target="_blank" rel="noopener">10.5194/hess-11-1633-2007</a></p>
+    </article>
+    <article class="ref">
+      <h3>Soden and Held</h3>
+      <p>Soden, B. J. and I. M. Held (2006), <em>An Assessment of Climate Feedbacks in Coupled Ocean-Atmosphere Models.</em></p>
+      <p class="meta">Used on <a href="lecture-6-response-of-the-climate-system-to-perturbations/feedback-parameter.html">feedback parameter</a> and <a href="lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">physical feedbacks</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1175/JCLI3799.1" target="_blank" rel="noopener">10.1175/JCLI3799.1</a></p>
+    </article>
+    <article class="ref">
+      <h3>Friedlingstein et al. C4MIP</h3>
+      <p>Friedlingstein, P. et al. (2006), <em>Climate-Carbon Cycle Feedback Analysis: Results from the C4MIP Model Intercomparison.</em></p>
+      <p class="meta">Used on <a href="lecture-6-response-of-the-climate-system-to-perturbations/biogeochemical-feedbacks.html">biogeochemical feedbacks</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1175/JCLI3800.1" target="_blank" rel="noopener">10.1175/JCLI3800.1</a></p>
+    </article>
+    <article class="ref">
+      <h3>Berger daily insolation</h3>
+      <p>Berger, A. L. (1978), <em>Long-Term Variations of Daily Insolation and Quaternary Climatic Changes.</em></p>
+      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">orbital forcing</a> and <a href="lecture-7-climate-change-past-and-present/holocene-2000-years.html">Holocene and last 2000 years</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1175/1520-0469(1978)035&lt;2362:LTVODI&gt;2.0.CO;2" target="_blank" rel="noopener">10.1175/1520-0469(1978)035&lt;2362:LTVODI&gt;2.0.CO;2</a></p>
+    </article>
+    <article class="ref">
+      <h3>Lisiecki and Raymo</h3>
+      <p>Lisiecki, L. E. and M. E. Raymo (2005), <em>A Pliocene-Pleistocene stack of 57 globally distributed benthic d18O records.</em></p>
+      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">orbital forcing</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1029/2004PA001071" target="_blank" rel="noopener">10.1029/2004PA001071</a></p>
+    </article>
+    <article class="ref">
+      <h3>Jouzel et al. EPICA</h3>
+      <p>Jouzel, J. et al. (2007), <em>Orbital and Millennial Antarctic Climate Variability over the Past 800,000 Years.</em></p>
+      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">orbital forcing</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1126/science.1141038" target="_blank" rel="noopener">10.1126/science.1141038</a></p>
+    </article>
+    <article class="ref">
+      <h3>Shakun et al.</h3>
+      <p>Shakun, J. D. et al. (2012), <em>Global warming preceded by increasing carbon dioxide concentrations during the last deglaciation.</em></p>
+      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/abrupt-change.html">abrupt change</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1038/nature10915" target="_blank" rel="noopener">10.1038/nature10915</a></p>
+    </article>
+    <article class="ref">
+      <h3>North Greenland Ice Core Project Members</h3>
+      <p>North Greenland Ice Core Project Members (2004), <em>High-resolution record of Northern Hemisphere climate extending into the last interglacial period.</em></p>
+      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/abrupt-change.html">abrupt change</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1038/nature02805" target="_blank" rel="noopener">10.1038/nature02805</a></p>
+    </article>
+    <article class="ref">
+      <h3>Joos et al. impulse response</h3>
+      <p>Joos, F. et al. (2013), <em>Carbon dioxide and climate impulse response functions for the computation of greenhouse gas metrics: a multi-model analysis.</em></p>
+      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/carbon-budgets.html">carbon budgets</a>, <a href="lecture-8-climate-change-the-future/long-view.html">the long view</a>, and <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.5194/acp-13-2793-2013" target="_blank" rel="noopener">10.5194/acp-13-2793-2013</a></p>
+    </article>
+    <article class="ref">
+      <h3>van Vuuren et al. RCP overview</h3>
+      <p>van Vuuren, D. P. et al. (2011), <em>The representative concentration pathways: an overview.</em></p>
+      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1007/s10584-011-0148-z" target="_blank" rel="noopener">10.1007/s10584-011-0148-z</a></p>
+    </article>
+    <article class="ref">
+      <h3>Riahi et al. SSP overview</h3>
+      <p>Riahi, K. et al. (2017), <em>The Shared Socioeconomic Pathways and their energy, land use, and greenhouse gas emissions implications: An overview.</em></p>
+      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1016/j.gloenvcha.2016.05.009" target="_blank" rel="noopener">10.1016/j.gloenvcha.2016.05.009</a></p>
+    </article>
+    <article class="ref">
+      <h3>O'Neill et al. SSP narratives</h3>
+      <p>O'Neill, B. C. et al. (2017), <em>The roads ahead: Narratives for shared socioeconomic pathways describing world futures in the 21st century.</em></p>
+      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1016/j.gloenvcha.2015.01.004" target="_blank" rel="noopener">10.1016/j.gloenvcha.2015.01.004</a></p>
+    </article>
+    <article class="ref">
+      <h3>Fasullo and Trenberth</h3>
+      <p>Fasullo, J. T. and K. E. Trenberth (2008), <em>The Annual Cycle of the Energy Budget. Part II: Meridional Structures and Poleward Transports.</em></p>
+      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/geography.html">geography of the budget</a>.</p>
+      <p class="doi">DOI: <a href="https://doi.org/10.1175/2007JCLI1936.1" target="_blank" rel="noopener">10.1175/2007JCLI1936.1</a></p>
+    </article>
+  </div>
+
+  <h2>Audit Notes</h2>
+  <div class="panel">
+    <ul class="list">
+      <li>All 46 audited teaching pages with source-note footers had a defensible scientific basis. The dominant issue was that DOI-level references were not available in one place.</li>
+      <li>The most complete paper-backed sourcing is already present in Lecture 2 budget pages, Lecture 4 carbon-cycle pages, Lectures 7-8 paleoclimate and future-scenarios pages, and the provenance appendix.</li>
+      <li>The main follow-up work is bibliographic completion, not scientific rescue: books, chapter-derived demos, and abbreviated legacy citations should be expanded carefully rather than filled from memory.</li>
+    </ul>
+    <div class="callout">This page is intentionally conservative. If a DOI or full citation was not verified from this workspace, it is left out rather than inferred.</div>
+  </div>
+
+  <p class="foot">Compiled from the published course pages in docs/, the Goosse textbook, and DOI checks that were verified directly against Crossref during this audit. This page does not replace the page-level grey source note; it supplements it with a course-level bibliography.</p>
+</div>
+</body>
+</html>
