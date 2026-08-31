@@ -512,11 +512,97 @@ a.back:hover { color: #14403f; }
     </div>
   </div>
 
+  <!-- PART VI -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART VI</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">Variability, orbits and attribution</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">Chapter 5</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">The relations used in Lecture 7. Chapter 5 is largely descriptive and numbers few equations, so these are labelled by name rather than by equation number; each is standard and its source is given in the right-hand column and on the corresponding <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html" style="color:#b0431f;">teaching page</a>.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">insol</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Daily mean insolation at any latitude, season and orbit</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\bar{Q}_{\text{day}} = \frac{S_0}{\pi}\left(\frac{a}{r}\right)^{2}\left[H_0\sin\phi\sin\delta + \cos\phi\cos\delta\sin H_0\right]$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">With \(\cos H_0 = -\tan\phi\tan\delta\), \(\sin\delta = \sin\varepsilon\sin\lambda\) and \(a/r = (1 + e\cos\nu)/(1-e^2)\), \(\nu = \lambda - \bar\omega\). Exact. The three orbital parameters \(e,\ \varepsilon,\ \bar\omega\) enter here and nowhere else — everything the astronomical theory says about forcing is contained in this one expression.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">φ — latitude &nbsp; λ — solar longitude<br />ε — obliquity, 22.0–24.5°<br />e — eccentricity, 0–0.058<br />ω̄ — longitude of perihelion<br />65°N, June solstice, today: 478 W m⁻²</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">annual</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Global annual mean insolation</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\bar{Q} = \frac{S_0}{4\sqrt{1-e^{2}}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Neither obliquity nor precession appears. Across the full range of eccentricity this varies by 0.17 %, about 0.5 W m⁻² — for comparison, a CO₂ doubling is 3.7. <b>Orbital forcing redistributes energy; it barely adds any.</b> That is why it needs an amplifier.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">e = 0.0167 ⇒ 340.3 W m⁻²<br />e = 0.058 &nbsp;⇒ 340.8 W m⁻²</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">S/N</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Emergence of a forced signal from internal variability</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{S}{N}(t) = \frac{b\,t}{\sigma/\sqrt{n}}, \qquad t_{\text{emerge}} = \frac{2\sigma}{b\sqrt{n}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">A trend \(b\) accumulates linearly while noise averages down as \(1/\sqrt{n}\). Both the area averaged over and the number of years contribute to \(n\), which is why the global mean shows a trend that a single grid box does not. Time of emergence is conventionally taken at \(S/N = 2\).</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">σ, annual mean SAT:<br />global 0.11 K &nbsp; Europe 0.45 K<br />grid box 0.7 K &nbsp; ice edge 1.8 K<br />after Hawkins &amp; Sutton (2012)</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">Stommel</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Two-box overturning circulation</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$q = k(\alpha\Delta T - \beta\Delta S), \qquad V\frac{\mathrm{d}\Delta S}{\mathrm{d}t} = 2H - |q|\,\Delta S$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Stommel (1961). Temperature is restored fast and treated as fixed; salinity is prognostic. The equilibria are the roots of a quadratic in \(q\), giving <b>two stable branches</b> separated by an unstable one, and a saddle-node bifurcation at \(H_c\) beyond which the strong branch ceases to exist. The source of hysteresis and of abrupt change.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">q — overturning, Sv<br />H — freshwater flux, Sv<br />α, β — expansion coefficients<br />present-day Atlantic ≈ 18 Sv, ≈1 PW</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">seesaw</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">The thermal bipolar seesaw</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\mathrm{d}T_S}{\mathrm{d}t} = \frac{-T_N - T_S}{\tau}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Stocker and Johnsen (2003). The southern reservoir integrates the northern signal rather than mirroring it, which is why Antarctic ice cores show smooth maxima at the moment Greenland jumps. One equation, and the observed inter-hemispheric phasing follows.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">τ ≈ 1000 yr<br />short τ ⇒ mirror image<br />long τ ⇒ smoothed integral</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">ice</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Asymmetric ice-volume response</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\mathrm{d}y}{\mathrm{d}t} = \frac{x - y}{\tau}, \qquad \tau = \begin{cases}\tau_0/(1+b) & \text{melting}\\[2pt] \tau_0/(1-b) & \text{growing}\end{cases}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Imbrie and Imbrie (1980). Ice melts faster than it grows. That single non-linearity turns a forcing containing only 19, 23 and 41 kyr into a sawtooth response with power near 100 kyr — <b>a frequency that is not in the forcing</b>. It does not, on its own, solve the 100-kyr problem.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">y — ice volume<br />x — normalised 65°N summer<br />insolation, sign reversed<br />τ<sub>0</sub> ≈ 17 kyr &nbsp; b ≈ 0.6</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">D&amp;A</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Detection and attribution regression</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T(t) = \sum_{i=1}^{m} \beta_i\,\mathrm{Resp}_i(t) + u(t)$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Models supply the <em>shape</em> of each response — the fingerprint; the observations supply the amplitude through the fitted \(\beta_i\); the statistics of \(u\) come from long control simulations. \(\beta_i\) significantly greater than zero is <b>detection</b>; \(\beta_i\) consistent with one means the model amplitude needs no rescaling.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">β<sub>i</sub> — scaling coefficient<br />u — internal variability<br />worked example in Goosse<br />Fig. 5.43: β<sub>1</sub> = 0.6, β<sub>2</sub> = 1.2</div>
+      </div>
+
+    </div>
+  </div>
+
   <div style="width: 100%; max-width: 1060px; margin-top: 32px; background: #faf8f3; border: 1px solid #ddd8cb; padding: 36px 40px; display: flex; flex-direction: column; gap: 18px;">
     <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #b0431f;">Notes on scope</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; font-size: 16.5px; line-height: 1.6; color: #4a4638;">
       <p style="margin: 0;">The Chapter 3 PDF supplied ends at Eq. 3.30 (RMS error metric for model validation), so Eqs. 3.42–3.43 are not in it. Chapter 2 likewise ends at Eq. 2.49 — Part III covers 2.40 through 2.49. Send the missing pages and they'll be added here.</p>
       <p style="margin: 0;">Equations 4.2 and 4.3 are written with square roots, the standard IPCC form for CH₄ and N₂O; the text layer of the PDF drops radical symbols. All numerical values are as printed in Goosse et al. (2010).</p>
+    <p style="margin: 0;">Part VI is a companion to Lecture 7 rather than a transcription of Chapter 5, which sets out the physics of variability and of past climates largely in words. The insolation integral and the global annual mean are standard results of orbital mechanics; the signal-to-noise scaling is the argument behind Fig. 5.1 written out; the Stommel, seesaw and Imbrie–Imbrie relations are the published conceptual models named in the right-hand column, used on the teaching pages to make Chapter 5's qualitative statements quantitative; and the regression is Chapter 5's own detection and attribution formulation, of which Fig. 5.43 is the worked illustration.</p>
     <p style="margin: 0;">Part V uses ΔQ = 3.7 W m⁻² for a CO₂ doubling and λ<sub>0</sub> = −3.2 W m⁻² K⁻¹, following AR5 and the values Goosse quotes from Soden and Held (2006). The textbook's own worked examples use 3.8 for both, so its climate sensitivities come out slightly larger. Equations 4.6, 4.8, 4.9, 4.11 and 4.12 are intermediate steps and are folded into the entries above rather than listed separately.</p>
     </div>
   </div>
