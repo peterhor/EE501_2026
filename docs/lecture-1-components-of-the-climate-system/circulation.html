@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmospheric circulation — Coriolis, geostrophy, cells and monsoons</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --atm:#2a78d6; --ocn:#12667f; --cry:#7b5bd6; --bio:#1baf7a; --ped:#8a6b45;
+    --warn:#d98324; --hot:#c8443a; --acc:#2a78d6;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --atm:#5b9ae8; --ocn:#3d9dbd; --cry:#a78bea; --bio:#3cc596; --ped:#a08258;
+    --warn:#e09a44; --hot:#d9564c; --acc:#5b9ae8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p:last-child{margin-bottom:0}
+  p b,li b,td b{color:var(--text-primary);font-weight:600}
+  ul,ol{margin:0 0 12px;padding-left:22px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  a{color:var(--acc)}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
+  .eq b{font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 14px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;
+    color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--text-primary)}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00b7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px;gap:10px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two,.three{grid-template-columns:1fr}}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+  .pill{font-size:11.5px;letter-spacing:.04em;border-radius:999px;padding:3px 10px;
+    background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line-soft)}
+  .xref{background:var(--surface-2);border-radius:10px;padding:12px 15px;margin-top:14px;
+    font-size:13.5px;color:var(--text-secondary)}
+  .xref b{color:var(--text-primary)}
+  .xref a{font-weight:600;text-decoration:none}
+  .xref a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="the-atmosphere.html">&larr; The atmosphere</a> &nbsp;&middot;&nbsp;
+Components of the climate system &middot; 4 of 7</p>
+
+<header>
+  <div>
+    <h1>Why the wind blows where it does</h1>
+    <p class="sub">The tropics receive more energy than they emit and the poles emit more than they receive,
+    so something has to carry heat poleward. On a non-rotating Earth that would be one enormous convection
+    cell per hemisphere. Rotation breaks it into three, turns every wind sideways, and produces the deserts,
+    the storm tracks and the monsoons.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; Convection first</a>
+  <a href="#s2">2 &middot; Coriolis</a>
+  <a href="#s3">3 &middot; Geostrophic balance</a>
+  <a href="#s4">4 &middot; Three cells</a>
+  <a href="#s5">5 &middot; ITCZ and monsoon</a>
+</div>
+
+<!-- ═══════════ 1 ═══════════ -->
+<h2 class="sec" id="s1">1 &middot; Start without rotation</h2>
+
+<div class="card">
+  <h3>A fluid heated from below and cooled from above</h3>
+  <p class="cap">Goosse et al. (2010), Fig.&nbsp;G.2.</p>
+  <p>Heat a shallow layer of fluid at the bottom and cool it at the top and it will not conduct the heat
+  through &mdash; it will overturn. Warm fluid is less dense, rises, spreads out at the top, cools, sinks
+  and returns. That is <b>convection</b>, and on the rotating Earth it operates at every scale at once:</p>
+  <ul>
+    <li>A <b>thermal</b> over a ploughed field, a few hundred metres across, lasting minutes.</li>
+    <li>A <b>cumulonimbus</b>, 10&nbsp;km across and 15&nbsp;km tall, lasting an hour.</li>
+    <li>A <b>sea breeze</b>, tens of kilometres, reversing daily.</li>
+    <li>A <b>monsoon</b>, thousands of kilometres, reversing annually.</li>
+    <li>The <b>Hadley cell</b>, a third of the way to the pole, permanent.</li>
+  </ul>
+  <p class="note"><b>The same physics, five times over.</b> Every one of them is the buoyancy calculation from
+  the <a href="the-atmosphere.html#s6">previous page</a> applied at a different scale, and the only thing that
+  really changes between them is whether rotation has time to matter. It takes about a quarter of a pendulum
+  day &mdash; a few hours in mid-latitudes &mdash; for the Coriolis force to bend a flow appreciably. Anything
+  faster than that goes straight; anything slower turns.</p>
+  <p>On a non-rotating Earth the whole picture would be simple: air rises at the equator where it is heated,
+  flows poleward aloft, sinks at the pole, and returns along the surface. One cell per hemisphere, surface
+  winds everywhere from the pole towards the equator. <b>The Earth does not do this, and the reason is that it
+  spins.</b></p>
+</div>
+
+<!-- ═══════════ 2 ═══════════ -->
+<h2 class="sec" id="s2">2 &middot; The Coriolis force</h2>
+
+<div class="card">
+  <h3>An apparent force, and a real deflection</h3>
+  <p>Stand on a merry-go-round and roll a ball straight across it. To anyone standing beside the merry-go-round
+  the ball goes in a straight line. To you, spinning with it, the ball curves. Nothing pushed it &mdash; you
+  moved. The Earth is the merry-go-round, and it turns once per sidereal day.</p>
+  <p>Because the Earth is a sphere, only the <em>component</em> of the rotation vector perpendicular to the
+  local surface matters, and that varies with latitude:</p>
+  <div class="eq">
+    f = 2&Omega; sin&phi;
+    <span class="u">the Coriolis parameter, in s<sup>&minus;1</sup>. &Omega; = 7.292&times;10<sup>&minus;5</sup>
+    s<sup>&minus;1</sup>. Zero at the equator, maximal at the poles, and of opposite sign in the two
+    hemispheres.</span>
+  </div>
+  <p>A moving parcel with no other force acting on it is turned continuously to the <b>right</b> in the
+  northern hemisphere and to the <b>left</b> in the southern, at a rate f&nbsp;&times;&nbsp;speed. Turning at
+  a constant rate means going in a circle &mdash; an <b>inertial circle</b> &mdash; of radius U/f and period
+  2&pi;/f, which is half a &ldquo;pendulum day&rdquo;.</p>
+</div>
+
+<div class="card demo">
+  <h3>Fire a parcel and watch it bend</h3>
+  <p class="cap">A parcel launched due north with no pressure gradient and no friction. The grey line is where
+  it would have gone on a non-rotating planet; the coloured line is where it actually goes. Both are the exact
+  solution of the inertial-oscillation equations at the latitude you choose.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="c_lat"><span>Latitude</span> <b id="v_lat">60&deg; N</b></label>
+      <input type="range" id="c_lat" min="-85" max="85" step="1" value="60">
+      <div class="hint">Negative is the southern hemisphere. Try 0.</div>
+    </div>
+    <div class="ctrl">
+      <label for="c_spd"><span>Launch speed</span> <b id="v_spd">20 m s<sup>&minus;1</sup></b></label>
+      <input type="range" id="c_spd" min="2" max="60" step="1" value="20">
+      <div class="hint">A strong wind is 20&ndash;30 m s<sup>&minus;1</sup>.</div>
+    </div>
+    <div class="ctrl">
+      <label for="c_hrs"><span>Elapsed time</span> <b id="v_hrs">6 h</b></label>
+      <input type="range" id="c_hrs" min="0.5" max="36" step="0.5" value="6">
+      <div class="hint">Watch the deflection grow, then curve right back round.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="Plan view of a parcel trajectory deflected by the Coriolis force, compared with the straight path it would follow on a non-rotating planet"><g id="coG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Coriolis parameter f</div><div class="v" id="kF">&mdash;</div><div class="s">2&Omega; sin&phi;, in s<sup>&minus;1</sup></div></div>
+    <div class="kpi"><div class="k">Inertial radius</div><div class="v" id="kR">&mdash;</div><div class="s">U / |f|</div></div>
+    <div class="kpi"><div class="k">Inertial period</div><div class="v" id="kP">&mdash;</div><div class="s">2&pi; / |f| &mdash; half a pendulum day</div></div>
+    <div class="kpi"><div class="k">Sideways displacement</div><div class="v" id="kD">&mdash;</div><div class="s">from the straight path</div></div>
+  </div>
+
+  <div class="readout" id="coRo"></div>
+
+  <p class="q"><b>Question.</b> Set the latitude to 0. The parcel goes perfectly straight and the inertial
+  period becomes infinite. What does that do to weather systems near the equator?
+  <span style="color:var(--text-muted)">It removes the mechanism that holds them together. A mid-latitude
+  depression survives for days because Coriolis turns the inflowing air until it circles the centre instead of
+  filling it in. With f&nbsp;=&nbsp;0 there is nothing to turn the inflow, so air simply rushes into any low
+  pressure and erases it. This is why <b>hurricanes never form within about 5&deg; of the equator</b> and why
+  none has ever been observed to cross it. It is also why the equatorial atmosphere has to be described with a
+  different set of balances entirely.</span></p>
+
+  <p class="q"><b>Question.</b> Someone tells you the Coriolis force determines which way water spins down a
+  bathtub drain. Estimate whether that can be true.
+  <span style="color:var(--text-muted)">Use the numbers on this page. For a bath, U is maybe
+  0.1&nbsp;m&nbsp;s<sup>&minus;1</sup> over a length L of 0.5&nbsp;m, so the time available is about 5&nbsp;s,
+  against an inertial period of roughly 17&nbsp;hours at 45&deg;. The Coriolis deflection over that time is of
+  order &frac12;fUt&sup2; &asymp; 10<sup>&minus;5</sup>&nbsp;m &mdash; a hundredth of a millimetre. Any
+  asymmetry in the tub, the plug or the way the water was filled swamps it by orders of magnitude. The formal
+  version of this argument is the <b>Rossby number</b> Ro&nbsp;=&nbsp;U/(fL), which for the bath is about
+  2000: rotation is entirely negligible. For a depression, U&nbsp;=&nbsp;20 and L&nbsp;=&nbsp;10<sup>6</sup>&nbsp;m
+  give Ro&nbsp;&asymp;&nbsp;0.2, and rotation dominates.</span></p>
+
+  <div class="warnbox"><b>Computed, and idealised.</b> The trajectory is the exact solution of
+  du/dt&nbsp;=&nbsp;fv, dv/dt&nbsp;=&nbsp;&minus;fu on an f-plane &mdash; a local tangent plane with f held
+  constant at its value for the chosen latitude. A real parcel travelling hundreds of kilometres poleward
+  would feel f <em>change</em> along the way (the &beta; effect), which turns the closed circle into a
+  westward-drifting loop; and a real parcel is never free of pressure gradients or friction, which is the
+  subject of the next section.</div>
+</div>
+
+<!-- ═══════════ 3 ═══════════ -->
+<h2 class="sec" id="s3">3 &middot; Geostrophic balance</h2>
+
+<div class="card">
+  <h3>Why wind blows <em>along</em> the isobars rather than across them</h3>
+  <p>Air is pushed from high pressure towards low pressure by the <b>pressure-gradient force</b>. As soon as
+  it starts moving, Coriolis turns it. It keeps turning until the two forces are opposed &mdash; and at that
+  point the flow is at right angles to the pressure gradient, i.e. <em>parallel to the isobars</em>. That
+  balance is <b>geostrophy</b>, and it holds to within about 10&nbsp;% for large-scale flow away from the
+  surface:</p>
+  <div class="eq">
+    |&nabla;p| / &rho; = f u<sub>g</sub>
+    &nbsp;&nbsp;&rArr;&nbsp;&nbsp;
+    <b>u<sub>g</sub> = |&nabla;p| / (&rho; f)</b>
+    <span class="u">the geostrophic wind. Stronger where the isobars are packed, and &mdash; for the same
+    packing &mdash; stronger nearer the equator, because f is smaller there.</span>
+  </div>
+  <p>Near the ground, friction enters and the balance becomes three-way. Friction always opposes the motion,
+  so the wind slows <em>and</em> turns: it now crosses the isobars at an angle, blowing partly inward towards
+  low pressure. That inward component is what feeds the rising motion at the centre of a depression and makes
+  it rain.</p>
+</div>
+
+<div class="card demo">
+  <h3>Balance the forces</h3>
+  <p class="cap">A plan view looking down on the northern hemisphere. Straight isobars, low pressure at the
+  top. Adjust the packing of the isobars, the latitude and the surface friction, and watch the wind vector
+  settle into balance.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="g_grad"><span>Pressure gradient</span> <b id="v_grad">3.0 hPa / 100 km</b></label>
+      <input type="range" id="g_grad" min="0.5" max="8" step="0.1" value="3">
+      <div class="hint">A deep Atlantic low can reach 5&ndash;8.</div>
+    </div>
+    <div class="ctrl">
+      <label for="g_lat"><span>Latitude</span> <b id="v_glat">45&deg; N</b></label>
+      <input type="range" id="g_lat" min="5" max="85" step="1" value="45">
+      <div class="hint">Below about 10&deg; the balance breaks down.</div>
+    </div>
+    <div class="ctrl">
+      <label for="g_fr"><span>Surface friction k</span> <b id="v_fr">0.00</b></label>
+      <input type="range" id="g_fr" min="0" max="1.2" step="0.01" value="0">
+      <div class="hint">In units of 10<sup>&minus;4</sup> s<sup>&minus;1</sup>. 0 is the free atmosphere;
+      ~0.5&ndash;1.0 is a rough land surface.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 360" role="img" aria-label="Plan view of straight isobars with the pressure gradient force, Coriolis force, friction and the resulting balanced wind vector"><g id="geG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Geostrophic wind</div><div class="v" id="kUg">&mdash;</div><div class="s">frictionless, along the isobars</div></div>
+    <div class="kpi"><div class="k">Actual wind</div><div class="v" id="kU">&mdash;</div><div class="s">with the friction set above</div></div>
+    <div class="kpi"><div class="k">Cross-isobar angle</div><div class="v" id="kAng">&mdash;</div><div class="s">towards low pressure</div></div>
+    <div class="kpi"><div class="k">Rossby number</div><div class="v" id="kRo">&mdash;</div><div class="s">U/(fL) at L = 1000 km</div></div>
+  </div>
+
+  <div class="readout" id="geRo"></div>
+
+  <p class="note"><b>Two things fall out of the formula that are worth saying aloud.</b> First,
+  <b>u<sub>g</sub> &prop; 1/f</b>: the same pressure gradient produces a much stronger wind at low latitude,
+  because a slower Coriolis turn needs a faster wind to generate enough of it. Second, <b>the wind speed can
+  be read straight off a weather map</b> &mdash; closely packed isobars mean strong wind, and the relationship
+  is quantitative, not qualitative. That is why forecasters draw isobars at all.</p>
+
+  <p class="q"><b>Question.</b> Increase the friction. The wind slows and turns towards low pressure. Follow
+  that through: what happens in the middle of the depression, and what does it produce?
+  <span style="color:var(--text-muted)">Air spirals inward all the way round, so mass converges at the
+  centre. It cannot go down through the ground, so it goes up. Rising air cools adiabatically, reaches its
+  condensation level, and makes cloud and rain. This is why lows are wet and highs are dry &mdash; and it is
+  friction, the term everyone treats as a nuisance, that is doing it. Without friction the flow would be
+  exactly along the isobars, nothing would converge, and depressions would neither rain nor fill in.</span></p>
+
+  <div class="warnbox"><b>Computed.</b> u<sub>g</sub>&nbsp;=&nbsp;|&nabla;p|/(&rho;f) with
+  &rho;&nbsp;=&nbsp;1.225&nbsp;kg&nbsp;m<sup>&minus;3</sup> and f&nbsp;=&nbsp;2&Omega;sin&phi;; the
+  three-way balance with a linear drag &minus;k<b>v</b> gives a speed
+  u&nbsp;=&nbsp;u<sub>g</sub>f/&radic;(f&sup2;+k&sup2;) and a cross-isobar angle arctan(k/f), both exact for
+  that drag law. Real surface drag is <b>not</b> linear in the wind &mdash; it goes roughly as the square
+  &mdash; so k here is an effective coefficient, not a measured one. Straight isobars also mean no
+  centrifugal term; around a tight low the gradient-wind balance applies instead and the wind is
+  slower than geostrophic.</div>
+</div>
+
+<!-- ═══════════ 4 ═══════════ -->
+<h2 class="sec" id="s4">4 &middot; Three cells, not one</h2>
+
+<div class="card">
+  <h3>What rotation does to the single overturning cell</h3>
+  <p class="cap">Goosse et al. (2010), Fig.&nbsp;1.5. The figure below is a <b>schematic</b> of the
+  zonal-mean circulation, not a plot of measured winds.</p>
+
+  <svg viewBox="0 0 880 476" role="img" aria-label="Schematic meridional cross-section of the atmosphere from equator to pole showing the Hadley, Ferrel and polar cells, the surface pressure belts, the trade winds, westerlies and polar easterlies, and the two jet streams"><g id="cellG"></g></svg>
+
+  <p class="note"><b>Why the single cell breaks.</b> Air leaving the equator aloft is turned east by Coriolis
+  as it moves poleward. By about 30&deg; it is moving almost due east and can go no further poleward &mdash;
+  the flow has become a jet rather than a transport. It piles up, sinks, and returns along the surface. That
+  closes the <b>Hadley cell</b>, and everything else follows from where its descending branch lands.</p>
+
+  <table style="margin-top:16px">
+    <thead><tr><th>Latitude</th><th>Surface pressure</th><th>Surface wind</th><th>Weather, and what lives there</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">0&deg;</td><td>Low &mdash; the ITCZ</td><td>Light and variable &mdash; the doldrums</td>
+        <td>Rising, converging, saturated. Daily thunderstorms; the tropical rainforests.</td></tr>
+      <tr><td class="nm">~30&deg;</td><td><b>High</b> &mdash; the subtropical ridge</td><td>Descending; light</td>
+        <td>Subsiding air warms and dries. <b>Every major desert on Earth sits here</b>: Sahara, Arabian,
+        Kalahari, Atacama, Australian.</td></tr>
+      <tr><td class="nm">30&ndash;60&deg;</td><td>Gradient</td><td>Westerlies</td>
+        <td>The storm track. Depressions carrying heat poleward in eddies rather than in a smooth cell.</td></tr>
+      <tr><td class="nm">~60&deg;</td><td>Low &mdash; the subpolar trough</td><td>Convergence</td>
+        <td>The polar front, where warm and cold air meet. The Icelandic and Aleutian lows.</td></tr>
+      <tr><td class="nm">90&deg;</td><td>High</td><td>Polar easterlies</td>
+        <td>Cold, dense, subsiding, and remarkably dry &mdash; a polar desert.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="q"><b>Question.</b> The Sahara is one of the sunniest places on the planet. Why is it a desert?
+  <span style="color:var(--text-muted)">Not because of the sunshine &mdash; because of where it sits in the
+  circulation. It lies under the descending branch of the Hadley cell, where air that rose over the equator,
+  rained out all its moisture there, and travelled north aloft is now sinking. Sinking air is compressed and
+  warms, its relative humidity collapses, and cloud cannot form. The dryness comes first; the heat and the
+  sunshine are consequences of the cloudlessness, not causes of the dryness. Lecture&nbsp;2's
+  <a href="../lecture-2-earths-energy-budget/geography.html">geography of the budget</a> takes this further
+  and shows the Sahara is actually a net radiative <em>deficit</em> at the top of the atmosphere.</span></p>
+
+  <p class="q"><b>Question.</b> The Ferrel cell is drawn like the other two, but it is not really the same kind
+  of thing. What is different about it?
+  <span style="color:var(--text-muted)">The Hadley and polar cells are <b>direct</b>: warm air rises, cold air
+  sinks, and the cell converts potential energy into kinetic energy, as any convection cell does. The Ferrel
+  cell is <b>indirect</b> &mdash; it has warm air sinking at 30&deg; and cold air rising at 60&deg;, which
+  costs energy rather than releasing it. It exists only as a <em>residual</em>: it is what you get when you
+  take the zonal average of a mid-latitude flow whose real heat transport is done by travelling depressions
+  and anticyclones, not by any overturning circulation at all. Drawing it as a cell is a convenience of the
+  zonal mean, and it is the reason mid-latitude weather looks nothing like tropical
+  weather.</span></p>
+</div>
+
+<!-- ═══════════ 5 ═══════════ -->
+<h2 class="sec" id="s5">5 &middot; The ITCZ moves, and the monsoon follows</h2>
+
+<div class="card">
+  <h3>Land heats fast, the ocean does not</h3>
+  <p>The rising branch of the Hadley circulation &mdash; the <b>intertropical convergence zone</b> &mdash;
+  follows the sun, migrating north in northern summer and south in southern summer. Over the oceans it moves
+  a few degrees. Over the great continents it moves enormously, because land and ocean respond to the same
+  seasonal forcing at completely different speeds.</p>
+  <p>That is the heat-capacity argument from
+  <a href="components-and-timescales.html#s2">page&nbsp;2</a>, used to make a wind reverse. Here it is with
+  numbers.</p>
+</div>
+
+<div class="card demo">
+  <h3>Drive a continent and an ocean with the same sun</h3>
+  <p class="cap">Two slabs at the same subtropical latitude feel the identical seasonal cycle of net surface
+  energy. The only difference between them is how much heat it takes to warm them. The temperature
+  <em>difference</em> between the two is what drives the monsoon, and where it crosses zero is when the wind
+  turns round.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="m_land"><span>Effective depth of the land</span> <b id="v_land">1.0 m</b></label>
+      <input type="range" id="m_land" min="0.2" max="4" step="0.1" value="1">
+      <div class="hint">Of moist soil. Dry sand participates to less depth than wet ground.</div>
+    </div>
+    <div class="ctrl">
+      <label for="m_mld"><span>Ocean mixed-layer depth</span> <b id="v_omld">50 m</b></label>
+      <input type="range" id="m_mld" min="10" max="120" step="5" value="50">
+      <div class="hint">Shallow shelf seas behave much more like land.</div>
+    </div>
+    <div class="ctrl">
+      <label for="m_amp"><span>Seasonal forcing amplitude</span> <b id="v_amp">100 W m<sup>&minus;2</sup></b></label>
+      <input type="range" id="m_amp" min="30" max="180" step="5" value="100">
+      <div class="hint">Larger at higher latitude; near zero at the equator.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="Annual cycle of land and ocean surface temperature and their difference, computed from a slab model, showing the two months at which the difference changes sign"><g id="moG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Land amplitude</div><div class="v" id="kAL">&mdash;</div><div class="s">half the annual range</div></div>
+    <div class="kpi"><div class="k">Ocean amplitude</div><div class="v" id="kAO">&mdash;</div><div class="s">half the annual range</div></div>
+    <div class="kpi"><div class="k">Lag difference</div><div class="v" id="kLag">&mdash;</div><div class="s">ocean behind land</div></div>
+    <div class="kpi"><div class="k">Peak land&minus;sea contrast</div><div class="v" id="kCon">&mdash;</div><div class="s">what drives the monsoon</div></div>
+  </div>
+
+  <div class="readout" id="moRo"></div>
+
+  <p class="note"><b>The reversal, in one sentence each way.</b> <b>Summer:</b> the land is far warmer than the
+  sea, the air over it rises, surface pressure falls, and moist air is drawn in from the ocean &mdash; the wet
+  southwesterly monsoon. <b>Winter:</b> the land is colder than the sea, air sinks over it, surface pressure
+  rises, and dry air flows outward from the continent &mdash; the dry northeasterly monsoon. The ITCZ is
+  dragged along with the rising branch, which is why the rain arrives with the wind.</p>
+
+  <p class="q"><b>Question.</b> Push the ocean mixed layer down to 10&nbsp;m. The contrast shrinks and the lag
+  almost vanishes. What kind of coastline does that describe, and what would its climate be like?
+  <span style="color:var(--text-muted)">A shallow shelf sea or a large lake &mdash; the Baltic, the North Sea,
+  the Great Lakes. With a small heat capacity it heats and cools nearly in step with the land, so it produces
+  very little land&ndash;sea contrast in summer and therefore no monsoon; but it does freeze, and in autumn it
+  is still warm while the land has already cooled, which is where lake-effect snow comes from. Heat capacity
+  is not a detail of the coastline; it <em>is</em> the coastline's climate.</span></p>
+
+  <div class="warnbox"><b>Computed.</b> Each slab is C&nbsp;dT/dt&nbsp;=&nbsp;A&nbsp;cos(&omega;t)&nbsp;&minus;&nbsp;&lambda;T
+  with &omega;&nbsp;=&nbsp;2&pi;/year and &lambda;&nbsp;=&nbsp;5&nbsp;W&nbsp;m<sup>&minus;2</sup>K<sup>&minus;1</sup>,
+  solved for its steady periodic state: amplitude A/&radic;(&lambda;&sup2;+&omega;&sup2;C&sup2;) and phase lag
+  arctan(&omega;C/&lambda;)/&omega;. Land uses &rho;c<sub>p</sub>&nbsp;=&nbsp;2.0&times;10<sup>6</sup> and
+  ocean 4.10&times;10<sup>6</sup>&nbsp;J&nbsp;m<sup>&minus;3</sup>K<sup>&minus;1</sup>. This is a
+  <b>caricature</b>: it has no advection, no clouds, no evaporative cooling that varies with surface type, and
+  a single &lambda; for both surfaces. It reproduces the observed order of magnitude &mdash; a subtropical
+  continental interior swings by roughly 20&nbsp;K about its mean and lags the sun by a few days, the sea by
+  2&ndash;4&nbsp;K and lags by 6&ndash;10 weeks &mdash; and it is that <em>contrast</em>, not either number
+  alone, that the demonstration is for.</div>
+</div>
+
+<div class="card">
+  <h3>What the circulation does to the rain</h3>
+  <p class="cap">Real values, for scale.</p>
+  <table>
+    <thead><tr><th>Place</th><th class="num">Annual precipitation</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Cherrapunji, Meghalaya</td><td class="num">~11 600 mm</td>
+        <td>Monsoon flow forced up a steep escarpment. On 15&ndash;16 June 1995 it recorded
+        <b>2493&nbsp;mm in 48 hours</b> &mdash; more than three years of B&oslash;'s rain in two days.</td></tr>
+      <tr><td class="nm">B&oslash;, Telemark</td><td class="num">~790 mm</td>
+        <td>Mid-latitude westerlies and passing depressions, spread evenly through the year.</td></tr>
+      <tr><td class="nm">Central Sahara</td><td class="num">&lt; 25 mm</td>
+        <td>Permanent subsidence under the subtropical high.</td></tr>
+      <tr><td class="nm">Interior Antarctica</td><td class="num">&lt; 50 mm</td>
+        <td>Cold air holds almost no vapour, and it is subsiding. A polar desert.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>A range of more than four hundred to one</b>, produced almost entirely by <em>where the
+  air is going vertically</em>. Rising air rains; sinking air does not. Everything else &mdash; temperature,
+  distance from the sea, mountains &mdash; modifies that first fact rather than replacing it.</p>
+  <div class="xref">The global water cycle these numbers belong to is
+  <a href="../lecture-4-global-cycles-water-and-carbon/water-balance.html">Lecture 4, part 1</a>, and what
+  happens to this pattern under warming &mdash; wet regions wetter, dry regions drier, and why the total
+  cannot rise as fast as the moisture &mdash; is
+  <a href="../lecture-8-climate-change-the-future/water-cycle.html">Lecture 8, part 4</a>.</div>
+</div>
+
+<div class="card">
+  <h3>What to carry forward</h3>
+  <ul>
+    <li><b>f = 2&Omega;sin&phi;.</b> Zero at the equator, and that single fact reorganises tropical
+    meteorology.</li>
+    <li><b>Geostrophy:</b> wind blows along the isobars, at u<sub>g</sub> = |&nabla;p|/(&rho;f). Friction
+    turns it inward near the surface, and that is what makes lows rain.</li>
+    <li><b>Three cells</b>, of which only two are real overturning circulations. Rising at 0&deg; and 60&deg;,
+    sinking at 30&deg; and 90&deg;, and the world's deserts sit under the sinking branches.</li>
+    <li><b>Monsoons are heat capacity.</b> Land and ocean given the same sun end up 20&nbsp;K apart, and the
+    wind follows the pressure that difference creates.</li>
+    <li>Next: the same rotation acting on a fluid a thousand times heavier.</li>
+  </ul>
+</div>
+
+<p class="foot">After Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <i>Introduction to
+Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.3.2 and Figs.&nbsp;1.5&ndash;1.8, and
+Appendix Figs.&nbsp;G.2&ndash;G.3 (climate.be/textbook). <b>Three of the four figures are computed</b>: the
+Coriolis trajectory is the exact f-plane inertial solution with
+&Omega;&nbsp;=&nbsp;7.292&times;10<sup>&minus;5</sup>&nbsp;s<sup>&minus;1</sup>; the geostrophic balance uses
+u<sub>g</sub>&nbsp;=&nbsp;|&nabla;p|/(&rho;f) with &rho;&nbsp;=&nbsp;1.225&nbsp;kg&nbsp;m<sup>&minus;3</sup>
+and a linear drag; the monsoon slabs are the steady periodic solution of a forced, damped slab with the
+constants stated beside the figure. <b>The three-cell cross-section in Section&nbsp;4 is a schematic</b> and
+carries no measured quantity &mdash; the observed zonal-mean circulation and the sea-level pressure and wind
+fields (Figs.&nbsp;1.6&ndash;1.7) are not reproduced here and should be shown from the source. Precipitation
+values are documented long-term means; the Cherrapunji 48-hour total is the recorded event of 15&ndash;16
+June 1995. Every figure on the seven Lecture&nbsp;1 pages is classified in the
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="the-ocean.html">the ocean &rarr;</a></p>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function put(g,t,a,txt){var e=el(t,a);if(txt!==undefined)e.textContent=txt;g.appendChild(e);return e;}
+  function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+  function arrowDefs(g,list){
+    var defs=el('defs',{});
+    list.forEach(function(m){
+      var mk=el('marker',{id:m[0],viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,
+        orient:'auto-start-reverse'});
+      mk.appendChild(el('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:m[1]}));
+      defs.appendChild(mk);
+    });
+    g.appendChild(defs);
+  }
+  var OM=7.292e-5, RHO=1.225, RE=6371000;
+
+  /* ═══ Demo 1 · Coriolis ════════════════════════════════════════ */
+  function drawCor(){
+    var g=$('coG'); if(!g) return; clear(g);
+    arrowDefs(g,[['ca','var(--atm)'],['cb','var(--text-muted)']]);
+    var lat=+$('c_lat').value, U=+$('c_spd').value, hrs=+$('c_hrs').value;
+    var f=2*OM*Math.sin(lat*Math.PI/180);
+    var t=hrs*3600;
+    /* trajectory: start moving due north (0,U) */
+    var pts=[], N=400;
+    for(var i=0;i<=N;i++){
+      var s=t*i/N, X, Y;
+      if(Math.abs(f)<1e-9){ X=0; Y=U*s; }
+      else { X=(U/f)*(1-Math.cos(f*s)); Y=(U/f)*Math.sin(f*s); }
+      pts.push([X,Y]);
+    }
+    var maxr=0;
+    pts.forEach(function(p){maxr=Math.max(maxr,Math.abs(p[0]),Math.abs(p[1]));});
+    maxr=Math.max(maxr,U*t*0.35,1);
+    var CX=430, CY=200, SC=150/maxr;
+    var px=function(X){return CX+X*SC;};
+    var py=function(Y){return CY-Y*SC;};
+    /* frame */
+    put(g,'rect',{x:CX-190,y:CY-170,width:380,height:340,rx:10,fill:'var(--surface-2)',
+      stroke:'var(--line-soft)'});
+    put(g,'text',{x:CX,y:CY-152,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'plan view, looking down · north is up');
+    /* scale bar */
+    var barKm=Math.pow(10,Math.round(Math.log10(maxr/1000/2)));
+    var barPx=barKm*1000*SC;
+    if(barPx>20&&barPx<300){
+      put(g,'line',{x1:CX-180,x2:CX-180+barPx,y1:CY+158,y2:CY+158,
+        stroke:'var(--text-muted)','stroke-width':2});
+      put(g,'text',{x:CX-180+barPx/2,y:CY+152,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},(barKm>=1?barKm+' km':(barKm*1000)+' m'));
+    }
+    /* straight path, clipped to the panel */
+    var straight=U*t, clipped=Math.min(straight,maxr*1.02);
+    put(g,'line',{x1:px(0),y1:py(0),x2:px(0),y2:py(clipped),stroke:'var(--text-muted)',
+      'stroke-width':2,'stroke-dasharray':'6 4',
+      'marker-end': clipped>=straight-1 ? 'url(#cb)' : ''});
+    put(g,'text',{x:px(0)-8,y:py(clipped)+18,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'no rotation');
+    if(clipped<straight-1){
+      put(g,'text',{x:px(0)-8,y:py(clipped)+34,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},'— continues off the panel,');
+      put(g,'text',{x:px(0)-8,y:py(clipped)+49,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},(straight/1000).toFixed(0)+' km due north');
+    }
+    /* actual */
+    var d='';
+    pts.forEach(function(p,i){d+=(i?'L':'M')+px(p[0]).toFixed(1)+' '+py(p[1]).toFixed(1);});
+    put(g,'path',{d:d,fill:'none',stroke:'var(--atm)','stroke-width':2.8,'marker-end':'url(#ca)'});
+    put(g,'circle',{cx:px(0),cy:py(0),r:5,fill:'var(--hot)'});
+    put(g,'text',{x:px(0)+9,y:py(0)+16,'font-size':11.5,fill:'var(--hot)','font-weight':600},'launch');
+    var e=pts[pts.length-1];
+    put(g,'circle',{cx:px(e[0]),cy:py(e[1]),r:5,fill:'var(--atm)'});
+    /* text block on the left */
+    put(g,'text',{x:30,y:60,'font-size':13.5,fill:'var(--text-primary)','font-weight':600},
+      lat>0?'Northern hemisphere':(lat<0?'Southern hemisphere':'On the equator'));
+    put(g,'text',{x:30,y:84,'font-size':12.5,fill:'var(--text-secondary)'},
+      lat>0?'deflection is to the right':(lat<0?'deflection is to the left':'no deflection at all'));
+    put(g,'text',{x:30,y:120,'font-size':12,fill:'var(--text-muted)'},'du/dt = +f v');
+    put(g,'text',{x:30,y:140,'font-size':12,fill:'var(--text-muted)'},'dv/dt = −f u');
+    put(g,'text',{x:30,y:164,'font-size':11.5,fill:'var(--text-muted)'},'— exact solution, on an');
+    put(g,'text',{x:30,y:180,'font-size':11.5,fill:'var(--text-muted)'},'f-plane at this latitude');
+    put(g,'text',{x:30,y:216,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'COMPUTED');
+    /* ground-speed comparison */
+    var vsurf=2*Math.PI*RE*Math.cos(lat*Math.PI/180)/86164;
+    put(g,'text',{x:30,y:256,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+      'Ground speed here');
+    put(g,'text',{x:30,y:276,'font-size':12.5,fill:'var(--text-secondary)'},
+      (vsurf*3.6).toFixed(0)+' km/h eastward');
+    put(g,'text',{x:30,y:296,'font-size':11.5,fill:'var(--text-muted)'},
+      '(1674 km/h at the equator)');
+    put(g,'text',{x:30,y:320,'font-size':11.5,fill:'var(--text-muted)'},
+      'Air moving poleward carries');
+    put(g,'text',{x:30,y:336,'font-size':11.5,fill:'var(--text-muted)'},
+      'that excess eastward speed');
+    put(g,'text',{x:30,y:352,'font-size':11.5,fill:'var(--text-muted)'},
+      'with it — which is the same');
+    put(g,'text',{x:30,y:368,'font-size':11.5,fill:'var(--text-muted)'},
+      'thing said without vectors.');
+
+    /* readouts */
+    var af=Math.abs(f);
+    $('kF').textContent=(f*1e4).toFixed(2)+' × 10⁻⁴';
+    $('kR').textContent=af<1e-9?'∞':(U/af/1000).toFixed(0)+' km';
+    $('kP').textContent=af<1e-9?'∞':(2*Math.PI/af/3600).toFixed(1)+' h';
+    $('kD').textContent=(Math.abs(e[0])/1000).toFixed(0)+' km';
+    var msg;
+    if(af<1e-9){
+      msg='At the equator f = 0 exactly, so there is no deflection at all and the inertial circle is '+
+          'infinite. Rotation has no local effect on horizontal motion here.';
+    } else {
+      msg='After <b>'+hrs+' h</b> the parcel has been carried <b>'+(Math.abs(e[0])/1000).toFixed(0)+
+          ' km</b> to the '+(f>0?'right':'left')+' of where it was aimed, and it is now travelling '+
+          (f>0?'':'anti-')+'clockwise round a circle of radius '+(U/af/1000).toFixed(0)+' km. '+
+          'It returns to its starting point after '+(2*Math.PI/af/3600).toFixed(1)+' h.';
+    }
+    $('coRo').innerHTML='At <b>'+Math.abs(lat)+'° '+(lat<0?'S':(lat>0?'N':''))+
+      '</b>, f = <span class="big">'+(f*1e4).toFixed(2)+' × 10⁻⁴ s⁻¹</span>. '+msg;
+  }
+  ['c_lat','c_spd','c_hrs'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      var la=+$('c_lat').value;
+      $('v_lat').textContent=Math.abs(la)+'° '+(la<0?'S':(la>0?'N':'(equator)'));
+      $('v_spd').innerHTML=$('c_spd').value+' m s<sup>&minus;1</sup>';
+      $('v_hrs').textContent=(+$('c_hrs').value)+' h';
+      drawCor();
+    });
+  });
+
+  /* ═══ Demo 2 · geostrophic balance ═════════════════════════════ */
+  function drawGeo(){
+    var g=$('geG'); if(!g) return; clear(g);
+    arrowDefs(g,[['ga','var(--hot)'],['gb','var(--atm)'],['gc','var(--bio)'],['gd','var(--ped)']]);
+    var grad=+$('g_grad').value, lat=+$('g_lat').value, k=+$('g_fr').value*1e-4;
+    var f=2*OM*Math.sin(lat*Math.PI/180);
+    var gradSI=grad*100/1e5;                        /* Pa per m */
+    var ug=gradSI/(RHO*f);
+    var u=ug*f/Math.sqrt(f*f+k*k);
+    var ang=Math.atan2(k,f);                        /* radians, toward low */
+    /* isobars */
+    var L=80,R=600,T=40,B=300;
+    for(var i=0;i<=4;i++){
+      var y=T+(B-T)*i/4;
+      put(g,'line',{x1:L,x2:R,y1:y,y2:y,stroke:'var(--line)','stroke-width':1.5});
+      put(g,'text',{x:R+8,y:y+4,'font-size':11.5,fill:'var(--text-muted)'},
+        (1000+ (i-2)*grad).toFixed(1)+' hPa');
+    }
+    put(g,'text',{x:L,y:T-14,'font-size':12.5,fill:'var(--hot)','font-weight':600},'LOW pressure');
+    put(g,'text',{x:L,y:B+22,'font-size':12.5,fill:'var(--atm)','font-weight':600},'HIGH pressure');
+    var CX=(L+R)/2, CY=(T+B)/2;
+    /* pressure gradient force: up the page, toward low */
+    put(g,'line',{x1:CX,y1:CY,x2:CX,y2:CY-95,stroke:'var(--hot)','stroke-width':3,
+      'marker-end':'url(#ga)'});
+    put(g,'text',{x:CX+8,y:CY-84,'font-size':12.5,fill:'var(--hot)','font-weight':600},
+      'pressure-gradient force');
+    /* wind: geostrophic is to the right of the PGF (NH) = to the east (right of page) */
+    var wlen=95;
+    var wx=Math.cos(ang), wy=Math.sin(ang);        /* rotate from east toward low (up) */
+    put(g,'line',{x1:CX,y1:CY,x2:CX+wlen*wx,y2:CY-wlen*wy,stroke:'var(--bio)','stroke-width':3.4,
+      'marker-end':'url(#gc)'});
+    put(g,'text',{x:CX+wlen*wx+8,y:CY-wlen*wy+4,'font-size':12.5,fill:'var(--bio)',
+      'font-weight':600},'wind, '+u.toFixed(1)+' m/s');
+    /* Coriolis: perpendicular to the wind, to its right */
+    put(g,'line',{x1:CX,y1:CY,x2:CX+80*wy,y2:CY+80*wx,stroke:'var(--atm)','stroke-width':2.6,
+      'marker-end':'url(#gb)'});
+    put(g,'text',{x:CX+80*wy+8,y:CY+80*wx+4,'font-size':12.5,fill:'var(--atm)','font-weight':600},
+      'Coriolis');
+    /* friction: opposite to the wind */
+    if(k>1e-8){
+      var fl=95*k/Math.sqrt(f*f+k*k)*1.0;
+      put(g,'line',{x1:CX,y1:CY,x2:CX-fl*wx,y2:CY+fl*wy,stroke:'var(--ped)','stroke-width':2.4,
+        'marker-end':'url(#gd)'});
+      put(g,'text',{x:CX-fl*wx-8,y:CY+fl*wy+16,'text-anchor':'end','font-size':12.5,
+        fill:'var(--ped)','font-weight':600},'friction');
+    }
+    put(g,'circle',{cx:CX,cy:CY,r:6,fill:'var(--text-primary)'});
+    /* geostrophic reference direction */
+    put(g,'line',{x1:CX,y1:CY,x2:CX+wlen,y2:CY,stroke:'var(--text-muted)','stroke-width':1.4,
+      'stroke-dasharray':'4 4'});
+    put(g,'text',{x:CX+wlen+6,y:CY+16,'font-size':11,fill:'var(--text-muted)'},'along the isobars');
+    /* side notes */
+    put(g,'text',{x:692,y:T+10,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+      'Northern hemisphere');
+    put(g,'text',{x:692,y:T+32,'font-size':11.5,fill:'var(--text-muted)'},'Low pressure on the');
+    put(g,'text',{x:692,y:T+48,'font-size':11.5,fill:'var(--text-muted)'},'wind’s left — Buys');
+    put(g,'text',{x:692,y:T+64,'font-size':11.5,fill:'var(--text-muted)'},'Ballot’s law, and a');
+    put(g,'text',{x:692,y:T+80,'font-size':11.5,fill:'var(--text-muted)'},'consequence of this');
+    put(g,'text',{x:692,y:T+96,'font-size':11.5,fill:'var(--text-muted)'},'diagram, not a rule');
+    put(g,'text',{x:692,y:T+112,'font-size':11.5,fill:'var(--text-muted)'},'to memorise.');
+    put(g,'text',{x:692,y:T+150,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'COMPUTED —');
+    put(g,'text',{x:692,y:T+166,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'vectors drawn to');
+    put(g,'text',{x:692,y:T+182,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'scale from the');
+    put(g,'text',{x:692,y:T+198,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'balance above');
+    put(g,'text',{x:L,y:340,'font-size':11.5,fill:'var(--text-muted)'},
+      'Straight isobars, so no centrifugal term. Around a tight low the gradient-wind balance applies and the wind is slower than this.');
+
+    $('kUg').innerHTML=ug.toFixed(1)+' m s<sup>&minus;1</sup>';
+    $('kU').innerHTML=u.toFixed(1)+' m s<sup>&minus;1</sup>';
+    $('kAng').textContent=(ang*180/Math.PI).toFixed(0)+'°';
+    $('kRo').textContent=(u/(f*1e6)).toFixed(2);
+    var extra = k>1e-8
+      ? 'Friction cuts it to <b>'+u.toFixed(1)+' m s<sup>&minus;1</sup></b> and turns it <b>'+
+        (ang*180/Math.PI).toFixed(0)+'°</b> across the isobars, towards the low. That inward component is '+
+        'what converges at the centre and forces air upward.'
+      : 'With no friction the wind is exactly along the isobars and nothing converges anywhere.';
+    $('geRo').innerHTML='A gradient of <b>'+grad.toFixed(1)+' hPa per 100 km</b> at <b>'+lat+
+      '°N</b> gives a geostrophic wind of <span class="big">'+ug.toFixed(1)+' m s<sup>&minus;1</sup></span> ('+
+      (ug*3.6).toFixed(0)+' km/h). '+extra;
+  }
+  ['g_grad','g_lat','g_fr'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('v_grad').textContent=(+$('g_grad').value).toFixed(1)+' hPa / 100 km';
+      $('v_glat').textContent=$('g_lat').value+'° N';
+      $('v_fr').textContent=(+$('g_fr').value).toFixed(2);
+      drawGeo();
+    });
+  });
+
+  /* ═══ three-cell schematic ═════════════════════════════════════ */
+  (function(){
+    var g=$('cellG'); if(!g) return;
+    arrowDefs(g,[['sa','var(--atm)'],['sb','var(--hot)'],['sc','var(--bio)']]);
+    var L=90,R=790,T=54,B=330;
+    var xl=function(la){return L+(R-L)*la/90;};
+    /* ground */
+    put(g,'rect',{x:L,y:B,width:R-L,height:16,fill:'var(--ped)',opacity:0.35});
+    put(g,'line',{x1:L,x2:R,y1:B,y2:B,stroke:'var(--ped)','stroke-width':2});
+    put(g,'line',{x1:L,x2:R,y1:T,y2:T,stroke:'var(--line)','stroke-width':1.4,'stroke-dasharray':'6 4'});
+    put(g,'text',{x:R+6,y:T+4,'font-size':11.5,fill:'var(--text-muted)'},'tropopause');
+    [[0,'equator'],[30,'30°'],[60,'60°'],[90,'pole']].forEach(function(t){
+      put(g,'line',{x1:xl(t[0]),x2:xl(t[0]),y1:B,y2:B+8,stroke:'var(--text-muted)','stroke-width':1});
+      put(g,'text',{x:xl(t[0]),y:B+26,'text-anchor':'middle','font-size':12,
+        fill:'var(--text-muted)'},t[1]);
+    });
+    /* cells */
+    function cell(a,b,name,col,up){
+      var x0=xl(a),x1=xl(b),mid=(x0+x1)/2;
+      var rise=up?x0:x1, sink=up?x1:x0;
+      /* rising branch */
+      put(g,'line',{x1:rise,y1:B-6,x2:rise,y2:T+16,stroke:col,'stroke-width':3,
+        'marker-end':'url(#sa)'});
+      /* top flow */
+      put(g,'line',{x1:rise,y1:T+12,x2:sink,y2:T+12,stroke:col,'stroke-width':3,
+        'marker-end':'url(#sa)'});
+      /* sinking */
+      put(g,'line',{x1:sink,y1:T+16,x2:sink,y2:B-8,stroke:col,'stroke-width':3,
+        'marker-end':'url(#sa)'});
+      /* return at surface */
+      put(g,'line',{x1:sink,y1:B-14,x2:rise,y2:B-14,stroke:col,'stroke-width':3,
+        'marker-end':'url(#sa)'});
+      put(g,'text',{x:mid,y:(T+B)/2,'text-anchor':'middle','font-size':13,fill:col,
+        'font-weight':600},name);
+    }
+    cell(0,30,'Hadley cell','var(--atm)',true);
+    cell(30,60,'Ferrel cell','var(--text-muted)',false);
+    cell(60,90,'Polar cell','var(--cry)',true);
+    /* pressure belts */
+    [[0,'L','var(--hot)','ITCZ'],[30,'H','var(--atm)','subtropical high'],
+     [60,'L','var(--hot)','subpolar low'],[90,'H','var(--atm)','polar high']].forEach(function(p){
+      put(g,'circle',{cx:xl(p[0]),cy:B+52,r:13,fill:p[2],opacity:0.16});
+      put(g,'text',{x:xl(p[0]),y:B+57,'text-anchor':'middle','font-size':14,fill:p[2],
+        'font-weight':700},p[1]);
+      put(g,'text',{x:xl(p[0]),y:B+80,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},p[3]);
+    });
+    /* surface winds */
+    [[15,'NE trades','←'],[45,'westerlies','→'],[75,'polar easterlies','←']].forEach(function(w){
+      put(g,'text',{x:xl(w[0]),y:B-24,'text-anchor':'middle','font-size':12,
+        fill:'var(--bio)','font-weight':600},w[1]);
+    });
+    /* jets */
+    put(g,'circle',{cx:xl(30),cy:T+22,r:9,fill:'var(--warn)',opacity:0.3});
+    put(g,'text',{x:xl(30),y:T+27,'text-anchor':'middle','font-size':11,fill:'var(--warn)',
+      'font-weight':700},'J');
+    put(g,'text',{x:xl(30),y:T-8,'text-anchor':'middle','font-size':11,fill:'var(--warn)'},
+      'subtropical jet');
+    put(g,'circle',{cx:xl(58),cy:T+22,r:9,fill:'var(--warn)',opacity:0.3});
+    put(g,'text',{x:xl(58),y:T+27,'text-anchor':'middle','font-size':11,fill:'var(--warn)',
+      'font-weight':700},'J');
+    put(g,'text',{x:xl(58),y:T-8,'text-anchor':'middle','font-size':11,fill:'var(--warn)'},
+      'polar-front jet');
+    put(g,'text',{x:L,y:26,'font-size':12.5,fill:'var(--text-primary)','font-weight':600},
+      'Zonal-mean circulation, equator to pole');
+    put(g,'text',{x:L,y:B+108,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},
+      'SCHEMATIC — cell boundaries, jet positions and wind belts are drawn at their nominal latitudes.');
+    put(g,'text',{x:L,y:B+126,'font-size':11.5,fill:'var(--text-muted)'},
+      'Nothing here is a measured value, and the real cells move with the season and are far less tidy.');
+  })();
+
+  /* ═══ Demo 3 · monsoon slabs ═══════════════════════════════════ */
+  var YRS=3.15576e7, W_=2*Math.PI/YRS, LAM=5;
+  function slab(rhocp,d,A){
+    var C=rhocp*d;
+    var amp=A/Math.sqrt(LAM*LAM+W_*W_*C*C);
+    var lag=Math.atan2(W_*C,LAM)/W_;              /* seconds */
+    return {C:C,amp:amp,lag:lag};
+  }
+  function drawMon(){
+    var g=$('moG'); if(!g) return; clear(g);
+    var dL=+$('m_land').value, dO=+$('m_mld').value, A=+$('m_amp').value;
+    var SL=slab(2.0e6,dL,A), SO=slab(4.10e6,dO,A);
+    var L=64,R=690,T=26,B=290,W=R-L,H=B-T;
+    var hi=Math.max(SL.amp,SO.amp)*1.25;
+    var x=function(m){return L+W*m/12;};
+    var yv=function(v){return (T+B)/2 - (H/2)*v/hi;};
+    var MON=['J','F','M','A','M','J','J','A','S','O','N','D'];
+    for(var m=0;m<12;m++){
+      put(g,'text',{x:x(m+0.5),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},MON[m]);
+    }
+    var vs=Math.ceil(hi/3);
+    for(var v=-Math.floor(hi/vs)*vs;v<=hi;v+=vs){
+      var zero=Math.abs(v)<1e-9;
+      put(g,'line',{x1:L,x2:R,y1:yv(v),y2:yv(v),
+        stroke:zero?'var(--text-muted)':'var(--grid)','stroke-width':zero?1.5:1});
+      put(g,'text',{x:L-8,y:yv(v)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},(v>0?'+':'')+v);
+    }
+    put(g,'text',{x:L-8,y:T-6,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'K');
+    /* forcing peaks at midsummer, taken as day 172 ≈ 21 June */
+    var t0=172/365.25*YRS;
+    function Tof(S,tt){ return S.amp*Math.cos(W_*(tt-t0-S.lag)); }
+    function curve(S,col,w,dash){
+      var d='';
+      for(var i=0;i<=360;i++){
+        var tt=YRS*i/360;
+        d+=(i?'L':'M')+x(12*i/360).toFixed(1)+' '+yv(Tof(S,tt)).toFixed(1);
+      }
+      var a={d:d,fill:'none',stroke:col,'stroke-width':w};
+      if(dash)a['stroke-dasharray']=dash;
+      put(g,'path',a);
+    }
+    curve(SO,'var(--ocn)',2.6);
+    curve(SL,'var(--ped)',2.6);
+    /* difference */
+    var dd='', prev=null, zeros=[];
+    for(var j=0;j<=360;j++){
+      var tt2=YRS*j/360, df=Tof(SL,tt2)-Tof(SO,tt2);
+      var dc=Math.max(-hi,Math.min(hi,df));
+      dd+=(j?'L':'M')+x(12*j/360).toFixed(1)+' '+yv(dc).toFixed(1);
+      if(prev!==null && prev*df<0) zeros.push(12*j/360);
+      prev=df;
+    }
+    put(g,'path',{d:dd,fill:'none',stroke:'var(--hot)','stroke-width':3,'stroke-dasharray':'8 4'});
+    zeros.forEach(function(z){
+      put(g,'line',{x1:x(z),x2:x(z),y1:T,y2:B,stroke:'var(--hot)','stroke-width':1.2,
+        'stroke-dasharray':'3 4',opacity:0.7});
+      put(g,'text',{x:x(z),y:T+14,'text-anchor':'middle','font-size':11,fill:'var(--hot)',
+        'font-weight':600},'reversal');
+    });
+    put(g,'line',{x1:R+18,x2:R+40,y1:T+12,y2:T+12,stroke:'var(--ped)','stroke-width':2.6});
+    put(g,'text',{x:R+46,y:T+16,'font-size':11.5,fill:'var(--ped)','font-weight':600},'land');
+    put(g,'line',{x1:R+18,x2:R+40,y1:T+34,y2:T+34,stroke:'var(--ocn)','stroke-width':2.6});
+    put(g,'text',{x:R+46,y:T+38,'font-size':11.5,fill:'var(--ocn)','font-weight':600},'ocean');
+    put(g,'line',{x1:R+18,x2:R+40,y1:T+56,y2:T+56,stroke:'var(--hot)','stroke-width':3,
+      'stroke-dasharray':'8 4'});
+    put(g,'text',{x:R+46,y:T+60,'font-size':11.5,fill:'var(--hot)','font-weight':600},'difference');
+    put(g,'text',{x:R+18,y:T+92,'font-size':11,fill:'var(--text-muted)'},'Above the zero line:');
+    put(g,'text',{x:R+18,y:T+107,'font-size':11,fill:'var(--text-muted)'},'land warmer → summer');
+    put(g,'text',{x:R+18,y:T+122,'font-size':11,fill:'var(--text-muted)'},'monsoon, onshore, wet.');
+    put(g,'text',{x:R+18,y:T+144,'font-size':11,fill:'var(--text-muted)'},'Below it: winter');
+    put(g,'text',{x:R+18,y:T+159,'font-size':11,fill:'var(--text-muted)'},'monsoon, offshore, dry.');
+    put(g,'text',{x:L,y:B+40,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},
+      'COMPUTED — steady periodic solution of a forced damped slab; parameters stated below the figure.');
+    put(g,'text',{x:L,y:B+58,'font-size':11.5,fill:'var(--text-muted)'},
+      'Anomalies about each surface’s own annual mean, so the two curves are directly comparable.');
+
+    var lagDays=(SO.lag-SL.lag)/86400;
+    var maxDiff=0;
+    for(var q=0;q<=360;q++){
+      var tq=YRS*q/360;
+      maxDiff=Math.max(maxDiff,Math.abs(Tof(SL,tq)-Tof(SO,tq)));
+    }
+    $('kAL').textContent=SL.amp.toFixed(1)+' K';
+    $('kAO').textContent=SO.amp.toFixed(1)+' K';
+    $('kLag').textContent=lagDays.toFixed(0)+' days';
+    $('kCon').textContent=maxDiff.toFixed(1)+' K';
+    $('moRo').innerHTML='The land swings <b>&plusmn;'+SL.amp.toFixed(1)+
+      ' K</b> about its mean and lags the sun by only <b>'+(SL.lag/86400).toFixed(0)+
+      ' days</b>; the ocean swings <b>&plusmn;'+SO.amp.toFixed(1)+' K</b>'+
+      ' and lags by <b>'+(SO.lag/86400).toFixed(0)+' days</b>. The two differences compound into a peak '+
+      'land&ndash;sea contrast of <span class="big">'+maxDiff.toFixed(1)+' K</span>, reversing sign '+
+      (zeros.length===2?'twice a year — around '+
+        ['January','February','March','April','May','June','July','August','September','October',
+         'November','December'][Math.floor(zeros[0])%12]+' and '+
+        ['January','February','March','April','May','June','July','August','September','October',
+         'November','December'][Math.floor(zeros[1])%12]:'through the year')+
+      '. That sign change is the monsoon turning round.';
+  }
+  ['m_land','m_mld','m_amp'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('v_land').textContent=(+$('m_land').value).toFixed(1)+' m';
+      $('v_omld').textContent=$('m_mld').value+' m';
+      $('v_amp').innerHTML=$('m_amp').value+' W m<sup>&minus;2</sup>';
+      drawMon();
+    });
+  });
+
+  drawCor(); drawGeo(); drawMon();
+})();
+</script>
+
+</div>
+<script src="../assets/reveal-answers.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('themeBtn');
+  if(!btn) return;
+  btn.onclick=function(){
+    var d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The ocean — wind, Ekman transport, density and the overturning</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --atm:#2a78d6; --ocn:#12667f; --cry:#7b5bd6; --bio:#1baf7a; --ped:#8a6b45;
+    --warn:#d98324; --hot:#c8443a; --acc:#2a78d6;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --atm:#5b9ae8; --ocn:#3d9dbd; --cry:#a78bea; --bio:#3cc596; --ped:#a08258;
+    --warn:#e09a44; --hot:#d9564c; --acc:#5b9ae8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p:last-child{margin-bottom:0}
+  p b,li b,td b{color:var(--text-primary);font-weight:600}
+  ul,ol{margin:0 0 12px;padding-left:22px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  a{color:var(--acc)}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
+  .eq b{font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 14px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;
+    color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--text-primary)}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00b7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px;gap:10px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two,.three{grid-template-columns:1fr}}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+  .pill{font-size:11.5px;letter-spacing:.04em;border-radius:999px;padding:3px 10px;
+    background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line-soft)}
+  .xref{background:var(--surface-2);border-radius:10px;padding:12px 15px;margin-top:14px;
+    font-size:13.5px;color:var(--text-secondary)}
+  .xref b{color:var(--text-primary)}
+  .xref a{font-weight:600;text-decoration:none}
+  .xref a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="circulation.html">&larr; Atmospheric circulation</a> &nbsp;&middot;&nbsp;
+Components of the climate system &middot; 5 of 7</p>
+
+<header>
+  <div>
+    <h1>The ocean</h1>
+    <p class="sub">Two things move the ocean: <b>the wind rubbing on the top of it</b>, and
+    <b>differences in density</b>. The first drives the gyres and, through a beautiful and thoroughly
+    unintuitive piece of physics, the upwelling that feeds most of the world's fisheries. The second drives
+    the overturning that stores heat and carbon for a thousand years.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; The basin</a>
+  <a href="#s2">2 &middot; Wind and gyres</a>
+  <a href="#s3">3 &middot; Ekman transport</a>
+  <a href="#s4">4 &middot; Upwelling</a>
+  <a href="#s5">5 &middot; Density</a>
+  <a href="#s6">6 &middot; Overturning</a>
+</div>
+
+<!-- ═══════════ 1 ═══════════ -->
+<h2 class="sec" id="s1">1 &middot; What we are dealing with</h2>
+
+<div class="card">
+  <h3>The numbers first</h3>
+  <table>
+    <thead><tr><th>Quantity</th><th class="num">Value</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Fraction of Earth's surface</td><td class="num">71 %</td>
+        <td>Most of the planet's interaction with the atmosphere is an ocean surface, not a land one.</td></tr>
+      <tr><td class="nm">Mean depth</td><td class="num">3700 m</td>
+        <td>Compare the atmosphere's scale height of 8 km. Both fluids are thin films on a big sphere.</td></tr>
+      <tr><td class="nm">Composition</td><td class="num">96.5 % water</td>
+        <td>The remaining 3.5 % is dissolved salts, gases, particles and organic matter &mdash; and it
+        controls the density.</td></tr>
+      <tr><td class="nm">Mean salinity</td><td class="num">~34.7 psu</td>
+        <td>Grams of dissolved salt per kilogram of seawater. The <em>ratios</em> between the ions are
+        remarkably constant everywhere; only the dilution changes.</td></tr>
+      <tr><td class="nm">Heat capacity of the top 3 m</td><td class="num">= whole atmosphere</td>
+        <td>The single most useful comparison in this course. See
+        <a href="components-and-timescales.html#s2">page 2</a>.</td></tr>
+      <tr><td class="nm">Share of poleward heat transport</td><td class="num">~20&ndash;25 %</td>
+        <td>Less than the atmosphere overall, but dominant in the tropics and in the North Atlantic.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Salinity is measured, awkwardly, in nothing.</b> The practical salinity scale is defined
+  through electrical conductivity relative to a standard KCl solution, so it is formally dimensionless; you
+  will see it written as psu ("practical salinity units"), as g&nbsp;kg<sup>&minus;1</sup>, or with no unit
+  at all. All three mean the same thing to the precision that matters here.</p>
+</div>
+
+<!-- ═══════════ 2 ═══════════ -->
+<h2 class="sec" id="s2">2 &middot; The wind drives the surface</h2>
+
+<div class="card">
+  <h3>Gyres, and why their western sides are so violent</h3>
+  <p class="cap">Goosse et al. (2010), Figs.&nbsp;1.9&ndash;1.10.</p>
+  <p>The surface currents are, to first order, the atmospheric wind belts from the
+  <a href="circulation.html#s4">previous page</a> painted onto the water. Trade winds from the east in the
+  tropics, westerlies in mid-latitudes, and the ocean between them turns in a great closed loop: a
+  <b>subtropical gyre</b>, clockwise in the northern hemisphere and anticlockwise in the southern.</p>
+  <p>Those gyres are not symmetric. Their western limbs &mdash; the Gulf Stream, the Kuroshio, the Agulhas,
+  the Brazil Current &mdash; are narrow, deep and fast, carrying 30&ndash;150 Sv at speeds over
+  1&nbsp;m&nbsp;s<sup>&minus;1</sup>. The return flow on the eastern side is broad, shallow and sluggish.
+  <b>Western intensification</b> is a consequence of the Coriolis parameter increasing with latitude, and
+  it is why northwest Europe has the climate it does.</p>
+  <p class="note"><b>One sverdrup (Sv) is 10<sup>6</sup> m<sup>3</sup> s<sup>&minus;1</sup></b> &mdash; about
+  a hundred times the flow of the Amazon. The Gulf Stream at its peak carries roughly 150&nbsp;Sv, the
+  Atlantic overturning about 17&nbsp;Sv, and the Antarctic Circumpolar Current around 135&nbsp;Sv, the
+  largest current on Earth and the only one that goes all the way round.</p>
+  <div class="xref"><b>The observed surface-current map</b> (Fig.&nbsp;1.10, from satellite-tracked drifting
+  buoys) is not reproduced here &mdash; it is an observational field and the lecturer shows the original.
+  What <em>is</em> reproduced below is the mechanism that connects the wind to the water.</div>
+</div>
+
+<!-- ═══════════ 3 ═══════════ -->
+<h2 class="sec" id="s3">3 &middot; The Ekman spiral</h2>
+
+<div class="card">
+  <h3>The water does not go where the wind is blowing</h3>
+  <p>Wind drags on the surface. That surface layer is turned to the right by Coriolis (in the northern
+  hemisphere), so it moves at an angle to the wind rather than with it. It then drags the layer beneath it,
+  which is <em>also</em> turned to the right, and so is the layer beneath that. Each successive layer moves
+  more slowly and points further round. The velocity vectors trace a <b>spiral</b> with depth, first worked
+  out by Vagn Walfrid Ekman in 1905 after Fridtjof Nansen noticed that sea ice on the <i>Fram</i> expedition
+  drifted 20&ndash;40&deg; to the right of the wind rather than downwind.</p>
+  <div class="eq">
+    surface current: <b>45&deg;</b> to the right of the wind &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+    depth-integrated transport: <b>M = &tau; / (&rho;f)</b>, at <b>90&deg;</b> to the right
+    <span class="u">The 90&deg; result does not depend on the eddy viscosity, on the depth, or on any
+    detail of how the turbulence works. It follows from the force balance alone.</span>
+  </div>
+  <p class="note"><b>That independence is the important part.</b> The shape of the spiral depends on a
+  turbulent mixing coefficient nobody can measure well. The <em>total</em> transport does not depend on it at
+  all &mdash; so the one quantity that matters for the ocean's large-scale circulation is also the one we can
+  calculate confidently. It is rare and worth pointing at.</p>
+</div>
+
+<div class="card demo">
+  <h3>Turn the wind on</h3>
+  <p class="cap">Northern hemisphere, looking down. The wind blows towards the top of the figure. The blue
+  vectors are the current at successive depths; the thick red vector is the total transport, integrated
+  through the whole layer.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="e_wind"><span>Wind speed</span> <b id="v_wind">10 m s<sup>&minus;1</sup></b></label>
+      <input type="range" id="e_wind" min="2" max="25" step="0.5" value="10">
+      <div class="hint">Stress goes as the <em>square</em> of this.</div>
+    </div>
+    <div class="ctrl">
+      <label for="e_lat"><span>Latitude</span> <b id="v_elat">45&deg; N</b></label>
+      <input type="range" id="e_lat" min="5" max="80" step="1" value="45">
+      <div class="hint">The Ekman layer deepens towards the equator.</div>
+    </div>
+    <div class="ctrl">
+      <label for="e_az"><span>Eddy viscosity A<sub>z</sub></span> <b id="v_az">0.010 m&sup2; s<sup>&minus;1</sup></b></label>
+      <input type="range" id="e_az" min="0.001" max="0.06" step="0.001" value="0.01">
+      <div class="hint">The uncertain one. Watch what it does &mdash; and does not do.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="Plan view of the Ekman spiral: current vectors at successive depths rotating clockwise and shrinking, with the wind vector and the net transport vector"><g id="ekG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Wind stress &tau;</div><div class="v" id="kTau">&mdash;</div><div class="s">N m<sup>&minus;2</sup>, from &rho;<sub>a</sub>C<sub>D</sub>U&sup2;</div></div>
+    <div class="kpi"><div class="k">Ekman depth D<sub>E</sub></div><div class="v" id="kDe">&mdash;</div><div class="s">where the current has reversed</div></div>
+    <div class="kpi"><div class="k">Surface current</div><div class="v" id="kV0">&mdash;</div><div class="s">45&deg; right of the wind</div></div>
+    <div class="kpi"><div class="k">Transport M</div><div class="v" id="kM">&mdash;</div><div class="s">m&sup2; s<sup>&minus;1</sup>, 90&deg; right</div></div>
+  </div>
+
+  <div class="readout" id="ekRo"></div>
+
+  <p class="q"><b>Question.</b> Drag the eddy viscosity from one end to the other. The spiral changes shape
+  completely and the transport does not move at all. Why not?
+  <span style="color:var(--text-muted)">Because the depth-integrated balance is between just two terms: the
+  wind stress applied at the top, and the Coriolis force acting on the total transport. Friction inside the
+  fluid moves momentum <em>between</em> layers but cannot change the total &mdash; internal stresses cancel
+  in pairs when you integrate. So M&nbsp;=&nbsp;&tau;/(&rho;f) exactly, whatever the mixing does. A<sub>z</sub>
+  decides how that transport is distributed over depth, which matters for biology and for the surface
+  temperature, and not at all for the large-scale circulation.</span></p>
+
+  <p class="q"><b>Question.</b> Take the latitude down towards 5&deg;. The transport becomes enormous. Is that
+  physical?
+  <span style="color:var(--text-muted)">No &mdash; and the formula tells you why it fails. M&nbsp;&prop;&nbsp;1/f,
+  and f&nbsp;&rarr;&nbsp;0 at the equator, so the expression diverges. The underlying assumption &mdash; that
+  Coriolis balances the stress &mdash; stops being true when Coriolis is negligible, exactly as geostrophic
+  balance failed at the equator on the <a href="circulation.html#s3">previous page</a>. Real equatorial
+  dynamics is a different problem, and the fact that Ekman transport changes <em>sign</em> across the equator
+  is what produces equatorial upwelling.</span></p>
+
+  <div class="warnbox"><b>Computed.</b> The classical Ekman solution for constant eddy viscosity in an
+  infinitely deep ocean: u(z)&nbsp;=&nbsp;V<sub>0</sub>e<sup>z/d</sup>cos(&pi;/4&nbsp;+&nbsp;z/d),
+  v(z)&nbsp;=&nbsp;V<sub>0</sub>e<sup>z/d</sup>sin(&pi;/4&nbsp;+&nbsp;z/d) with d&nbsp;=&nbsp;&radic;(2A<sub>z</sub>/f),
+  D<sub>E</sub>&nbsp;=&nbsp;&pi;d and V<sub>0</sub>&nbsp;=&nbsp;&tau;/(&rho;<sub>w</sub>&radic;(A<sub>z</sub>f)).
+  Stress from &tau;&nbsp;=&nbsp;&rho;<sub>a</sub>C<sub>D</sub>U&sup2; with
+  &rho;<sub>a</sub>&nbsp;=&nbsp;1.225&nbsp;kg&nbsp;m<sup>&minus;3</sup>,
+  C<sub>D</sub>&nbsp;=&nbsp;1.3&times;10<sup>&minus;3</sup>,
+  &rho;<sub>w</sub>&nbsp;=&nbsp;1025&nbsp;kg&nbsp;m<sup>&minus;3</sup>. A real ocean has an eddy viscosity that
+  varies with depth and with the state of the surface, and observed spirals are consequently flatter and
+  shallower than the classical one; the <b>transport</b>, however, is well verified.</div>
+</div>
+
+<!-- ═══════════ 4 ═══════════ -->
+<h2 class="sec" id="s4">4 &middot; What Ekman transport does when it hits something</h2>
+
+<div class="card">
+  <h3>Coastal and equatorial upwelling</h3>
+  <p>If the depth-integrated transport is 90&deg; to the right of the wind, then a wind blowing along a
+  coastline with the land on its left pushes surface water <em>away from the shore</em>. Water cannot be
+  removed from a place and not replaced, so it is replaced from below. That is <b>coastal upwelling</b>.</p>
+  <p>The same argument works at the equator without any coast at all. The trade winds blow from the east on
+  both sides; north of the equator the transport is to the right (northward), south of it to the left
+  (southward). The surface water diverges away from the equator in both directions, and deep water rises to
+  fill the gap. That is <b>equatorial upwelling</b>, and it is a permanent feature of the Pacific &mdash;
+  except when it is not, which is El&nbsp;Ni&ntilde;o.</p>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin:0"><b>Why anyone cares</b></p>
+      <ul style="font-size:13.5px;margin:8px 0 0">
+        <li>Deep water is <b>cold</b>: coastal upwelling makes the sea off Peru, California, Namibia and
+        Morocco much colder than their latitude suggests, and produces coastal fog and coastal deserts.</li>
+        <li>Deep water is <b>full of nutrients</b>, because everything that sinks decomposes down there.
+        Upwelling zones are about 1&nbsp;% of the ocean surface and support roughly half of the world's
+        fish catch.</li>
+        <li>Deep water is <b>rich in CO<sub>2</sub></b>, so upwelling regions outgas carbon &mdash; the
+        equatorial Pacific is one of the largest natural CO<sub>2</sub> sources on the planet.</li>
+      </ul>
+    </div>
+    <div>
+      <p class="note" style="margin:0"><b>And when the wind stops</b></p>
+      <ul style="font-size:13.5px;margin:8px 0 0">
+        <li>Weak trades mean weak equatorial upwelling, so the eastern Pacific warms: <b>El Ni&ntilde;o</b>.
+        Strong trades cool it further: <b>La Ni&ntilde;a</b>.</li>
+        <li>The warm water then changes where the convection is, which changes the winds, which changes
+        the upwelling &mdash; a coupled ocean&ndash;atmosphere feedback, not an ocean event.</li>
+        <li>The Peruvian anchovy fishery, one of the largest in the world, collapses in strong El
+        Ni&ntilde;o years because the nutrient supply is switched off.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="q"><b>Question.</b> A northerly wind blows down the coast of California, which lies on the western
+  side of the continent. Does that produce upwelling or downwelling? What about the same wind on the coast of
+  Portugal?
+  <span style="color:var(--text-muted)">California: the wind blows south, so the transport is 90&deg; to its
+  right, i.e. westward &mdash; offshore. <b>Upwelling</b>, which is why the sea at San Francisco is about
+  12&nbsp;&deg;C in July. Portugal is also a west-facing coast, so a northerly there does exactly the same
+  thing, and the Portuguese and Moroccan upwelling system is one of the four great eastern-boundary upwelling
+  regions for that reason. Reverse the wind and you get <b>downwelling</b> instead, piling warm surface water
+  against the coast. The rule is not about which continent &mdash; it is about which way the wind is blowing
+  relative to the coastline.</span></p>
+
+  <div class="xref"><b>ENSO in full</b> &mdash; the Bjerknes feedback, the thermocline tilt, and the
+  observed indices &mdash; is <a href="../lecture-7-climate-change-past-and-present/modes-of-variability.html">Lecture
+  7, part&nbsp;2</a>. This page gives only the piece of it that is Ekman dynamics.</div>
+</div>
+
+<!-- ═══════════ 5 ═══════════ -->
+<h2 class="sec" id="s5">5 &middot; Density, and why the ocean has a memory</h2>
+
+<div class="card">
+  <h3>Two variables, one awkward equation of state</h3>
+  <p>Air has an equation of state you can write on one line. Seawater does not. Its density depends on
+  temperature, salinity and pressure, and it is <b>non-linear in all three</b> &mdash; which turns out not to
+  be an inconvenience but the source of some of the ocean's most important behaviour.</p>
+  <ul>
+    <li><b>Cold water is denser.</b> Roughly, and increasingly so as it gets colder: the thermal expansion
+    coefficient of seawater at 0&nbsp;&deg;C is about a quarter of its value at 25&nbsp;&deg;C. Near
+    freezing, temperature almost stops mattering.</li>
+    <li><b>Salty water is denser.</b> Almost linearly, and it never stops mattering. So in polar water,
+    where temperature has little leverage left, <b>salinity is in charge</b>.</li>
+    <li><b>Where does salinity come from?</b> Evaporation concentrates salt; precipitation, river runoff and
+    melting ice dilute it. Freezing sea ice <em>rejects</em> its salt into the water below, which is one of
+    the few processes on Earth that makes very dense water quickly.</li>
+  </ul>
+  <p class="note"><b>Two independent controls on one quantity is what allows more than one stable state.</b>
+  If density depended on temperature alone, the overturning circulation could only do one thing. Because
+  temperature and salinity can compete &mdash; cold and fresh against warm and salty &mdash; the same
+  circulation can have two configurations, and can switch between them. That is the origin of the abrupt
+  changes in <a href="../lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7,
+  part&nbsp;4</a>.</p>
+</div>
+
+<div class="card demo">
+  <h3>Which parcel sinks &mdash; and a trap</h3>
+  <p class="cap">A temperature&ndash;salinity diagram with contours of density, computed from the
+  international one-atmosphere equation of state. Place two water parcels and compare them; then mix them
+  half and half and look carefully at what the mixture does.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="d_ta"><span>Parcel A temperature</span> <b id="v_ta">10.0 &deg;C</b></label>
+      <input type="range" id="d_ta" min="-2" max="30" step="0.1" value="10">
+    </div>
+    <div class="ctrl">
+      <label for="d_sa"><span>Parcel A salinity</span> <b id="v_sa">34.0</b></label>
+      <input type="range" id="d_sa" min="30" max="39" step="0.05" value="34">
+    </div>
+    <div class="ctrl">
+      <label for="d_tb"><span>Parcel B temperature</span> <b id="v_tb">0.0 &deg;C</b></label>
+      <input type="range" id="d_tb" min="-2" max="30" step="0.1" value="0">
+    </div>
+    <div class="ctrl">
+      <label for="d_sb"><span>Parcel B salinity</span> <b id="v_sb">32.60</b></label>
+      <input type="range" id="d_sb" min="30" max="39" step="0.05" value="32.6">
+    </div>
+  </div>
+
+  <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Try</span>
+    <button class="ghost" data-d="10,34,0,32.6">Two parcels of equal density</button>
+    <button class="ghost" data-d="3,34.95,-0.5,34.65">North Atlantic Deep vs Antarctic Bottom</button>
+    <button class="ghost" data-d="13,38.4,10,35.2">Mediterranean outflow vs Atlantic</button>
+    <button class="ghost" data-d="28,35.5,-1.8,34.4">Tropical surface vs polar surface</button>
+  </div>
+
+  <svg viewBox="0 0 880 452" role="img" aria-label="Temperature-salinity diagram with density contours computed from the equation of state, the freezing line, labelled water masses, two selected parcels and their mixture"><g id="tsG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">&sigma;<sub>t</sub> of A</div><div class="v" id="kDA">&mdash;</div><div class="s">&rho; &minus; 1000, kg m<sup>&minus;3</sup></div></div>
+    <div class="kpi"><div class="k">&sigma;<sub>t</sub> of B</div><div class="v" id="kDB">&mdash;</div><div class="s">&rho; &minus; 1000, kg m<sup>&minus;3</sup></div></div>
+    <div class="kpi"><div class="k">&sigma;<sub>t</sub> of the 50:50 mixture</div><div class="v" id="kDM">&mdash;</div><div class="s">at the midpoint of T and S</div></div>
+    <div class="kpi"><div class="k">Cabbeling gain</div><div class="v" id="kCab">&mdash;</div><div class="s">mixture minus the average</div></div>
+  </div>
+
+  <div class="readout" id="tsRo"></div>
+
+  <p class="note"><b>Cabbeling: mixing two waters makes something denser than either average.</b> Because the
+  density contours are <em>curved</em>, the midpoint of a straight line drawn between two parcels on this
+  diagram lies on a denser contour than the average of their two densities. Take two parcels of exactly equal
+  density &mdash; press the first preset &mdash; mix them, and the result sinks below both of them. Nothing
+  was added and no heat was lost. This is a real process and it contributes to deep-water formation in the
+  Southern Ocean and the Labrador Sea. It exists only because the equation of state is non-linear, and it is
+  the cleanest possible demonstration that the non-linearity is not a numerical nuisance.</p>
+
+  <p class="q"><b>Question.</b> In the Arctic, surface water is often near &minus;1.8&nbsp;&deg;C and quite
+  fresh. Cool it further and almost nothing happens to its density. Why, and what makes deep water form there
+  instead?
+  <span style="color:var(--text-muted)">Because the thermal expansion coefficient collapses near freezing
+  &mdash; you can see it on the diagram as the density contours becoming nearly horizontal at low
+  temperature. Cooling buys you almost no extra density, and the water cannot get colder than its freezing
+  point anyway. What <em>does</em> work is <b>salt</b>: when sea ice forms it excludes most of its salt, which
+  is rejected as dense brine into the water below. Brine rejection under growing sea ice, together with
+  evaporation in the Nordic Seas, is what makes the water dense enough to sink. This is why the sea-ice
+  distribution and the deep circulation are coupled, and it is in the interaction matrix on
+  <a href="components-and-timescales.html#s4">page 2</a>.</span></p>
+
+  <p class="q"><b>Question.</b> How can ocean water have a temperature below 0&nbsp;&deg;C?
+  <span style="color:var(--text-muted)">Because salt lowers the freezing point. At a salinity of 34.7 the
+  freezing temperature is about <b>&minus;1.9&nbsp;&deg;C</b> &mdash; the dashed line on the diagram, computed
+  from the standard relation. Antarctic Bottom Water leaves the shelf at close to that temperature and keeps
+  it, because there is nothing down there to warm it. So the coldest water in the ocean is well below zero,
+  is entirely liquid, and stays that way for a thousand years.</span></p>
+
+  <div class="warnbox"><b>Computed.</b> Density from the one-atmosphere international equation of state for
+  seawater (UNESCO/EOS-80; Millero and Poisson, 1981), evaluated at the surface, so
+  &sigma;<sub>t</sub>&nbsp;=&nbsp;&rho;(S,T,0)&nbsp;&minus;&nbsp;1000. The freezing line is the standard
+  UNESCO (1983) relation at one atmosphere. Water-mass markers are at <b>documented representative
+  temperature and salinity values</b> for each mass, not readings from any single station or section; they
+  are labelled and their sources are in the note below. Pressure effects are omitted throughout &mdash; at
+  4000&nbsp;m depth the compression adds roughly 20&nbsp;kg&nbsp;m<sup>&minus;3</sup>, which is why
+  oceanographers work with potential density referenced to a chosen depth rather than with
+  &sigma;<sub>t</sub>.</div>
+</div>
+
+<!-- ═══════════ 6 ═══════════ -->
+<h2 class="sec" id="s6">6 &middot; The overturning circulation</h2>
+
+<div class="card">
+  <h3>Where the ocean actually sinks</h3>
+  <p class="cap">Goosse et al. (2010), Fig.&nbsp;1.12, after Rahmstorf (2002) and Kuhlbrodt et al. (2007).
+  Not reproduced here &mdash; show the original.</p>
+  <p>Almost the entire ocean is stably stratified, and deep water forms in only two small regions on the
+  whole planet: the <b>Nordic and Labrador Seas</b> in the North Atlantic, and a few polynyas on the
+  <b>Antarctic shelf</b>. Surface water there becomes dense enough to sink to the bottom, spreads
+  equatorward at depth, and returns &mdash; slowly, diffusely, and by routes that are still argued about
+  &mdash; to the surface elsewhere. A parcel entering the deep North Atlantic will typically not see daylight
+  again for about a thousand years.</p>
+  <table>
+    <thead><tr><th>Water mass</th><th class="num">&theta; (&deg;C)</th><th class="num">S</th>
+      <th>Where it forms, and where it ends up</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">NADW &mdash; North Atlantic Deep Water</td><td class="num">2 to 4</td><td class="num">34.9&ndash;35.0</td>
+        <td>Nordic and Labrador Seas. Fills the Atlantic between roughly 1500 and 4000 m and spreads into
+        the Indian and Pacific.</td></tr>
+      <tr><td class="nm">AABW &mdash; Antarctic Bottom Water</td><td class="num">&minus;0.9 to 0</td><td class="num">34.6&ndash;34.7</td>
+        <td>Weddell and Ross Seas, made dense by brine rejection. <b>The densest water in the ocean</b>, and
+        it floors every basin it can reach.</td></tr>
+      <tr><td class="nm">AAIW &mdash; Antarctic Intermediate Water</td><td class="num">3 to 5</td><td class="num">34.2&ndash;34.4</td>
+        <td>Sinks at the Antarctic Polar Front to about 1000 m. Recognisable everywhere as a
+        <b>salinity minimum</b>.</td></tr>
+      <tr><td class="nm">Mediterranean outflow</td><td class="num">~13</td><td class="num">~38.4</td>
+        <td>Warm and extremely salty from evaporation. Spills over the Gibraltar sill and spreads across
+        the Atlantic at about 1000 m.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Put those four on the diagram above and the structure of the deep ocean falls out.</b>
+  AABW ends up beneath NADW, AAIW sits above both as a salinity minimum, and the Mediterranean water &mdash;
+  warm, but so salty that it is denser than the Atlantic water at its own level &mdash; sinks until it finds
+  its density and then spreads sideways at about 1000&nbsp;m. Nobody decided this ordering; the equation of
+  state did. <b>One caveat, and it is the subject of the question below:</b> the AABW&ndash;NADW ordering is
+  <em>not</em> resolvable on a surface-referenced diagram, and needs pressure to be included before it comes
+  out right.</p>
+
+  <p class="q"><b>Question, and the demonstration above gives an honest and awkward answer.</b> AABW forms at
+  about &minus;0.6&nbsp;&deg;C and 34.65; NADW at about 3&nbsp;&deg;C and 34.95. AABW is <em>fresher</em>,
+  yet it lies underneath NADW everywhere they meet. Press the second preset and see whether the diagram
+  actually shows that.
+  <span style="color:var(--text-muted)">It barely does. At surface reference the two come out at
+  &sigma;<sub>t</sub> = <b>27.848 and 27.845</b> &mdash; a difference of three thousandths of a kilogram per
+  cubic metre, which is three parts in ten million of the density. The cooling and the freshening very nearly
+  cancel. <b>That near-cancellation is the point, and it is why &sigma;<sub>t</sub> is the wrong tool for deep
+  water.</b> Seawater's thermal expansion coefficient <em>increases</em> with pressure, so under
+  400&nbsp;atmospheres the colder water gains proportionally more density than the warmer one, and AABW pulls
+  clearly ahead. Oceanographers therefore compare deep water using <b>potential density referenced to
+  4000&nbsp;dbar</b> (&sigma;<sub>4</sub>) rather than to the surface. The diagram above omits pressure
+  entirely, which is stated in its note &mdash; and this question is the case where that omission actually
+  changes the answer. The general lesson survives intact: the whole vertical structure of the world ocean
+  rests on density differences of order a hundredth of a kilogram per cubic metre, which is why a modest
+  freshening of the North Atlantic is taken seriously.</span></p>
+
+  <div class="xref"><b>Where this goes next in the course.</b> The <b>Stommel two-box model</b>, which makes
+  the two stable states of the overturning explicit and shows the hysteresis, is in
+  <a href="../lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7, part&nbsp;4</a>. What
+  happens to the overturning under future forcing is
+  <a href="../lecture-8-climate-change-the-future/long-view.html">Lecture 8, part&nbsp;7</a>, and the
+  ocean's carbon uptake is
+  <a href="../lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Lecture 4, part&nbsp;3</a>.</div>
+</div>
+
+<div class="card">
+  <h3>The surface layer, and its seasonal cycle</h3>
+  <p class="cap">Goosse et al. (2010), Figs.&nbsp;1.14&ndash;1.15.</p>
+  <p>The top of the ocean is a well-mixed layer of nearly uniform temperature, with a sharp thermocline at
+  its base. Its depth is set by a competition, and the competition runs on an annual cycle:</p>
+  <div class="two">
+    <div>
+      <p class="note" style="margin:0"><b>Stabilises &mdash; makes the layer shallow</b></p>
+      <ul style="font-size:13.5px;margin:8px 0 0">
+        <li>Surface heating in spring and summer</li>
+        <li>Precipitation and river runoff, freshening the top</li>
+        <li>Ice melt, which is both fresh and cold but overwhelmingly fresh</li>
+      </ul>
+    </div>
+    <div>
+      <p class="note" style="margin:0"><b>Destabilises &mdash; makes it deep</b></p>
+      <ul style="font-size:13.5px;margin:8px 0 0">
+        <li>Surface cooling in autumn and winter</li>
+        <li>Evaporation, which concentrates salt</li>
+        <li>Ice formation, and the brine it rejects</li>
+        <li>Wind stirring, which mixes mechanically regardless of density</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>The consequence is a mixed layer of 20&ndash;40 m in late summer and 100&ndash;200 m in
+  late winter</b> at mid-latitudes, and far more than that in the deep-convection regions. That is a factor of
+  five in heat capacity within one year, which is why the effective &tau; of the ocean surface on
+  <a href="components-and-timescales.html#s2">page 2</a> is a seasonal quantity rather than a constant. It is
+  also why <b>spring blooms happen when they do</b>: phytoplankton need to be held in the light, and they
+  cannot be until the layer shallows.</p>
+</div>
+
+<div class="card">
+  <h3>What to carry forward</h3>
+  <ul>
+    <li>The wind drives the surface. Ekman transport is <b>90&deg; to the right</b> of the wind in the north,
+    and its magnitude &tau;/(&rho;f) does not depend on any turbulence parameter.</li>
+    <li>Where that transport diverges, deep water rises: <b>coastal and equatorial upwelling</b>, cold,
+    nutrient-rich, and responsible for a disproportionate share of the world's biology.</li>
+    <li>Density depends on <b>temperature and salinity</b>, non-linearly. Near freezing, salinity is in
+    charge.</li>
+    <li>Deep water forms in <b>two small regions</b> and takes about a thousand years to return. That is the
+    ocean's memory, and the climate system's.</li>
+    <li>The mixed layer breathes annually, and its depth sets both the heat capacity and the light
+    available to life.</li>
+  </ul>
+</div>
+
+<p class="foot">After Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <i>Introduction to
+Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.4 and Figs.&nbsp;1.9&ndash;1.17
+(climate.be/textbook); the overturning schematic referenced in Section&nbsp;6 is Fig.&nbsp;1.12 after
+Rahmstorf (2002) and Kuhlbrodt et&nbsp;al. (2007), and is <b>not reproduced here</b>. <b>Both figures on this
+page are computed.</b> The Ekman spiral is the classical constant-viscosity solution (Ekman, 1905) with
+&rho;<sub>a</sub>&nbsp;=&nbsp;1.225, C<sub>D</sub>&nbsp;=&nbsp;1.3&times;10<sup>&minus;3</sup>,
+&rho;<sub>w</sub>&nbsp;=&nbsp;1025&nbsp;kg&nbsp;m<sup>&minus;3</sup> and
+&Omega;&nbsp;=&nbsp;7.292&times;10<sup>&minus;5</sup>&nbsp;s<sup>&minus;1</sup>. Density contours are the
+one-atmosphere international equation of state for seawater (Millero and Poisson, 1981, as adopted in
+EOS-80), and the freezing line is the UNESCO (1983) surface relation. Water-mass temperature and salinity
+ranges in Section&nbsp;6 and the markers on the diagram are <b>representative published values</b> for each
+mass rather than measurements from a particular section. Transport figures in sverdrups are standard
+observational estimates. Every figure on the seven Lecture&nbsp;1 pages is classified in the
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="the-cryosphere.html">the cryosphere &rarr;</a></p>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function put(g,t,a,txt){var e=el(t,a);if(txt!==undefined)e.textContent=txt;g.appendChild(e);return e;}
+  function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+  function arrowDefs(g,list){
+    var defs=el('defs',{});
+    list.forEach(function(m){
+      var mk=el('marker',{id:m[0],viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,
+        orient:'auto-start-reverse'});
+      mk.appendChild(el('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:m[1]}));
+      defs.appendChild(mk);
+    });
+    g.appendChild(defs);
+  }
+  var OM=7.292e-5, RA=1.225, CD=1.3e-3, RW=1025;
+
+  /* ═══ Demo 1 · Ekman spiral ════════════════════════════════════ */
+  function drawEk(){
+    var g=$('ekG'); if(!g) return; clear(g);
+    arrowDefs(g,[['ea','var(--ocn)'],['eb','var(--hot)'],['ec','var(--bio)']]);
+    var U=+$('e_wind').value, lat=+$('e_lat').value, Az=+$('e_az').value;
+    var f=2*OM*Math.sin(lat*Math.PI/180);
+    var tau=RA*CD*U*U;
+    var dd=Math.sqrt(2*Az/f), DE=Math.PI*dd;
+    var V0=tau/(RW*Math.sqrt(Az*f));
+    var M=tau/(RW*f);
+    /* geometry: wind blows toward +y (up the page) */
+    var CX=470, CY=210, SC=150/Math.max(V0,1e-6);
+    put(g,'rect',{x:CX-210,y:CY-180,width:420,height:360,rx:10,fill:'var(--surface-2)',
+      stroke:'var(--line-soft)'});
+    put(g,'text',{x:CX,y:CY-162,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'plan view, looking down · vectors from a common origin');
+    /* wind */
+    put(g,'line',{x1:CX,y1:CY,x2:CX,y2:CY-150,stroke:'var(--bio)','stroke-width':3.4,
+      'marker-end':'url(#ec)'});
+    put(g,'text',{x:CX+8,y:CY-138,'font-size':12.5,fill:'var(--bio)','font-weight':600},
+      'wind, '+U.toFixed(1)+' m/s');
+    /* spiral vectors */
+    var nv=14;
+    for(var i=0;i<nv;i++){
+      var z=-DE*i/(nv-1)*1.0;
+      var mag=V0*Math.exp(z/dd);
+      var ang=Math.PI/4 + z/dd;                 /* clockwise from the wind direction */
+      /* wind is +y; the current is rotated clockwise by ang from the wind */
+      var vx= mag*Math.sin(ang), vy= mag*Math.cos(ang);
+      var op=0.30+0.65*(1-i/(nv-1));
+      put(g,'line',{x1:CX,y1:CY,x2:CX+vx*SC,y2:CY-vy*SC,stroke:'var(--ocn)',
+        'stroke-width':i===0?3:1.8,'marker-end':'url(#ea)',opacity:op});
+      if(i===0){
+        put(g,'text',{x:CX+vx*SC+8,y:CY-vy*SC-4,'font-size':12,fill:'var(--ocn)','font-weight':600},
+          'surface, 45° right');
+      }
+    }
+    /* trace through the tips */
+    var tr='';
+    for(var s=0;s<=200;s++){
+      var z2=-DE*s/200, m2=V0*Math.exp(z2/dd), a2=Math.PI/4+z2/dd;
+      tr+=(s?'L':'M')+(CX+m2*Math.sin(a2)*SC).toFixed(1)+' '+(CY-m2*Math.cos(a2)*SC).toFixed(1);
+    }
+    put(g,'path',{d:tr,fill:'none',stroke:'var(--ocn)','stroke-width':1.2,
+      'stroke-dasharray':'3 3',opacity:0.8});
+    /* transport: 90° right of the wind, i.e. +x */
+    put(g,'line',{x1:CX,y1:CY,x2:CX+165,y2:CY,stroke:'var(--hot)','stroke-width':4,
+      'marker-end':'url(#eb)'});
+    put(g,'text',{x:CX+165,y:CY-12,'text-anchor':'end','font-size':12.5,fill:'var(--hot)',
+      'font-weight':600},'net transport, 90° right');
+    /* left-hand notes */
+    put(g,'text',{x:26,y:56,'font-size':13,fill:'var(--text-primary)','font-weight':600},
+      'Depth of each vector');
+    for(var k=0;k<5;k++){
+      var zk=-DE*k/4;
+      put(g,'line',{x1:26,x2:44,y1:78+k*20,y2:78+k*20,stroke:'var(--ocn)','stroke-width':2,
+        opacity:0.30+0.65*(1-k/4)});
+      put(g,'text',{x:50,y:82+k*20,'font-size':11.5,fill:'var(--text-muted)'},
+        (-zk).toFixed(0)+' m');
+    }
+    put(g,'text',{x:26,y:200,'font-size':11.5,fill:'var(--text-muted)'},'Each vector is turned');
+    put(g,'text',{x:26,y:216,'font-size':11.5,fill:'var(--text-muted)'},'further clockwise and is');
+    put(g,'text',{x:26,y:232,'font-size':11.5,fill:'var(--text-muted)'},'weaker than the one above.');
+    put(g,'text',{x:26,y:256,'font-size':11.5,fill:'var(--text-muted)'},'At D');
+    put(g,'text',{x:47,y:259,'font-size':9,fill:'var(--text-muted)'},'E');
+    put(g,'text',{x:54,y:256,'font-size':11.5,fill:'var(--text-muted)'},' the current points');
+    put(g,'text',{x:26,y:272,'font-size':11.5,fill:'var(--text-muted)'},'the opposite way to the');
+    put(g,'text',{x:26,y:288,'font-size':11.5,fill:'var(--text-muted)'},'surface, at 4 % of its speed.');
+    put(g,'text',{x:26,y:326,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'COMPUTED —');
+    put(g,'text',{x:26,y:342,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'the classical Ekman');
+    put(g,'text',{x:26,y:358,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'solution, drawn to scale');
+
+    $('kTau').textContent=tau.toFixed(3);
+    $('kDe').textContent=DE.toFixed(0)+' m';
+    $('kV0').textContent=(V0*100).toFixed(1)+' cm/s';
+    $('kM').textContent=M.toFixed(2);
+    var band=100e3;
+    $('ekRo').innerHTML='A <b>'+U.toFixed(1)+' m s<sup>&minus;1</sup></b> wind at <b>'+lat+
+      '°N</b> exerts a stress of <b>'+tau.toFixed(3)+' N m<sup>&minus;2</sup></b>. The surface water moves '+
+      'at <b>'+(V0*100).toFixed(1)+' cm s<sup>&minus;1</sup></b>, 45° to the right of the wind, and the '+
+      'spiral dies out by <b>'+DE.toFixed(0)+' m</b>. The depth-integrated transport is '+
+      '<span class="big">'+M.toFixed(2)+' m² s<sup>&minus;1</sup></span> — which, along a 100 km stretch of '+
+      'coast, is <b>'+(M*band/1e6).toFixed(2)+' Sv</b> of water moved offshore and replaced from below.';
+  }
+  ['e_wind','e_lat','e_az'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('v_wind').innerHTML=(+$('e_wind').value).toFixed(1)+' m s<sup>&minus;1</sup>';
+      $('v_elat').textContent=$('e_lat').value+'° N';
+      $('v_az').innerHTML=(+$('e_az').value).toFixed(3)+' m² s<sup>&minus;1</sup>';
+      drawEk();
+    });
+  });
+
+  /* ═══ Demo 2 · T–S diagram ═════════════════════════════════════ */
+  /* One-atmosphere international equation of state (Millero & Poisson 1981) */
+  function rhoSW(S,T){
+    var rw=999.842594 + 6.793952e-2*T - 9.095290e-3*T*T + 1.001685e-4*T*T*T
+           - 1.120083e-6*T*T*T*T + 6.536332e-9*T*T*T*T*T;
+    var A=8.24493e-1 - 4.0899e-3*T + 7.6438e-5*T*T - 8.2467e-7*T*T*T + 5.3875e-9*T*T*T*T;
+    var B=-5.72466e-3 + 1.0227e-4*T - 1.6546e-6*T*T;
+    var C=4.8314e-4;
+    return rw + A*S + B*Math.pow(S,1.5) + C*S*S;
+  }
+  function tFreeze(S){
+    return -0.0575*S + 1.710523e-3*Math.pow(S,1.5) - 2.154996e-4*S*S;
+  }
+  var MASSES=[
+    {n:'AABW', T:-0.6, S:34.65, d:[10,-14]},
+    {n:'NADW', T:3.0,  S:34.95, d:[10,-6]},
+    {n:'AAIW', T:4.0,  S:34.30, d:[10,16]},
+    {n:'Mediterranean', T:13.0, S:38.40, d:[-10,-8]},
+    {n:'tropical surface', T:28.0, S:35.50, d:[-10,14]}
+  ];
+
+  function drawTS(){
+    var g=$('tsG'); if(!g) return; clear(g);
+    var TA=+$('d_ta').value, SA=+$('d_sa').value, TB=+$('d_tb').value, SB=+$('d_sb').value;
+    var L=66,R=690,T=26,B=350,W=R-L,H=B-T;
+    var s0=30,s1=39.2,t0=-3,t1=31;
+    var x=function(S){return L+W*(S-s0)/(s1-s0);};
+    var y=function(Tv){return B-H*(Tv-t0)/(t1-t0);};
+    for(var S=30;S<=39;S+=1){
+      put(g,'line',{x1:x(S),x2:x(S),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:x(S),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},S);
+    }
+    for(var Tt=0;Tt<=30;Tt+=5){
+      put(g,'line',{x1:L,x2:R,y1:y(Tt),y2:y(Tt),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:y(Tt)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},Tt);
+    }
+    put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'salinity (practical salinity scale)');
+    put(g,'text',{x:L-8,y:T-8,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'°C');
+    /* density contours: marching over a grid, drawn as level sets by scanning S for each sigma */
+    for(var sig=20;sig<=31;sig+=1){
+      var d='', started=false;
+      for(var i=0;i<=260;i++){
+        var Tv=t0+(t1-t0)*i/260;
+        /* solve rhoSW(S,T) - 1000 = sig for S by bisection */
+        var lo=s0,hi=s1,mid=0,ok=false;
+        if((rhoSW(lo,Tv)-1000-sig)*(rhoSW(hi,Tv)-1000-sig)<=0){
+          for(var it=0;it<40;it++){
+            mid=(lo+hi)/2;
+            if((rhoSW(lo,Tv)-1000-sig)*(rhoSW(mid,Tv)-1000-sig)<=0) hi=mid; else lo=mid;
+          }
+          ok=true;
+        }
+        if(ok){ d+=(started?'L':'M')+x(mid).toFixed(1)+' '+y(Tv).toFixed(1); started=true; }
+        else started=false;
+      }
+      if(d){
+        var major=(sig%5===0);
+        put(g,'path',{d:d,fill:'none',stroke:'var(--ocn)','stroke-width':major?1.6:1,
+          opacity:major?0.65:0.35});
+        /* label at the top of the contour */
+        var Tl=t1-1.2, lo2=s0,hi2=s1,ml=0;
+        if((rhoSW(lo2,Tl)-1000-sig)*(rhoSW(hi2,Tl)-1000-sig)<=0){
+          for(var j=0;j<40;j++){ ml=(lo2+hi2)/2;
+            if((rhoSW(lo2,Tl)-1000-sig)*(rhoSW(ml,Tl)-1000-sig)<=0) hi2=ml; else lo2=ml; }
+          if(ml>s0+0.2&&ml<s1-0.2)
+            put(g,'text',{x:x(ml),y:y(Tl)-4,'text-anchor':'middle','font-size':10.5,
+              fill:'var(--ocn)',opacity:0.85},sig);
+        }
+      }
+    }
+    put(g,'text',{x:L+8,y:T+16,'font-size':11.5,fill:'var(--ocn)','font-weight':600},
+      'contours of σ');
+    put(g,'text',{x:L+8,y:T+31,'font-size':11,fill:'var(--ocn)',opacity:0.85},
+      'denser downward and to the right');
+    /* freezing line */
+    var fz='';
+    for(var k=0;k<=100;k++){
+      var Sf=s0+(s1-s0)*k/100;
+      fz+=(k?'L':'M')+x(Sf).toFixed(1)+' '+y(tFreeze(Sf)).toFixed(1);
+    }
+    put(g,'path',{d:fz,fill:'none',stroke:'var(--cry)','stroke-width':2,'stroke-dasharray':'7 4'});
+    put(g,'text',{x:x(31.2),y:y(tFreeze(31.2))+16,'font-size':11.5,fill:'var(--cry)',
+      'font-weight':600},'freezing point of seawater');
+    /* water masses */
+    MASSES.forEach(function(m){
+      put(g,'circle',{cx:x(m.S),cy:y(m.T),r:4,fill:'var(--text-muted)'});
+      put(g,'text',{x:x(m.S)+m.d[0],y:y(m.T)+m.d[1],
+        'text-anchor':m.d[0]<0?'end':'start','font-size':11,fill:'var(--text-muted)'},m.n);
+    });
+    /* parcels */
+    var rA=rhoSW(SA,TA)-1000, rB=rhoSW(SB,TB)-1000;
+    var TM=(TA+TB)/2, SM=(SA+SB)/2, rM=rhoSW(SM,TM)-1000;
+    put(g,'line',{x1:x(SA),y1:y(TA),x2:x(SB),y2:y(TB),stroke:'var(--text-primary)',
+      'stroke-width':1.4,'stroke-dasharray':'4 4',opacity:0.7});
+    [[SA,TA,'A','var(--hot)'],[SB,TB,'B','var(--atm)']].forEach(function(p){
+      put(g,'circle',{cx:x(p[0]),cy:y(p[1]),r:7,fill:p[3],stroke:'var(--surface-1)','stroke-width':2});
+      put(g,'text',{x:x(p[0]),y:y(p[1])+4,'text-anchor':'middle','font-size':11,
+        fill:'var(--surface-1)','font-weight':700},p[2]);
+    });
+    put(g,'circle',{cx:x(SM),cy:y(TM),r:6,fill:'var(--bio)',stroke:'var(--surface-1)','stroke-width':2});
+    put(g,'text',{x:x(SM)+11,y:y(TM)+4,'font-size':11.5,fill:'var(--bio)','font-weight':600},'mixture');
+    /* legend column */
+    put(g,'text',{x:R+22,y:T+16,'font-size':12,fill:'var(--text-primary)','font-weight':600},'σ');
+    put(g,'text',{x:R+31,y:T+19,'font-size':9,fill:'var(--text-primary)'},'t');
+    put(g,'text',{x:R+38,y:T+16,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+      ' = ρ − 1000');
+    put(g,'circle',{cx:R+28,cy:T+42,r:6,fill:'var(--hot)'});
+    put(g,'text',{x:R+42,y:T+46,'font-size':12,fill:'var(--hot)','font-weight':600},
+      rA.toFixed(2));
+    put(g,'circle',{cx:R+28,cy:T+66,r:6,fill:'var(--atm)'});
+    put(g,'text',{x:R+42,y:T+70,'font-size':12,fill:'var(--atm)','font-weight':600},
+      rB.toFixed(2));
+    put(g,'circle',{cx:R+28,cy:T+90,r:6,fill:'var(--bio)'});
+    put(g,'text',{x:R+42,y:T+94,'font-size':12,fill:'var(--bio)','font-weight':600},
+      rM.toFixed(2));
+    put(g,'text',{x:R+22,y:T+124,'font-size':11,fill:'var(--text-muted)'},'The contours are');
+    put(g,'text',{x:R+22,y:T+139,'font-size':11,fill:'var(--text-muted)'},'curved — that');
+    put(g,'text',{x:R+22,y:T+154,'font-size':11,fill:'var(--text-muted)'},'curvature is what');
+    put(g,'text',{x:R+22,y:T+169,'font-size':11,fill:'var(--text-muted)'},'makes the mixture');
+    put(g,'text',{x:R+22,y:T+184,'font-size':11,fill:'var(--text-muted)'},'denser than either');
+    put(g,'text',{x:R+22,y:T+199,'font-size':11,fill:'var(--text-muted)'},'average.');
+    put(g,'text',{x:R+22,y:T+228,'font-size':11,fill:'var(--warn)','font-style':'italic'},'COMPUTED —');
+    put(g,'text',{x:R+22,y:T+243,'font-size':11,fill:'var(--warn)','font-style':'italic'},'contours solved');
+    put(g,'text',{x:R+22,y:T+258,'font-size':11,fill:'var(--warn)','font-style':'italic'},'from the equation');
+    put(g,'text',{x:R+22,y:T+273,'font-size':11,fill:'var(--warn)','font-style':'italic'},'of state');
+    put(g,'text',{x:L,y:B+62,'font-size':11,fill:'var(--text-muted)'},
+      'Water-mass markers are representative published T and S values, not measurements from a single station.');
+    put(g,'text',{x:L,y:B+80,'font-size':11,fill:'var(--text-muted)'},
+      'Pressure is not included: below about 1000 m, potential density referenced to depth must be used instead.');
+
+    var cab=rM-(rA+rB)/2;
+    $('kDA').textContent=rA.toFixed(3);
+    $('kDB').textContent=rB.toFixed(3);
+    $('kDM').textContent=rM.toFixed(3);
+    $('kCab').textContent='+'+cab.toFixed(3);
+    var which;
+    if(Math.abs(rA-rB)<0.005) which='A and B are <b>the same density to within 0.005 kg m<sup>&minus;3</sup></b>, so neither sinks past the other.';
+    else if(rA>rB) which='<b>A sinks below B</b>, by '+(rA-rB).toFixed(3)+' kg m<sup>&minus;3</sup>.';
+    else which='<b>B sinks below A</b>, by '+(rB-rA).toFixed(3)+' kg m<sup>&minus;3</sup>.';
+    var cabTxt = cab>0.0005
+      ? ' Mix them half and half and the result has σ<sub>t</sub> = <b>'+rM.toFixed(3)+
+        '</b> — <b>'+cab.toFixed(3)+' kg m<sup>&minus;3</sup> denser</b> than the average of the two, so '+
+        'the mixture sinks below both of them. That is cabbeling.'
+      : ' The two parcels are close enough in T and S that the curvature of the contours has almost nothing to work with, and the mixture is essentially the average.';
+    $('tsRo').innerHTML='A: <b>'+TA.toFixed(1)+' °C, S = '+SA.toFixed(2)+'</b> → σ<sub>t</sub> = '+
+      rA.toFixed(3)+'. &nbsp; B: <b>'+TB.toFixed(1)+' °C, S = '+SB.toFixed(2)+'</b> → σ<sub>t</sub> = '+
+      rB.toFixed(3)+'. '+which+cabTxt;
+  }
+  ['d_ta','d_sa','d_tb','d_sb'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('v_ta').textContent=(+$('d_ta').value).toFixed(1)+' °C';
+      $('v_sa').textContent=(+$('d_sa').value).toFixed(2);
+      $('v_tb').textContent=(+$('d_tb').value).toFixed(1)+' °C';
+      $('v_sb').textContent=(+$('d_sb').value).toFixed(2);
+      drawTS();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.ghost[data-d]'),function(b){
+    b.addEventListener('click',function(){
+      var p=b.getAttribute('data-d').split(',');
+      $('d_ta').value=p[0]; $('d_sa').value=p[1]; $('d_tb').value=p[2]; $('d_sb').value=p[3];
+      $('v_ta').textContent=(+p[0]).toFixed(1)+' °C';
+      $('v_sa').textContent=(+p[1]).toFixed(2);
+      $('v_tb').textContent=(+p[2]).toFixed(1)+' °C';
+      $('v_sb').textContent=(+p[3]).toFixed(2);
+      drawTS();
+    });
+  });
+
+  drawEk(); drawTS();
+})();
+</script>
+
+</div>
+<script src="../assets/reveal-answers.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('themeBtn');
+  if(!btn) return;
+  btn.onclick=function(){
+    var d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

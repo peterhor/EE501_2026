@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From weather to climate — what a climate normal actually is</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --atm:#2a78d6; --ocn:#12667f; --cry:#7b5bd6; --bio:#1baf7a; --ped:#8a6b45;
+    --warn:#d98324; --hot:#c8443a; --acc:#2a78d6;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --atm:#5b9ae8; --ocn:#3d9dbd; --cry:#a78bea; --bio:#3cc596; --ped:#a08258;
+    --warn:#e09a44; --hot:#d9564c; --acc:#5b9ae8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p:last-child{margin-bottom:0}
+  p b,li b,td b{color:var(--text-primary);font-weight:600}
+  ul,ol{margin:0 0 12px;padding-left:22px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  a{color:var(--acc)}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
+  .eq b{font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 14px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;
+    color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--text-primary)}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00b7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px;gap:10px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two,.three{grid-template-columns:1fr}}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+  .pill{font-size:11.5px;letter-spacing:.04em;border-radius:999px;padding:3px 10px;
+    background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line-soft)}
+  .xref{background:var(--surface-2);border-radius:10px;padding:12px 15px;margin-top:14px;
+    font-size:13.5px;color:var(--text-secondary)}
+  .xref b{color:var(--text-primary)}
+  .xref a{font-weight:600;text-decoration:none}
+  .xref a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Components of the climate system &middot; 1 of 7</p>
+
+<header>
+  <div>
+    <h1>From weather to climate</h1>
+    <p class="sub">Climate is not weather averaged for a while &mdash; it is a <em>statistic</em> with a
+    sampling error, a baseline and a shelf life. This page builds the definition from the ground up, works out
+    where the famous thirty years comes from, and shows why the same year can be called
+    &ldquo;+0.5&nbsp;&deg;C&rdquo; or &ldquo;+1.5&nbsp;&deg;C&rdquo; without anybody lying.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; Two definitions</a>
+  <a href="#s2">2 &middot; Why thirty years</a>
+  <a href="#s3">3 &middot; Which baseline?</a>
+  <a href="#s4">4 &middot; A local climate profile</a>
+  <a href="#s5">5 &middot; The wider definition</a>
+</div>
+
+<!-- ═══════════ 1 ═══════════ -->
+<h2 class="sec" id="s1">1 &middot; Two definitions, forty years apart</h2>
+
+<div class="card">
+  <h3>The narrow definition &mdash; climate as atmospheric statistics</h3>
+  <p class="cap">Goosse et al. (2010), &sect;1.1.</p>
+  <p><b>Climate is traditionally defined as a description, in terms of the mean and the variability, of
+  relevant atmospheric variables such as temperature, precipitation and wind.</b> Three things in that
+  sentence do real work, and students routinely keep only the first.</p>
+  <ul>
+    <li><b>Mean.</b> The part everybody remembers. Bergen is wetter than Oslo.</li>
+    <li><b>Variability.</b> Equally part of the definition. Two places with identical annual mean
+    temperature but different <em>ranges</em> have different climates &mdash; and the range is what an
+    ecosystem, a crop or a building is actually built for. Extremes live here, and Lecture&nbsp;8 spends a
+    whole page on them.</li>
+    <li><b>Relevant variables.</b> Temperature, precipitation and wind, but also humidity, cloud, radiation,
+    snow cover, growing-season length. Which ones are &ldquo;relevant&rdquo; depends on the question you are
+    asking, which is a scientific choice and not a given.</li>
+  </ul>
+  <p class="note"><b>Weather is a state; climate is a distribution.</b> Weather is what the atmosphere is
+  doing at one moment, and it is predictable for about a week. Climate is the shape of the distribution that
+  the weather is drawn from, and it is predictable in a completely different sense &mdash; you cannot say
+  whether 3 March 2087 will be wet, and you can say something useful about how many wet days that March will
+  have. Lecture&nbsp;8 makes that distinction formal under the heading
+  <a href="../lecture-8-climate-change-the-future/projections-predictions.html">projections versus
+  predictions</a>.</p>
+  <p class="q"><b>Question.</b> A colleague says &ldquo;the climate has changed &mdash; last summer was the
+  hottest I remember.&rdquo; What, precisely, is wrong with that as evidence?
+  <span style="color:var(--text-muted)">One summer is one draw from the distribution. A single hot summer is
+  entirely compatible with an unchanged climate, because the distribution has width; that is what
+  <em>variability</em> means. Evidence for a changed climate has to be a statement about the distribution
+  &mdash; a shifted mean, a changed variance, a changed frequency of exceeding a threshold &mdash; and that
+  requires many draws. The demonstration below quantifies exactly how many.</span></p>
+</div>
+
+<div class="card">
+  <h3>The wider definition &mdash; climate as the state of a system</h3>
+  <p>Climate is now increasingly defined as the description of <b>the whole climate system</b>: not just the
+  atmosphere but the ocean, the ice, the living world and the soil beneath it, together with everything they
+  exchange. The atmosphere is the component we experience, and it is the fastest and the lightest of the
+  five. It is also the one that would forget everything within weeks if the others stopped talking to it.</p>
+  <p>That shift &mdash; from a list of atmospheric statistics to a coupled system &mdash; is the reason this
+  lecture exists, and it is what the remaining six pages are about. It is also a warning about the first
+  definition: a thirty-year mean is only a stable description of climate <em>if</em> the slow components are
+  not moving. They are moving.</p>
+  <div class="xref"><b>Next:</b> <a href="components-and-timescales.html">Five components, five clocks
+  &rarr;</a> &mdash; who the other four are, and why each one has its own memory.</div>
+</div>
+
+<!-- ═══════════ 2 ═══════════ -->
+<h2 class="sec" id="s2">2 &middot; Where the thirty years comes from</h2>
+
+<div class="card demo">
+  <h3>Average some weather</h3>
+  <p class="cap">Thirty years is a convention, not a law of nature. Below, daily weather is generated from a
+  seasonal cycle plus correlated noise plus a warming trend, and then averaged over a window of your
+  choosing. Two errors fight each other as the window grows, and where they cross is the honest answer to
+  &ldquo;how long should a normal be?&rdquo;</p>
+
+  <div class="eq">
+    <b>sampling error</b> &nbsp;&sigma;<sub>N</sub> = &sigma;<sub>ann</sub> / &radic;N
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <b>staleness</b> &nbsp;b<sub>N</sub> = &frac12; &middot; trend &middot; N
+    <span class="u">shrinking noise versus growing bias. Minimising
+    &radic;(&sigma;<sub>N</sub>&sup2; + b<sub>N</sub>&sup2;) gives
+    N<sub>best</sub> = (2&sigma;<sub>ann</sub>&sup2; / trend&sup2;)<sup>1/3</sup>, with trend in K per year</span>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="c_win"><span>Averaging window N</span> <b id="v_win">30 years</b></label>
+      <input type="range" id="c_win" min="1" max="60" step="1" value="30">
+      <div class="hint">WMO climate normals use 30.</div>
+    </div>
+    <div class="ctrl">
+      <label for="c_sig"><span>Year-to-year weather noise &sigma;<sub>ann</sub></span> <b id="v_sig">0.60 K</b></label>
+      <input type="range" id="c_sig" min="0.1" max="1.5" step="0.05" value="0.6">
+      <div class="hint">Standard deviation of the annual mean. Larger inland and at high latitude.</div>
+    </div>
+    <div class="ctrl">
+      <label for="c_tr"><span>Warming trend</span> <b id="v_tr">0.20 K / decade</b></label>
+      <input type="range" id="c_tr" min="0" max="0.6" step="0.01" value="0.2">
+      <div class="hint">Set it to zero and the trade-off disappears &mdash; longer is then always better.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Try</span>
+    <button class="ghost" data-i="30,0.6,0.2">The normal we use, the climate we have</button>
+    <button class="ghost" data-i="30,0.6,0.07">The climate 30 years was chosen for</button>
+    <button class="ghost" data-i="30,0.6,0">A stationary climate</button>
+    <button class="ghost" data-i="5,0.6,0.2">Only five years</button>
+  </div>
+
+  <svg viewBox="0 0 880 320" role="img" aria-label="A synthetic daily temperature series with the annual means and the running N-year mean drawn over it"><g id="wG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Sampling error</div><div class="v" id="kSam">&mdash;</div><div class="s">&sigma;<sub>ann</sub>/&radic;N</div></div>
+    <div class="kpi"><div class="k">Staleness at the end</div><div class="v" id="kBia">&mdash;</div><div class="s">midpoint of window to now</div></div>
+    <div class="kpi"><div class="k">Total error</div><div class="v" id="kTot">&mdash;</div><div class="s">the two added in quadrature</div></div>
+    <div class="kpi"><div class="k">Best window here</div><div class="v" id="kOpt">&mdash;</div><div class="s">minimum of the total</div></div>
+  </div>
+
+  <div class="readout" id="wRo"></div>
+
+  <svg viewBox="0 0 880 250" role="img" aria-label="Sampling error, staleness and total error plotted against the length of the averaging window"><g id="eG"></g></svg>
+
+  <p class="note"><b>Read the second figure, not the first.</b> Sampling error falls as 1/&radic;N &mdash; fast
+  at the start, then barely at all. Staleness grows linearly and never stops. Their sum therefore has a
+  minimum, at N&nbsp;=&nbsp;(2&sigma;&sup2;/trend&sup2;)<sup>1/3</sup>, and where that minimum sits depends
+  entirely on how fast the climate is moving.</p>
+  <p class="note"><b>And the answer is uncomfortable.</b> Press <b>the climate 30&nbsp;years was chosen
+  for</b> &mdash; a trend of about 0.07&nbsp;K per decade, roughly the early-twentieth-century rate &mdash;
+  and the optimum lands near 25&nbsp;years. Thirty is a perfectly sensible number for that world. Now press
+  <b>the normal we use, the climate we have</b>: at 0.2&nbsp;K per decade the optimum collapses to about
+  12&nbsp;years, because staleness now grows three times faster while the sampling error is unchanged. By its
+  own criterion the standard 30-year normal is roughly twice as long as it should be, and it is kept because
+  comparability between countries and across decades is worth more than the extra tenth of a degree.</p>
+  <p class="note" style="color:var(--text-muted)"><b>Be careful how far you push this.</b> The 30-year
+  convention was fixed in the 1930s for standardisation, not by anyone minimising this expression. The
+  trade-off above is a <em>reconstruction</em> of why the number was a reasonable one and why it is
+  periodically re-argued &mdash; not the historical reason it was adopted.</p>
+
+  <p class="q"><b>Question.</b> Set the trend to zero. The &ldquo;best window&rdquo; runs off the end of the
+  slider. Why, and what does that tell you about what a climate normal is for?
+  <span style="color:var(--text-muted)">With no trend the climate is stationary, so there is no such thing as
+  out-of-date data and every extra year purely buys precision &mdash; the optimum is &ldquo;all the data you
+  have&rdquo;. A finite window only makes sense because the thing being estimated is itself moving. A climate
+  normal is therefore not an estimate of <em>the</em> climate; it is an estimate of the climate <em>of a
+  particular period</em>, and it has an expiry date.</span></p>
+
+  <p class="q"><b>Question.</b> Norway's normals are computed for the whole country from the same period, yet
+  &sigma;<sub>ann</sub> is roughly twice as large at Karasjok as at Bergen. What does that do to the meaning
+  of a 30-year normal at the two sites?
+  <span style="color:var(--text-muted)">The <em>same</em> 30 years buys twice the precision at Bergen. A
+  30-year normal at Karasjok has a sampling error of order 0.2&nbsp;K, at Bergen of order 0.1&nbsp;K, so a
+  difference between two consecutive normals that is significant on the coast may be pure noise inland.
+  Continental and high-latitude sites need longer records &mdash; or larger changes &mdash; before the same
+  statement can be made about them. This is the spatial-averaging argument in Lecture&nbsp;7's
+  <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">signal and noise</a> page,
+  seen from the other end.</span></p>
+
+  <div class="warnbox"><b>What is real and what is drawn here.</b> The daily series is
+  <b>synthetic</b> &mdash; a seasonal cycle, an autocorrelated weather term and a linear trend, generated in
+  your browser from a fixed seed. It is not a station record and no observations are loaded. What
+  <em>is</em> real is the arithmetic: &sigma;<sub>N</sub> = &sigma;<sub>ann</sub>/&radic;N and the linear
+  staleness term are exact, and they are the entire content of the figure below the series.</div>
+</div>
+
+<!-- ═══════════ 3 ═══════════ -->
+<h2 class="sec" id="s3">3 &middot; The number depends on the baseline you chose</h2>
+
+<div class="card demo">
+  <h3>Same year, six different anomalies</h3>
+  <p class="cap">An anomaly is a difference, and a difference needs two ends. Change the reference period
+  and the number changes, with no new physics and no new data. This is the single most common source of
+  confusion when students compare figures from different agencies.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Reference period</span>
+    <div class="seg" id="segRef">
+      <button data-r="0" aria-pressed="false">1850&ndash;1900</button>
+      <button data-r="1" aria-pressed="false">1951&ndash;1980</button>
+      <button data-r="2" aria-pressed="false">1961&ndash;1990</button>
+      <button data-r="3" aria-pressed="true">1991&ndash;2020</button>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 330" role="img" aria-label="A synthetic global temperature curve replotted against four different reference periods, showing the same curve shifted vertically"><g id="rG"></g></svg>
+
+  <div class="readout" id="rRo"></div>
+
+  <p class="note"><b>The curve never moves. The axis does.</b> Every point in the series is shifted by the
+  same constant, so every <em>difference</em> &mdash; every trend, every ranking of years, every statement
+  about how fast it is warming &mdash; is completely unaffected. Only the labels change. If a figure gives you
+  an anomaly without naming its baseline, the number is meaningless on its own.</p>
+
+  <div class="warnbox"><b>Synthetic again.</b> The curve is a smooth function plus autocorrelated noise,
+  chosen so that its shape resembles the instrumental record. <b>It is not the instrumental record</b>, no
+  values should be read off it, and it is drawn here only so that the shifting of the zero line is visible.
+  The published numbers are in the table below.</div>
+</div>
+
+<div class="card">
+  <h3>The published numbers, and where they come from</h3>
+  <p class="cap">Real values, quoted with their sources. These are what to put on the board.</p>
+  <table>
+    <thead><tr><th>Quantity</th><th class="num">Value</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Length of a WMO climate normal</td><td class="num">30 years</td>
+        <td>WMO convention; current standard normal 1991&ndash;2020</td></tr>
+      <tr><td class="nm">Warming 1850&ndash;1900 to 2011&ndash;2020</td><td class="num">+1.09 &deg;C</td>
+        <td>IPCC AR6 WG1 Summary for Policymakers (2021), A.1.2</td></tr>
+      <tr><td class="nm">Warming 1850&ndash;1900 to 1995&ndash;2014</td><td class="num">+0.85 &deg;C</td>
+        <td>IPCC AR6 WG1 (2021)</td></tr>
+      <tr><td class="nm">2025 global mean anomaly vs 1850&ndash;1900</td><td class="num">+1.47 &deg;C</td>
+        <td>Berkeley Earth global temperature report for 2025</td></tr>
+      <tr><td class="nm">Rank of 2025 in the instrumental record</td><td class="num">3rd</td>
+        <td>Berkeley Earth; after 2024 and 2023</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Why the two IPCC rows matter more than the headline.</b> Their difference,
+  0.24&nbsp;&deg;C, is the warming between two overlapping recent baselines about sixteen years apart. Any
+  figure drawn against 1995&ndash;2014 will therefore show a number roughly a quarter of a degree smaller than
+  the same physical situation drawn against 1850&ndash;1900. Neither is wrong. Read the caption.</p>
+  <p class="q"><b>Question.</b> The Paris Agreement targets are stated relative to pre-industrial. Why is that
+  choice awkward, and what would have been the alternative?
+  <span style="color:var(--text-muted)">Because there are no global instrumental data before about 1850, so
+  &ldquo;pre-industrial&rdquo; has to be operationalised as 1850&ndash;1900 &mdash; a period that already has
+  some anthropogenic warming in it, and whose coverage is thin, especially over the Southern Ocean. Using a
+  modern, well-observed baseline would make the observations far more precise but would make the
+  <em>target</em> incomparable with the physical quantity people mean by warming since industrialisation. The
+  choice trades observational precision against conceptual relevance, and the community chose relevance.
+  Lecture&nbsp;8's <a href="../lecture-8-climate-change-the-future/carbon-budgets.html">carbon budgets</a>
+  page shows how much the remaining budget depends on it.</span></p>
+</div>
+
+<!-- ═══════════ 4 ═══════════ -->
+<h2 class="sec" id="s4">4 &middot; A climate, in the sense above, for one place</h2>
+
+<div class="card">
+  <h3>Telemark, 1971&ndash;2000 to 2071&ndash;2100</h3>
+  <p class="cap">Real values from the Norwegian Centre for Climate Services county climate profile for
+  Telemark (klimaservicesenter.no).</p>
+  <table>
+    <thead><tr><th>Variable</th><th class="num">Projected change</th><th>What that means locally</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Annual mean temperature</td><td class="num">+4.0 &deg;C</td>
+        <td>Comparable to moving the county several hundred kilometres south, but with the same day length.</td></tr>
+      <tr><td class="nm">Annual precipitation</td><td class="num">+10 %</td>
+        <td>Not evenly spread &mdash; more of it in heavy events, and more of it as rain rather than snow.</td></tr>
+      <tr><td class="nm">Annual precipitation at B&oslash; today</td><td class="num">790 mm</td>
+        <td>The baseline the +10 % applies to.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Two things to notice in that table.</b> First, both entries are differences between two
+  thirty-year windows &mdash; the definition from Section 2 used as a working tool, not as a piece of theory.
+  Second, the day length does not change. A Telemark with the temperature of central Europe still has
+  midwinter darkness and midsummer light, and no ecosystem currently on Earth is adapted to that combination.
+  This is why the ecology half of this course is not a footnote to the physics.</p>
+  <div class="xref"><b>Where the +4.0 &deg;C comes from.</b> A downscaled regional projection under a
+  scenario, with all the layers of uncertainty that implies.
+  <a href="../lecture-8-climate-change-the-future/scenarios.html">Lecture 8, part 1</a> traces the chain from
+  emissions to a number like this one, and
+  <a href="../lecture-5-modelling-the-climate-system/components.html">Lecture 5, part 4</a> covers the
+  downscaling step that turns a 100&nbsp;km grid box into a county.</div>
+</div>
+
+<!-- ═══════════ 5 ═══════════ -->
+<h2 class="sec" id="s5">5 &middot; From the atmosphere to the system</h2>
+
+<div class="card">
+  <h3>Why a purely atmospheric definition cannot survive</h3>
+  <p>Everything on this page so far treats climate as a property of the air. That is workable for describing
+  a place, and hopeless for explaining it. Three observations break it:</p>
+  <ul>
+    <li><b>The atmosphere has almost no memory.</b> Its heat capacity is about a thousandth of the ocean's.
+    Left to itself it would come to equilibrium with its boundaries in weeks. Anything that persists for
+    longer than a season is being persisted by something else.</li>
+    <li><b>The boundaries are not fixed.</b> Sea surface temperature, sea ice extent, snow cover, soil
+    moisture and vegetation all change on the timescales we care about, and all of them are partly
+    <em>caused</em> by the atmosphere they are forcing. That two-way street is what makes it a system rather
+    than a forcing and a response.</li>
+    <li><b>The interesting timescales belong to the slow components.</b> Glacial cycles, ocean overturning,
+    carbon uptake, ice-sheet decay: none of them are atmospheric, and all of them set the atmospheric
+    statistics we then call climate.</li>
+  </ul>
+  <p class="note">So the rest of this lecture takes the components one at a time &mdash; the atmosphere, the
+  ocean, the ice, the living surface &mdash; and asks of each: what is in it, how much energy and water can it
+  hold, how fast does it respond, and what does it do to its neighbours.</p>
+  <div class="xref"><b>Where humans go in this picture.</b> Deliberately left until the end. Every component
+  below has a human fingerprint on it &mdash; composition, land cover, water, ice &mdash; and the question of
+  whether to draw the anthroposphere as a sixth component or as an external forcing is a real one, taken up in
+  <a href="../lecture-8-climate-change-the-future/scenarios.html">Lecture 8</a>. Hold the question until then; it is worth
+  asking a room.</div>
+</div>
+
+<p class="foot">Definitions and structure after Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz
+(2010), <i>Introduction to Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.1
+(climate.be/textbook). Both time series on this page are <b>synthetic and computed in the browser</b>: a
+seasonal cycle plus a lag-1 autoregressive weather term (&phi;&nbsp;=&nbsp;0.55 daily,
+&phi;&nbsp;=&nbsp;0.25 annual) plus a linear trend, from a fixed seed, with no observational data loaded. The
+error curves are the exact expressions &sigma;<sub>ann</sub>/&radic;N and &frac12;&middot;trend&middot;N. The
+quoted warming values are IPCC AR6 WG1 (2021) SPM&nbsp;A.1.2 and the Berkeley Earth global temperature report
+for 2025; the Telemark figures are from the Norwegian Centre for Climate Services county climate profile.
+Every figure on the seven Lecture&nbsp;1 pages is classified in the
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="components-and-timescales.html">five components, five clocks &rarr;</a></p>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function put(g,t,a,txt){var e=el(t,a);if(txt!==undefined)e.textContent=txt;g.appendChild(e);return e;}
+  function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+  /* ── deterministic PRNG so the "data" is reproducible and clearly synthetic ── */
+  function rng(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+  function gauss(r){var u=Math.max(1e-12,r()),v=r();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+  /* ═══ Demo 1 · weather → climate ═══════════════════════════════ */
+  var NY=80, DPY=365;
+  var daily=null, annual=null;
+
+  function build(sig,trend){
+    var r=rng(20260907), d=new Array(NY*DPY), ann=new Array(NY);
+    /* annual-mean weather noise with lag-1 correlation 0.25, scaled to sigma */
+    var phiA=0.25, ea=0, an=new Array(NY);
+    for(var y=0;y<NY;y++){ ea=phiA*ea+Math.sqrt(1-phiA*phiA)*gauss(r); an[y]=sig*ea; }
+    /* daily weather with lag-1 correlation 0.55 on top */
+    var phiD=0.55, ed=0, sd=3.4;
+    for(var i=0;i<NY*DPY;i++){
+      var yy=Math.floor(i/DPY), doy=i-yy*DPY;
+      ed=phiD*ed+Math.sqrt(1-phiD*phiD)*gauss(r);
+      var seas=-9.0*Math.cos(2*Math.PI*(doy-15)/DPY);
+      d[i]=6.0+seas+an[yy]+trend*yy/10+sd*ed;
+    }
+    for(var y2=0;y2<NY;y2++){
+      var s=0; for(var k=0;k<DPY;k++) s+=d[y2*DPY+k];
+      ann[y2]=s/DPY;
+    }
+    daily=d; annual=ann;
+  }
+
+  function drawWeather(N,sig,trend){
+    var g=$('wG'); if(!g) return; clear(g);
+    var L=58,R=866,T=18,B=270,W=R-L,H=B-T;
+    var lo=-16, hi=26;
+    var x=function(y){return L+W*y/NY;};
+    var yv=function(t){return B-H*(t-lo)/(hi-lo);};
+    /* grid */
+    for(var t=-15;t<=25;t+=5){
+      put(g,'line',{x1:L,x2:R,y1:yv(t),y2:yv(t),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:yv(t)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},t+'°');
+    }
+    for(var yr=0;yr<=NY;yr+=10){
+      put(g,'text',{x:x(yr),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'yr '+yr);
+    }
+    /* daily series, thinned to one point every 3 days for legibility */
+    var dpath='';
+    for(var i=0;i<NY*DPY;i+=3){
+      var v=daily[i]; if(v<lo)v=lo; if(v>hi)v=hi;
+      dpath+=(i?'L':'M')+x(i/DPY).toFixed(2)+' '+yv(v).toFixed(2);
+    }
+    put(g,'path',{d:dpath,fill:'none',stroke:'var(--text-muted)','stroke-width':0.5,opacity:0.42});
+    /* annual means */
+    var apath='';
+    for(var y3=0;y3<NY;y3++) apath+=(y3?'L':'M')+x(y3+0.5).toFixed(2)+' '+yv(annual[y3]).toFixed(2);
+    put(g,'path',{d:apath,fill:'none',stroke:'var(--atm)','stroke-width':1.7,opacity:0.95});
+    /* running N-year mean */
+    var mpath='';
+    for(var y4=N-1;y4<NY;y4++){
+      var s=0; for(var k2=0;k2<N;k2++) s+=annual[y4-k2];
+      mpath+=(mpath?'L':'M')+x(y4+0.5).toFixed(2)+' '+yv(s/N).toFixed(2);
+    }
+    put(g,'path',{d:mpath,fill:'none',stroke:'var(--hot)','stroke-width':3});
+    /* window bracket at the end */
+    var xs=x(NY-N), xe=x(NY);
+    put(g,'rect',{x:xs,y:T,width:Math.max(1,xe-xs),height:H,fill:'var(--acc)',opacity:0.09});
+    put(g,'text',{x:(xs+xe)/2,y:T+14,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--acc)','font-weight':600},'last '+N+' yr');
+    /* legend + honesty label inside the SVG */
+    put(g,'text',{x:L,y:T+14,'font-size':11.5,fill:'var(--text-muted)'},
+      'daily weather');
+    put(g,'text',{x:L+90,y:T+14,'font-size':11.5,fill:'var(--atm)','font-weight':600},
+      'annual mean');
+    put(g,'text',{x:L+188,y:T+14,'font-size':11.5,fill:'var(--hot)','font-weight':600},
+      N+'-year running mean');
+    put(g,'text',{x:R,y:B+34,'text-anchor':'end','font-size':11,fill:'var(--warn)',
+      'font-style':'italic'},
+      'SYNTHETIC SERIES — generated in the browser, not observations');
+    put(g,'text',{x:L,y:B+34,'font-size':11,fill:'var(--text-muted)'},
+      '°C, a mid-latitude continental site');
+  }
+
+  function drawErr(sig,trend){
+    var g=$('eG'); if(!g) return; clear(g);
+    var L=58,R=760,T=22,B=200,W=R-L,H=B-T;
+    var hi=0.9;
+    var x=function(n){return L+W*(n-1)/59;};
+    var yv=function(e){return B-H*Math.min(e,hi)/hi;};
+    for(var e=0;e<=0.8;e+=0.2){
+      put(g,'line',{x1:L,x2:R,y1:yv(e),y2:yv(e),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:yv(e)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},e.toFixed(1));
+    }
+    for(var n=10;n<=60;n+=10){
+      put(g,'text',{x:x(n),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},n);
+    }
+    put(g,'text',{x:(L+R)/2,y:B+36,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'length of averaging window N (years)');
+    put(g,'text',{x:L-8,y:T-6,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'K');
+    function curve(fn,col,w,dash){
+      var d='';
+      for(var n2=1;n2<=60;n2++) d+=(n2>1?'L':'M')+x(n2).toFixed(1)+' '+yv(fn(n2)).toFixed(1);
+      var a={d:d,fill:'none',stroke:col,'stroke-width':w};
+      if(dash)a['stroke-dasharray']=dash;
+      put(g,'path',a);
+    }
+    var fSam=function(n){return sig/Math.sqrt(n);};
+    var fBia=function(n){return 0.5*trend*n/10;};
+    var fTot=function(n){return Math.sqrt(fSam(n)*fSam(n)+fBia(n)*fBia(n));};
+    curve(fSam,'var(--atm)',2,'5 4');
+    curve(fBia,'var(--warn)',2,'5 4');
+    curve(fTot,'var(--hot)',2.8);
+    /* optimum */
+    var best=1,bv=1e9;
+    for(var n3=1;n3<=60;n3++){var v=fTot(n3); if(v<bv-1e-9){bv=v;best=n3;}}
+    if(best<60){
+      put(g,'line',{x1:x(best),x2:x(best),y1:T,y2:B,stroke:'var(--line)','stroke-dasharray':'3 4'});
+      put(g,'circle',{cx:x(best),cy:yv(bv),r:5,fill:'var(--hot)',
+        stroke:'var(--surface-1)','stroke-width':1.6});
+    }
+    put(g,'line',{x1:R+22,x2:R+44,y1:T+8,y2:T+8,stroke:'var(--atm)','stroke-width':2,'stroke-dasharray':'5 4'});
+    put(g,'text',{x:R+50,y:T+12,'font-size':11.5,fill:'var(--atm)','font-weight':600},'sampling');
+    put(g,'line',{x1:R+22,x2:R+44,y1:T+30,y2:T+30,stroke:'var(--warn)','stroke-width':2,'stroke-dasharray':'5 4'});
+    put(g,'text',{x:R+50,y:T+34,'font-size':11.5,fill:'var(--warn)','font-weight':600},'staleness');
+    put(g,'line',{x1:R+22,x2:R+44,y1:T+52,y2:T+52,stroke:'var(--hot)','stroke-width':2.8});
+    put(g,'text',{x:R+50,y:T+56,'font-size':11.5,fill:'var(--hot)','font-weight':600},'total');
+    put(g,'text',{x:R+22,y:T+80,'font-size':11,fill:'var(--text-muted)'},'exact');
+    put(g,'text',{x:R+22,y:T+95,'font-size':11,fill:'var(--text-muted)'},'expressions,');
+    put(g,'text',{x:R+22,y:T+110,'font-size':11,fill:'var(--text-muted)'},'not fitted');
+    return best;
+  }
+
+  function upd1(){
+    var N=+$('c_win').value, sig=+$('c_sig').value, tr=+$('c_tr').value;
+    $('v_win').textContent=N+(N===1?' year':' years');
+    $('v_sig').textContent=sig.toFixed(2)+' K';
+    $('v_tr').textContent=tr.toFixed(2)+' K / decade';
+    build(sig,tr);
+    drawWeather(N,sig,tr);
+    var best=drawErr(sig,tr);
+    var sam=sig/Math.sqrt(N), bia=0.5*tr*N/10, tot=Math.sqrt(sam*sam+bia*bia);
+    $('kSam').textContent=sam.toFixed(2)+' K';
+    $('kBia').textContent=bia.toFixed(2)+' K';
+    $('kTot').textContent=tot.toFixed(2)+' K';
+    $('kOpt').textContent=(best>=60?'≥ 60 yr':best+' yr');
+    var msg;
+    if(tr===0){
+      msg='With <b>no trend</b> there is nothing to go stale, so the total error is just the sampling error '+
+          'and it keeps falling. The best window is the longest one you can get.';
+    } else if(N<best-4){
+      msg='At N = <b>'+N+'</b> the average is still dominated by <b>weather noise</b> — sampling error '+
+          sam.toFixed(2)+' K against staleness '+bia.toFixed(2)+' K. Lengthening the window would help.';
+    } else if(N>best+6){
+      msg='At N = <b>'+N+'</b> the window now reaches back far enough that <b>staleness dominates</b> '+
+          '— '+bia.toFixed(2)+' K against a sampling error of only '+sam.toFixed(2)+' K. The normal is '+
+          'describing a climate that has already gone.';
+    } else {
+      msg='At N = <b>'+N+'</b> the two errors are roughly balanced — sampling '+sam.toFixed(2)+
+          ' K, staleness '+bia.toFixed(2)+' K. This is close to the best available compromise.';
+    }
+    $('wRo').innerHTML='<span class="big">'+tot.toFixed(2)+' K</span> total error in the '+N+
+      '-year normal, as an estimate of the climate <em>right now</em>. '+msg;
+  }
+
+  ['c_win','c_sig','c_tr'].forEach(function(id){$(id).addEventListener('input',upd1);});
+  Array.prototype.forEach.call(document.querySelectorAll('.rowbtns .ghost[data-i]'),function(b){
+    b.addEventListener('click',function(){
+      var p=b.getAttribute('data-i').split(',');
+      $('c_win').value=p[0]; $('c_sig').value=p[1]; $('c_tr').value=p[2]; upd1();
+    });
+  });
+
+  /* ═══ Demo 2 · baselines ═══════════════════════════════════════ */
+  var Y0=1850, Y1=2025, NG=Y1-Y0+1;
+  var glob=(function(){
+    var r=rng(18500101), a=new Array(NG), e=0, phi=0.62;
+    for(var i=0;i<NG;i++){
+      var yr=Y0+i;
+      /* a smooth shape: slow early rise, faster after 1970 */
+      var f=0.10*(yr-1850)/100 + 1.35/(1+Math.exp(-(yr-1985)/22));
+      e=phi*e+Math.sqrt(1-phi*phi)*gauss(r);
+      a[i]=f+0.085*e;
+    }
+    return a;
+  })();
+  var REFS=[[1850,1900,'1850–1900'],[1951,1980,'1951–1980'],
+            [1961,1990,'1961–1990'],[1991,2020,'1991–2020']];
+  var refI=3;
+
+  function drawRef(){
+    var g=$('rG'); if(!g) return; clear(g);
+    var R=REFS[refI];
+    var base=0,n=0;
+    for(var i=0;i<NG;i++){var yr=Y0+i; if(yr>=R[0]&&yr<=R[1]){base+=glob[i];n++;}}
+    base/=n;
+    var L=58,RR=790,T=22,B=272,W=RR-L,H=B-T;
+    var lo=-0.9, hi=1.9;
+    var x=function(yr){return L+W*(yr-Y0)/(Y1-Y0);};
+    var yv=function(v){return B-H*(v-lo)/(hi-lo);};
+    for(var t=-0.5;t<=1.5001;t+=0.5){
+      var zero=Math.abs(t)<1e-9;
+      put(g,'line',{x1:L,x2:RR,y1:yv(t),y2:yv(t),
+        stroke:zero?'var(--text-muted)':'var(--grid)','stroke-width':zero?1.6:1});
+      put(g,'text',{x:L-8,y:yv(t)+4,'text-anchor':'end','font-size':11,
+        fill:zero?'var(--text-primary)':'var(--text-muted)'},(t>0?'+':'')+t.toFixed(1));
+    }
+    for(var yr2=1850;yr2<=2025;yr2+=25){
+      put(g,'text',{x:x(yr2),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},yr2);
+    }
+    put(g,'text',{x:L-8,y:T-6,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},'K');
+    /* reference-period band */
+    put(g,'rect',{x:x(R[0]),y:T,width:x(R[1])-x(R[0]),height:H,fill:'var(--acc)',opacity:0.12});
+    put(g,'text',{x:(x(R[0])+x(R[1]))/2,y:T+15,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--acc)','font-weight':600},'baseline');
+    var d='';
+    for(var i2=0;i2<NG;i2++){
+      var v=glob[i2]-base;
+      d+=(i2?'L':'M')+x(Y0+i2).toFixed(1)+' '+yv(Math.max(lo,Math.min(hi,v))).toFixed(1);
+    }
+    put(g,'path',{d:d,fill:'none',stroke:'var(--hot)','stroke-width':2});
+    /* marker on the final year */
+    var last=glob[NG-1]-base;
+    put(g,'circle',{cx:x(Y1),cy:yv(last),r:5,fill:'var(--hot)',
+      stroke:'var(--surface-1)','stroke-width':1.6});
+    put(g,'text',{x:x(Y1)-8,y:yv(last)-10,'text-anchor':'end','font-size':13,
+      fill:'var(--hot)','font-weight':600},'final year '+(last>0?'+':'')+last.toFixed(2)+' K');
+    put(g,'text',{x:L,y:B+36,'font-size':11,fill:'var(--warn)','font-style':'italic'},
+      'SCHEMATIC SHAPE — synthetic curve, do not read values from it; published numbers are in the table below');
+    $('rRo').innerHTML='Anomalies on this figure are stated relative to <b>'+R[2]+'</b>. '+
+      'The final year of the series reads <span class="big">'+(last>0?'+':'')+last.toFixed(2)+' K</span> '+
+      'against that baseline. Switch the baseline and the same year reads a different number — the curve '+
+      'is identical, only the zero line has moved by '+base.toFixed(2)+' K.';
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('#segRef button'),function(b){
+    b.addEventListener('click',function(){
+      refI=+b.getAttribute('data-r');
+      Array.prototype.forEach.call(document.querySelectorAll('#segRef button'),function(o){
+        o.setAttribute('aria-pressed', o===b ? 'true':'false');
+      });
+      drawRef();
+    });
+  });
+
+  upd1(); drawRef();
+})();
+</script>
+
+</div>
+<script src="../assets/reveal-answers.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('themeBtn');
+  if(!btn) return;
+  btn.onclick=function(){
+    var d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

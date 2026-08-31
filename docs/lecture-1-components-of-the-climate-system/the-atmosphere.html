@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The atmosphere — composition, hydrostatic structure and stability</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --atm:#2a78d6; --ocn:#12667f; --cry:#7b5bd6; --bio:#1baf7a; --ped:#8a6b45;
+    --warn:#d98324; --hot:#c8443a; --acc:#2a78d6;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --atm:#5b9ae8; --ocn:#3d9dbd; --cry:#a78bea; --bio:#3cc596; --ped:#a08258;
+    --warn:#e09a44; --hot:#d9564c; --acc:#5b9ae8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p:last-child{margin-bottom:0}
+  p b,li b,td b{color:var(--text-primary);font-weight:600}
+  ul,ol{margin:0 0 12px;padding-left:22px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  a{color:var(--acc)}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
+  .eq b{font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 14px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;
+    color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--text-primary)}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00b7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px;gap:10px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two,.three{grid-template-columns:1fr}}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+  .pill{font-size:11.5px;letter-spacing:.04em;border-radius:999px;padding:3px 10px;
+    background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line-soft)}
+  .xref{background:var(--surface-2);border-radius:10px;padding:12px 15px;margin-top:14px;
+    font-size:13.5px;color:var(--text-secondary)}
+  .xref b{color:var(--text-primary)}
+  .xref a{font-weight:600;text-decoration:none}
+  .xref a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="components-and-timescales.html">&larr; Five components, five clocks</a> &nbsp;&middot;&nbsp;
+Components of the climate system &middot; 3 of 7</p>
+
+<header>
+  <div>
+    <h1>The atmosphere</h1>
+    <p class="sub">Not &ldquo;a layer of air&rdquo;. A compressible fluid held down by gravity, with a
+    composition that is 99.9&nbsp;% irrelevant to climate and 0.1&nbsp;% decisive, a pressure that falls
+    exponentially, a temperature that falls linearly and then stops, and a vertical stability that decides
+    whether the sky is clear or a thunderstorm.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; Composition</a>
+  <a href="#s2">2 &middot; Moist air</a>
+  <a href="#s3">3 &middot; Hydrostatic balance</a>
+  <a href="#s4">4 &middot; The vertical profile</a>
+  <a href="#s5">5 &middot; Temperature layers</a>
+  <a href="#s6">6 &middot; Stability</a>
+</div>
+
+<!-- ═══════════ 1 ═══════════ -->
+<h2 class="sec" id="s1">1 &middot; What the air is made of</h2>
+
+<div class="card">
+  <h3>Dry air, and the 0.1&nbsp;% that matters</h3>
+  <p class="cap">Volume fractions of dry air. Trace-gas values are global means for 2026 from the NOAA Global
+  Monitoring Laboratory (gml.noaa.gov) and go out of date every year &mdash; check them before you quote
+  them.</p>
+  <table>
+    <thead><tr><th>Constituent</th><th class="num">Fraction</th><th>Radiatively active?</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Nitrogen, N<sub>2</sub></td><td class="num">78.08 %</td>
+        <td style="color:var(--text-muted)">No &mdash; symmetric diatomic, no dipole to swing.</td></tr>
+      <tr><td class="nm">Oxygen, O<sub>2</sub></td><td class="num">20.95 %</td>
+        <td style="color:var(--text-muted)">No, in the infrared. Absorbs strongly in the far UV.</td></tr>
+      <tr><td class="nm">Argon, Ar</td><td class="num">0.93 %</td>
+        <td style="color:var(--text-muted)">No &mdash; monatomic.</td></tr>
+      <tr class="on"><td class="nm">Carbon dioxide, CO<sub>2</sub></td><td class="num">429 ppm</td>
+        <td><b>Yes.</b> ~280 ppm before industrialisation. Rising ~2.5 ppm per year.</td></tr>
+      <tr class="on"><td class="nm">Methane, CH<sub>4</sub></td><td class="num">1937 ppb</td>
+        <td><b>Yes</b>, and per molecule far more strongly than CO<sub>2</sub>. ~720 ppb pre-industrial.</td></tr>
+      <tr class="on"><td class="nm">Nitrous oxide, N<sub>2</sub>O</td><td class="num">~340 ppb</td>
+        <td><b>Yes.</b> Long-lived; largely agricultural.</td></tr>
+      <tr class="on"><td class="nm">Ozone, O<sub>3</sub></td><td class="num">variable, 0&ndash;10 ppm</td>
+        <td><b>Yes</b>, and it is what heats the stratosphere by absorbing UV.</td></tr>
+      <tr class="on"><td class="nm">Water vapour, H<sub>2</sub>O</td><td class="num">0&ndash;4 %, variable</td>
+        <td><b>Yes &mdash; the strongest of all.</b> Not listed with the others because it is not
+        well mixed: it is a <em>feedback</em>, set by temperature, not a forcing.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>The first three rows are 99.96&nbsp;% of dry air and are climatically inert.</b> Every
+  radiative effect in this course &mdash; the 33&nbsp;K greenhouse effect, the entire anthropogenic forcing
+  &mdash; is done by the highlighted rows, which together make up well under a tenth of one percent of the
+  air. Students find this implausible. It follows directly from the physics of molecular absorption: only
+  molecules with three or more atoms have the bending and stretching modes that can absorb terrestrial
+  infrared, which is why the two gases that make up 99&nbsp;% of the atmosphere are transparent to it.</p>
+  <div class="xref"><b>Why a molecule absorbs or does not</b> is set out in Lecture&nbsp;2's
+  <a href="../lecture-2-earths-energy-budget/real-atmosphere.html">structure of the real atmosphere</a>, which
+  draws the absorption bands and the atmospheric window. The concentrations above become a forcing in
+  W&nbsp;m<sup>&minus;2</sup> in
+  <a href="../lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">Lecture 6,
+  part&nbsp;2</a>, and their sources and sinks are
+  <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture 4</a>.</div>
+  <p class="q"><b>Question.</b> The table is a snapshot. Which rows would have looked materially different in
+  1750, and which in the year 20&nbsp;000&nbsp;BP?
+  <span style="color:var(--text-muted)">In 1750: CO<sub>2</sub> 280&nbsp;ppm, CH<sub>4</sub> 720&nbsp;ppb,
+  N<sub>2</sub>O about 270&nbsp;ppb, and essentially no ozone hole. At the last glacial maximum:
+  CO<sub>2</sub> about 190&nbsp;ppm, CH<sub>4</sub> about 350&nbsp;ppb, and water vapour markedly lower
+  because the whole atmosphere was colder. The first three rows were the same in all three cases. The
+  climatically important part of the atmosphere's composition is precisely the part that
+  <em>changes</em>.</span></p>
+</div>
+
+<!-- ═══════════ 2 ═══════════ -->
+<h2 class="sec" id="s2">2 &middot; Dry air is a perfect gas; humid air is a trap</h2>
+
+<div class="card">
+  <h3>From pV = nRT to p = &rho;R<sub>g</sub>T</h3>
+  <p>In almost all circumstances dry air behaves as an ideal gas. Start from the form you already know and
+  divide through by the mass to get the form meteorology actually uses:</p>
+  <div class="eq">
+    pV = nRT &nbsp;&nbsp;&rarr;&nbsp;&nbsp; <b>p = &rho; R<sub>g</sub> T</b> &nbsp;&nbsp;(1.1)
+    <span class="u">R<sub>g</sub> = R/M = 8.314 / 0.02896 = 287.0 J&nbsp;K<sup>&minus;1</sup>kg<sup>&minus;1</sup>
+    for dry air</span>
+  </div>
+  <p>The four gas laws in the slides are all special cases of this one equation with something held fixed:
+  Boyle (V &prop; 1/p at fixed T), Charles (V &prop; T at fixed p), Gay-Lussac (p &prop; T at fixed V) and
+  Avogadro (V &prop; n at fixed p, T). There is no need to memorise four laws.</p>
+
+  <p class="q"><b>Question, and it catches almost everyone.</b> Is humid air heavier or lighter than dry air at
+  the same temperature and pressure?
+  <span style="color:var(--text-muted)"><b>Lighter.</b> A water molecule has a molar mass of 18.0
+  g&nbsp;mol<sup>&minus;1</sup>; the average dry-air molecule has 29.0. Adding water vapour means <em>replacing</em>
+  heavier molecules with lighter ones, because at fixed temperature and pressure the total number of molecules
+  per unit volume is fixed (that is Avogadro's law). Intuition says humid air feels heavy, and intuition is
+  wrong. The consequence is real: moist air is buoyant, which is one reason humid air rises and makes
+  storms, and it is why low pressure and humidity go together.</span></p>
+
+  <p>Rather than change R<sub>g</sub> for every humidity, meteorology keeps R<sub>g</sub> fixed and adjusts the
+  temperature instead, defining the <b>virtual temperature</b> T<sub>v</sub> &mdash; the temperature dry air
+  would need in order to have the density this moist air actually has:</p>
+  <div class="eq">
+    T<sub>v</sub> = T (1 + 0.608 q)
+    <span class="u">q = specific humidity, kg of vapour per kg of moist air. In the humid tropics
+    T<sub>v</sub> &minus; T reaches about 4&nbsp;K.</span>
+  </div>
+</div>
+
+<div class="card demo">
+  <h3>Saturation, dewpoint and the density of humid air</h3>
+  <p class="cap">The amount of water vapour air can hold before it condenses depends on temperature, and
+  <em>steeply</em>: the saturation vapour pressure roughly doubles every 10&nbsp;K. That single curve is
+  behind the water-vapour feedback, behind why it rains, and behind why the tropics are wet.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="a_T"><span>Air temperature</span> <b id="a_Tv">15.0 &deg;C</b></label>
+      <input type="range" id="a_T" min="-30" max="45" step="0.5" value="15">
+      <div class="hint">Drag across the whole range and watch e<sub>s</sub>.</div>
+    </div>
+    <div class="ctrl">
+      <label for="a_R"><span>Relative humidity</span> <b id="a_Rv">70 %</b></label>
+      <input type="range" id="a_R" min="5" max="100" step="1" value="70">
+      <div class="hint">RH = e / e<sub>s</sub>, the fraction of saturation.</div>
+    </div>
+    <div class="ctrl">
+      <label for="a_P"><span>Pressure</span> <b id="a_Pv">1013 hPa</b></label>
+      <input type="range" id="a_P" min="500" max="1050" step="1" value="1013">
+      <div class="hint">Sea level is 1013; 500 hPa is about 5.5 km up.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 320" role="img" aria-label="Saturation vapour pressure over water as a function of temperature, with the current air state marked and its dewpoint"><g id="esG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Saturation e<sub>s</sub></div><div class="v" id="kEs">&mdash;</div><div class="s">hPa, over a flat water surface</div></div>
+    <div class="kpi"><div class="k">Dewpoint T<sub>d</sub></div><div class="v" id="kTd">&mdash;</div><div class="s">cool below this and it condenses</div></div>
+    <div class="kpi"><div class="k">Specific humidity q</div><div class="v" id="kQ">&mdash;</div><div class="s">g of vapour per kg of air</div></div>
+    <div class="kpi"><div class="k">Density vs dry air</div><div class="v" id="kRho">&mdash;</div><div class="s">at the same T and p</div></div>
+  </div>
+
+  <div class="readout" id="esRo"></div>
+
+  <p class="note"><b>The curve, not the number, is the point.</b> Warm the air from 0&nbsp;&deg;C to
+  10&nbsp;&deg;C and its capacity for vapour rises by about 90&nbsp;%; from 30&nbsp;&deg;C to 40&nbsp;&deg;C it
+  rises by about 75&nbsp;% in relative terms but by <em>nine times as many hectopascals</em>. This is why a
+  given warming adds far more water to a tropical atmosphere than to a polar one, and it is the entire basis
+  of the Clausius&ndash;Clapeyron scaling used in
+  <a href="../lecture-8-climate-change-the-future/water-cycle.html">Lecture 8, part 4</a> and the water-vapour
+  feedback in
+  <a href="../lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">Lecture 6,
+  part 4</a>.</p>
+
+  <div class="warnbox"><b>Computed.</b> e<sub>s</sub>(T) is the August&ndash;Roche&ndash;Magnus form,
+  e<sub>s</sub> = 6.112 exp[17.62T/(243.12+T)] hPa with T in &deg;C, over a plane water surface &mdash; the
+  WMO-recommended fit (Sonntag, 1990), accurate to better than 0.4&nbsp;% between &minus;45 and
+  +60&nbsp;&deg;C. Densities use &rho;&nbsp;=&nbsp;(p&minus;e)/(R<sub>d</sub>T)&nbsp;+&nbsp;e/(R<sub>v</sub>T)
+  with R<sub>d</sub>&nbsp;=&nbsp;287.05 and R<sub>v</sub>&nbsp;=&nbsp;461.52
+  J&nbsp;kg<sup>&minus;1</sup>K<sup>&minus;1</sup>. Below about &minus;10&nbsp;&deg;C the relevant surface is
+  usually ice rather than water, for which e<sub>s</sub> is lower; this figure keeps the water curve
+  throughout.</div>
+</div>
+
+<!-- ═══════════ 3 ═══════════ -->
+<h2 class="sec" id="s3">3 &middot; Why the atmosphere neither collapses nor escapes</h2>
+
+<div class="card">
+  <h3>Hydrostatic balance, from three forces</h3>
+  <p class="cap">After the lecture slides' force diagram (W.H. Brune, Penn State), and Goosse et al. (2010)
+  &sect;1.3.1.</p>
+  <p>Take a slab of air of area A and thickness &Delta;z. Pressure is force per unit area, so
+  F&nbsp;=&nbsp;pA, and three forces act on the slab:</p>
+  <ul>
+    <li><b>F<sub>bottom</sub> = p<sub>bottom</sub>A</b>, pushing up from the denser air below;</li>
+    <li><b>F<sub>top</sub> = &minus;p<sub>top</sub>A</b>, pushing down from above;</li>
+    <li><b>F<sub>g</sub> = &minus;mg = &minus;&rho;A&Delta;z&nbsp;g</b>, the weight of the slab itself.</li>
+  </ul>
+  <p>The atmosphere is very close to <b>hydrostatic equilibrium</b>: the three sum to zero, so</p>
+  <div class="eq">
+    &rho; A &Delta;z g = p<sub>bottom</sub>A &minus; p<sub>top</sub>A
+    &nbsp;&nbsp;&rArr;&nbsp;&nbsp; <b>&part;p/&part;z = &minus;&rho;g</b>
+    <span class="u">the pressure drop across any layer is exactly the weight of the air in it</span>
+  </div>
+
+  <svg viewBox="0 0 880 250" role="img" aria-label="Force balance on an air parcel: pressure force from below, pressure force from above, and weight, summing to zero"><g id="hyG"></g></svg>
+
+  <p class="note"><b>Say what each force is preventing.</b> Without the pressure-gradient force the atmosphere
+  would collapse under gravity into a thin dense layer on the ground. Without gravity the pressure-gradient
+  force would blow it into space. The atmosphere we have is the standoff between the two, and the standoff is
+  so nearly exact that the residual &mdash; the vertical acceleration &mdash; is about a millionth of g in a
+  weather system. That is why models simply <em>assume</em> the balance rather than solving for it, and why
+  they must stop assuming it once the grid is fine enough to resolve a thunderstorm
+  (<a href="../lecture-5-modelling-the-climate-system/atmospheric-equations/">Lecture 5, part 3</a>).</p>
+
+  <p>Combine hydrostatic balance with the gas law by eliminating &rho;:</p>
+  <div class="eq">
+    dp/p = &minus;(g / R<sub>g</sub>T) dz &nbsp;&nbsp;&rArr;&nbsp;&nbsp;
+    <b>p(z) &asymp; p<sub>s</sub> e<sup>&minus;z/H</sup></b> &nbsp;&nbsp;(1.2),
+    &nbsp;&nbsp; H = R<sub>g</sub>T/g
+    <span class="u">an exponential decay with a scale height H of 7&ndash;8 km &mdash; exactly, if T is
+    constant with height</span>
+  </div>
+  <p class="note"><b>Where the exponential comes from is worth one sentence.</b> Each layer must support the
+  weight of everything above it, and the weight of everything above it is proportional to how much is there.
+  Anything whose rate of decrease is proportional to how much is left decays exponentially. The atmosphere has
+  no top; it just becomes negligible.</p>
+</div>
+
+<!-- ═══════════ 4 ═══════════ -->
+<h2 class="sec" id="s4">4 &middot; The profile you can actually calculate</h2>
+
+<div class="card demo">
+  <h3>Pressure, density and temperature with height</h3>
+  <p class="cap">The real atmosphere is not isothermal, so H is not constant. Assume instead a constant lapse
+  rate &Gamma;, integrate hydrostatic balance exactly, and you get the profile every altimeter, aircraft and
+  weather balloon in the world is calibrated against.</p>
+
+  <div class="eq">
+    T(z) = T<sub>s</sub> &minus; &Gamma;z
+    &nbsp;&nbsp;&rArr;&nbsp;&nbsp;
+    p(z) = p<sub>s</sub> [ 1 &minus; &Gamma;z/T<sub>s</sub> ]<sup>g/(R<sub>g</sub>&Gamma;)</sup>
+    <span class="u">with &Gamma; = 6.5 K km<sup>&minus;1</sup>, T<sub>s</sub> = 288.15 K and
+    p<sub>s</sub> = 1013.25 hPa this is the International Standard Atmosphere</span>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="p_Ts"><span>Surface temperature T<sub>s</sub></span> <b id="p_Tsv">15.0 &deg;C</b></label>
+      <input type="range" id="p_Ts" min="-40" max="40" step="0.5" value="15">
+      <div class="hint">Try &minus;30 &deg;C for a polar winter and +30 &deg;C for the tropics.</div>
+    </div>
+    <div class="ctrl">
+      <label for="p_G"><span>Lapse rate &Gamma;</span> <b id="p_Gv">6.5 K km<sup>&minus;1</sup></b></label>
+      <input type="range" id="p_G" min="0" max="9.8" step="0.1" value="6.5">
+      <div class="hint">Set 0 for the isothermal case and compare with the exponential.</div>
+    </div>
+    <div class="ctrl">
+      <label for="p_Ps"><span>Surface pressure p<sub>s</sub></span> <b id="p_Psv">1013 hPa</b></label>
+      <input type="range" id="p_Ps" min="950" max="1050" step="1" value="1013">
+      <div class="hint">The full observed range at sea level is about 870&ndash;1085 hPa.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 400" role="img" aria-label="Pressure, density and temperature plotted against height for a constant-lapse-rate atmosphere, compared with the isothermal exponential"><g id="prG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Scale height H</div><div class="v" id="kH">&mdash;</div><div class="s">R<sub>g</sub>T<sub>s</sub>/g at the surface</div></div>
+    <div class="kpi"><div class="k">Half the mass below</div><div class="v" id="kHalf">&mdash;</div><div class="s">where p = p<sub>s</sub>/2</div></div>
+    <div class="kpi"><div class="k">p at Everest, 8848 m</div><div class="v" id="kEv">&mdash;</div><div class="s">summit of the profile you set</div></div>
+    <div class="kpi"><div class="k">p at 11 km</div><div class="v" id="k11">&mdash;</div><div class="s">airliner cruise altitude</div></div>
+  </div>
+
+  <div class="readout" id="prRo"></div>
+
+  <p class="q"><b>Question.</b> Set &Gamma; to 0. The profile becomes a pure exponential and the pressure at
+  11&nbsp;km rises substantially. Why does a <em>colder</em> upper atmosphere mean <em>less</em> pressure up
+  there?
+  <span style="color:var(--text-muted)">Because H = R<sub>g</sub>T/g: cold air is dense, a dense layer is
+  physically thinner for the same mass, so the pressure surfaces are squeezed downwards and any fixed height
+  sits higher in the mass column. This is exactly why the 500&nbsp;hPa surface is around 5.0&nbsp;km over the
+  winter pole and 5.9&nbsp;km over the tropics, and it is the reason weather maps aloft are drawn as
+  <em>height of a pressure surface</em> rather than pressure at a height &mdash; those height contours are a
+  temperature map of the air below.</span></p>
+
+  <p class="q"><b>Question.</b> The standard atmosphere gives about 314&nbsp;hPa at the summit of Everest, but
+  climbers measure closer to 335&nbsp;hPa. Where does the standard atmosphere go wrong, and does the error
+  help or hinder them?
+  <span style="color:var(--text-muted)">Everest is at 28&nbsp;&deg;N, where the real troposphere is warmer and
+  deeper than the mid-latitude standard, so the pressure surfaces are further apart and there is more air at
+  8848&nbsp;m than the standard profile predicts. It helps &mdash; by about 7&nbsp;%, which is a
+  non-trivial amount of oxygen at that altitude. Summit pressure also varies seasonally by roughly
+  10&nbsp;hPa, higher in summer, which is one of several reasons the climbing season is when it
+  is.</span></p>
+
+  <div class="warnbox"><b>Computed.</b> Every curve is the exact solution of &part;p/&part;z = &minus;&rho;g
+  with p = &rho;R<sub>g</sub>T and T linear in z, using g = 9.80665&nbsp;m&nbsp;s<sup>&minus;2</sup> and
+  R<sub>g</sub> = 287.05&nbsp;J&nbsp;kg<sup>&minus;1</sup>K<sup>&minus;1</sup>; the &Gamma; = 0 limit is
+  handled analytically as the exponential. It is a <b>dry, single-lapse-rate</b> atmosphere with no
+  stratosphere, so it should not be trusted above the tropopause &mdash; the shaded region marks where it
+  stops being physical.</div>
+</div>
+
+<!-- ═══════════ 5 ═══════════ -->
+<h2 class="sec" id="s5">5 &middot; Why the temperature turns round</h2>
+
+<div class="card">
+  <h3>Four layers, two heating mechanisms</h3>
+  <p class="cap">Goosse et al. (2010), Fig.&nbsp;1.3.</p>
+  <table>
+    <thead><tr><th>Layer</th><th class="num">Top at</th><th>Temperature</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Troposphere</td><td class="num">8&ndash;18 km</td><td>falls, ~6.5 K km<sup>&minus;1</sup></td>
+        <td><b>Heated from below.</b> The surface absorbs sunlight and warms the air in contact with it;
+        convection carries that heat up and, in doing so, sets the lapse rate. Contains ~80 % of the mass and
+        essentially all the weather.</td></tr>
+      <tr><td class="nm">Stratosphere</td><td class="num">~50 km</td><td>rises</td>
+        <td><b>Heated from within</b>, by ozone absorbing solar ultraviolet. Temperature increasing with
+        height makes it extremely stable &mdash; hence &ldquo;strat&rdquo;-ified, hence no vertical mixing,
+        hence a smooth flight above the weather.</td></tr>
+      <tr><td class="nm">Mesosphere</td><td class="num">~85 km</td><td>falls</td>
+        <td>Above the ozone, so back to cooling with height. Contains the coldest temperatures on
+        Earth, around 180&nbsp;K.</td></tr>
+      <tr><td class="nm">Thermosphere</td><td class="num">&mdash;</td><td>rises steeply</td>
+        <td>Extreme UV and X-rays absorbed by the few molecules left. Very hot, and utterly irrelevant to
+        climate: there is almost no mass there to hold any heat.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>The two reversals are the diagnostic.</b> A layer heated from below convects and cools
+  with height; a layer heated from within does neither. Every turning point in the profile marks a change in
+  <em>where the energy is coming from</em>, not a change in the air.</p>
+
+  <h3 style="margin-top:22px">The tropopause is not at one height</h3>
+  <p>The troposphere is the layer convection reaches, so it is as deep as convection can push. Warm surface
+  air rises further before it runs out of buoyancy, so:</p>
+  <table>
+    <thead><tr><th>Latitude</th><th class="num">Tropopause height</th><th class="num">Tropopause temperature</th>
+      <th>Consequence</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Equator</td><td class="num">16&ndash;18 km</td><td class="num">~190 K</td>
+        <td>Deep convection, tall thunderstorms, and the coldest cloud tops on the planet.</td></tr>
+      <tr><td class="nm">Mid-latitude</td><td class="num">10&ndash;12 km</td><td class="num">~215 K</td>
+        <td>The jet stream sits at the break, where the tropopause height drops sharply.</td></tr>
+      <tr><td class="nm">Pole</td><td class="num">8&ndash;9 km</td><td class="num">~220 K</td>
+        <td>Shallow, weak convection; in winter a surface inversion instead.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Note the temperature column runs the wrong way.</b> The tropical tropopause is
+  <em>colder</em> than the polar one, even though the tropical surface is 50&nbsp;K warmer, simply because the
+  air has had 8&nbsp;km further to rise and cool. That cold trap is what keeps the stratosphere dry, and a dry
+  stratosphere is a large part of why the greenhouse effect works the way it does.</p>
+  <div class="xref">The <b>jet streams</b> live at the tropopause breaks, and why they are there is the
+  subject of the <a href="circulation.html">next page</a>. The radiative consequence of the vertical
+  temperature structure &mdash; that the planet radiates to space from about 5&nbsp;km up, where it is
+  255&nbsp;K &mdash; is <a href="../lecture-2-earths-energy-budget/real-atmosphere.html">Lecture 2,
+  part&nbsp;4</a>.</div>
+</div>
+
+<!-- ═══════════ 6 ═══════════ -->
+<h2 class="sec" id="s6">6 &middot; Stability: will the parcel keep going?</h2>
+
+<div class="card">
+  <h3>Two lapse rates, and the gap between them</h3>
+  <p>Lift a parcel of air. It expands, because pressure falls, and it cools &mdash; not because it lost heat
+  to anything, but because it did work pushing its surroundings aside. If no heat is exchanged the process is
+  <b>adiabatic</b>, and the cooling rate follows from the first law plus hydrostatic balance:</p>
+  <div class="eq">
+    &Gamma;<sub>d</sub> = g / c<sub>p</sub> = 9.807 / 1004 = <b>9.8 K km<sup>&minus;1</sup></b>
+    <span class="u">the dry adiabatic lapse rate &mdash; a constant, the same everywhere on Earth</span>
+  </div>
+  <p>Once the parcel cools to its dewpoint, water starts to condense, and condensation <em>releases</em>
+  latent heat into the parcel &mdash; about 2.5&nbsp;MJ for every kilogram of water. The parcel still cools,
+  but more slowly. That is the answer to the question in the slides:</p>
+  <div class="eq">
+    &Gamma;<sub>m</sub> = g &middot; (1 + L<sub>v</sub>r<sub>s</sub>/R<sub>d</sub>T) /
+    (c<sub>p</sub> + L<sub>v</sub><sup>2</sup>r<sub>s</sub>&epsilon;/R<sub>d</sub>T<sup>2</sup>)
+    <span class="u">the saturated adiabatic lapse rate. Not a constant: about 4 K km<sup>&minus;1</sup> in
+    warm moist air, tending to &Gamma;<sub>d</sub> when it is too cold to hold any water.</span>
+  </div>
+  <p>Compare either of these with the <b>environmental</b> lapse rate &mdash; what the surrounding air
+  actually does, which is a matter of observation, not theory &mdash; and you have the stability of the
+  atmosphere.</p>
+</div>
+
+<div class="card demo">
+  <h3>Launch a parcel</h3>
+  <p class="cap">Set the surface conditions and the environmental lapse rate, then read off what happens to a
+  parcel lifted from the ground. The environment is the black line; the parcel follows the dry adiabat, then
+  the saturated adiabat above its condensation level. Wherever the parcel is <em>warmer</em> than its
+  surroundings it is buoyant and keeps rising on its own.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="s_T"><span>Surface temperature</span> <b id="s_Tv">20.0 &deg;C</b></label>
+      <input type="range" id="s_T" min="-20" max="40" step="0.5" value="20">
+      <div class="hint">The parcel starts here, at the same temperature as the environment.</div>
+    </div>
+    <div class="ctrl">
+      <label for="s_R"><span>Surface relative humidity</span> <b id="s_Rv">70 %</b></label>
+      <input type="range" id="s_R" min="10" max="100" step="1" value="70">
+      <div class="hint">Sets the condensation level and therefore where the parcel changes slope.</div>
+    </div>
+    <div class="ctrl">
+      <label for="s_G"><span>Environmental lapse rate</span> <b id="s_Gv">6.5 K km<sup>&minus;1</sup></b></label>
+      <input type="range" id="s_G" min="-4" max="12" step="0.1" value="6.5">
+      <div class="hint">Negative means an inversion &mdash; temperature rising with height.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Try</span>
+    <button class="ghost" data-s="20,70,6.5">Average conditions</button>
+    <button class="ghost" data-s="30,75,8.5">A summer afternoon before a storm</button>
+    <button class="ghost" data-s="-10,80,-3">A winter inversion</button>
+    <button class="ghost" data-s="25,25,10.5">Hot and bone dry</button>
+  </div>
+
+  <svg viewBox="0 0 880 450" role="img" aria-label="A temperature-height diagram showing the environmental profile, a dry adiabat from the surface, the lifting condensation level and the saturated adiabat above it, with the buoyant region shaded"><g id="stG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Condensation level</div><div class="v" id="kLcl">&mdash;</div><div class="s">cloud base</div></div>
+    <div class="kpi"><div class="k">&Gamma;<sub>m</sub> at the surface</div><div class="v" id="kGm">&mdash;</div><div class="s">saturated adiabat there</div></div>
+    <div class="kpi"><div class="k">Free convection from</div><div class="v" id="kLfc">&mdash;</div><div class="s">first level where the parcel is warmer</div></div>
+    <div class="kpi"><div class="k">Maximum buoyancy</div><div class="v" id="kBuo">&mdash;</div><div class="s">largest parcel-minus-environment</div></div>
+  </div>
+
+  <div class="readout" id="stRo"></div>
+
+  <p class="note"><b>The three regimes, and the odd one in the middle.</b> If the environment cools faster
+  than 9.8&nbsp;K&nbsp;km<sup>&minus;1</sup> it is <b>absolutely unstable</b> &mdash; any parcel, dry or moist,
+  runs away. This happens only in a shallow layer over a strongly heated surface, because convection destroys
+  it within minutes. If the environment cools more slowly than the saturated adiabat it is <b>absolutely
+  stable</b> and nothing rises on its own. Between the two lies <b>conditional instability</b>: stable to a
+  dry parcel, unstable to a saturated one. Most of the troposphere, most of the time, is in that middle state
+  &mdash; which is precisely why the weather depends so much on humidity and on whether anything gives the air
+  an initial shove.</p>
+
+  <p class="q"><b>Question.</b> Press <b>a winter inversion</b>. The parcel is colder than its surroundings
+  everywhere. What does that do to the air near the ground, and why is it a public health problem in Norwegian
+  valleys?
+  <span style="color:var(--text-muted)">Nothing can rise, so nothing mixes. Anything emitted at the surface
+  &mdash; wood smoke, traffic exhaust, road dust &mdash; stays at the surface and accumulates for as long as
+  the inversion lasts, which in a sheltered valley under clear winter skies can be days. The physics is
+  identical to the stability calculation above, and the reason inversions form in the first place is the
+  surface energy balance: on a clear calm night the ground radiates away more than it receives and cools
+  below the air above it. That balance is
+  <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3, part 1</a>.</span></p>
+
+  <p class="q"><b>Question.</b> Press <b>hot and bone dry</b>. The environment is nearly at the dry adiabat and
+  the parcel is buoyant &mdash; but no cloud forms. Why, and what does form instead?
+  <span style="color:var(--text-muted)">The condensation level is above the level where the parcel runs out
+  of buoyancy, so the air rises, cools, and sinks back without ever saturating. You get vigorous dry
+  convection &mdash; thermals, dust devils, a very deep and turbulent boundary layer, glider-friendly
+  conditions &mdash; and a cloudless sky. This is the normal daytime state over a desert, and it is why
+  deserts have enormous diurnal temperature ranges: nothing condenses, so no latent heat is released and no
+  cloud forms to slow the nocturnal cooling.</span></p>
+
+  <div class="warnbox"><b>Computed.</b> The dry adiabat is g/c<sub>p</sub> exactly. The condensation level is
+  found from the Magnus dewpoint and the 125&nbsp;m&nbsp;K<sup>&minus;1</sup> dewpoint-depression rule. Above
+  it the parcel is integrated in 20&nbsp;m steps using the saturated lapse-rate expression above with
+  L<sub>v</sub>&nbsp;=&nbsp;2.501&times;10<sup>6</sup>&nbsp;J&nbsp;kg<sup>&minus;1</sup>,
+  c<sub>p</sub>&nbsp;=&nbsp;1004, &epsilon;&nbsp;=&nbsp;0.622, and pressure from the standard-atmosphere
+  profile of Section&nbsp;4. It ignores the weight of condensed water, entrainment of drier surrounding air
+  and any freezing above the 0&nbsp;&deg;C level &mdash; all three matter in a real storm, and all three are
+  parameterised rather than resolved in a climate model
+  (<a href="../lecture-5-modelling-the-climate-system/what-is-a-model.html">Lecture 5, part 1</a>).</div>
+</div>
+
+<div class="card">
+  <h3>What to carry forward</h3>
+  <ul>
+    <li>Air is an ideal gas: <b>p = &rho;R<sub>g</sub>T</b>. Humid air is <em>lighter</em>, handled through
+    the virtual temperature.</li>
+    <li>The vertical structure is <b>hydrostatic</b>: &part;p/&part;z = &minus;&rho;g, giving an exponential
+    pressure profile with a scale height of 7&ndash;8 km. Half the mass is below 5.5 km.</li>
+    <li>Temperature falls at about <b>6.5 K km<sup>&minus;1</sup></b> through the troposphere because the
+    layer is heated from below, and rises through the stratosphere because that layer is heated from within by
+    ozone.</li>
+    <li>Stability is a comparison of the environmental lapse rate against <b>9.8</b> (dry) and about
+    <b>4&ndash;7</b> (saturated) K&nbsp;km<sup>&minus;1</sup>. Most of the troposphere is conditionally
+    unstable.</li>
+    <li>All of this is <em>vertical</em>. The next page adds rotation, and with it the horizontal
+    circulation.</li>
+  </ul>
+</div>
+
+<p class="foot">After Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <i>Introduction to
+Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.3, Eq.&nbsp;1.1&ndash;1.3 and
+Figs.&nbsp;1.2&ndash;1.3 (climate.be/textbook); the hydrostatic force diagram follows the treatment in the
+lecture slides after W.H. Brune (Penn State). <b>All four figures on this page are computed</b>, from the
+constants stated in each demonstration: g&nbsp;=&nbsp;9.80665&nbsp;m&nbsp;s<sup>&minus;2</sup>,
+R<sub>d</sub>&nbsp;=&nbsp;287.05, R<sub>v</sub>&nbsp;=&nbsp;461.52,
+c<sub>p</sub>&nbsp;=&nbsp;1004&nbsp;J&nbsp;kg<sup>&minus;1</sup>K<sup>&minus;1</sup>,
+L<sub>v</sub>&nbsp;=&nbsp;2.501&times;10<sup>6</sup>&nbsp;J&nbsp;kg<sup>&minus;1</sup>; saturation vapour
+pressure from the August&ndash;Roche&ndash;Magnus form recommended by WMO (Sonntag, 1990). The force-balance
+diagram in Section&nbsp;3 is a schematic. Composition values are NOAA Global Monitoring Laboratory global
+means for 2026 and pre-industrial values from IPCC AR6 WG1 (2021); tropopause heights and temperatures are
+standard textbook ranges. Every figure on the seven Lecture&nbsp;1 pages is classified in the
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="circulation.html">why the wind blows where it does &rarr;</a></p>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function put(g,t,a,txt){var e=el(t,a);if(txt!==undefined)e.textContent=txt;g.appendChild(e);return e;}
+  function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+  var G=9.80665, RD=287.05, RV=461.52, CP=1004, LV=2.501e6, EPS=0.622;
+
+  /* saturation vapour pressure over water, hPa, T in °C  (Magnus / Sonntag 1990) */
+  function es(T){ return 6.112*Math.exp(17.62*T/(243.12+T)); }
+  function dewpoint(T,RH){
+    var gam=Math.log(Math.max(1e-4,RH/100))+17.62*T/(243.12+T);
+    return 243.12*gam/(17.62-gam);
+  }
+  /* saturated adiabatic lapse rate, K per m ; T in K, p in hPa */
+  function gammaM(TK,phPa){
+    var Tc=TK-273.15, e=es(Tc), rs=EPS*e/Math.max(1e-3,phPa-e);
+    var num=G*(1+LV*rs/(RD*TK));
+    var den=CP+LV*LV*rs*EPS/(RD*TK*TK);
+    return num/den;
+  }
+  /* ISA-like pressure for the parcel integration */
+  function pStd(z){ return 1013.25*Math.pow(Math.max(1e-6,1-0.0065*z/288.15),5.25588); }
+
+  /* ═══ Demo 1 · saturation vapour pressure ══════════════════════ */
+  function drawEs(){
+    var g=$('esG'); if(!g) return; clear(g);
+    var T=+$('a_T').value, RH=+$('a_R').value, P=+$('a_P').value;
+    var L=62,R=730,Tp=22,B=262,W=R-L,H=B-Tp;
+    var t0=-30,t1=45, hi=100;
+    var x=function(t){return L+W*(t-t0)/(t1-t0);};
+    var yv=function(e){return B-H*Math.min(e,hi)/hi;};
+    for(var v=0;v<=100;v+=20){
+      put(g,'line',{x1:L,x2:R,y1:yv(v),y2:yv(v),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:yv(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+    }
+    for(var t=-30;t<=45;t+=15){
+      put(g,'line',{x1:x(t),x2:x(t),y1:Tp,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:x(t),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},t+'°');
+    }
+    put(g,'text',{x:L-8,y:Tp-6,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},'hPa');
+    put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'air temperature (°C)');
+    /* saturation curve */
+    var d='';
+    for(var i=0;i<=300;i++){
+      var tt=t0+(t1-t0)*i/300, ee=es(tt);
+      if(ee>hi){ d+='L'+x(tt).toFixed(1)+' '+yv(hi).toFixed(1); break; }
+      d+=(i?'L':'M')+x(tt).toFixed(1)+' '+yv(ee).toFixed(1);
+    }
+    put(g,'path',{d:d,fill:'none',stroke:'var(--atm)','stroke-width':2.6});
+    put(g,'text',{x:x(38),y:yv(50),'font-size':12,fill:'var(--atm)','font-weight':600},'e');
+    put(g,'text',{x:x(38)+8,y:yv(50)+4,'font-size':9,fill:'var(--atm)'},'s');
+    put(g,'text',{x:x(38)+15,y:yv(50),'font-size':12,fill:'var(--atm)'},'(T) — saturation');
+    /* actual state */
+    var E=es(T)*RH/100, Td=dewpoint(T,RH);
+    put(g,'line',{x1:x(T),x2:x(T),y1:yv(0),y2:yv(Math.min(es(T),hi)),
+      stroke:'var(--line)','stroke-dasharray':'3 4'});
+    put(g,'circle',{cx:x(T),cy:yv(Math.min(E,hi)),r:5.5,fill:'var(--hot)',
+      stroke:'var(--surface-1)','stroke-width':1.6});
+    put(g,'text',{x:x(T)+10,y:yv(Math.min(E,hi))-8,'font-size':12,fill:'var(--hot)',
+      'font-weight':600},'actual e = '+E.toFixed(1)+' hPa');
+    if(Td>t0&&Td<t1){
+      put(g,'line',{x1:x(Td),x2:x(T),y1:yv(Math.min(E,hi)),y2:yv(Math.min(E,hi)),
+        stroke:'var(--warn)','stroke-width':1.8,'stroke-dasharray':'5 3'});
+      put(g,'circle',{cx:x(Td),cy:yv(Math.min(E,hi)),r:4.5,fill:'var(--warn)'});
+      put(g,'text',{x:x(Td),y:yv(Math.min(E,hi))+20,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--warn)','font-weight':600},'dewpoint '+Td.toFixed(1)+'°C');
+    }
+    /* legend note */
+    put(g,'text',{x:R+18,y:Tp+16,'font-size':11.5,fill:'var(--text-muted)'},'cool the air');
+    put(g,'text',{x:R+18,y:Tp+32,'font-size':11.5,fill:'var(--text-muted)'},'along the orange');
+    put(g,'text',{x:R+18,y:Tp+48,'font-size':11.5,fill:'var(--text-muted)'},'line and it meets');
+    put(g,'text',{x:R+18,y:Tp+64,'font-size':11.5,fill:'var(--text-muted)'},'the blue curve:');
+    put(g,'text',{x:R+18,y:Tp+80,'font-size':11.5,fill:'var(--atm)','font-weight':600},'condensation.');
+    put(g,'text',{x:R+18,y:Tp+108,'font-size':11,fill:'var(--text-muted)'},'Curve is the Magnus');
+    put(g,'text',{x:R+18,y:Tp+123,'font-size':11,fill:'var(--text-muted)'},'formula — computed,');
+    put(g,'text',{x:R+18,y:Tp+138,'font-size':11,fill:'var(--text-muted)'},'not fitted to data.');
+
+    /* numbers */
+    var q=EPS*E/(P-(1-EPS)*E);
+    var rhoM=(P-E)*100/(RD*(T+273.15)) + E*100/(RV*(T+273.15));
+    var rhoD=P*100/(RD*(T+273.15));
+    $('kEs').textContent=es(T).toFixed(1);
+    $('kTd').textContent=Td.toFixed(1)+' °C';
+    $('kQ').textContent=(q*1000).toFixed(1);
+    $('kRho').textContent=((rhoM/rhoD-1)*100).toFixed(2)+' %';
+    var dd=T-Td;
+    $('esRo').innerHTML='At <b>'+T.toFixed(1)+' °C</b> the air can hold at most <b>'+es(T).toFixed(1)+
+      ' hPa</b> of water vapour; at '+RH+' % relative humidity it is carrying <b>'+E.toFixed(1)+
+      ' hPa</b>, i.e. <span class="big">'+(q*1000).toFixed(1)+' g kg<sup>&minus;1</sup></span>. '+
+      'It would have to cool by <b>'+dd.toFixed(1)+' K</b> to reach saturation — which, lifted adiabatically, '+
+      'means rising about <b>'+Math.round(125*dd)+' m</b>. That is the cloud base. '+
+      'The moist air is <b>'+((1-rhoM/rhoD)*100).toFixed(2)+' % less dense</b> than dry air at the same '+
+      'temperature and pressure.';
+  }
+  ['a_T','a_R','a_P'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('a_Tv').textContent=(+$('a_T').value).toFixed(1)+' °C';
+      $('a_Rv').textContent=$('a_R').value+' %';
+      $('a_Pv').textContent=$('a_P').value+' hPa';
+      drawEs();
+    });
+  });
+
+  /* ═══ hydrostatic schematic ════════════════════════════════════ */
+  (function(){
+    var g=$('hyG'); if(!g) return;
+    var defs=el('defs',{});
+    [['hA','var(--atm)'],['hB','var(--hot)'],['hC','var(--ped)']].forEach(function(m){
+      var mk=el('marker',{id:m[0],viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,
+        orient:'auto-start-reverse'});
+      mk.appendChild(el('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:m[1]}));
+      defs.appendChild(mk);
+    });
+    g.appendChild(defs);
+    var X=340,Y=60,W=190,H=110;
+    put(g,'rect',{x:X,y:Y,width:W,height:H,rx:6,fill:'var(--surface-2)',
+      stroke:'var(--atm)','stroke-width':1.8});
+    put(g,'text',{x:X+W/2,y:Y+H/2-4,'text-anchor':'middle','font-size':13.5,
+      fill:'var(--text-primary)','font-weight':600},'air parcel');
+    put(g,'text',{x:X+W/2,y:Y+H/2+14,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-muted)'},'area A, thickness Δz, density ρ');
+    /* top force, down */
+    put(g,'line',{x1:X+W/2,y1:Y-42,x2:X+W/2,y2:Y-6,stroke:'var(--atm)','stroke-width':3,
+      'marker-end':'url(#hA)'});
+    put(g,'text',{x:X+W/2+12,y:Y-26,'font-size':13,fill:'var(--atm)','font-weight':600},
+      'F_top = −p_top · A');
+    /* bottom force, up */
+    put(g,'line',{x1:X+W/2,y1:Y+H+50,x2:X+W/2,y2:Y+H+8,stroke:'var(--hot)','stroke-width':3.4,
+      'marker-end':'url(#hB)'});
+    put(g,'text',{x:X+W/2+12,y:Y+H+38,'font-size':13,fill:'var(--hot)','font-weight':600},
+      'F_bottom = p_bottom · A');
+    /* gravity */
+    put(g,'line',{x1:X+W-38,y1:Y+22,x2:X+W-38,y2:Y+H-16,stroke:'var(--ped)','stroke-width':3,
+      'marker-end':'url(#hC)'});
+    put(g,'text',{x:X+W-30,y:Y+H-24,'font-size':13,fill:'var(--ped)','font-weight':600},'F_g = −ρAΔz g');
+    /* balance statement */
+    put(g,'text',{x:40,y:76,'font-size':13.5,fill:'var(--text-primary)','font-weight':600},'At balance:');
+    put(g,'text',{x:40,y:100,'font-size':13,fill:'var(--text-secondary)'},'F_bottom + F_top + F_g = 0');
+    put(g,'text',{x:40,y:124,'font-size':13,fill:'var(--text-secondary)'},'p_bottom − p_top = ρ g Δz');
+    put(g,'text',{x:40,y:152,'font-size':13,fill:'var(--text-primary)','font-weight':600},'∂p/∂z = −ρg');
+    put(g,'text',{x:40,y:176,'font-size':11.5,fill:'var(--text-muted)'},'the residual acceleration is');
+    put(g,'text',{x:40,y:192,'font-size':11.5,fill:'var(--text-muted)'},'about 10⁻⁶ of g in a weather system');
+    put(g,'text',{x:600,y:76,'font-size':11.5,fill:'var(--text-muted)'},'Without the pressure gradient,');
+    put(g,'text',{x:600,y:92,'font-size':11.5,fill:'var(--text-muted)'},'the atmosphere collapses.');
+    put(g,'text',{x:600,y:116,'font-size':11.5,fill:'var(--text-muted)'},'Without gravity, it escapes.');
+    put(g,'text',{x:600,y:140,'font-size':11.5,fill:'var(--text-muted)'},'What we have is the');
+    put(g,'text',{x:600,y:156,'font-size':11.5,fill:'var(--text-muted)'},'standoff between them.');
+    put(g,'text',{x:340,y:228,'font-size':11,fill:'var(--warn)','font-style':'italic'},
+      'SCHEMATIC — a force diagram, carrying no measured quantity');
+  })();
+
+  /* ═══ Demo 2 · vertical profile ════════════════════════════════ */
+  function pOf(z,Ts,Gk,Ps){
+    /* Ts in K, Gk in K/m */
+    if(Gk<1e-6) return Ps*Math.exp(-z*G/(RD*Ts));
+    var f=1-Gk*z/Ts;
+    if(f<=0) return 0;
+    return Ps*Math.pow(f,G/(RD*Gk));
+  }
+  function drawProf(){
+    var g=$('prG'); if(!g) return; clear(g);
+    var TsC=+$('p_Ts').value, Gk=+$('p_G').value/1000, Ps=+$('p_Ps').value;
+    var Ts=TsC+273.15;
+    var L=64,R=560,T=22,B=330,W=R-L,H=B-T;
+    var zmax=20000;
+    var yz=function(z){return B-H*z/zmax;};
+    var xp=function(p){return L+W*p/1100;};
+    for(var z=0;z<=20000;z+=5000){
+      put(g,'line',{x1:L,x2:R,y1:yz(z),y2:yz(z),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:yz(z)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},(z/1000)+' km');
+    }
+    for(var p=0;p<=1000;p+=200){
+      put(g,'line',{x1:xp(p),x2:xp(p),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:xp(p),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},p);
+    }
+    put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'pressure (hPa)');
+    /* above-tropopause caution band */
+    put(g,'rect',{x:L,y:T,width:W,height:yz(12000)-T,fill:'var(--warn)',opacity:0.07});
+    put(g,'text',{x:R-6,y:yz(19000),'text-anchor':'end','font-size':11,fill:'var(--warn)'},
+      'above a typical tropopause —');
+    put(g,'text',{x:R-6,y:yz(19000)+14,'text-anchor':'end','font-size':11,fill:'var(--warn)'},
+      'a single lapse rate is no longer physical here');
+    /* pressure curve */
+    var d='';
+    for(var i=0;i<=200;i++){
+      var zz=zmax*i/200, pp=pOf(zz,Ts,Gk,Ps);
+      d+=(i?'L':'M')+xp(pp).toFixed(1)+' '+yz(zz).toFixed(1);
+    }
+    put(g,'path',{d:d,fill:'none',stroke:'var(--atm)','stroke-width':2.8});
+    /* isothermal comparison */
+    var d2='';
+    for(var j=0;j<=200;j++){
+      var z2=zmax*j/200, p2=Ps*Math.exp(-z2*G/(RD*Ts));
+      d2+=(j?'L':'M')+xp(p2).toFixed(1)+' '+yz(z2).toFixed(1);
+    }
+    put(g,'path',{d:d2,fill:'none',stroke:'var(--text-muted)','stroke-width':1.6,
+      'stroke-dasharray':'6 4'});
+    /* half-mass level */
+    var zHalf=null;
+    for(var k=0;k<=2000;k++){
+      var zk=zmax*k/2000;
+      if(pOf(zk,Ts,Gk,Ps)<=Ps/2){ zHalf=zk; break; }
+    }
+    if(zHalf!==null){
+      put(g,'line',{x1:L,x2:xp(Ps/2),y1:yz(zHalf),y2:yz(zHalf),stroke:'var(--hot)',
+        'stroke-width':1.6,'stroke-dasharray':'4 3'});
+      put(g,'text',{x:L+6,y:yz(zHalf)-7,'font-size':11.5,fill:'var(--hot)','font-weight':600},
+        'half the atmosphere’s mass is below here');
+    }
+    /* landmarks */
+    [[8848,'Everest'],[11000,'cruise altitude'],[5500,'']].forEach(function(m){
+      if(!m[1])return;
+      var pm=pOf(m[0],Ts,Gk,Ps);
+      put(g,'circle',{cx:xp(pm),cy:yz(m[0]),r:4,fill:'var(--ped)'});
+      put(g,'text',{x:xp(pm)+9,y:yz(m[0])+4,'font-size':11.5,fill:'var(--ped)'},
+        m[1]+' — '+pm.toFixed(0)+' hPa');
+    });
+    put(g,'line',{x1:R+20,x2:R+42,y1:T+10,y2:T+10,stroke:'var(--atm)','stroke-width':2.8});
+    put(g,'text',{x:R+48,y:T+14,'font-size':11.5,fill:'var(--atm)','font-weight':600},'p(z)');
+    put(g,'line',{x1:R+20,x2:R+42,y1:T+32,y2:T+32,stroke:'var(--text-muted)','stroke-width':1.6,
+      'stroke-dasharray':'6 4'});
+    put(g,'text',{x:R+48,y:T+36,'font-size':11.5,fill:'var(--text-muted)'},'isothermal');
+    put(g,'text',{x:R+48,y:T+50,'font-size':11.5,fill:'var(--text-muted)'},'comparison');
+
+    /* temperature panel on the right */
+    var L2=R+150,R2=858;
+    put(g,'text',{x:(L2+R2)/2,y:T-6,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--hot)','font-weight':600},'the temperature profile you set');
+    var xt=function(t){return L2+(R2-L2)*(t-180)/(140);};
+    for(var tt=200;tt<=300;tt+=50){
+      put(g,'line',{x1:xt(tt),x2:xt(tt),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:xt(tt),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},tt);
+    }
+    put(g,'text',{x:(L2+R2)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'T (K)');
+    var d3='';
+    for(var q2=0;q2<=100;q2++){
+      var z3=zmax*q2/100, t3=Ts-Gk*z3;
+      if(t3<180) t3=180;
+      d3+=(q2?'L':'M')+xt(t3).toFixed(1)+' '+yz(z3).toFixed(1);
+    }
+    put(g,'path',{d:d3,fill:'none',stroke:'var(--hot)','stroke-width':2.4});
+
+    var Hs=RD*Ts/G;
+    $('kH').textContent=(Hs/1000).toFixed(2)+' km';
+    $('kHalf').textContent=zHalf!==null?(zHalf/1000).toFixed(2)+' km':'—';
+    $('kEv').textContent=pOf(8848,Ts,Gk,Ps).toFixed(0)+' hPa';
+    $('k11').textContent=pOf(11000,Ts,Gk,Ps).toFixed(0)+' hPa';
+    var pctEv=100*pOf(8848,Ts,Gk,Ps)/Ps;
+    $('prRo').innerHTML='With T<sub>s</sub> = <b>'+TsC.toFixed(1)+' °C</b>, &Gamma; = <b>'+
+      (Gk*1000).toFixed(1)+' K km<sup>&minus;1</sup></b> and p<sub>s</sub> = <b>'+Ps+
+      ' hPa</b>, the scale height is <span class="big">'+(Hs/1000).toFixed(2)+' km</span> and half of the '+
+      'entire atmosphere lies below <b>'+(zHalf/1000).toFixed(2)+' km</b> — lower than most of the peaks in '+
+      'the Alps. At the summit of Everest there is <b>'+pctEv.toFixed(0)+' %</b> of the sea-level pressure, '+
+      'and therefore '+pctEv.toFixed(0)+' % of the oxygen per breath.';
+  }
+  ['p_Ts','p_G','p_Ps'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('p_Tsv').textContent=(+$('p_Ts').value).toFixed(1)+' °C';
+      $('p_Gv').innerHTML=(+$('p_G').value).toFixed(1)+' K km<sup>&minus;1</sup>';
+      $('p_Psv').textContent=$('p_Ps').value+' hPa';
+      drawProf();
+    });
+  });
+
+  /* ═══ Demo 3 · parcel stability ════════════════════════════════ */
+  function drawStab(){
+    var g=$('stG'); if(!g) return; clear(g);
+    var T0=+$('s_T').value, RH=+$('s_R').value, Ge=+$('s_G').value/1000;
+    var Td0=dewpoint(T0,RH);
+    var zLCL=Math.max(0,125*(T0-Td0));
+    var zmax=12000, dz=20;
+    /* parcel profile: dry adiabat to the LCL, saturated adiabat above it */
+    var par=[], Tp=T0+273.15;
+    for(var z=0;z<=zmax;z+=dz){
+      par.push({z:z,T:Tp});
+      var step = (z<zLCL) ? G/CP : gammaM(Tp,pStd(z));
+      Tp -= step*dz;
+    }
+    var envT=function(z){return T0+273.15-Ge*z;};
+
+    /* diagnostics first — the panels need them */
+    var anyBuo=false, maxB=0, zMaxB=0, zLFC=null, zEL=null;
+    for(var i=0;i<par.length;i++){
+      var d=par[i].T-envT(par[i].z);
+      if(d>0){
+        anyBuo=true;
+        if(zLFC===null && par[i].z>50) zLFC=par[i].z;
+        if(d>maxB){maxB=d;zMaxB=par[i].z;}
+        zEL=par[i].z;
+      }
+    }
+
+    /* ── left panel: temperature against height ── */
+    var L=62,R=430,T=26,B=344,W=R-L,H=B-T;
+    var tmin=Math.min(envT(zmax),par[par.length-1].T)-4;
+    var tmax=T0+273.15+5;
+    var x=function(t){return L+W*(t-tmin)/(tmax-tmin);};
+    var yz=function(z){return B-H*z/zmax;};
+    put(g,'text',{x:L,y:T-9,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+      'Temperature against height');
+    for(var zz=0;zz<=zmax;zz+=2000){
+      put(g,'line',{x1:L,x2:R,y1:yz(zz),y2:yz(zz),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:yz(zz)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},(zz/1000)+' km');
+    }
+    var span=tmax-tmin, tstep=(span>90)?30:(span>50?20:10);
+    for(var tk=Math.ceil(tmin/tstep)*tstep;tk<=tmax;tk+=tstep){
+      put(g,'line',{x1:x(tk),x2:x(tk),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:x(tk),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},(tk-273.15).toFixed(0)+'°');
+    }
+    put(g,'text',{x:(L+R)/2,y:B+37,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'temperature (°C)');
+    /* environment */
+    put(g,'path',{d:'M'+x(envT(0)).toFixed(1)+' '+yz(0).toFixed(1)+
+      'L'+x(envT(zmax)).toFixed(1)+' '+yz(zmax).toFixed(1),
+      fill:'none',stroke:'var(--text-primary)','stroke-width':2.6});
+    /* parcel */
+    var dp='';
+    for(var m=0;m<par.length;m++) dp+=(m?'L':'M')+x(par[m].T).toFixed(1)+' '+yz(par[m].z).toFixed(1);
+    put(g,'path',{d:dp,fill:'none',stroke:'var(--atm)','stroke-width':2.6});
+    /* LCL */
+    if(zLCL>0&&zLCL<zmax){
+      put(g,'line',{x1:L,x2:R,y1:yz(zLCL),y2:yz(zLCL),stroke:'var(--bio)',
+        'stroke-width':1.8,'stroke-dasharray':'6 4'});
+      put(g,'text',{x:L+6,y:yz(zLCL)-8,'font-size':11.5,fill:'var(--bio)','font-weight':600},
+        'cloud base, '+Math.round(zLCL)+' m');
+    }
+    put(g,'text',{x:x(envT(zmax*0.94))+8,y:yz(zmax*0.94)+4,'font-size':11.5,
+      fill:'var(--text-primary)','font-weight':600},'environment');
+    put(g,'text',{x:x(par[Math.round((par.length-1)*0.94)].T)-8,y:yz(zmax*0.94)+4,
+      'text-anchor':'end','font-size':11.5,fill:'var(--atm)','font-weight':600},'parcel');
+
+    /* ── right panel: buoyancy, parcel minus environment ── */
+    var L2=548,R2=812,W2=R2-L2;
+    var minB=0;
+    for(var q3=0;q3<par.length;q3++) minB=Math.min(minB,par[q3].T-envT(par[q3].z));
+    var bhi=Math.max(3,Math.ceil(maxB*1.35));
+    var blo=Math.max(-40,Math.min(-3,Math.floor(minB*1.15)));
+    var xb=function(d){return L2+W2*(d-blo)/(bhi-blo);};
+    put(g,'text',{x:L2,y:T-9,'font-size':12,fill:'var(--text-primary)','font-weight':600},
+      'Buoyancy: parcel − environment');
+    for(var zb=0;zb<=zmax;zb+=2000){
+      put(g,'line',{x1:L2,x2:R2,y1:yz(zb),y2:yz(zb),stroke:'var(--grid)','stroke-width':1});
+    }
+    var bstep=(bhi-blo>20)?10:((bhi-blo>10)?5:2);
+    for(var bk=Math.ceil(blo/bstep)*bstep;bk<=bhi;bk+=bstep){
+      var zero=Math.abs(bk)<1e-9;
+      put(g,'line',{x1:xb(bk),x2:xb(bk),y1:T,y2:B,
+        stroke:zero?'var(--text-muted)':'var(--grid)','stroke-width':zero?1.6:1});
+      put(g,'text',{x:xb(bk),y:B+18,'text-anchor':'middle','font-size':11,
+        fill:zero?'var(--text-primary)':'var(--text-muted)'},(bk>0?'+':'')+bk);
+    }
+    put(g,'text',{x:(L2+R2)/2,y:B+37,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'ΔT (K) — right of the line, the parcel rises on its own');
+    /* filled buoyancy profile */
+    var fill='M'+xb(0).toFixed(1)+' '+yz(0).toFixed(1);
+    for(var n=0;n<par.length;n++){
+      var dv=Math.max(blo,Math.min(bhi,par[n].T-envT(par[n].z)));
+      fill+='L'+xb(dv).toFixed(1)+' '+yz(par[n].z).toFixed(1);
+    }
+    fill+='L'+xb(0).toFixed(1)+' '+yz(zmax).toFixed(1)+'Z';
+    put(g,'path',{d:fill,fill:'var(--hot)',opacity:0.18});
+    var db='';
+    for(var n2=0;n2<par.length;n2++){
+      var dv2=Math.max(blo,Math.min(bhi,par[n2].T-envT(par[n2].z)));
+      db+=(n2?'L':'M')+xb(dv2).toFixed(1)+' '+yz(par[n2].z).toFixed(1);
+    }
+    put(g,'path',{d:db,fill:'none',stroke:'var(--hot)','stroke-width':2.4});
+    if(zLCL>0&&zLCL<zmax){
+      put(g,'line',{x1:L2,x2:R2,y1:yz(zLCL),y2:yz(zLCL),stroke:'var(--bio)',
+        'stroke-width':1.4,'stroke-dasharray':'6 4',opacity:0.8});
+    }
+    if(zLFC!==null){
+      put(g,'circle',{cx:xb(0),cy:yz(zLFC),r:4.5,fill:'var(--hot)',
+        stroke:'var(--surface-1)','stroke-width':1.5});
+      put(g,'text',{x:R2,y:yz(zLFC)-8,'text-anchor':'end','font-size':11.5,
+        fill:'var(--hot)','font-weight':600},'free convection from '+Math.round(zLFC)+' m');
+    } else {
+      put(g,'text',{x:xb(0)-9,y:yz(zmax*0.55),'text-anchor':'end','font-size':11.5,
+        fill:'var(--text-muted)'},'never buoyant —');
+      put(g,'text',{x:xb(0)-9,y:yz(zmax*0.55)-15,'text-anchor':'end','font-size':11.5,
+        fill:'var(--text-muted)'},'the parcel sinks back');
+    }
+    /* footer notes across the bottom */
+    put(g,'text',{x:L,y:B+62,'font-size':11,fill:'var(--warn)','font-style':'italic'},
+      'COMPUTED — dry and saturated adiabats integrated from first principles; no data are loaded');
+    put(g,'text',{x:L,y:B+80,'font-size':11,fill:'var(--text-muted)'},
+      'Both panels share the same height axis. The green dashes mark the condensation level, where the parcel changes slope.');
+    /* classification */
+    var GmS=gammaM(T0+273.15,1013.25)*1000, GeK=Ge*1000, cls, exp;
+    if(GeK>9.8){ cls='Absolutely unstable';
+      exp='The environment cools faster than the dry adiabat, so <b>any</b> parcel that is nudged upward keeps going, saturated or not. In the real atmosphere this state survives only in the lowest few tens of metres over a strongly heated surface, because convection removes it almost as fast as it forms.'; }
+    else if(GeK<GmS){ cls='Absolutely stable';
+      exp='The environment cools more slowly than even a saturated parcel, so nothing rises on its own. Convection has to be forced — by a front, by a mountain, or by the wind. Cloud can still form, but it will be layered rather than towering.'; }
+    else { cls='Conditionally unstable';
+      exp='Stable to a dry parcel, unstable to a saturated one. Whether anything happens therefore depends on whether the air can be lifted as far as its condensation level. This is the state of most of the troposphere most of the time, and it is why forecasting convection is hard.'; }
+    $('kLcl').textContent=zLCL<1?'at the surface':Math.round(zLCL)+' m';
+    $('kGm').innerHTML=GmS.toFixed(1)+' K km<sup>&minus;1</sup>';
+    $('kLfc').textContent=zLFC===null?'never':Math.round(zLFC)+' m';
+    $('kBuo').textContent=anyBuo?('+'+maxB.toFixed(1)+' K'):'none';
+    $('stRo').innerHTML='<span class="big">'+cls+'</span> — the environment loses <b>'+
+      GeK.toFixed(1)+' K km<sup>&minus;1</sup></b>, against <b>9.8</b> for a dry parcel and <b>'+
+      GmS.toFixed(1)+'</b> for a saturated one at the surface. '+exp+
+      (anyBuo?(' Here the parcel becomes buoyant from <b>'+Math.round(zLFC)+' m</b> and reaches a maximum '+
+        'excess of <b>'+maxB.toFixed(1)+' K</b> over its surroundings at '+Math.round(zMaxB/100)/10+
+        ' km — deep convection.'):' The parcel is colder than its surroundings at every level, so it sinks back.');
+  }
+  ['s_T','s_R','s_G'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('s_Tv').textContent=(+$('s_T').value).toFixed(1)+' °C';
+      $('s_Rv').textContent=$('s_R').value+' %';
+      $('s_Gv').innerHTML=(+$('s_G').value).toFixed(1)+' K km<sup>&minus;1</sup>';
+      drawStab();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.ghost[data-s]'),function(b){
+    b.addEventListener('click',function(){
+      var p=b.getAttribute('data-s').split(',');
+      $('s_T').value=p[0]; $('s_R').value=p[1]; $('s_G').value=p[2];
+      $('s_Tv').textContent=(+p[0]).toFixed(1)+' °C';
+      $('s_Rv').textContent=p[1]+' %';
+      $('s_Gv').innerHTML=(+p[2]).toFixed(1)+' K km<sup>&minus;1</sup>';
+      drawStab();
+    });
+  });
+
+  drawEs(); drawProf(); drawStab();
+})();
+</script>
+
+</div>
+<script src="../assets/reveal-answers.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('themeBtn');
+  if(!btn) return;
+  btn.onclick=function(){
+    var d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

@@ -10,7 +10,7 @@ The published site is a static GitHub Pages site served from `docs/`. It include
 
 1. The main landing page with schedule and Canvas link
 2. Three PC labs with separate task/question pages
-3. Interactive lecture material for Lectures 2-7
+3. Interactive lecture material for Lectures 1-8
 4. Shared reference material such as the equation summary
 
 Course materials were originally developed by Hans Renssen, the former course coordinator.
@@ -31,23 +31,25 @@ The repo now uses one mother folder per lecture at the root and one top-level pu
 
 Root lecture folders:
 
-1. `lecture-2-earths-energy-budget/`
-2. `lecture-3-climate-at-a-local-scale/`
-3. `lecture-4-global-cycles-water-and-carbon/`
-4. `lecture-5-modelling-the-climate-system/`
-5. `lecture-6-response-of-the-climate-system-to-perturbations/`
-6. `lecture-7-climate-change-past-and-present/`
-7. `lecture-8-climate-change-the-future/`
+1. `lecture-1-components-of-the-climate-system/`
+2. `lecture-2-earths-energy-budget/`
+3. `lecture-3-climate-at-a-local-scale/`
+4. `lecture-4-global-cycles-water-and-carbon/`
+5. `lecture-5-modelling-the-climate-system/`
+6. `lecture-6-response-of-the-climate-system-to-perturbations/`
+7. `lecture-7-climate-change-past-and-present/`
+8. `lecture-8-climate-change-the-future/`
 
 Published lecture folders:
 
-1. `docs/lecture-2-earths-energy-budget/`
-2. `docs/lecture-3-climate-at-a-local-scale/`
-3. `docs/lecture-4-global-cycles-water-and-carbon/`
-4. `docs/lecture-5-modelling-the-climate-system/`
-5. `docs/lecture-6-response-of-the-climate-system-to-perturbations/`
-6. `docs/lecture-7-climate-change-past-and-present/`
-7. `docs/lecture-8-climate-change-the-future/`
+1. `docs/lecture-1-components-of-the-climate-system/`
+2. `docs/lecture-2-earths-energy-budget/`
+3. `docs/lecture-3-climate-at-a-local-scale/`
+4. `docs/lecture-4-global-cycles-water-and-carbon/`
+5. `docs/lecture-5-modelling-the-climate-system/`
+6. `docs/lecture-6-response-of-the-climate-system-to-perturbations/`
+7. `docs/lecture-7-climate-change-past-and-present/`
+8. `docs/lecture-8-climate-change-the-future/`
 
 Two previously separate material groups are now nested under their lecture umbrellas:
 
@@ -64,7 +66,7 @@ Key published areas:
 
 1. `docs/index.html`: main landing page
 2. `docs/pc-lab-1-daisyworld/`, `docs/pc-lab-2-energy-balance-model/`, `docs/pc-lab-3-abrupt-vegetation-change/`: PC Labs 1-3
-3. `docs/lecture-2-earths-energy-budget/` through `docs/lecture-7-climate-change-past-and-present/`: lecture materials
+3. `docs/lecture-1-components-of-the-climate-system/` through `docs/lecture-8-climate-change-the-future/`: lecture materials
 4. `docs/equations/`: equation summary
 
 The landing page currently follows two different navigation models by design:
@@ -76,14 +78,16 @@ The landing page currently follows two different navigation models by design:
 
 Current published lecture coverage:
 
-1. Lecture 2: published interactive material present, including the nested insolation interactive
-2. Lecture 3: published interactive material present
-3. Lecture 4: published interactive material present
-4. Lecture 5: published interactive material present, including the nested atmospheric-equations interactive
-5. Lecture 6: published interactive material present
-6. Lecture 7: published interactive material present, including `docs/lecture-7-climate-change-past-and-present/provenance.html`
-7. Lecture 8: lecture folder exists in both root and `docs/`, but interactive material is not yet published there
-8. Lecture 1: no lecture folder currently present in `docs/`
+1. Lecture 1: published interactive material present, seven pages linked from the landing page
+2. Lecture 2: published interactive material present, including the nested insolation interactive
+3. Lecture 3: published interactive material present
+4. Lecture 4: published interactive material present
+5. Lecture 5: published interactive material present, including the nested atmospheric-equations interactive
+6. Lecture 6: published interactive material present
+7. Lecture 7: published interactive material present, including `docs/lecture-7-climate-change-past-and-present/provenance.html`
+8. Lecture 8: published interactive material present, seven pages linked from the landing page
+
+All eight lectures now have a teacher outline in their source folder and an entry in `teacher/index.html`.
 
 ## Labs
 
@@ -110,13 +114,28 @@ The source lab folders are:
 Several classes of files are intentionally excluded through `.gitignore` and are not part of the public site:
 
 1. Teacher outlines such as `Lecture5-Teacher-outline.html`
-2. PPTX lecture decks
-3. Screenshots and uploads used during preparation
-4. Answer keys, reports, and worked solutions
-5. Reference textbook material in `Goosse2010_textbook/`
-6. Preview `.dc.html` exports and duplicate root-level runtime files
+2. The `teacher/` folder, which holds the index over those outlines
+3. PPTX lecture decks
+4. Screenshots and uploads used during preparation
+5. Answer keys, reports, and worked solutions
+6. Reference textbook material in `Goosse2010_textbook/`
+7. Preview `.dc.html` exports and duplicate root-level runtime files
 
 This keeps the public site in `docs/` while allowing the lecture mother folders to contain working and instructor-facing material locally.
+
+### Teacher outline hub
+
+Each lecture keeps its own running order inside its own mother folder, at `lecture-N-<topic>/LectureN-Teacher-outline.html`, next to the deck it was built from. `teacher/index.html` is the single index over all eight: the week at a glance, what each session is built on, its block-by-block running order, and the published pages each outline drives. Open it locally in a browser; it is not part of the site and is not committed.
+
+The outlines are the authority. The hub summarizes them and links to them, so where the two disagree the outline is right.
+
+Three `.gitignore` rules keep this side of the repository private, and it is worth knowing them before renaming anything:
+
+1. `teacher/` is ignored wholesale, so working files dropped beside the hub are ignored too
+2. `*Teacher*.html` catches the outlines by name wherever they sit
+3. The current outline paths are additionally listed one by one, so keep the word `Teacher` in any outline filename and the explicit list can go stale without anything leaking
+
+`git status --short` should never show an outline, a deck, or anything under `teacher/`.
 
 ## Workflow
 
@@ -146,16 +165,17 @@ Completed in the current cleanup pass:
 7. Updated the private teacher-outline links to the new published lecture paths
 8. Renamed the root and published lab folders to explicit `pc-lab-*` names and updated lab links
 9. Deduplicated the confirmed identical Lecture 2 insolation runtime assets by making the root preview reuse the canonical copies under `docs/`
+10. Added `teacher/index.html`, the instructor-only index over the seven lecture outlines, and extended `.gitignore` to cover `teacher/` and the Lecture 8 outline path
 
 Still to do in the broader course cleanup:
 
-1. Standardize question/answer reveal patterns across all published material
-2. Continue checking provenance/source notes and scientific grounding page by page
-3. Decide how Lecture 8 interactive material should be published once developed
+Continue checking provenance/source notes and scientific grounding page by page
+Check the TODO.md file for more tasks
 
 ## Key files
 
 1. `README.md`: repository overview and structure
 2. `TODO.md`: active project and content-cleanup tasks
 3. `docs/index.html`: live landing page and schedule
-4. `.gitignore`: local-only and instructor-only exclusions
+4. `teacher/index.html`: instructor-only index over the eight lecture outlines (local only)
+5. `.gitignore`: local-only and instructor-only exclusions

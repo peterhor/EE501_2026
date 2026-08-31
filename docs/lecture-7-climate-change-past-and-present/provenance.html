@@ -90,12 +90,12 @@
 <div class="wrap">
 
 <p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
-Climate change: past and the future &middot; appendix for Lectures 7 and 8</p>
+appendix for Lectures 1, 7 and 8</p>
 
 <header>
   <div>
     <h1>Appendix: what is data and what is not</h1>
-    <p class="sub">Every figure and every demonstration in Lectures 7 and 8, and where its numbers come from.
+    <p class="sub">Every figure and every demonstration in Lectures 1, 7 and 8, and where its numbers come from.
     Some of what you see on these pages is an exact calculation, some is a model you are running live, some is
     a drawing that carries a shape but no measurements &mdash; and it matters a great deal which is which.
     This page says, for each one.</p>
@@ -111,7 +111,7 @@ Climate change: past and the future &middot; appendix for Lectures 7 and 8</p>
   That is a deliberate constraint, not an oversight: a self-contained HTML page that loads no external data
   cannot plot the EPICA ice core or HadCRUT. Faced with that, there are three honest options and one dishonest
   one. The dishonest one &mdash; drawing a curve that <em>looks</em> like a measurement and letting you assume
-  it is &mdash; is not used anywhere in either lecture.</p>
+  it is &mdash; is not used anywhere in these lectures.</p>
 
   <div class="key">
     <div><span class="tag t-calc">Computed</span><br>Evaluated live in your browser from an equation or a
@@ -135,6 +135,172 @@ Climate change: past and the future &middot; appendix for Lectures 7 and 8</p>
   about the physics. A surprising detail in a <em>schematic</em> is telling you something about the person who
   drew it. Learning to ask that question about any figure &mdash; in this course, in a paper, in a newspaper
   &mdash; is worth more than any single fact in the lecture.</div>
+</div>
+
+<h2 class="sec">Lecture 1 &middot; Components of the climate system</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">Figure and equation numbers refer to Goosse et&nbsp;al.,
+  <i>Introduction to Climate Dynamics and Climate Modelling</i>, chapter&nbsp;1. This lecture is unusual in
+  the course in that almost everything in it can be computed from first principles &mdash; hydrostatics,
+  Coriolis, Ekman, the equation of state &mdash; so the proportion of schematic material is low, and the
+  observational maps in the source deck are deliberately <b>not</b> redrawn.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; From weather to climate</td></tr>
+      <tr><td class="nm">Daily weather series and running mean</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A synthetic daily series &mdash; seasonal cycle, lag-1 autoregressive weather term
+        (&phi;&nbsp;=&nbsp;0.55 daily, 0.25 annual) and a linear trend, from a fixed seed. Labelled
+        <b>inside the figure</b> as synthetic. No station record is loaded and no value should be read
+        off it.</td></tr>
+      <tr><td class="nm">Sampling error, staleness and total error</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The exact expressions &sigma;<sub>ann</sub>/&radic;N and &frac12;&middot;trend&middot;N, and their
+        sum in quadrature. The optimum window N&nbsp;=&nbsp;(2&sigma;&sup2;/trend&sup2;)<sup>1/3</sup> follows
+        analytically. Nothing is fitted.</td></tr>
+      <tr><td class="nm">Reference-period comparison</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A synthetic curve whose <em>shape</em> resembles the instrumental record, drawn only so that the
+        shift of the zero line is visible. Labelled inside the figure. <b>The instrumental record itself is
+        not reproduced.</b></td></tr>
+      <tr><td class="nm">Warming and baseline table; Telemark profile</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>IPCC AR6 WG1 (2021) SPM A.1.2; Berkeley Earth global temperature report for 2025; Norwegian
+        Centre for Climate Services county climate profile for Telemark.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; Five components, five clocks</td></tr>
+      <tr><td class="nm">Response of five components to a step forcing</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Exact solution of C&nbsp;dT/dt&nbsp;=&nbsp;&Delta;F&nbsp;&minus;&nbsp;&lambda;T with
+        C&nbsp;=&nbsp;&rho;c<sub>p</sub>d and the constants printed in the table beside it. A single-slab
+        caricature with no transport and no phase change, which the note beside it states.</td></tr>
+      <tr><td class="nm">Interaction matrix</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A map of which couplings exist. The strength marks are qualitative and are labelled as such
+        inside the figure. No axis, no measured quantity.</td></tr>
+      <tr><td class="nm">Component masses and timescales</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Standard textbook values (Goosse et&nbsp;al., ch.&nbsp;1). Timescale ranges are conventional
+        orders of magnitude, not measurements from a single study.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; The atmosphere</td></tr>
+      <tr><td class="nm">Saturation vapour pressure and moist-air density</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>August&ndash;Roche&ndash;Magnus form recommended by WMO (Sonntag, 1990); density from
+        (p&minus;e)/(R<sub>d</sub>T)&nbsp;+&nbsp;e/(R<sub>v</sub>T). The curve is a formula, not a fit to
+        data.</td></tr>
+      <tr><td class="nm">Hydrostatic force diagram</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A force diagram after the treatment in the source deck (W.H. Brune, Penn State). Carries no
+        measured quantity and is labelled inside the figure.</td></tr>
+      <tr><td class="nm">Pressure, density and temperature profile</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Exact integration of &part;p/&part;z&nbsp;=&nbsp;&minus;&rho;g with p&nbsp;=&nbsp;&rho;R<sub>g</sub>T
+        and T linear in z; the &Gamma;&nbsp;=&nbsp;0 case is the analytic exponential. The region above a
+        typical tropopause is shaded and flagged as no longer physical.</td></tr>
+      <tr><td class="nm">Parcel stability and buoyancy</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Dry adiabat g/c<sub>p</sub>; condensation level from the Magnus dewpoint and the
+        125&nbsp;m&nbsp;K<sup>&minus;1</sup> rule; saturated adiabat integrated in 20&nbsp;m steps from the
+        standard expression. Constants given beside the figure. Ignores condensate loading, entrainment and
+        freezing, which the note states.</td></tr>
+      <tr><td class="nm">Composition and tropopause tables</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>NOAA Global Monitoring Laboratory global means for 2026; pre-industrial values from IPCC AR6 WG1
+        (2021); tropopause heights and temperatures are standard textbook ranges.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; Why the wind blows where it does</td></tr>
+      <tr><td class="nm">Coriolis trajectory</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Exact f-plane inertial solution of du/dt&nbsp;=&nbsp;fv, dv/dt&nbsp;=&nbsp;&minus;fu with
+        &Omega;&nbsp;=&nbsp;7.292&times;10<sup>&minus;5</sup>&nbsp;s<sup>&minus;1</sup>. The &beta; effect is
+        omitted and the note says so.</td></tr>
+      <tr><td class="nm">Geostrophic force balance</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>u<sub>g</sub>&nbsp;=&nbsp;|&nabla;p|/(&rho;f); the three-way balance uses a <em>linear</em> drag,
+        which is an idealisation &mdash; real surface drag goes roughly as the square of the wind. Vectors
+        are drawn to scale.</td></tr>
+      <tr><td class="nm">Three-cell zonal-mean cross-section</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Cell boundaries, jet positions and wind belts drawn at their nominal latitudes. Labelled inside
+        the figure. The observed circulation, and Figs.&nbsp;1.6&ndash;1.8 (sea-level pressure, winds,
+        precipitation), are <b>not reproduced</b>.</td></tr>
+      <tr><td class="nm">Land and ocean seasonal cycles &mdash; the monsoon</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Steady periodic solution of a forced damped slab with
+        &lambda;&nbsp;=&nbsp;5&nbsp;W&nbsp;m<sup>&minus;2</sup>K<sup>&minus;1</sup> and the
+        &rho;c<sub>p</sub> values stated. A caricature with no advection or clouds; it reproduces the observed
+        order of magnitude of the contrast, which is what it is for.</td></tr>
+      <tr><td class="nm">Precipitation totals table</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Documented long-term means; the Cherrapunji 48-hour total is the recorded event of
+        15&ndash;16&nbsp;June 1995.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 5 &middot; The ocean</td></tr>
+      <tr><td class="nm">Ekman spiral and transport</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Classical constant-viscosity Ekman (1905) solution, with
+        &tau;&nbsp;=&nbsp;&rho;<sub>a</sub>C<sub>D</sub>U&sup2;, C<sub>D</sub>&nbsp;=&nbsp;1.3&times;10<sup>&minus;3</sup>.
+        Real spirals are flatter and shallower than the classical one; the <em>transport</em> is well
+        verified. Both statements are in the note beside the figure.</td></tr>
+      <tr><td class="nm">Temperature&ndash;salinity diagram, density contours</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Contours solved by bisection from the one-atmosphere international equation of state
+        (Millero and Poisson, 1981, as adopted in EOS-80); freezing line from the UNESCO (1983) surface
+        relation. Pressure is not included, which is stated and which matters for the AABW/NADW comparison
+        &mdash; a point the page makes explicitly rather than hides.</td></tr>
+      <tr><td class="nm">Water-mass markers and table</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Representative published temperature and salinity values for each water mass, not readings from
+        any single station or section. Transports in sverdrups are standard observational estimates.</td></tr>
+      <tr><td class="nm">Fig. 1.10 surface currents; Fig. 1.12 overturning; Figs. 1.13&ndash;1.17</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Observational fields and a published schematic (after Rahmstorf, 2002; Kuhlbrodt et&nbsp;al.,
+        2007). Described in prose; the lecturer shows the originals.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 6 &middot; The cryosphere</td></tr>
+      <tr><td class="nm">Sea-level equivalent bars</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The pale bar is V&nbsp;&times;&nbsp;(&rho;<sub>i</sub>/&rho;<sub>w</sub>)/A<sub>ocean</sub> from
+        published ice volumes; the solid bar is the <b>assessed</b> sea-level equivalent from IPCC AR6 WG1
+        (2021). The gap between them is the teaching point, not an error.</td></tr>
+      <tr><td class="nm">Time to melt, against the energy imbalance</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Latent heat V&rho;<sub>i</sub>L<sub>f</sub> divided by the imbalance times Earth's surface area.
+        A <b>lower bound</b>, since cold ice must first be warmed to 0&nbsp;&deg;C. Not a melt
+        projection.</td></tr>
+      <tr><td class="nm">Cryosphere inventory, sea-ice extents, permafrost carbon</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>IPCC AR6 WG1 (2021) chapters&nbsp;2, 7 and&nbsp;9; Global Carbon Project; the floating-ice
+        sea-level estimate is Noerdlinger and Brower (2007).</td></tr>
+      <tr><td class="nm">Atlas of the Cryosphere maps; Greenland and Antarctic elevation</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Observational fields (NSIDC). Described in prose; the lecturer shows the originals.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 7 &middot; Land surface and biosphere</td></tr>
+      <tr><td class="nm">Landscape albedo mixer</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Area-weighted mean of the representative albedo values printed beside each control. A bookkeeping
+        calculation with no sun-angle dependence and no canopy radiative transfer, as its note states.</td></tr>
+      <tr><td class="nm">K&ouml;ppen&ndash;Geiger classifier</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The published decision tree of Peel, Finlayson and McMahon (2007) applied to a
+        <b>synthetic</b> monthly climatology generated from four parameters. The preset climatologies are
+        <b>approximate rounded normals</b> for classification practice and are labelled as such &mdash; they
+        are not a data source.</td></tr>
+      <tr><td class="nm">Albedo table; carbon stocks</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Published albedo ranges (Goosse et&nbsp;al., Table&nbsp;1.3); carbon stocks from IPCC AR6 WG1
+        (2021) and the Global Carbon Project.</td></tr>
+      <tr><td class="nm">MODIS albedo map; land-cover maps; K&ouml;ppen world map</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Observational fields. Described in prose; the lecturer shows the originals.</td></tr>
+
+    </tbody>
+  </table>
 </div>
 
 <h2 class="sec">Lecture 7 &middot; Climate change: past and present</h2>
@@ -566,18 +732,22 @@ Climate change: past and the future &middot; appendix for Lectures 7 and 8</p>
 <h2 class="sec">Scope</h2>
 
 <div class="card">
-  <p class="note" style="margin-top:0">This appendix covers <b>Lectures&nbsp;7 and&nbsp;8</b>. The interactive
-  material for Lectures&nbsp;2 to&nbsp;6 carries the same kind of sourcing in the grey note at the foot of each
-  page, and those pages contain a much higher proportion of closed-form calculation and a much lower proportion
-  of palaeoclimate proxy material &mdash; there is very little in them that could be mistaken for a
-  measurement. As the rest of the course material is revised, its figures will be added to this table.</p>
+  <p class="note" style="margin-top:0">This appendix covers <b>Lectures&nbsp;1, 7 and&nbsp;8</b>. The
+  interactive material for Lectures&nbsp;2 to&nbsp;6 carries the same kind of sourcing in the grey note at the
+  foot of each page, and those pages contain a much higher proportion of closed-form calculation and a much
+  lower proportion of palaeoclimate proxy material &mdash; there is very little in them that could be mistaken
+  for a measurement. As the rest of the course material is revised, its figures will be added to this
+  table.</p>
 
-  <p class="note"><b>The two lectures are not alike in this respect, and the difference is worth noticing.</b>
-  Lecture&nbsp;7 asks about the past, where the evidence is proxy records and reconstructed fields that a
-  self-contained page cannot honestly redraw &mdash; so it contains a good deal of labelled schematic.
+  <p class="note"><b>The three lectures are not alike in this respect, and the difference is worth
+  noticing.</b> Lecture&nbsp;1 describes a system whose physics is largely closed-form &mdash; hydrostatics,
+  Coriolis, Ekman, the equation of state &mdash; so almost everything in it is <em>computed</em> from stated
+  constants, and the observational maps in its source deck are deliberately left to the lecturer rather than
+  redrawn. Lecture&nbsp;7 asks about the past, where the evidence is proxy records and reconstructed fields
+  that a self-contained page cannot honestly redraw &mdash; so it contains a good deal of labelled schematic.
   Lecture&nbsp;8 asks about the future, where there is no data at all, only models &mdash; so almost everything
-  in it is <em>computed</em>, and several of its demonstrations can be checked against published assessed
-  numbers on screen. Two subjects, two different honest strategies for the same constraint.</p>
+  in it is computed, and several of its demonstrations can be checked against published assessed numbers on
+  screen. Three subjects, three honest strategies for the same constraint.</p>
   <p class="note">If you find a figure anywhere in this course that you cannot classify into one of the four
   kinds above, that is a defect and worth reporting.</p>
 </div>
