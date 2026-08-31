@@ -90,12 +90,12 @@
 <div class="wrap">
 
 <p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
-Climate change: past and present &middot; appendix</p>
+Climate change: past and the future &middot; appendix for Lectures 7 and 8</p>
 
 <header>
   <div>
     <h1>Appendix: what is data and what is not</h1>
-    <p class="sub">Every figure and every demonstration in this lecture, and where its numbers come from.
+    <p class="sub">Every figure and every demonstration in Lectures 7 and 8, and where its numbers come from.
     Some of what you see on these pages is an exact calculation, some is a model you are running live, some is
     a drawing that carries a shape but no measurements &mdash; and it matters a great deal which is which.
     This page says, for each one.</p>
@@ -111,7 +111,7 @@ Climate change: past and present &middot; appendix</p>
   That is a deliberate constraint, not an oversight: a self-contained HTML page that loads no external data
   cannot plot the EPICA ice core or HadCRUT. Faced with that, there are three honest options and one dishonest
   one. The dishonest one &mdash; drawing a curve that <em>looks</em> like a measurement and letting you assume
-  it is &mdash; is not used anywhere in this lecture.</p>
+  it is &mdash; is not used anywhere in either lecture.</p>
 
   <div class="key">
     <div><span class="tag t-calc">Computed</span><br>Evaluated live in your browser from an equation or a
@@ -137,7 +137,7 @@ Climate change: past and present &middot; appendix</p>
   &mdash; is worth more than any single fact in the lecture.</div>
 </div>
 
-<h2 class="sec">Figure by figure</h2>
+<h2 class="sec">Lecture 7 &middot; Climate change: past and present</h2>
 
 <div class="card">
   <p class="cap" style="margin-bottom:10px">Figure numbers refer to Goosse et&nbsp;al.,
@@ -338,6 +338,202 @@ Climate change: past and present &middot; appendix</p>
   </table>
 </div>
 
+<h2 class="sec">Lecture 8 &middot; Climate change: the future</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">Figure numbers refer to Goosse et&nbsp;al., chapter&nbsp;6.
+  Lecture&nbsp;8 is more heavily computational than Lecture&nbsp;7: most of what you see is a model running in
+  your browser rather than a drawing, and several of its demonstrations can be checked directly against
+  published assessed values. Where that check is possible, the page performs it on screen.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; Scenarios and the forcing chain</td></tr>
+      <tr><td class="nm">Scenario chain schematic</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A diagram of a workflow. Nothing to measure.</td></tr>
+      <tr><td class="nm">Table of RCP and SSP scenarios</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>2100 forcings, approximate concentrations and assessed warming ranges from IPCC AR6 WG1
+        Table&nbsp;SPM.1 and the Annex&nbsp;III scenario data.</td></tr>
+      <tr><td class="nm">The scenario chain, end to end</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The Joos et&nbsp;al. (2013) four-reservoir CO<sub>2</sub> impulse response,
+        &Delta;F = 5.35&nbsp;ln(C/C<sub>0</sub>), and the Geoffroy et&nbsp;al. (2013) two-layer energy balance,
+        integrated live. The historical branch is a smooth exponential emission curve whose amplitude the page
+        <b>calibrates</b> so the model reaches 415&nbsp;ppm in 2020; the implied historical total is printed on
+        screen so you can compare it with the observed 2400&nbsp;GtCO<sub>2</sub>.</td></tr>
+      <tr><td class="nm">Emission pathways behind the presets</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td><b>Parametric peak-and-decline shapes, not the SSP marker time series.</b> They are tuned so each
+        preset reproduces the assessed AR6 warming, which the readout checks against the <i>very likely</i>
+        range every time you move a slider. Non-CO<sub>2</sub> forcing is prescribed by slider, not
+        computed.</td></tr>
+      <tr><td class="nm">Figs. 6.1, 6.4 &mdash; RCP forcings and emissions</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Scenario datasets. Described in the text; your lecturer shows the originals.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; Projections, predictions and uncertainty</td></tr>
+      <tr><td class="nm">Predictability demonstration</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>A two-component autoregressive process &mdash; a one-year &ldquo;atmosphere&rdquo; and a
+        decadal &ldquo;ocean&rdquo; &mdash; on a prescribed trend, with a seeded generator. <b>The series are
+        synthetic and no date on them means anything.</b> What is real is that the skill decays as
+        &rho;<sup>L</sup> on the ocean memory timescale. The skill curve itself is the analytic expectation,
+        not a Monte Carlo estimate.</td></tr>
+      <tr><td class="nm">Uncertainty partition</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Hawkins and Sutton (2009) decomposition evaluated exactly, with V<sub>internal</sub> the exact
+        variance of an n-year mean of a lag-1 process with &rho;&nbsp;=&nbsp;0.35.</td></tr>
+      <tr><td class="nm">Scenario response curves inside it</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Linear interpolation between the assessed AR6 Table&nbsp;SPM.1 values for 2021&ndash;2040,
+        2041&ndash;2060 and 2081&ndash;2100, plotted at their period midpoints.</td></tr>
+      <tr><td class="nm">Regional &sigma; and amplification factors</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Representative magnitudes consistent with Hawkins and Sutton (2012) and with the &sigma; table on
+        Lecture&nbsp;7 page&nbsp;1. <b>Not read from one model or one grid box.</b></td></tr>
+      <tr><td class="nm">Figs. 6.7, 6.8, 6.10</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>A textbook schematic and two model-ensemble maps. The demonstrations are the hands-on versions of
+        the same two arguments.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; The geography of warming</td></tr>
+      <tr><td class="nm">Land&ndash;sea contrast calculator</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>Exact</b>, from the moist-static-energy argument of Joshi et&nbsp;al. (2008) in the
+        fixed-relative-humidity form of Byrne and O&rsquo;Gorman (2013), with Bolton&rsquo;s (1980) saturation
+        vapour pressure. It lands on 1.59 at the default settings, inside the observed and modelled
+        1.4&ndash;1.7. It is a <b>single-column argument</b> and omits advection, humidity change and the
+        surface energy budget.</td></tr>
+      <tr><td class="nm">Planck response panel</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>4&sigma;T<sup>3</sup> evaluated directly. Exact.</td></tr>
+      <tr><td class="nm">Polar amplification mechanism table</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>The <em>ordering</em> follows the feedback decomposition of Pithan and Mauritsen (2014). The entries
+        are descriptions, <b>not quantities read from a figure</b>.</td></tr>
+      <tr><td class="nm">Figs. 6.11&ndash;6.13</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>A multi-model map and two textbook schematics. The hatching and stippling conventions are explained
+        in words instead.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; The water cycle response</td></tr>
+      <tr><td class="nm">Clausius&ndash;Clapeyron rate</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>Exact.</b> L<sub>v</sub>/(R<sub>v</sub>T<sup>2</sup>), giving 6.5&nbsp;%/K at 15&nbsp;&deg;C.</td></tr>
+      <tr><td class="nm">Precipitation and circulation rates</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The atmospheric energy budget L<sub>v</sub>&Delta;P = k&Delta;T &minus; f&Delta;F, with
+        L<sub>v</sub>P<sub>0</sub> = 80&nbsp;W&nbsp;m<sup>&minus;2</sup> from the Lecture&nbsp;2 ledger.
+        <b>k = 2.2 and f = 0.8 are representative values, not measurements</b>, chosen to reproduce the
+        Allen and Ingram (2002) fast and slow responses. Framework after Held and Soden (2006).</td></tr>
+      <tr><td class="nm">Zonal P&nbsp;&minus;&nbsp;E profile</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Labelled <em>SCHEMATIC &mdash; sign and relative shape only</em> inside the figure, with <b>no
+        numeric value axis</b>. The amplification drawn on top of it is computed as &times;(1&nbsp;+&nbsp;0.07&Delta;T).</td></tr>
+      <tr><td class="nm">Hadley-cell response panels</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>After Fig.&nbsp;6.16, itself a schematic. Labelled <em>SCHEMATIC &mdash; no numeric axis</em>.</td></tr>
+      <tr><td class="nm">Fig. 6.15 &mdash; precipitation change map</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>A multi-model field. Its key qualitative results are in the text.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 5 &middot; Extremes and distribution shifts</td></tr>
+      <tr><td class="nm">Distribution-shift demonstration</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>Exact arithmetic, not a simulation.</b> Normal tail probabilities by the Abramowitz and Stegun
+        rational approximation 26.2.17 (error &lt; 7.5&times;10<sup>&minus;8</sup>); thresholds inverted by
+        bisection.</td></tr>
+      <tr><td class="nm">Its two parameters</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Amplification 1.3 and &sigma;&nbsp;=&nbsp;1.8&nbsp;K are <b>representative land values chosen
+        once</b> and not tuned per warming level. That they then reproduce all eight assessed AR6 multipliers is
+        the result, and the page shows the comparison rather than asserting it.</td></tr>
+      <tr><td class="nm">AR6 comparison table</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Assessed frequencies of hot extremes over land, read from IPCC AR6 WG1 Figure&nbsp;SPM.3. The left
+        column is computed live; only the right column is quoted.</td></tr>
+      <tr><td class="nm">Rainfall-extreme return periods</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The exponential-tail scaling worked through in the text, with the honest note that <b>real rainfall
+        tails are heavier than exponential</b>, so the true multiplier exceeds it. This is why the page&rsquo;s
+        demonstration is about heat and not floods.</td></tr>
+      <tr><td class="nm">Figs. 6.20, 6.21 and AR6 Fig. SPM.3 panels</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>A textbook schematic and two model fields. Shown from the slides.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 6 &middot; Cumulative emissions and carbon budgets</td></tr>
+      <tr><td class="nm">The TCRE collapse</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The <em>same</em> integrator as page&nbsp;1, run for six pathways. The slope is an unweighted
+        least-squares fit through all six and the scatter is the root-mean-square departure from it. Because
+        the carbon cycle here is <b>linear</b>, the collapse is cleaner than in comprehensive models; the real
+        near-linearity is well established but approximate.</td></tr>
+      <tr><td class="nm">The six pathways</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Chosen to be as different from one another as possible. <b>Not scenario data.</b></td></tr>
+      <tr><td class="nm">Remaining carbon budget calculator</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Three divisions, shown in full. With the AR6 inputs it returns 511&nbsp;GtCO<sub>2</sub> from 2020
+        for 1.5&nbsp;&deg;C against the assessed 500, and the figure plots the assessed values alongside its own
+        for 1.5, 1.7 and 2.0&nbsp;&deg;C.</td></tr>
+      <tr><td class="nm">TCRE, budgets, ZEC, ESFC values</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>IPCC AR6 WG1 Table&nbsp;SPM.2 and ch.&nbsp;5. Present-day partitioning between atmosphere, ocean
+        and land from the Global Carbon Project.</td></tr>
+      <tr><td class="nm">Figs. 6.22&ndash;6.24</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>The demonstration builds the equivalent of Fig.&nbsp;6.24 from its own model, so that the collapse
+        can be watched happening rather than asserted.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 7 &middot; Commitment, sea level and abrupt change</td></tr>
+      <tr><td class="nm">Carbon long-tail, &ldquo;as fitted&rdquo; mode</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The Joos et&nbsp;al. (2013) response, unmodified &mdash; and deliberately shown being extrapolated
+        far beyond the 1000&nbsp;years it was fitted over, with a warning drawn in the figure.</td></tr>
+      <tr><td class="nm">Carbon long-tail, &ldquo;full&rdquo; mode</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The same response with its non-decaying term <b>split by hand</b>, 62&nbsp;% to carbonate
+        compensation at 8&nbsp;kyr and 38&nbsp;% to silicate weathering at 300&nbsp;kyr. Those timescales are
+        the standard values of Archer and Brovkin (2008), but <b>the split is an addition to the published fit,
+        not part of it</b>. Both modes are offered so the difference is visible. The model is linear, so it
+        gets the pulse-size dependence of the tail wrong; the page says so.</td></tr>
+      <tr><td class="nm">Sea level by scenario, 2100</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Medians and <i>likely</i> ranges as assessed in IPCC AR6 WG1 Table&nbsp;9.9, plus the
+        low-likelihood high-impact bound. <b>Plotted assessed values, not a model output.</b></td></tr>
+      <tr><td class="nm">Freshwater flux panel</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>An <b>order-of-magnitude</b> calculation: 7&nbsp;%&nbsp;K<sup>&minus;1</sup> applied to a
+        representative 0.5&nbsp;Sv present-day input, plus Greenland mass loss converted at
+        3.2&times;10<sup>&minus;5</sup>&nbsp;Sv per Gt&nbsp;yr<sup>&minus;1</sup>. <b>The 0.5&nbsp;Sv baseline
+        is representative rather than measured</b>, and the hosing band is the span used in model experiments,
+        not an observed quantity.</td></tr>
+      <tr><td class="nm">Marine ice sheet instability</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The Schoof (2007) grounding-line flux law with n&nbsp;=&nbsp;3 and m&nbsp;=&nbsp;1/3, giving the
+        exponent 4.75, and flotation thickness h<sub>g</sub> = 1.12&thinsp;d. Equilibria are found by
+        bisection and classified by the sign of the slope.</td></tr>
+      <tr><td class="nm">The bed profile under it</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>An <b>idealised analytic curve, not a real bed</b>, labelled as such inside the figure; the flux
+        prefactor is normalised so today&rsquo;s grounding line sits at the outer stable equilibrium. It
+        demonstrates the stability criterion, <b>not any particular glacier</b>.</td></tr>
+      <tr><td class="nm">Tipping-element inventory</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Mechanisms, timescales and confidence levels following Armstrong McKay et&nbsp;al. (2022) and
+        IPCC AR6 WG1 ch.&nbsp;9.</td></tr>
+      <tr><td class="nm">Figs. 6.25&ndash;6.30</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Intermediate-complexity model output, sea level projections, Greenland simulations and a
+        schematic. Shown from the slides.</td></tr>
+
+    </tbody>
+  </table>
+</div>
+
 <h2 class="sec">What this means when you read the pages</h2>
 
 <div class="card">
@@ -370,25 +566,34 @@ Climate change: past and present &middot; appendix</p>
 <h2 class="sec">Scope</h2>
 
 <div class="card">
-  <p class="note" style="margin-top:0">This appendix covers <b>Lecture&nbsp;7</b>. The interactive material
-  for Lectures&nbsp;2 to&nbsp;6 carries the same kind of sourcing in the grey note at the foot of each page,
-  and those pages contain a much higher proportion of closed-form calculation and a much lower proportion of
-  palaeoclimate proxy material &mdash; there is very little in them that could be mistaken for a
+  <p class="note" style="margin-top:0">This appendix covers <b>Lectures&nbsp;7 and&nbsp;8</b>. The interactive
+  material for Lectures&nbsp;2 to&nbsp;6 carries the same kind of sourcing in the grey note at the foot of each
+  page, and those pages contain a much higher proportion of closed-form calculation and a much lower proportion
+  of palaeoclimate proxy material &mdash; there is very little in them that could be mistaken for a
   measurement. As the rest of the course material is revised, its figures will be added to this table.</p>
+
+  <p class="note"><b>The two lectures are not alike in this respect, and the difference is worth noticing.</b>
+  Lecture&nbsp;7 asks about the past, where the evidence is proxy records and reconstructed fields that a
+  self-contained page cannot honestly redraw &mdash; so it contains a good deal of labelled schematic.
+  Lecture&nbsp;8 asks about the future, where there is no data at all, only models &mdash; so almost everything
+  in it is <em>computed</em>, and several of its demonstrations can be checked against published assessed
+  numbers on screen. Two subjects, two different honest strategies for the same constraint.</p>
   <p class="note">If you find a figure anywhere in this course that you cannot classify into one of the four
   kinds above, that is a defect and worth reporting.</p>
 </div>
 
 <p class="foot">Sources for every value quoted are in the grey note at the foot of the page the figure appears
 on. The textbook throughout is Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate
-Modelling</i>, chapter&nbsp;5. Published models used live on these pages: Lorenz (1963); Stommel (1961);
-Imbrie and Imbrie (1980); Stocker and Johnsen (2003). Orbital parameters follow Berger (1978) by way of the
-PMIP protocols.
+Modelling</i>, chapters&nbsp;5 and&nbsp;6. Published models used live on these pages: Lorenz (1963); Stommel
+(1961); Imbrie and Imbrie (1980); Stocker and Johnsen (2003); Joos et&nbsp;al. (2013); Geoffroy et&nbsp;al.
+(2013); Schoof (2007). Orbital parameters follow Berger (1978) by way of the PMIP protocols. Assessed values
+quoted in Lecture&nbsp;8 are from IPCC AR6 WG1 (2021) unless otherwise stated at the foot of the page they
+appear on.
 &nbsp;&middot;&nbsp; Back to the <a href="../">course page</a>.</p>
 
 <div class="nav">
-  <a href="forced-and-internal.html">&larr; 1 &middot; Forced and internal variability</a>
-  <a href="../">EE501 course page &rarr;</a>
+  <a href="forced-and-internal.html">&larr; Lecture 7 &middot; 1 &middot; Forced and internal variability</a>
+  <a href="../lecture-8-climate-change-the-future/scenarios.html">Lecture 8 &middot; 1 &middot; Scenarios &rarr;</a>
 </div>
 
 </div>

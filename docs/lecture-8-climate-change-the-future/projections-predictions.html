@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projections, predictions and uncertainty</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f;
+    --uint:#2a78d6; --umod:#1baf7a; --usce:#d9662a;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad;
+    --uint:#3987e5; --umod:#199e70; --usce:#e0783c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .rev{display:block;margin:9px 0 0;border:1px solid var(--acc);background:transparent;color:var(--acc);
+    border-radius:8px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+  .rev:hover{background:var(--acc);color:var(--surface-1)}
+  .ans{display:block;margin:9px 0 0}
+  .ans[hidden]{display:none}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Climate change: the future &middot; 2 of 7</p>
+
+<header>
+  <div>
+    <h1>Projections, predictions and uncertainty</h1>
+    <p class="sub">Two words that are used interchangeably in the newspapers and mean quite different things
+    here. One is an initial-value problem, like a weather forecast; the other is a boundary-value problem, like
+    asking what a room will settle to when you change the thermostat. They fail for different reasons, they are
+    verified differently, and the crossover between them &mdash; somewhere around a decade &mdash; is where most
+    of the confusion about climate models lives.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>The distinction, and why it is not pedantry</h3>
+  <p class="cap">The same model, the same scenario, run two different ways, answering two different questions.</p>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin-top:0"><b>A projection</b> asks: what is the response to the forcing? The
+      goal is the <em>forced</em> part of the signal and nothing else. Members are initialised from a long
+      equilibrium control run, so each carries an arbitrary phase of internal variability, and the ensemble mean
+      averages that phase away. This is a <b>boundary-condition problem</b>: what matters is the forcing applied
+      at the boundary, not where you started.</p>
+      <p class="note">Verification is statistical. You never ask whether the model put a cold decade in the
+      right place, because it never claimed to &mdash; the point
+      <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture&nbsp;7,
+      page&nbsp;1</a> made about ensembles.</p>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0"><b>A prediction</b> asks for more: the response to the forcing
+      <em>and</em> the part of internal variability that is currently predictable. Members are initialised from
+      <em>observations</em> &mdash; in practice from an ocean state assimilated from Argo floats and satellite
+      data &mdash; so they all start in the phase the real world is actually in. This is a <b>mixed
+      initial- and boundary-condition problem</b>.</p>
+      <p class="note">Verification is date-by-date, like a weather forecast, and it can fail. It usually does,
+      after about a decade.</p>
+    </div>
+  </div>
+
+  <p class="note"><b>Why the ocean is what you initialise.</b> The atmosphere forgets its initial state in about
+  two weeks &mdash; that is the Lorenz result from
+  <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture&nbsp;7</a>. There
+  would be no such thing as a decadal prediction if the atmosphere were all there was. What makes a few years of
+  skill possible is that the ocean has a memory measured in years to decades: heat anomalies in the subpolar
+  North Atlantic, the phase of the AMO, the state of the Pacific. Predict those and you predict a slice of the
+  surface temperature that goes with them.</p>
+
+  <div class="q"><b>Question.</b> A decadal prediction system is verified against observations for 1961&ndash;2010
+  and beats the uninitialised runs for lead times up to five years. Does that make it a better climate model?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>No &mdash; it is the same model, doing a different job. Beating the uninitialised
+    runs at short lead times demonstrates that <em>initialisation adds information</em>, which is a statement
+    about the predictability of internal variability, not about the model&rsquo;s response to forcing. A model
+    can have excellent decadal skill and a badly wrong climate sensitivity, or vice versa. The two are
+    verified against different things, which is precisely why the vocabulary matters.</span>
+  </div>
+</div>
+
+<div class="card demo">
+  <h3>Where predictability goes</h3>
+  <p class="cap">One realisation of a &ldquo;real world&rdquo;. Two ensembles chasing it &mdash; one told where
+  the ocean started, one not. Watch the advantage disappear.</p>
+
+  <p class="note" style="margin-top:0">Internal variability here has two parts, because the real one does: a
+  <b>fast</b> component with a memory of about a year, standing for the atmosphere and the weather, and a
+  <b>slow</b> component with a memory of about a decade, standing for the ocean. Only the slow part is worth
+  initialising. Drag the initialisation quality from 0 to 1 and you move continuously from a projection to a
+  prediction &mdash; they are the two ends of one dial, not two different things.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="init"><span>Quality of ocean initialisation</span> <b id="initv">0.9</b></label>
+      <input type="range" id="init" min="0" max="1" step="0.05" value="0.9">
+      <div class="hint">1 = the slow component is known exactly at year 0. 0 = a projection.</div>
+    </div>
+    <div class="ctrl">
+      <label for="omem"><span>Ocean memory</span> <b id="omemv">10</b></label>
+      <input type="range" id="omem" min="2" max="30" step="1" value="10">
+      <div class="hint">e-folding time of the slow component, in years.</div>
+    </div>
+    <div class="ctrl">
+      <label for="nens"><span>Ensemble members</span> <b id="nensv">20</b></label>
+      <input type="range" id="nens" min="3" max="40" step="1" value="20">
+      <div class="hint">More members average the unpredictable part away faster.</div>
+    </div>
+    <div class="ctrl">
+      <label for="seed"><span>Realisation</span> <b id="seedv">1</b></label>
+      <input type="range" id="seed" min="1" max="12" step="1" value="1">
+      <div class="hint">A different draw of the &ldquo;real world&rdquo;. The conclusion should not depend on it.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 430" role="img" aria-label="Upper panel: a synthetic observed temperature series with an initialised and an uninitialised ensemble tracking it. Lower panel: correlation skill against lead time for both ensembles."><g id="prG"></g></svg>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">Useful skill</div><div class="v" id="kLead">&mdash;</div><div class="s">years, initialised</div></div>
+    <div class="kpi"><div class="k">Skill at 1 yr</div><div class="v" id="kS1">&mdash;</div><div class="s">correlation</div></div>
+    <div class="kpi"><div class="k">Skill at 10 yr</div><div class="v" id="kS10">&mdash;</div><div class="s">correlation</div></div>
+    <div class="kpi"><div class="k">Uninitialised</div><div class="v" id="kSU">&mdash;</div><div class="s">correlation, all leads</div></div>
+  </div>
+
+  <div class="readout" id="prRead"></div>
+
+  <p class="note">Smith et&nbsp;al. (2013) did this with real models and real observations, and the map in your
+  lecturer&rsquo;s slides shows the answer region by region: over most of the globe the initialised runs are
+  significantly better for <b>fewer than five years</b>, with a longer horizon in the North Atlantic where the
+  ocean memory is longest. That is a genuinely useful result &mdash; and it is also the reason nobody offers you
+  a prediction for 2100.</p>
+
+  <div class="q"><b>Question.</b> Set the initialisation quality to 0. The skill line does not go to zero; it
+  settles at some positive value. What is left?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>The forced response. Even with no knowledge whatever of the initial state, an
+    ensemble that has the right forcing correlates with the observations, because both are warming. At long lead
+    times <em>all</em> of the skill is of this kind &mdash; which is the formal statement of what a projection
+    is. Notice also what this implies for verification: a decadal prediction system must be judged against the
+    uninitialised runs, not against zero, or it takes credit for the greenhouse effect.</span>
+  </div>
+</div>
+
+<h2 class="sec">The demonstration this page is built around</h2>
+
+<div class="card demo">
+  <h3>Three sources of uncertainty, measured against each other</h3>
+  <p class="cap">Internal variability, model spread and scenario choice. Their relative importance changes with
+  lead time, with the region, and with the question &mdash; and almost every argument about climate projections
+  is really an argument about which of the three is in charge.</p>
+
+  <p class="note" style="margin-top:0">The decomposition is Hawkins and Sutton (2009), and the arithmetic is
+  simple enough to do here in full. Take the projected warming at some future year, and ask where its spread
+  comes from.</p>
+
+  <div class="eq">
+    V<sub>total</sub>(t) &nbsp;=&nbsp; V<sub>internal</sub> &nbsp;+&nbsp;
+    V<sub>model</sub>(t) &nbsp;+&nbsp; V<sub>scenario</sub>(t)
+    <div class="u" style="margin-top:8px">
+    V<sub>internal</sub> = &sigma;<sup>2</sup> of the averaging period &nbsp;&middot;&nbsp;
+    V<sub>model</sub> = (f<sub>m</sub> &middot; mean response)<sup>2</sup> &nbsp;&middot;&nbsp;
+    V<sub>scenario</sub> = variance of the responses across scenarios</div>
+  </div>
+
+  <p class="note">Each term behaves differently with lead time and that is the whole story.
+  <b>Internal variability does not grow at all</b> &mdash; it is a property of the system, the same in 2030 as
+  in 2090. <b>Model uncertainty grows in proportion to the response</b>, because models disagree by a roughly
+  fixed <em>fraction</em>. <b>Scenario uncertainty starts at zero</b> &mdash; every pathway has the same
+  emissions today &mdash; and grows fastest of all, because the pathways fan apart.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Region and season</span>
+    <button class="ghost" id="rGlob" aria-pressed="true">Global, annual</button>
+    <button class="ghost" id="rEur">Europe, winter</button>
+    <button class="ghost" id="rMed">Mediterranean, summer</button>
+    <button class="ghost" id="rArc">Arctic, annual</button>
+    <button class="ghost" id="rBox">One grid box (B&oslash;)</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="avg"><span>Averaging period</span> <b id="avgv">10</b></label>
+      <input type="range" id="avg" min="1" max="30" step="1" value="10">
+      <div class="hint">Years. The convention is decadal means. This is the only lever you personally control.</div>
+    </div>
+    <div class="ctrl">
+      <label for="fm"><span>Model spread</span> <b id="fmv">25</b></label>
+      <input type="range" id="fm" min="0" max="60" step="1" value="25">
+      <div class="hint">Per cent of the mean response, 1&sigma;. Set it to 0 to ask what perfect models would buy you.</div>
+    </div>
+    <div class="ctrl" style="grid-column:span 2">
+      <label style="margin-bottom:6px"><span>Scenarios still in play</span></label>
+      <div class="rowbtns" style="margin:0">
+        <button class="ghost" id="sAll" aria-pressed="true">All five SSPs</button>
+        <button class="ghost" id="sMit">Only the mitigation pathways</button>
+        <button class="ghost" id="sOne">Policy already decided</button>
+      </div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 420" role="img" aria-label="Upper panel: fraction of total variance attributable to internal variability, model spread and scenario choice, as a function of year. Lower panel: total uncertainty in kelvin."><g id="hsG"></g></svg>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">In 2035</div><div class="v" id="k35">&mdash;</div><div class="s">largest source</div></div>
+    <div class="kpi"><div class="k">In 2090</div><div class="v" id="k90">&mdash;</div><div class="s">largest source</div></div>
+    <div class="kpi"><div class="k">Scenario takes over</div><div class="v" id="kX">&mdash;</div><div class="s">year</div></div>
+    <div class="kpi"><div class="k">Total spread 2050</div><div class="v" id="kW">&mdash;</div><div class="s">K, &plusmn;1&sigma;</div></div>
+  </div>
+
+  <div class="readout" id="hsRead"></div>
+
+  <div class="warnbox"><b>Read the upper panel carefully &mdash; it is fractions, not amounts.</b> A shrinking
+  green band does not mean the models are getting better; it means the other terms are growing faster. The
+  lower panel gives the total in kelvin, and it grows throughout. Fractional plots of this kind are among the
+  easiest figures in the subject to misread, and this one gets misread in both directions.</div>
+
+  <div class="q"><b>Question.</b> Click <em>One grid box</em>, then set the averaging period to 1 year, and read
+  the 2035 panel. Now go back to <em>Global, annual</em> with a 20-year mean. Why is the answer so different,
+  when it is the same climate and the same models?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Because internal variability is the only term that depends on how much you
+    average, and it is enormous for a small area over a short time. This is the signal-to-noise scaling of
+    <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture&nbsp;7,
+    page&nbsp;1</a>, arriving from the other direction: there the question was how long before you can
+    <em>detect</em> a trend; here it is how much of your projected spread is noise you can never remove. Same
+    &sigma;, same &radic;n, opposite use. And the practical consequence is uncomfortable: for a local decision
+    on a 15-year horizon, choosing a better model or a better scenario buys you almost nothing.</span>
+  </div>
+
+  <div class="q"><b>Question.</b> Click <em>Policy already decided</em>. Scenario uncertainty vanishes entirely.
+  Is that cheating?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>No &mdash; it is the correct calculation for a different question. Scenario
+    uncertainty is not a property of the climate system at all; it is a statement about what you have not yet
+    decided. If you are designing a drainage system for a city that has committed to a pathway, or if you are
+    asking a conditional question (&ldquo;given SSP2&ndash;4.5, what happens?&rdquo;), then the scenario term is
+    genuinely zero and only physics remains. What is <em>not</em> legitimate is quoting the narrow range that
+    results as though it were the uncertainty in the future climate.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>What you do with a model you do not fully trust</h3>
+  <p class="cap">The practical end of <a href="../lecture-5-modelling-the-climate-system/evaluation.html">Lecture&nbsp;5</a>,
+  now that we are asking models for numbers people will act on.</p>
+
+  <ul class="pl">
+    <li><b>Use anomalies, not absolutes.</b> A model whose Norwegian winter is 3&nbsp;K too cold can still get
+    the <em>change</em> right, because the bias largely cancels. Almost every figure in this lecture is a
+    difference between two periods for exactly this reason.</li>
+    <li><b>Use the multi-model mean, but know why it works.</b> It usually beats any individual model, because
+    errors that are independent between models partially cancel. It does <em>not</em> help against errors they
+    share &mdash; and shared errors are common, since models share parameterisations, ancestry and even code.
+    An ensemble of opportunity is not a random sample.</li>
+    <li><b>Weight by performance only with care.</b> A model that reproduces today&rsquo;s climate well is not
+    guaranteed to project well; it may be right for the wrong reasons, or tuned to be right. The emergent-constraint
+    literature tries to find observable quantities that genuinely correlate with the response, and it is harder
+    than it looks.</li>
+    <li><b>Bias-correct with your eyes open.</b> Adjusting model output to match observed statistics
+    (<a href="../lecture-5-modelling-the-climate-system/evaluation.html">Lecture&nbsp;5, page&nbsp;5</a>) makes
+    output usable for impact models, and it silently assumes the bias is stationary under climate change. It
+    often is not.</li>
+    <li><b>Report the spread, always.</b> A single number from a single model is not a projection. It is an
+    anecdote.</li>
+  </ul>
+
+  <div class="warnbox"><b>And the honest limit.</b> None of these techniques removes the first band in the
+  figure above. For a small region on a short horizon, the irreducible part of the uncertainty is internal
+  variability, and no improvement in models or in policy clarity will touch it. Saying so is not defeatism;
+  it is the difference between a usable projection and a misleading one.</div>
+</div>
+
+<p class="foot">After Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;6.2.2 and figures 6.7 (schematic of projections versus predictions), 6.8 (Smith et&nbsp;al., 2013,
+years of significant advantage from initialisation) and 6.10 (Kirtman et&nbsp;al., 2013, after Hawkins and
+Sutton, 2009). Figures 6.8 and 6.10 are observational and model-ensemble maps and are <b>not reproduced</b>
+here; your lecturer shows the originals.
+&nbsp;&middot;&nbsp; <b>Both demonstrations are computed.</b> The predictability demonstration integrates a
+two-component first-order autoregressive process &mdash; a fast component with a one-year e-folding carrying
+40&nbsp;% of the variance and a slow component whose memory you set carrying 60&nbsp;% &mdash; on top of a
+prescribed forced trend, with a seeded pseudo-random generator so a given realisation number is reproducible.
+The <b>series in it are synthetic and no date on them means anything</b>; what is real is the shape of the skill
+curve and the fact that it decays on the ocean memory timescale. The uncertainty partition evaluates
+V<sub>total</sub> = V<sub>internal</sub> + V<sub>model</sub> + V<sub>scenario</sub> exactly, with
+V<sub>internal</sub> the exact variance of an n-year mean of a lag-1 autoregressive process with
+&rho;&nbsp;=&nbsp;0.35. The scenario responses are linear interpolations between the assessed AR6 WG1
+Table&nbsp;SPM.1 values for 2021&ndash;2040, 2041&ndash;2060 and 2081&ndash;2100, plotted at their period
+midpoints; the regional amplification factors and standard deviations are representative values consistent with
+Hawkins and Sutton (2012) and with the &sigma; table on
+<a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture&nbsp;7, page&nbsp;1</a>,
+<b>not</b> values read from a single model or grid box.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="temperature-patterns.html">the geography of warming &rarr;</a></p>
+
+<div class="nav">
+  <a href="scenarios.html">&larr; 1 &middot; Scenarios and the forcing chain</a>
+  <a href="temperature-patterns.html">3 &middot; The geography of warming &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function rng(seed){let s=seed>>>0;return function(){
+    s+=0x6D2B79F5; let t=s;
+    t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61);
+    return ((t^(t>>>14))>>>0)/4294967296;};}
+  function gauss(r){ // Box-Muller
+    let u=0,v=0; while(u===0)u=r(); while(v===0)v=r();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+  /* ── 1 · predictability demo ────────────────────────────────── */
+  (function(){
+    const g=$('prG'); if(!g) return;
+    const NY=40, SIG=0.16, FFRAC=0.4;      // K, fraction of variance in the fast part
+    const S={init:$('init'),omem:$('omem'),nens:$('nens'),seed:$('seed')};
+
+    function forced(i){ return 0.022*i; }   // K/yr, a mid-scenario trend
+
+    function draw(){
+      clr(g);
+      const q=+S.init.value, mem=+S.omem.value, N=+S.nens.value, sd=+S.seed.value;
+      $('initv').textContent=q.toFixed(2); $('omemv').textContent=mem;
+      $('nensv').textContent=N; $('seedv').textContent=sd;
+      const rs=Math.exp(-1/mem), rf=Math.exp(-1/1.0);
+      const ss=SIG*Math.sqrt(1-FFRAC), sf=SIG*Math.sqrt(FFRAC);
+
+      // "truth"
+      const r0=rng(sd*7919+13);
+      let ts=ss*gauss(r0), tf=sf*gauss(r0);
+      const obs=[], tslow=[];
+      const ts0=ts;
+      for(let i=0;i<NY;i++){
+        obs.push(forced(i)+ts+tf); tslow.push(ts);
+        ts=rs*ts+ss*Math.sqrt(1-rs*rs)*gauss(r0);
+        tf=rf*tf+sf*Math.sqrt(1-rf*rf)*gauss(r0);
+      }
+      // ensembles
+      function ensemble(initialised,seed){
+        const r=rng(seed);
+        const mem_=[];
+        for(let m=0;m<N;m++){
+          let s = initialised ? q*ts0 + Math.sqrt(1-q*q)*ss*gauss(r) : ss*gauss(r);
+          let f = sf*gauss(r);
+          const tr=[];
+          for(let i=0;i<NY;i++){
+            tr.push(forced(i)+s+f);
+            s=rs*s+ss*Math.sqrt(1-rs*rs)*gauss(r);
+            f=rf*f+sf*Math.sqrt(1-rf*rf)*gauss(r);
+          }
+          mem_.push(tr);
+        }
+        const mean=[],lo=[],hi=[];
+        for(let i=0;i<NY;i++){
+          const v=mem_.map(t=>t[i]).sort((a,b)=>a-b);
+          let s=0; v.forEach(x=>s+=x);
+          mean.push(s/N); lo.push(v[Math.floor(0.1*N)]); hi.push(v[Math.min(N-1,Math.ceil(0.9*N))]);
+        }
+        return {mean,lo,hi};
+      }
+      const EI=ensemble(true, sd*104729+7), EU=ensemble(false, sd*104729+7);
+
+      // skill: correlation of ensemble-mean anomaly (about forced) with obs anomaly,
+      // computed across an ensemble of start dates via the analytic expectation
+      function skill(initialised){
+        const out=[];
+        for(let L=1;L<=20;L++){
+          // predictable signal retained after L years
+          const a = initialised ? q*Math.pow(rs,L) : 0;
+          const num = a*ss*ss;
+          const den = Math.sqrt((a*a*ss*ss + (1-q*q*Math.pow(rs,2*L))*ss*ss/N + sf*sf/N)*(ss*ss+sf*sf));
+          out.push(den>0?num/den:0);
+        }
+        return out;
+      }
+      const skI=skill(true), skU=skill(false);
+
+      /* ---- upper panel ---- */
+      const L1=60,R1=858,T1=16,B1=232;
+      const X=i=>L1+i/(NY-1)*(R1-L1);
+      const allv=obs.concat(EI.lo,EI.hi,EU.lo,EU.hi);
+      const ymin=Math.min(...allv)-0.06, ymax=Math.max(...allv)+0.06;
+      const Y=v=>B1-(v-ymin)/(ymax-ymin)*(B1-T1);
+      put(g,'rect',{x:L1,y:T1,width:R1-L1,height:B1-T1,fill:'var(--surface-2)',opacity:.45,rx:6});
+      for(let k=0;k<=4;k++){
+        const v=ymin+(ymax-ymin)*k/4;
+        put(g,'line',{x1:L1,y1:Y(v),x2:R1,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L1-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      function band(E,col,op){
+        let d='';
+        for(let i=0;i<NY;i++) d+=(i?'L':'M')+X(i).toFixed(1)+' '+Y(E.hi[i]).toFixed(1);
+        for(let i=NY-1;i>=0;i--) d+='L'+X(i).toFixed(1)+' '+Y(E.lo[i]).toFixed(1);
+        put(g,'path',{d:d+'Z',fill:col,opacity:op,stroke:'none'});
+      }
+      function line(a,col,w,dash){
+        let d='';
+        for(let i=0;i<NY;i++) d+=(i?'L':'M')+X(i).toFixed(1)+' '+Y(a[i]).toFixed(1);
+        const at={d:d,fill:'none',stroke:col,'stroke-width':w};
+        if(dash) at['stroke-dasharray']=dash;
+        put(g,'path',at);
+      }
+      band(EU,'var(--text-muted)',.18); band(EI,'var(--acc)',.20);
+      line(EU.mean,'var(--text-muted)',1.8,'5 3');
+      line(EI.mean,'var(--acc)',2.2);
+      line(obs,'var(--text-primary)',2.2);
+      put(g,'text',{x:L1,y:T1-3,'font-size':11.5,fill:'var(--text-secondary)',
+        'font-weight':600},'Temperature anomaly, K — synthetic realisation');
+      const lg=[['var(--text-primary)','the “real world”'],['var(--acc)','initialised ensemble'],
+        ['var(--text-muted)','uninitialised ensemble']];
+      lg.forEach((l,i)=>{
+        put(g,'line',{x1:R1-215,y1:T1+14+i*15,x2:R1-193,y2:T1+14+i*15,stroke:l[0],'stroke-width':2.2});
+        put(g,'text',{x:R1-188,y:T1+18+i*15,'font-size':10.5,fill:'var(--text-secondary)'},l[1]);
+      });
+      for(let i=0;i<NY;i+=10) put(g,'text',{x:X(i),y:B1+15,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},'+'+i+' yr');
+
+      /* ---- lower panel: skill ---- */
+      const T2=278,B2=396;
+      const X2=L=>L1+(L-1)/19*(R1-L1);
+      const Y2=v=>B2-v*(B2-T2);
+      put(g,'rect',{x:L1,y:T2,width:R1-L1,height:B2-T2,fill:'var(--surface-2)',opacity:.45,rx:6});
+      [0,0.25,0.5,0.75,1].forEach(v=>{
+        put(g,'line',{x1:L1,y1:Y2(v),x2:R1,y2:Y2(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L1-8,y:Y2(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(2));
+      });
+      // "useful skill" threshold
+      put(g,'line',{x1:L1,y1:Y2(0.3),x2:R1,y2:Y2(0.3),stroke:'var(--warn)','stroke-width':1.4,
+        'stroke-dasharray':'4 3'});
+      put(g,'text',{x:R1-4,y:Y2(0.3)-5,'text-anchor':'end','font-size':10,
+        fill:'var(--warn)'},'conventional threshold for useful skill, r = 0.3');
+      function sline(a,col,w,dash){
+        let d='';
+        for(let i=0;i<a.length;i++) d+=(i?'L':'M')+X2(i+1).toFixed(1)+' '+Y2(Math.max(0,a[i])).toFixed(1);
+        const at={d:d,fill:'none',stroke:col,'stroke-width':w};
+        if(dash) at['stroke-dasharray']=dash;
+        put(g,'path',at);
+      }
+      sline(skU,'var(--text-muted)',1.8,'5 3'); sline(skI,'var(--acc)',2.4);
+      put(g,'text',{x:L1,y:T2-3,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Correlation skill for the internal component, against lead time');
+      for(let L=5;L<=20;L+=5) put(g,'text',{x:X2(L),y:B2+15,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},L+' yr');
+
+      // numbers
+      let lead=0; for(let i=0;i<skI.length;i++) if(skI[i]>=0.3) lead=i+1;
+      $('kLead').textContent=lead>0?lead:'—';
+      $('kS1').textContent=skI[0].toFixed(2);
+      $('kS10').textContent=skI[9].toFixed(2);
+      $('kSU').textContent='0.00';
+      $('prRead').innerHTML=
+        'With this ocean memory the initialised ensemble keeps useful skill for <span class="big">'+
+        (lead>0?lead:0)+'</span> years, after which its correlation with the internal component of the '+
+        '&ldquo;observations&rdquo; is indistinguishable from the uninitialised runs&rsquo; zero. '+
+        'The skill decays as <b>&rho;<sup>L</sup></b> with &rho; = exp(&minus;1/'+mem+') = '+
+        rs.toFixed(3)+' &mdash; so it is the <b>ocean memory alone</b> that sets the horizon. Doubling the '+
+        'ensemble size raises the curve slightly by averaging away the unpredictable part, but it cannot '+
+        'move where the curve falls off.';
+    }
+    Object.values(S).forEach(el=>el.addEventListener('input',draw));
+    draw();
+  })();
+
+  /* ── 2 · Hawkins–Sutton partition ───────────────────────────── */
+  (function(){
+    const g=$('hsG'); if(!g) return;
+
+    // AR6 WG1 Table SPM.1 warming relative to 1850-1900, at period midpoints
+    // 2030 (2021-2040), 2050 (2041-2060), 2090 (2081-2100)
+    const SSP={
+      s19:[1.5,1.6,1.4], s26:[1.5,1.7,1.8], s45:[1.5,2.0,2.7],
+      s70:[1.5,2.1,3.6], s85:[1.6,2.4,4.4]
+    };
+    const T2020=1.25;                    // K above 1850-1900 in 2020
+    const KNOTS=[2030,2050,2090];
+    function resp(key,y){                // warming relative to 2020
+      const a=SSP[key].map(v=>v-T2020);
+      if(y<=2020) return 0;
+      if(y<=KNOTS[0]) return a[0]*(y-2020)/(KNOTS[0]-2020);
+      if(y<=KNOTS[1]) return a[0]+(a[1]-a[0])*(y-KNOTS[0])/(KNOTS[1]-KNOTS[0]);
+      return a[1]+(a[2]-a[1])*(y-KNOTS[1])/(KNOTS[2]-KNOTS[1]);
+    }
+
+    const REG={
+      rGlob:{n:'the global annual mean',r:1.0,sig:0.11,fm:25},
+      rEur :{n:'northern European winter',r:1.5,sig:0.90,fm:40},
+      rMed :{n:'Mediterranean summer',r:1.6,sig:0.50,fm:40},
+      rArc :{n:'the annual mean Arctic',r:2.8,sig:0.60,fm:45},
+      rBox :{n:'a single grid box at Bø',r:1.5,sig:0.70,fm:45}
+    };
+    const SETS={sAll:['s19','s26','s45','s70','s85'],sMit:['s19','s26','s45'],sOne:['s45']};
+    let reg='rGlob', set='sAll';
+
+    // exact variance of an n-year mean of an AR(1) process, in units of sigma^2
+    function meanVar(n,rho){
+      let s=n;
+      for(let k=1;k<n;k++) s+=2*(n-k)*Math.pow(rho,k);
+      return s/(n*n);
+    }
+
+    function draw(){
+      clr(g);
+      const R=REG[reg], keys=SETS[set];
+      const nAvg=+$('avg').value, fm=+$('fm').value/100;
+      $('avgv').textContent=nAvg; $('fmv').textContent=(fm*100).toFixed(0);
+
+      const sigEff=R.sig*Math.sqrt(meanVar(nAvg,0.35));
+      const Vi=sigEff*sigEff;
+
+      const yrs=[]; for(let y=2021;y<=2100;y++) yrs.push(y);
+      const Fi=[],Fm=[],Fs=[],Tot=[];
+      yrs.forEach(y=>{
+        const rr=keys.map(k=>R.r*resp(k,y));
+        let mu=0; rr.forEach(v=>mu+=v); mu/=rr.length;
+        let vs=0; rr.forEach(v=>vs+=(v-mu)*(v-mu)); vs/=rr.length;
+        const vm=Math.pow(fm*mu,2);
+        const tot=Vi+vm+vs;
+        Fi.push(Vi/tot); Fm.push(vm/tot); Fs.push(vs/tot); Tot.push(Math.sqrt(tot));
+      });
+
+      /* ---- upper: stacked fractions ---- */
+      const L=60,Rr=858,T1=16,B1=246;
+      const X=y=>L+(y-2021)/(2100-2021)*(Rr-L);
+      const Y=v=>B1-v*(B1-T1);
+      function area(lower,upper,col){
+        let d='';
+        for(let i=0;i<yrs.length;i++) d+=(i?'L':'M')+X(yrs[i]).toFixed(1)+' '+Y(upper[i]).toFixed(1);
+        for(let i=yrs.length-1;i>=0;i--) d+='L'+X(yrs[i]).toFixed(1)+' '+Y(lower[i]).toFixed(1);
+        put(g,'path',{d:d+'Z',fill:col,stroke:'none'});
+      }
+      const z=yrs.map(()=>0);
+      const c1=Fi.slice(), c2=Fi.map((v,i)=>v+Fm[i]), c3=c2.map(()=>1);
+      area(z,c1,'var(--uint)'); area(c1,c2,'var(--umod)'); area(c2,c3,'var(--usce)');
+      [0,0.25,0.5,0.75,1].forEach(v=>{
+        put(g,'line',{x1:L,y1:Y(v),x2:Rr,y2:Y(v),stroke:'var(--surface-1)','stroke-width':1,opacity:.5});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},(v*100).toFixed(0)+'%');
+      });
+      for(let y=2040;y<=2100;y+=20)
+        put(g,'text',{x:X(y),y:B1+15,'text-anchor':'middle','font-size':10.5,fill:'var(--text-muted)'},y);
+      put(g,'text',{x:L,y:T1-3,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Fraction of total variance — '+R.n+', '+nAvg+'-year means');
+      // in-band labels
+      const im=Math.floor(yrs.length*0.55);
+      function lab(txt,frac,col,i){
+        if(frac<0.10) return;
+        put(g,'text',{x:X(yrs[i]),y:0,'font-size':11.5,fill:col},'');
+      }
+      const legend=[['var(--uint)','internal variability'],['var(--umod)','model spread'],
+        ['var(--usce)','scenario choice']];
+      legend.forEach((l,i)=>{
+        put(g,'rect',{x:L+8+i*172,y:B1+26,width:11,height:11,rx:3,fill:l[0]});
+        put(g,'text',{x:L+24+i*172,y:B1+36,'font-size':11.5,fill:'var(--text-secondary)'},l[1]);
+      });
+
+      /* ---- lower: total in kelvin ---- */
+      const T2=300,B2=396;
+      const tmax=Math.max(0.5,Math.ceil(Math.max(...Tot)*4)/4);
+      const Y2=v=>B2-v/tmax*(B2-T2);
+      put(g,'rect',{x:L,y:T2,width:Rr-L,height:B2-T2,fill:'var(--surface-2)',opacity:.45,rx:6});
+      for(let k=0;k<=2;k++){
+        const v=tmax*k/2;
+        put(g,'line',{x1:L,y1:Y2(v),x2:Rr,y2:Y2(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y2(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(2));
+      }
+      let d='';
+      for(let i=0;i<yrs.length;i++) d+=(i?'L':'M')+X(yrs[i]).toFixed(1)+' '+Y2(Tot[i]).toFixed(1);
+      put(g,'path',{d:d,fill:'none',stroke:'var(--text-primary)','stroke-width':2.2});
+      put(g,'text',{x:L,y:T2-3,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Total uncertainty, K (1σ) — it grows throughout, whatever the fractions do');
+
+      /* ---- numbers ---- */
+      const NAMES=['internal variability','model spread','scenario choice'];
+      function biggest(i){
+        const v=[Fi[i],Fm[i],Fs[i]];
+        return NAMES[v.indexOf(Math.max(...v))];
+      }
+      const i35=yrs.indexOf(2035), i90=yrs.indexOf(2090), i50=yrs.indexOf(2050);
+      $('k35').textContent=biggest(i35).split(' ')[0];
+      $('k90').textContent=biggest(i90).split(' ')[0];
+      let cross='never';
+      for(let i=0;i<yrs.length;i++) if(Fs[i]>Fi[i]&&Fs[i]>Fm[i]){cross=yrs[i];break;}
+      $('kX').textContent=cross;
+      $('kW').textContent=Tot[i50].toFixed(2);
+
+      $('hsRead').innerHTML=
+        'For '+R.n+' with '+nAvg+'-year means, internal variability contributes a fixed &plusmn;<b>'+
+        sigEff.toFixed(3)+'&nbsp;K</b> at every lead time &mdash; that is &sigma;&nbsp;=&nbsp;'+
+        R.sig.toFixed(2)+'&nbsp;K reduced by averaging '+nAvg+' years of a series with lag-1 correlation 0.35. '+
+        'In 2035 the largest single source is <b>'+biggest(i35)+'</b> ('+
+        (100*Math.max(Fi[i35],Fm[i35],Fs[i35])).toFixed(0)+'&nbsp;% of the variance); by 2090 it is <b>'+
+        biggest(i90)+'</b> ('+(100*Math.max(Fi[i90],Fm[i90],Fs[i90])).toFixed(0)+'&nbsp;%). '+
+        (cross==='never'
+          ? 'Scenario choice never becomes the largest term here &mdash; with this set of pathways the answer is settled by physics and noise, not by policy.'
+          : 'Scenario choice overtakes both other terms in <b>'+cross+'</b>: before then, what we do matters less than what we cannot know; after it, the reverse.');
+    }
+
+    ['avg','fm'].forEach(id=>$(id).addEventListener('input',draw));
+    Object.keys(REG).forEach(k=>$(k).addEventListener('click',()=>{
+      reg=k; $('fm').value=REG[k].fm;
+      Object.keys(REG).forEach(j=>$(j).setAttribute('aria-pressed',String(j===k)));
+      draw();
+    }));
+    Object.keys(SETS).forEach(k=>$(k).addEventListener('click',()=>{
+      set=k;
+      Object.keys(SETS).forEach(j=>$(j).setAttribute('aria-pressed',String(j===k)));
+      draw();
+    }));
+    draw();
+  })();
+
+  /* ── reveal-answer buttons ──────────────────────────────────── */
+  document.querySelectorAll('.rev').forEach(b=>{
+    const a=b.nextElementSibling;
+    b.addEventListener('click',()=>{
+      const open=!a.hidden;
+      a.hidden=open;
+      b.textContent=open?'Reveal answer':'Hide answer';
+      b.setAttribute('aria-expanded',String(!open));
+    });
+  });
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

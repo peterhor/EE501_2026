@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commitment, sea level and abrupt change</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --ocean:#1f6fb2; --deep:#3f6f8f; --ice:#7fb3d5; --rock:#8a7355; --air:#8a8fa0;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --ocean:#2f83c9; --deep:#5b8dad; --ice:#6fa2c4; --rock:#a08a68; --air:#9aa0b2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .rev{display:block;margin:9px 0 0;border:1px solid var(--acc);background:transparent;color:var(--acc);
+    border-radius:8px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+  .rev:hover{background:var(--acc);color:var(--surface-1)}
+  .ans{display:block;margin:9px 0 0}
+  .ans[hidden]{display:none}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Climate change: the future &middot; 7 of 7</p>
+
+<header>
+  <div>
+    <h1>Commitment, sea level and abrupt change</h1>
+    <p class="sub">The year 2100 is an arbitrary place to stop, and stopping there systematically flatters the
+    situation. Surface temperature stabilises at net zero; almost nothing else does. This last page runs the
+    clock forward &mdash; centuries, then millennia, then longer &mdash; and then asks the question the whole
+    course has been circling: <em>are there thresholds, and how would we know before we crossed one?</em></p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Four clocks, running at once</h3>
+  <p class="cap">Each part of the system has its own response time, and they differ by five orders of
+  magnitude. Almost every misunderstanding about the long-term future comes from applying one clock&rsquo;s
+  intuition to another&rsquo;s process.</p>
+
+  <table>
+    <thead><tr><th>Timescale</th><th>What is still adjusting</th><th>Consequence</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Decades</td><td>The atmosphere and the upper ocean. Surface temperature reaches
+        most of its transient response.</td>
+        <td>This is what a projection to 2100 shows you, and it is the smallest part of the story.</td></tr>
+      <tr><td class="nm">Centuries</td><td>The deep ocean absorbs heat and CO<sub>2</sub>; the ocean equilibrates
+        with the atmosphere.</td>
+        <td>Thermal expansion continues; CO<sub>2</sub> falls to roughly a quarter of the pulse; glaciers finish
+        responding.</td></tr>
+      <tr><td class="nm">Millennia</td><td>Carbonate compensation &mdash; sea-floor CaCO<sub>3</sub> dissolves,
+        restoring the ocean&rsquo;s buffering capacity. Ice sheets adjust.</td>
+        <td>CO<sub>2</sub> falls further, towards about a tenth of the pulse. Greenland and West Antarctica
+        respond fully.</td></tr>
+      <tr><td class="nm">10<sup>5</sup> years</td><td>Silicate weathering of continental rock &mdash; the
+        ultimate CO<sub>2</sub> thermostat of
+        <a href="../lecture-4-global-cycles-water-and-carbon/land-rock-methane.html">Lecture&nbsp;4,
+        page&nbsp;4</a>.</td>
+        <td>The last of the anthropogenic carbon is removed. Longer than the whole of human history by an order
+        of magnitude.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b>The two that matter for the twenty-first century decision</b> are the first two. But the
+  third and fourth are what makes the emission of fossil carbon different in kind from other kinds of pollution:
+  the sulphate aerosol of <a href="scenarios.html">page&nbsp;1</a> is gone in a week, and a meaningful fraction
+  of the CO<sub>2</sub> emitted this decade is still in the air when the next glacial cycle should have
+  started.</p>
+</div>
+
+<h2 class="sec">The demonstration this page opens with</h2>
+
+<div class="card demo">
+  <h3>The long tail of a carbon pulse</h3>
+  <p class="cap">Release a slug of carbon and watch what happens over a million years. The horizontal axis is
+  logarithmic, so each equal step to the right is a factor of ten in time &mdash; and each of the four processes
+  in the table above shows up as its own step down.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="pulse"><span>Size of the pulse</span> <b id="pulsev">1000</b></label>
+      <input type="range" id="pulse" min="200" max="5000" step="100" value="1000">
+      <div class="hint">PgC. About 700 have been emitted so far; 1000 and 5000 are the two cases Archer and
+      Brovkin used.</div>
+    </div>
+    <div class="ctrl">
+      <label for="ecs7"><span>Equilibrium climate sensitivity</span> <b id="ecs7v">3.0</b></label>
+      <input type="range" id="ecs7" min="1.8" max="5.2" step="0.1" value="3.0">
+      <div class="hint">K per doubling. On this timescale the system reaches equilibrium, so this sets the
+      plateau directly.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns">
+    <span class="lbl">Carbon model</span>
+    <button class="ghost" id="mJoos">Joos (2013) pulse response, as fitted</button>
+    <button class="ghost" id="mFull" aria-pressed="true">with carbonate compensation and weathering added</button>
+  </div>
+
+  <svg viewBox="0 0 880 420" role="img" aria-label="Upper panel: airborne fraction of a carbon pulse against logarithmic time from one year to one million years. Lower panel: the resulting global mean temperature anomaly."><g id="tailG"></g></svg>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">Left after 100 yr</div><div class="v" id="kA100">&mdash;</div><div class="s">% of the pulse</div></div>
+    <div class="kpi"><div class="k">After 1000 yr</div><div class="v" id="kA1k">&mdash;</div><div class="s">%</div></div>
+    <div class="kpi"><div class="k">After 10 000 yr</div><div class="v" id="kA10k">&mdash;</div><div class="s">%</div></div>
+    <div class="kpi"><div class="k">Warming still left at 10 kyr</div><div class="v" id="kT10k">&mdash;</div><div class="s">K</div></div>
+  </div>
+
+  <div class="readout" id="tailRead"></div>
+
+  <div class="q"><b>Question.</b> Switch between the two carbon models. The Joos pulse response, which page&nbsp;1
+  and page&nbsp;6 both use, flattens out and never comes down. Is that a bug?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>No &mdash; it is a fit being used outside its range, which is a different and more
+    interesting failure. The Joos impulse response was calibrated against models run for <b>1000 years</b>, and
+    over that window a constant term is an excellent representation of everything slower. Extrapolate it to
+    10<sup>5</sup> years and that constant term becomes a claim that 22&nbsp;% of the carbon stays in the air
+    forever, which is wrong: carbonate compensation removes most of it over five to ten thousand years and
+    silicate weathering finishes the job over hundreds of thousands. The second model splits the constant term
+    into those two processes.<br><br>
+    The general lesson is worth more than the specific one. <b>Every parameterisation has a range of validity,
+    and it will not tell you when you have left it</b> &mdash; it will just keep returning numbers. That is the
+    same warning as <a href="../lecture-5-modelling-the-climate-system/what-is-a-model.html">Lecture&nbsp;5,
+    page&nbsp;1</a> gave about parameterisation in general, and it is worth being suspicious of every extrapolated
+    curve you meet, including the ones on this site.</span>
+  </div>
+
+  <div class="q"><b>Question.</b> Set the pulse to 5000&nbsp;PgC &mdash; roughly the total conventional fossil
+  fuel resource. Compare the shape of the curve with the 1000&nbsp;PgC case.
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>The <em>fractional</em> curve is identical, because this model is linear. In a
+    real carbon cycle it is not: a bigger pulse acidifies the ocean more, consumes more of the carbonate buffer,
+    and therefore leaves a <em>larger</em> fraction airborne for longer. Archer and Brovkin&rsquo;s CLIMBER-2
+    calculation, which is the source of the textbook figure, has exactly that non-linearity, and it is why the
+    5000&nbsp;PgC case there has a fatter tail rather than just a taller one. Our model gets the timescales
+    approximately right and the size dependence wrong &mdash; and it is worth knowing which of those two you are
+    reading off a figure.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Sea level: the slowest thing that matters, and the least reversible</h3>
+  <p class="cap">Four contributions with four different physics, and only one of them is fast.</p>
+
+  <div class="two">
+    <div>
+      <p class="note" style="margin-top:0"><b>Thermal expansion</b> is the one you can calculate. Sea water
+      expands as it warms, and the ocean&rsquo;s heat uptake is exactly the deep-ocean term of the two-layer
+      model used on <a href="scenarios.html">pages&nbsp;1</a> and
+      <a href="carbon-budgets.html">6</a>. The conversion is one empirical number &mdash; the
+      <b>expansion efficiency of heat</b>, about 0.12&nbsp;metres of sea level per 10<sup>24</sup>&nbsp;joules
+      stored.</p>
+      <p class="note">Because the deep ocean takes a thousand years to fill up, thermal expansion continues
+      long after the surface has stabilised. It is the clearest case of a commitment: it does not care what you
+      do next, only what heat is already in the pipeline.</p>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0"><b>Glaciers</b> outside the ice sheets respond within a century and
+      contain about 0.3&nbsp;m of sea level in total &mdash; so this term is large now and finite; it runs out.
+      <b>Greenland</b> holds about 7&nbsp;m and responds over millennia, mainly through surface melting.
+      <b>Antarctica</b> holds about 58&nbsp;m and responds mainly through the ocean melting its floating
+      shelves; the West Antarctic marine sectors, worth 3&ndash;4&nbsp;m, are the part with a plausible
+      threshold, and are the subject of the second demonstration below.</p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 240" role="img" aria-label="Assessed global mean sea level rise by 2100 for five SSP scenarios, with likely ranges, and the low-likelihood high-impact upper bound marked"><g id="slG"></g></svg>
+
+  <p class="note" style="font-size:12.5px;color:var(--text-muted)">Assessed by IPCC AR6 WG1 (2021),
+  Table&nbsp;9.9 and Figure&nbsp;SPM.8, relative to 1995&ndash;2014. The marked upper bound is the
+  low-likelihood, high-impact storyline including poorly understood marine ice-sheet processes, which AR6
+  cannot rule out and does not assign a likelihood to.</p>
+
+  <div class="warnbox"><b>Read the shape of that figure, not just the bars.</b> The scenario separation by 2100
+  is modest &mdash; roughly 0.4&nbsp;m between the lowest and highest pathway, against a range within each
+  scenario that is nearly as wide. Sea level is <em>slow</em>, so a century is not long enough for policy to
+  make much difference to it. Extend to 2300 and the separation becomes enormous: a few tenths of a metre to
+  three metres under SSP1&ndash;2.6, against nearly two to seven metres under SSP5&ndash;8.5. <b>The
+  twenty-first century is where the commitment is made; the following centuries are where it is
+  paid.</b></div>
+
+  <p class="note"><b>The commitment, stated as one number.</b> AR6 assesses roughly
+  <b>2&ndash;3&nbsp;metres of sea level rise per degree of warming, sustained over 2000 years</b>. That is a
+  useful thing to carry in your head, because it converts the abstract targets of
+  <a href="carbon-budgets.html">page&nbsp;6</a> into something concrete: the difference between 1.5 and
+  2&nbsp;&deg;C is roughly a metre of eventual sea level, and the difference between 2 and 4&nbsp;&deg;C is
+  five or six.</p>
+
+  <div class="q"><b>Question.</b> Suppose emissions go net-negative and CO<sub>2</sub> is brought back to
+  pre-industrial levels over the next two centuries. Does the sea come back down?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Essentially no, on any timescale you care about. Thermal expansion reverses only
+    as fast as the deep ocean can shed heat, which is slower than it absorbed it. Ice sheets are worse: melting
+    lowers the surface into warmer air and exposes bedrock with a lower albedo, so re-growing them requires a
+    <em>colder</em> climate than the one that melted them, not merely the same one. That is hysteresis, and it
+    is the same phenomenon &mdash; and very nearly the same phase diagram &mdash; you met with the ocean
+    circulation in <a href="../lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture&nbsp;7,
+    page&nbsp;4</a> and with Saharan vegetation in
+    <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a>. Sea level rise is, for practical
+    purposes, a one-way door.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The ocean circulation: what we know, and what we would need to know</h3>
+  <p class="cap">You have already built the model for this. This card connects it to the projections rather than
+  rebuilding it.</p>
+
+  <p class="note" style="margin-top:0">The AMOC is driven by the sinking of cold, salty water in the North
+  Atlantic. Warm it or freshen it and the sinking weakens; a weaker circulation carries less salt northward, so
+  it freshens further &mdash; the positive feedback that gives the
+  <a href="../lecture-7-climate-change-past-and-present/abrupt-change.html">Stommel two-box model of
+  Lecture&nbsp;7, page&nbsp;4</a> two stable states and a threshold between them. <b>Go back and use that
+  demonstration now</b>; nothing about the mathematics changes here. What changes is where the freshwater comes
+  from. In the palaeo case it was a collapsing ice sheet. In the future case it is us.</p>
+
+  <p class="note">So the useful question is quantitative: <em>how much freshwater does warming actually
+  deliver to the North Atlantic, compared with the amounts that move the Stommel model?</em> That is a
+  calculation you can do with the numbers from <a href="water-cycle.html">page&nbsp;4</a>.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="wT"><span>Global warming</span> <b id="wTv">3.0</b></label>
+      <input type="range" id="wT" min="0.5" max="6" step="0.1" value="3.0">
+      <div class="hint">K. The hydrological intensification scales with this.</div>
+    </div>
+    <div class="ctrl">
+      <label for="gis"><span>Greenland mass loss</span> <b id="gisv">270</b></label>
+      <input type="range" id="gis" min="0" max="3000" step="10" value="270">
+      <div class="hint">Gt per year. The present rate is about 270; a strong scenario reaches a few thousand.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 200" role="img" aria-label="Freshwater flux anomaly to the North Atlantic in sverdrups, compared with the range of hosing experiments and the Stommel model threshold"><g id="fwG"></g></svg>
+
+  <div class="readout" id="fwRead"></div>
+
+  <p class="note"><b>What the assessments actually say.</b> AR6 concludes that the AMOC will <i>very likely</i>
+  decline over the twenty-first century &mdash; the CMIP models give something like a third of its strength by
+  2100 under a high scenario &mdash; but has only <i>medium confidence</i> that there will be no abrupt collapse
+  before 2100. Those two statements are not in tension: a large, gradual, reversible weakening and a permanent
+  threshold crossing are different events, and the models are much more confident about the first.</p>
+
+  <div class="warnbox"><b>And the honest uncertainty, which is unusual and worth naming.</b> Palaeo records show
+  the real AMOC has crossed thresholds repeatedly &mdash; the Dansgaard&ndash;Oeschger events of
+  <a href="../lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture&nbsp;7</a>. Yet coupled
+  models are notably reluctant to collapse, and there is a known reason to distrust them: most simulate an
+  Atlantic that is too stable, because they get the salinity transport at the southern boundary of the basin
+  with the wrong sign compared with observations. So we have a case where the models agree with each other and
+  there is a specific, diagnosable reason to think they may all be biased the same way. That is a much more
+  uncomfortable position than a wide model spread, and it is why this remains one of the genuinely open
+  questions.</div>
+</div>
+
+<h2 class="sec">The demonstration this lecture ends on</h2>
+
+<div class="card demo">
+  <h3>Marine ice sheet instability</h3>
+  <p class="cap">A threshold you can locate on a map, produced by geometry alone. West Antarctica sits on
+  bedrock that is <em>below sea level and deepening inland</em> &mdash; and that single fact is enough.</p>
+
+  <p class="note" style="margin-top:0">Where a grounded ice sheet meets the ocean, the ice starts to float. The
+  thickness at that point &mdash; the <b>grounding line</b> &mdash; is fixed by flotation: deeper water means
+  thicker ice. And the rate at which ice flows out through the grounding line rises very steeply with that
+  thickness:</p>
+
+  <div class="eq">
+    h<sub>g</sub> &nbsp;=&nbsp; (&rho;<sub>w</sub>/&rho;<sub>i</sub>) &middot; d
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    q<sub>g</sub> &nbsp;&prop;&nbsp; h<sub>g</sub><sup>&thinsp;4.75</sup>
+    <div class="u" style="margin-top:8px">d — water depth at the grounding line &nbsp;&middot;&nbsp;
+    the exponent follows from the ice-flow and basal-friction laws</div>
+  </div>
+
+  <p class="note">Now the argument. The ice sheet is in balance when the outflow equals the snow accumulated
+  over the grounded area upstream. Push the grounding line back a little. If it retreats into <em>deeper</em>
+  water, the ice there is thicker, so more ice flows out, so it retreats further. Nothing stops it until the bed
+  shallows again. <b>Retreat on a bed that deepens inland is self-sustaining</b> &mdash; no additional warming
+  required after the first push.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="acc"><span>Snow accumulation</span> <b id="accv">0.30</b></label>
+      <input type="range" id="acc" min="0.10" max="0.60" step="0.01" value="0.30">
+      <div class="hint">m of ice per year over the catchment. Sets the balance line.</div>
+    </div>
+    <div class="ctrl">
+      <label for="butt"><span>Ice-shelf buttressing</span> <b id="buttv">1.00</b></label>
+      <input type="range" id="butt" min="0.4" max="2.5" step="0.05" value="1.00">
+      <div class="hint">1 = today. Lower means a thinner shelf holding the ice back less &mdash; which is what
+      a warming ocean does.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 460" role="img" aria-label="Upper panel: a bed profile below sea level with a seaward sill, a deep interior basin and an interior ridge. Lower panel: grounding-line flux and balance flux against grounding-line position, on a logarithmic axis, with stable and unstable equilibria marked."><g id="misG"></g></svg>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">Stable positions</div><div class="v" id="kEqS">&mdash;</div><div class="s">km from the divide</div></div>
+    <div class="kpi"><div class="k">Threshold</div><div class="v" id="kEqU">&mdash;</div><div class="s">km &mdash; the unstable one</div></div>
+    <div class="kpi"><div class="k">Margin</div><div class="v" id="kMar">&mdash;</div><div class="s">km before it runs away</div></div>
+    <div class="kpi"><div class="k">Sea level at stake</div><div class="v" id="kSl">&mdash;</div><div class="s">m, this basin</div></div>
+  </div>
+
+  <div class="readout" id="misRead"></div>
+
+  <div class="q"><b>Question.</b> Drag buttressing down towards 0.6. At some point the two outer equilibria
+  merge and vanish, and only the far-interior one is left. What kind of event is that, and where have you seen
+  it before?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>A <b>saddle-node bifurcation</b> &mdash; a stable and an unstable equilibrium
+    colliding and annihilating, after which the system has no choice but to move to the remaining state. It is
+    exactly what happens to the strong branch of the
+    <a href="../lecture-7-climate-change-past-and-present/abrupt-change.html">Stommel model</a> when the
+    freshwater flux passes its critical value, and exactly what happens to the vegetated state in
+    <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a> when the precipitation feedback is
+    strong enough. Three completely different systems &mdash; an ocean, a desert, an ice sheet &mdash; and one
+    piece of mathematics. That recurrence is the most useful single idea in this course.<br><br>
+    Note also the warning it contains. Right up until the bifurcation, the ice sheet <em>is</em> in a stable
+    equilibrium and looks fine. The margin shrinks silently. There is no observable that says
+    &ldquo;approaching threshold&rdquo; except the shrinking margin itself, and measuring that requires knowing
+    the bed geometry &mdash; which is why so much effort goes into radar mapping of what is underneath
+    Antarctica.</span>
+  </div>
+
+  <div class="q"><b>Question.</b> The demonstration has no warming in it at all. Where does climate change
+  enter?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Through the buttressing slider, and it is worth being precise about the route.
+    The dominant mechanism in West Antarctica is <em>not</em> warm air melting the ice from above &mdash; the air
+    there stays far below freezing. It is warm ocean water reaching the underside of the floating ice shelves
+    and thinning them from below. A thinner shelf pushes back less against the grounded ice behind it, the
+    outflow increases, and the grounding line retreats. So the chain is: circulation change &rarr; warm water on
+    the continental shelf &rarr; basal melt &rarr; loss of buttressing &rarr; grounding-line retreat &rarr; and
+    then the geometry takes over and the climate is no longer needed. That last step is what makes it a tipping
+    element rather than a response.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The tipping elements, and what the phrase should and should not mean</h3>
+  <p class="cap">A closing inventory, with the honest confidence attached to each.</p>
+
+  <table>
+    <thead><tr><th>Element</th><th>Mechanism</th><th>Timescale &amp; confidence</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">West Antarctic ice sheet</td>
+        <td>Marine ice sheet instability &mdash; the demonstration above. Retrograde bed, self-sustaining
+        retreat.</td>
+        <td>Centuries to millennia. Physically well understood; whether the threshold has already been passed
+        in the Amundsen Sea sector is genuinely debated.</td></tr>
+      <tr><td class="nm">Greenland ice sheet</td>
+        <td>Melt&ndash;elevation feedback: a lower surface sits in warmer air and melts faster.</td>
+        <td>Millennia. Threshold plausibly between 1 and 3&nbsp;&deg;C; the response is slow enough that a
+        temporary overshoot may be survivable.</td></tr>
+      <tr><td class="nm">AMOC</td>
+        <td>Salt-advection feedback &mdash; the Stommel mechanism.</td>
+        <td>Decades to a century once triggered. Threshold location poorly known; models may be biased
+        stable.</td></tr>
+      <tr><td class="nm">Permafrost carbon</td>
+        <td>Thaw releases CO<sub>2</sub> and CH<sub>4</sub>, which warms, which thaws.
+        <a href="../lecture-6-response-of-the-climate-system-to-perturbations/biogeochemical-feedbacks.html">Lecture&nbsp;6,
+        page&nbsp;6</a>.</td>
+        <td>Centuries. Now thought to be a strong <em>feedback</em> rather than a sharp threshold &mdash; large,
+        gradual, and irreversible on human timescales.</td></tr>
+      <tr><td class="nm">Amazon forest</td>
+        <td>Forest recycles its own rainfall; lose enough of it and the remainder cannot sustain the
+        hydrological cycle. The Sahara mechanism of
+        <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a>, with the sign reversed.</td>
+        <td>Decades. Compounded by deforestation, which supplies the push independently of climate.</td></tr>
+      <tr><td class="nm">Low cloud decks</td>
+        <td>A speculative break-up of subtropical stratocumulus at very high CO<sub>2</sub>, worth several
+        kelvin if real.</td>
+        <td>Found in one high-resolution simulation. <b>Low confidence</b>, listed here because it is a fair
+        example of a possibility we cannot currently exclude or confirm.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warnbox"><b>Two misuses to resist.</b> The first is treating &ldquo;tipping point&rdquo; as a
+  synonym for &ldquo;bad&rdquo;. Most of the damage in most scenarios comes from the smooth, boring,
+  well-understood response &mdash; the distribution shift of <a href="extremes.html">page&nbsp;5</a> &mdash; not
+  from any threshold. The second is the implied global cliff edge: there is no single date after which
+  everything is lost. Each element has its own threshold, its own timescale, and its own uncertainty, and
+  several of them take a thousand years to complete even once triggered. <b>The honest framing is that risk
+  rises with warming, that some of it is irreversible, and that irreversible is not the same as sudden.</b>
+  Overstating this material is not harmless: it is the fastest way to lose an audience that can check.</div>
+</div>
+
+<div class="card">
+  <h3>What to take from this lecture</h3>
+  <p class="cap">Seven pages, in seven sentences.</p>
+  <ul class="pl">
+    <li><b>A projection is conditional.</b> It answers &ldquo;if this forcing, then what?&rdquo; A prediction
+    also claims to know the phase of internal variability, and that claim expires after about a decade.</li>
+    <li><b>The scenario is an assumption, not a forecast</b> &mdash; and which uncertainty dominates depends on
+    the region, the averaging period and the lead time, not on how good the models are.</li>
+    <li><b>Two patterns are robust</b>: land warms about 1.5 times as fast as ocean, for reasons of moisture,
+    and the Arctic two to four times, mostly for reasons of lapse rate and Planck response rather than
+    albedo.</li>
+    <li><b>Moisture rises at 7&nbsp;%/K and precipitation at 1&ndash;3&nbsp;%/K</b>; the gap weakens the
+    circulation, sharpens the wet&ndash;dry contrast, and makes heavy rainfall intensify far faster than mean
+    rainfall.</li>
+    <li><b>The tails move much more than the mean.</b> A shifted distribution and nothing else reproduces the
+    assessed increase in hot extremes almost exactly.</li>
+    <li><b>Warming is proportional to cumulative emissions</b>, which converts any temperature target into a
+    finite quantity of carbon &mdash; a few hundred gigatonnes for 1.5&nbsp;&deg;C, less than a decade at
+    current rates.</li>
+    <li><b>Surface temperature stabilises at net zero; sea level and the ice sheets do not.</b> Several parts of
+    the system have thresholds, they are the same mathematics as the ocean circulation and the Sahara, and
+    crossing one is irreversible without necessarily being sudden.</li>
+  </ul>
+</div>
+
+<p class="foot">After Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;6.4&ndash;6.5 and figures 6.25 and 6.28 (millennial CO<sub>2</sub>, temperature and thermal expansion
+in intermediate-complexity models, after Zickfeld et&nbsp;al., 2013), 6.26 (CLIMBER-2 response to 1000 and
+5000&nbsp;GtC, after Archer and Brovkin, <i>Climatic Change</i> 90, 283&ndash;297, 2008), 6.27 (sea level
+projections, after Church et&nbsp;al., 2013), 6.29 (Greenland under 4&times;CO<sub>2</sub>, after Huybrechts
+et&nbsp;al., 2011) and 6.30 (marine ice sheet instability). <b>None of those figures is reproduced here.</b>
+&nbsp;&middot;&nbsp; <b>The carbon-tail demonstration is computed</b> from the Joos et&nbsp;al. (2013) impulse
+response used on pages&nbsp;1 and&nbsp;6. In the second mode its non-decaying term a<sub>0</sub>&nbsp;=&nbsp;0.2173
+is <b>split by hand</b> into 62&nbsp;% removed by carbonate compensation with a 8000-year e-folding and
+38&nbsp;% by silicate weathering with a 300&nbsp;000-year e-folding; those two timescales are the standard
+values of Archer and Brovkin (2008) but <b>the split is an addition to the published fit, not part of it</b>,
+and is shown alongside the unmodified fit so the difference is visible. Temperature is the two-layer Geoffroy
+et&nbsp;al. (2013) model of page&nbsp;1. Thermal expansion, where quoted, uses an expansion efficiency of heat
+of 0.12&nbsp;m per 10<sup>24</sup>&nbsp;J, within the assessed 0.11&nbsp;&plusmn;&nbsp;0.01. The sea level
+figure plots <b>assessed values</b> &mdash; AR6 WG1 Table&nbsp;9.9 medians and <i>likely</i> ranges for 2100
+relative to 1995&ndash;2014, plus the low-likelihood high-impact storyline &mdash; and is not a model output.
+The freshwater panel is an order-of-magnitude calculation: 7&nbsp;%&nbsp;K<sup>&minus;1</sup> applied to a
+representative present-day net freshwater input to the North Atlantic of 0.5&nbsp;Sv, plus Greenland mass loss
+converted at 1&nbsp;Gt&nbsp;yr<sup>&minus;1</sup> = 3.2&times;10<sup>&minus;5</sup>&nbsp;Sv; <b>the 0.5&nbsp;Sv
+baseline is representative rather than measured</b>, and the hosing range shown is the span typically used in
+model experiments rather than an observed quantity. The ice-sheet demonstration evaluates the Schoof (2007)
+grounding-line flux law q<sub>g</sub> &prop; h<sub>g</sub><sup>(m+n+3)/(m+1)</sup> with n&nbsp;=&nbsp;3 and
+m&nbsp;=&nbsp;1/3, giving the exponent 4.75, with flotation thickness
+h<sub>g</sub> = (&rho;<sub>w</sub>/&rho;<sub>i</sub>)d and &rho;<sub>w</sub>/&rho;<sub>i</sub> = 1.12; the
+<b>bed profile is an idealised analytic curve, not a real bed</b>, and the prefactor is normalised so that
+today&rsquo;s grounding line sits at the outer stable equilibrium. It is a demonstration of the stability
+criterion, not a model of any particular glacier. AMOC and sea level assessments, and the 2&ndash;3&nbsp;m per
+degree over 2000 years commitment, are from IPCC AR6 WG1 (2021) ch.&nbsp;9 and the Summary for Policymakers;
+the tipping-element inventory follows Armstrong McKay et&nbsp;al., <i>Science</i> 377, eabn7950 (2022).
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.</p>
+
+<div class="nav">
+  <a href="carbon-budgets.html">&larr; 6 &middot; Cumulative emissions and carbon budgets</a>
+  <a href="../">EE501 course page &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+
+  /* ── 1 · the long tail ──────────────────────────────────────── */
+  (function(){
+    const g=$('tailG'); if(!g) return;
+    const AA=[0.2173,0.2240,0.2824,0.2763], TT=[Infinity,394.4,36.54,4.304];
+    const CC=0.62, TAU_CC=8e3, TAU_W=3e5;   // carbonate compensation / weathering split
+    const C_PRE=278, PPM_PER_PGC=1/2.124, F2X=3.7;
+    const CU=7.3, CD=106, GAM=0.73, EFF=1.28;
+    let full=true;
+
+    function airborne(t){
+      let s=0;
+      for(let k=1;k<4;k++) s+=AA[k]*Math.exp(-t/TT[k]);
+      if(full) s+=AA[0]*(CC*Math.exp(-t/TAU_CC)+(1-CC)*Math.exp(-t/TAU_W));
+      else s+=AA[0];
+      return s;
+    }
+
+    function draw(){
+      clr(g);
+      const P=+$('pulse').value, ecs=+$('ecs7').value;
+      $('pulsev').textContent=P; $('ecs7v').textContent=ecs.toFixed(1);
+      const lam=F2X/ecs;
+
+      // integrate temperature on a log-spaced grid using an adaptive step
+      const times=[], af=[], TT_=[];
+      let T=0, TD=0;
+      const tmax=1e6;
+      let t=0, dt=0.25;
+      let nextLog=Math.log10(1);
+      while(t<tmax){
+        const a=airborne(t);
+        const C=C_PRE+P*a*PPM_PER_PGC;
+        const F=5.35*Math.log(C/C_PRE);
+        // backward Euler — unconditionally stable, so dt may grow with the log axis
+        const A=1+dt*(lam+EFF*GAM)/CU, B=-dt*EFF*GAM/CU;
+        const Cc=-dt*GAM/CD,           D=1+dt*GAM/CD;
+        const r1=T+dt*F/CU, r2=TD;
+        const det=A*D-B*Cc;
+        T =(D*r1-B*r2)/det;
+        TD=(A*r2-Cc*r1)/det;
+        t+=dt;
+        if(Math.log10(Math.max(1,t))>=nextLog){
+          times.push(t); af.push(a); TT_.push(T);
+          nextLog+=0.02;
+        }
+        dt=Math.max(0.25,t/400);
+      }
+
+      const L=64,R=858;
+      const P1T=18,P1B=196, P2T=240,P2B=396;
+      const X=tt=>L+(Math.log10(Math.max(1,tt))-0)/6*(R-L);
+      function frame(T0,B0,ymax,label,unit,fmt){
+        put(g,'rect',{x:L,y:T0,width:R-L,height:B0-T0,fill:'var(--surface-2)',opacity:.45,rx:6});
+        for(let k=0;k<=4;k++){
+          const v=ymax*k/4;
+          put(g,'line',{x1:L,y1:B0-(v/ymax)*(B0-T0),x2:R,y2:B0-(v/ymax)*(B0-T0),
+            stroke:'var(--grid)','stroke-width':1});
+          put(g,'text',{x:L-8,y:B0-(v/ymax)*(B0-T0)+4,'text-anchor':'end','font-size':10.5,
+            fill:'var(--text-muted)'},fmt(v));
+        }
+        for(let d=0;d<=6;d++){
+          put(g,'line',{x1:X(Math.pow(10,d)),y1:T0,x2:X(Math.pow(10,d)),y2:B0,
+            stroke:'var(--grid)','stroke-width':1});
+        }
+        put(g,'text',{x:L,y:T0-4,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},label);
+        put(g,'text',{x:R,y:T0-4,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},unit);
+      }
+      frame(P1T,P1B,1,'Fraction of the pulse still in the atmosphere','',v=>(v*100).toFixed(0)+'%');
+      const tmaxT=Math.max(1,Math.ceil(Math.max(...TT_)*2)/2);
+      frame(P2T,P2B,tmaxT,'Global mean warming','K',v=>v.toFixed(1));
+
+      // process bands on the upper panel
+      const bands=[[1,30,'surface ocean\n& biosphere','var(--ice)'],
+                   [30,400,'thermocline','var(--ocean)'],
+                   [400,8e3,'deep ocean','var(--deep)'],
+                   [8e3,1e5,'carbonate\ncompensation','var(--warn)'],
+                   [1e5,1e6,'silicate\nweathering','var(--rock)']];
+      bands.forEach((b,i)=>{
+        put(g,'rect',{x:X(b[0]),y:P1T,width:X(b[1])-X(b[0]),height:P1B-P1T,
+          fill:b[3],opacity:i%2?0.07:0.13});
+        b[2].split('\n').forEach((ln,j)=>put(g,'text',{x:(X(b[0])+X(b[1]))/2,y:P1T+16+j*12,
+          'text-anchor':'middle','font-size':10,fill:b[3]},ln));
+      });
+
+      function line(arr,T0,B0,ymax,col,w){
+        let d='';
+        for(let i=0;i<times.length;i++)
+          d+=(d?'L':'M')+X(times[i]).toFixed(1)+' '+(B0-(Math.min(arr[i],ymax)/ymax)*(B0-T0)).toFixed(1);
+        put(g,'path',{d:d,fill:'none',stroke:col,'stroke-width':w});
+      }
+      line(af,P1T,P1B,1,'var(--pos)',2.4);
+      line(TT_,P2T,P2B,tmaxT,'var(--pos)',2.4);
+
+      const LBL=['1 yr','10 yr','100 yr','1000 yr','10 kyr','100 kyr','1 Myr'];
+      for(let d=0;d<=6;d++)
+        put(g,'text',{x:X(Math.pow(10,d)),y:P2B+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},LBL[d]);
+      put(g,'text',{x:(L+R)/2,y:P2B+34,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'time since the pulse — logarithmic');
+      if(!full) put(g,'text',{x:R-6,y:P1B-10,'text-anchor':'end','font-size':11,
+        fill:'var(--warn)','font-weight':600},
+        'the fit is extrapolated far beyond the 1000 yr it was made for');
+
+      const at=x=>{let i=0; while(i<times.length-1&&times[i]<x)i++; return i;};
+      $('kA100').textContent=(af[at(100)]*100).toFixed(0);
+      $('kA1k').textContent=(af[at(1000)]*100).toFixed(0);
+      $('kA10k').textContent=(af[at(1e4)]*100).toFixed(0);
+      $('kT10k').textContent=TT_[at(1e4)].toFixed(2);
+      $('tailRead').innerHTML=
+        'Of a '+P+'&nbsp;PgC pulse, <b>'+(af[at(100)]*100).toFixed(0)+'&nbsp;%</b> is still in the air after a '+
+        'century, <b>'+(af[at(1000)]*100).toFixed(0)+'&nbsp;%</b> after a thousand years and <b>'+
+        (af[at(1e4)]*100).toFixed(0)+'&nbsp;%</b> after ten thousand. The warming at 10&nbsp;kyr is still '+
+        '<span class="big">'+TT_[at(1e4)].toFixed(2)+'</span>&nbsp;K'+
+        (full?'':' &mdash; and it never comes down, because this version of the model has no process that can '+
+          'remove the last fifth of the carbon')+'.<br>'+
+        '<span style="color:var(--text-muted);font-size:12.5px">Compare that with the residence times you met '+
+        'in <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture&nbsp;4</a>. '+
+        'A molecule of CO<sub>2</sub> leaves the atmosphere in about five years &mdash; but it is exchanged '+
+        'for another one. <b>The lifetime of a molecule and the lifetime of a perturbation are entirely '+
+        'different quantities</b>, and conflating them is the commonest error in this part of the '+
+        'subject.</span>';
+    }
+    ['pulse','ecs7'].forEach(id=>$(id).addEventListener('input',draw));
+    $('mJoos').addEventListener('click',()=>{full=false;
+      $('mJoos').setAttribute('aria-pressed','true'); $('mFull').setAttribute('aria-pressed','false'); draw();});
+    $('mFull').addEventListener('click',()=>{full=true;
+      $('mFull').setAttribute('aria-pressed','true'); $('mJoos').setAttribute('aria-pressed','false'); draw();});
+    draw();
+  })();
+
+  /* ── 2 · sea level bars (assessed values) ───────────────────── */
+  (function(){
+    const g=$('slG'); if(!g) return;
+    const SL=[['SSP1–1.9',0.38,0.28,0.55,'var(--acc)'],
+              ['SSP1–2.6',0.44,0.32,0.62,'var(--ocean)'],
+              ['SSP2–4.5',0.56,0.44,0.76,'var(--warn)'],
+              ['SSP3–7.0',0.68,0.55,0.90,'var(--rock)'],
+              ['SSP5–8.5',0.77,0.63,1.01,'var(--pos)']];
+    const L=104,R=760,T=40,B=186;
+    const xmax=1.8;
+    const X=v=>L+v/xmax*(R-L);
+    for(let v=0;v<=xmax;v+=0.3){
+      put(g,'line',{x1:X(v),y1:T-10,x2:X(v),y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:X(v),y:B+16,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},v.toFixed(1));
+    }
+    put(g,'text',{x:(L+R)/2,y:B+34,'text-anchor':'middle','font-size':11,
+      fill:'var(--text-muted)'},'global mean sea level rise by 2100, metres above 1995–2014');
+    SL.forEach((s,i)=>{
+      const y=T+i*27;
+      put(g,'text',{x:L-12,y:y+13,'text-anchor':'end','font-size':12.5,
+        fill:'var(--text-primary)','font-weight':600},s[0]);
+      put(g,'rect',{x:X(s[2]),y:y+2,width:X(s[3])-X(s[2]),height:15,rx:4,fill:s[4],opacity:.42});
+      put(g,'line',{x1:X(s[1]),y1:y,x2:X(s[1]),y2:y+19,stroke:s[4],'stroke-width':2.6});
+      put(g,'text',{x:X(s[3])+8,y:y+14,'font-size':11,fill:'var(--text-muted)'},
+        s[1].toFixed(2)+' ('+s[2].toFixed(2)+'–'+s[3].toFixed(2)+')');
+    });
+    // LLHI marker
+    put(g,'line',{x1:X(1.6),y1:T-6,x2:X(1.6),y2:B-6,stroke:'var(--pos)','stroke-width':1.8,
+      'stroke-dasharray':'5 4'});
+    put(g,'text',{x:X(1.6)-6,y:T+6,'text-anchor':'end','font-size':10.5,fill:'var(--pos)'},
+      'low-likelihood, high-impact: up to 1.6 m');
+    put(g,'text',{x:L-12,y:T-14,'text-anchor':'end','font-size':11,
+      fill:'var(--text-muted)'},'scenario');
+    put(g,'text',{x:L,y:T-14,'font-size':11,fill:'var(--text-muted)'},
+      'median and likely range, as assessed by IPCC AR6');
+  })();
+
+  /* ── 3 · freshwater flux to the North Atlantic ──────────────── */
+  (function(){
+    const g=$('fwG'); if(!g) return;
+    const S={wT:$('wT'),gis:$('gis')};
+    const FW0=0.5;                          // Sv, representative present-day net input
+    function draw(){
+      clr(g);
+      const dT=+S.wT.value, gis=+S.gis.value;
+      $('wTv').textContent=dT.toFixed(1); $('gisv').textContent=gis;
+      const fHyd=FW0*0.07*dT;               // Sv from hydrological intensification
+      const fGis=gis*3.2e-5;                // Sv from Greenland
+      const tot=fHyd+fGis;
+
+      const L=205,R=800,T=34;
+      const xmax=0.55;
+      const X=v=>L+Math.min(v,xmax)/xmax*(R-L);
+      for(let v=0;v<=xmax;v+=0.1){
+        put(g,'line',{x1:X(v),y1:T-10,x2:X(v),y2:T+118,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X(v),y:T+134,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      put(g,'text',{x:(L+R)/2,y:T+152,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'freshwater flux anomaly to the North Atlantic, Sv (10⁶ m³ s⁻¹)');
+      // hosing band
+      put(g,'rect',{x:X(0.1),y:T-6,width:X(0.5)-X(0.1),height:114,fill:'var(--warn)',opacity:.12});
+      put(g,'text',{x:(X(0.1)+X(0.5))/2,y:T+8,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--warn)'},'range used in model hosing experiments');
+      const rows=[['hydrological intensification',fHyd,'var(--ocean)'],
+                  ['Greenland mass loss',fGis,'var(--ice)'],
+                  ['total',tot,'var(--pos)']];
+      rows.forEach((r,i)=>{
+        const y=T+24+i*30;
+        put(g,'text',{x:L-12,y:y+13,'text-anchor':'end','font-size':12,
+          fill:'var(--text-primary)','font-weight':i===2?700:600},r[0]);
+        put(g,'rect',{x:L,y:y,width:Math.max(1,X(r[1])-L),height:18,rx:4,fill:r[2],opacity:.8});
+        put(g,'text',{x:X(r[1])+8,y:y+14,'font-size':11.5,fill:r[2],
+          'font-weight':600},r[1].toFixed(3)+' Sv');
+      });
+      put(g,'text',{x:L,y:T-14,'font-size':11,fill:'var(--text-muted)'},
+        'order-of-magnitude estimate — see the note at the foot of the page');
+      $('fwRead').innerHTML=
+        'At '+dT.toFixed(1)+'&nbsp;K of warming, intensifying the hydrological cycle at 7&nbsp;%&nbsp;'+
+        'K<sup>&minus;1</sup> adds about <b>'+fHyd.toFixed(3)+'&nbsp;Sv</b> of freshwater to the North '+
+        'Atlantic, and Greenland losing '+gis+'&nbsp;Gt&nbsp;yr<sup>&minus;1</sup> adds <b>'+
+        fGis.toFixed(3)+'&nbsp;Sv</b> &mdash; a total of <span class="big">'+tot.toFixed(3)+
+        '</span>&nbsp;Sv. '+
+        (tot<0.1
+          ? 'That is <b>below</b> the range typically used in hosing experiments, which is why models weaken the AMOC substantially without collapsing it. '
+          : 'That is <b>inside</b> the range typically used in hosing experiments — which is precisely why this cannot be dismissed. ')+
+        'Note which term is doing the work: <b>the rainfall, not the ice</b>. Greenland at today&rsquo;s rate '+
+        'contributes less than a hundredth of a sverdrup, and it takes a mass loss ten times the present one '+
+        'before it rivals the hydrological term.';
+    }
+    Object.values(S).forEach(el=>el.addEventListener('input',draw));
+    draw();
+  })();
+
+  /* ── 4 · marine ice sheet instability ───────────────────────── */
+  (function(){
+    const g=$('misG'); if(!g) return;
+    const S={acc:$('acc'),butt:$('butt')};
+    const RATIO=1.12, EXP=4.75;
+    // idealised bed: interior ridge, deep basin, seaward sill, outer shelf
+    function depth(x){   // x in km, returns water depth in m (negative = above sea level)
+      return 500 + 700*Math.exp(-Math.pow((x-250)/150,2))
+                 - 150*Math.exp(-Math.pow((x-650)/120,2))
+                 - 900*Math.exp(-Math.pow(x/90,2));
+    }
+    const C0=7.32e-8;
+    const qg=(x,b)=>{
+      const d=depth(x);
+      if(d<=0) return 0;
+      return (C0/b)*Math.pow(RATIO*d,EXP);
+    };
+    const bal=(x,a)=>a*x*1000;
+
+    function draw(){
+      clr(g);
+      const a=+S.acc.value, b=+S.butt.value;
+      $('accv').textContent=a.toFixed(2); $('buttv').textContent=b.toFixed(2);
+
+      /* --- find equilibria: sign changes of qg - bal --- */
+      const eqs=[];
+      let prev=qg(20,b)-bal(20,a);
+      for(let x=20.5;x<=800;x+=0.5){
+        const cur=qg(x,b)-bal(x,a);
+        if(prev===0||cur===0||(prev<0)!==(cur<0)){
+          // bisect
+          let lo=x-0.5,hi=x;
+          for(let i=0;i<40;i++){
+            const m=(lo+hi)/2;
+            if(((qg(lo,b)-bal(lo,a))<0)!==((qg(m,b)-bal(m,a))<0)) hi=m; else lo=m;
+          }
+          const xe=(lo+hi)/2;
+          // stable if d(qg-bal)/dx > 0 at the root
+          const h=1.0;
+          const slope=((qg(xe+h,b)-bal(xe+h,a))-(qg(xe-h,b)-bal(xe-h,a)))/(2*h);
+          eqs.push({x:xe,stable:slope>0});
+        }
+        prev=cur;
+      }
+
+      /* --- upper panel: the bed --- */
+      const L=64,R=858,T1=26,B1=190;
+      const X=x=>L+x/800*(R-L);
+      const dmax=1300, dmin=-500;
+      const Y1=d=>T1+(d-dmin)/(dmax-dmin)*(B1-T1);
+      put(g,'rect',{x:L,y:T1,width:R-L,height:B1-T1,fill:'var(--surface-2)',opacity:.45,rx:6});
+      // sea level line
+      put(g,'line',{x1:L,y1:Y1(0),x2:R,y2:Y1(0),stroke:'var(--ocean)','stroke-width':1.4});
+      put(g,'text',{x:R-4,y:Y1(0)-5,'text-anchor':'end','font-size':10,fill:'var(--ocean)'},'sea level');
+      // bedrock
+      let bd='M '+L+' '+B1;
+      for(let x=0;x<=800;x+=2) bd+='L'+X(x).toFixed(1)+' '+Y1(depth(x)).toFixed(1);
+      bd+='L'+R+' '+B1+'Z';
+      put(g,'path',{d:bd,fill:'var(--rock)',opacity:.5,stroke:'var(--rock)','stroke-width':1.4});
+      // ice, up to the outermost stable grounding line
+      const outer=eqs.filter(e=>e.stable).map(e=>e.x);
+      const xg = outer.length ? Math.max(...outer) : 0;
+      let ice='M '+X(0)+' '+Y1(-480);
+      for(let x=0;x<=xg;x+=2){
+        const surf=Math.min(-480+ (x/Math.max(1,xg))*430, -50);
+        ice+='L'+X(x).toFixed(1)+' '+Y1(surf).toFixed(1);
+      }
+      for(let x=xg;x>=0;x-=2) ice+='L'+X(x).toFixed(1)+' '+Y1(Math.min(depth(x),0)).toFixed(1);
+      ice+='Z';
+      if(xg>10) put(g,'path',{d:ice,fill:'var(--ice)',opacity:.55,stroke:'var(--ice)','stroke-width':1});
+      // equilibria markers on the bed
+      eqs.forEach(e=>{
+        const col=e.stable?'var(--acc)':'var(--pos)';
+        put(g,'line',{x1:X(e.x),y1:T1+6,x2:X(e.x),y2:B1-4,stroke:col,'stroke-width':1.4,
+          'stroke-dasharray':e.stable?'none':'4 3'});
+        put(g,'text',{x:X(e.x),y:T1+2,'text-anchor':'middle','font-size':10,fill:col},
+          e.stable?'stable':'threshold');
+      });
+      put(g,'text',{x:L,y:T1-6,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Idealised bed profile — depth below sea level');
+      put(g,'text',{x:R,y:T1-6,'text-anchor':'end','font-size':11,fill:'var(--warn)','font-weight':600},
+        'IDEALISED GEOMETRY — not a real bed');
+      put(g,'text',{x:X(250),y:Y1(1200)+14,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},'deep basin — retrograde, unstable');
+      put(g,'text',{x:X(650),y:Y1(350)-8,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},'sill');
+
+      /* --- lower panel: the flux balance --- */
+      const T2=232,B2=396;
+      const lo=3.5, hi=8.5;                       // log10 flux range
+      const Y2=v=>B2-(Math.log10(Math.max(1,v))-lo)/(hi-lo)*(B2-T2);
+      put(g,'rect',{x:L,y:T2,width:R-L,height:B2-T2,fill:'var(--surface-2)',opacity:.45,rx:6});
+      for(let d=Math.ceil(lo);d<=hi;d++){
+        put(g,'line',{x1:L,y1:Y2(Math.pow(10,d)),x2:R,y2:Y2(Math.pow(10,d)),
+          stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y2(Math.pow(10,d))+4,'text-anchor':'end','font-size':10,
+          fill:'var(--text-muted)'},'10'+String(d).replace(/[0-9]/g,c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]));
+      }
+      for(let x=0;x<=800;x+=200){
+        put(g,'line',{x1:X(x),y1:T2,x2:X(x),y2:B2,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X(x),y:B2+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},x);
+      }
+      put(g,'text',{x:(L+R)/2,y:B2+34,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'grounding-line position, km from the ice divide');
+      function fl(f,col,w,dash){
+        let d='';
+        for(let x=20;x<=800;x+=2){
+          const v=f(x);
+          if(v<Math.pow(10,lo)||v>Math.pow(10,hi)) { d=''; continue; }
+          d+=(d?'L':'M')+X(x).toFixed(1)+' '+Y2(v).toFixed(1);
+        }
+        const at={d:d,fill:'none',stroke:col,'stroke-width':w};
+        if(dash) at['stroke-dasharray']=dash;
+        put(g,'path',at);
+      }
+      fl(x=>bal(x,a),'var(--text-muted)',1.8,'6 4');
+      fl(x=>qg(x,b),'var(--ocean)',2.4);
+      put(g,'text',{x:L,y:T2-6,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Ice flux, m² yr⁻¹ — outflow through the grounding line against snow accumulated upstream');
+      put(g,'text',{x:X(760),y:Y2(bal(760,a))-8,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},'balance flux, a·x');
+      put(g,'text',{x:X(470),y:Y2(qg(470,b))-8,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--ocean)'},'grounding-line flux ∝ h⁴·⁷⁵');
+      eqs.forEach(e=>{
+        const col=e.stable?'var(--acc)':'var(--pos)';
+        put(g,'circle',{cx:X(e.x),cy:Y2(bal(e.x,a)),r:5.5,fill:col,
+          stroke:'var(--surface-1)','stroke-width':1.6});
+      });
+
+      /* --- numbers --- */
+      const st=eqs.filter(e=>e.stable).map(e=>Math.round(e.x));
+      const un=eqs.filter(e=>!e.stable).map(e=>Math.round(e.x));
+      $('kEqS').textContent=st.length?st.join(', '):'none';
+      $('kEqU').textContent=un.length?un.join(', '):'none';
+      const thr=un.length?Math.max(...un):null;
+      const margin=(thr!==null&&xg>thr)?Math.round(xg-thr):null;
+      $('kMar').textContent=margin!==null?margin:'—';
+      // sea level equivalent: crude, area 1e12 m2 of basin, mean thickness change
+      const collapsed=st.length?Math.min(...st):0;
+      const lost=Math.max(0,xg-collapsed);
+      $('kSl').textContent=(lost/800*3.4).toFixed(1);
+
+      $('misRead').innerHTML=
+        (eqs.length>=3
+          ? 'This bed supports <b>two stable grounding-line positions</b> &mdash; one out on the sill at '+
+            Math.max(...st)+'&nbsp;km and one deep in the interior at '+Math.min(...st)+
+            '&nbsp;km &mdash; separated by an unstable threshold at <b>'+thr+'&nbsp;km</b>. The ice sheet is '+
+            'currently at the outer one, with <span class="big">'+margin+'</span>&nbsp;km of margin. Push the '+
+            'grounding line back past the threshold by any means at all and it will retreat all the way to the '+
+            'interior position <b>without any further warming</b>, releasing about '+
+            (lost/800*3.4).toFixed(1)+'&nbsp;m of sea level equivalent from this basin.'
+          : 'There is no longer a stable position out on the sill. The only equilibrium left is deep in the '+
+            'interior, so this configuration retreats there &mdash; the <b>bifurcation has already happened</b>, '+
+            'and no reduction in forcing from here recovers the outer state until the system is pushed well '+
+            'back past where it started. That asymmetry is hysteresis.')+
+        '<br><span style="color:var(--text-muted);font-size:12.5px">The equilibria are the crossings in the '+
+        'lower panel, and the stability rule is entirely about <em>slopes</em>: where the outflow curve rises '+
+        'more steeply than the balance line, a small retreat reduces outflow and the ice grows back. Where it '+
+        'falls, retreat increases outflow and nothing stops it. That is the whole of marine ice sheet '+
+        'instability.</span>';
+    }
+    Object.values(S).forEach(el=>el.addEventListener('input',draw));
+    draw();
+  })();
+
+  /* ── reveal-answer buttons ──────────────────────────────────── */
+  document.querySelectorAll('.rev').forEach(b=>{
+    const a=b.nextElementSibling;
+    b.addEventListener('click',()=>{
+      const open=!a.hidden;
+      a.hidden=open;
+      b.textContent=open?'Reveal answer':'Hide answer';
+      b.setAttribute('aria-expanded',String(!open));
+    });
+  });
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

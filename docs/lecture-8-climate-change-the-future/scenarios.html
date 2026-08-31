@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scenarios and the forcing chain</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f; --ice:#7fb3d5;
+    --s19:#1d8f6c; --s26:#2a78d6; --s45:#d9a520; --s70:#d9662a; --s85:#c8443a;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad; --ice:#6fa2c4;
+    --s19:#25a37c; --s26:#3987e5; --s45:#e0b636; --s70:#e0783c; --s85:#d9564c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  .eq b{font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .rev{display:block;margin:9px 0 0;border:1px solid var(--acc);background:transparent;color:var(--acc);
+    border-radius:8px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+  .rev:hover{background:var(--acc);color:var(--surface-1)}
+  .ans{display:block;margin:9px 0 0}
+  .ans[hidden]{display:none}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Climate change: the future &middot; 1 of 7</p>
+
+<header>
+  <div>
+    <h1>Scenarios and the forcing chain</h1>
+    <p class="sub">Everything in Lectures&nbsp;2 to&nbsp;7 was, in principle, a question with an answer. This
+    lecture is different. The largest single uncertainty about the climate of 2100 is not a gap in the physics
+    &mdash; it is that <em>nobody has decided yet</em>. So we stop predicting and start doing something else:
+    we assume a future, and work out what it implies. This page is about what exactly gets assumed, and about
+    the machinery that turns an assumption into a temperature.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Why the future needs a scenario</h3>
+  <p class="cap">The one thing a climate model cannot compute is the thing that matters most.</p>
+
+  <p class="note" style="margin-top:0">A climate model takes a forcing and returns a response. Give it
+  <span class="eqn">&Delta;Q</span> and it gives you <span class="eqn">&Delta;T</span> &mdash; that is exactly
+  the machinery of <a href="../lecture-6-response-of-the-climate-system-to-perturbations/forcing-and-feedback.html">Lecture&nbsp;6</a>.
+  But for the twenty-first century the forcing is dominated by a term whose value depends on what eight billion
+  people choose to do. No equation contains that.</p>
+
+  <p class="note">So the community does the only honest thing available: it states the assumption out loud, and
+  attaches it to every number that follows. A <b>scenario</b> is that stated assumption &mdash; a self-consistent
+  story about population, energy, technology and land use, carried through to the emissions it implies. It is
+  not a forecast, it carries no probability, and a projection made under it is a conditional statement:
+  <em>if this, then that</em>.</p>
+
+  <div class="q"><b>Question.</b> If scenarios carry no probability, in what sense can a projection be
+  &ldquo;wrong&rdquo;?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Only in the physics, never in the assumption. A projection is falsified if the
+    climate response to a forcing that <em>did</em> occur turns out to be different from what the model said.
+    It is not falsified because the emissions took a different path &mdash; that was never a claim.
+    This distinction is routinely lost in public argument, where &ldquo;the models were wrong&rdquo; almost
+    always means &ldquo;the scenario was not followed&rdquo;. Testing the physics separately from the scenario
+    is exactly what <a href="../lecture-7-climate-change-past-and-present/attribution.html">Lecture&nbsp;7&rsquo;s</a>
+    attribution machinery does, and it is why the historical period is the place to do it.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The chain, and where each link is made</h3>
+  <p class="cap">Four links, four different kinds of model, four different kinds of uncertainty. Confusing them
+  is the single commonest error in reading this material.</p>
+
+  <svg viewBox="0 0 880 250" role="img" aria-label="The scenario chain: socio-economic story to emissions to concentration to radiative forcing to climate response, with the model type and uncertainty source annotated at each link"><g id="chainG"></g></svg>
+
+  <p class="note">Read it left to right and notice how the discipline changes at every arrow. The first link is
+  economics and demography; the second is biogeochemistry
+  (<a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture&nbsp;4</a>); the third is
+  radiative transfer (<a href="../lecture-2-earths-energy-budget/real-atmosphere.html">Lecture&nbsp;2</a>); the
+  fourth is the whole of <a href="../lecture-6-response-of-the-climate-system-to-perturbations/feedback-parameter.html">Lecture&nbsp;6</a>.
+  A climate model, strictly speaking, is only the last link.</p>
+
+  <p class="note"><b>Two ways to run the chain, and they are not equivalent.</b> A
+  <b>concentration-driven</b> experiment starts at link three: the modelling groups are handed a CO<sub>2</sub>
+  concentration and asked to simulate the response. A <b>emission-driven</b> experiment starts at link two: the
+  model is handed emissions and has to work out the concentration itself, using its own carbon cycle. Almost all
+  of the headline CMIP figures are concentration-driven, because it removes carbon-cycle spread and isolates the
+  physics &mdash; but that means the headline spread <em>understates</em> the true uncertainty. Page&nbsp;6
+  returns to this.</p>
+</div>
+
+<div class="card">
+  <h3>RCPs, SSPs, and what the numbers in the names mean</h3>
+  <p class="cap">Two generations of scenario, and your lecturer&rsquo;s figures use both.</p>
+
+  <p class="note" style="margin-top:0">The <b>Representative Concentration Pathways</b> (RCPs), used through
+  IPCC AR5 and in most of the textbook figures, are named for the <em>total radiative forcing in 2100</em> in
+  W&nbsp;m<sup>&minus;2</sup>. RCP8.5 means 8.5&nbsp;W&nbsp;m<sup>&minus;2</sup> &mdash; and since a
+  CO<sub>2</sub> doubling is 3.7, that is a little over two doublings. They were deliberately built to
+  <em>span</em> the plausible range rather than to be equally likely, and they carry no socio-economic story:
+  several different worlds can produce the same pathway.</p>
+
+  <p class="note">The <b>Shared Socioeconomic Pathways</b> (SSPs), used in AR6 and CMIP6, fix that. The name has
+  two numbers: <b>SSP<i>x</i>&ndash;<i>y</i></b>, where <i>x</i> identifies one of five narratives about how the
+  world develops and <i>y</i> is again the 2100 forcing. So SSP1&ndash;2.6 and SSP2&ndash;2.6 reach the same
+  forcing by different routes, and SSP5&ndash;8.5 is a fossil-fuelled world, not merely a hot one.</p>
+
+  <table>
+    <thead><tr><th>Scenario</th><th class="num">2100 forcing</th><th class="num">2100 CO<sub>2</sub></th>
+      <th class="num">&Delta;T 2081&ndash;2100</th><th>The story, in one line</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">SSP1&ndash;1.9</td><td class="num">1.9</td><td class="num">&asymp;390&nbsp;ppm</td>
+        <td class="num">1.4 (1.0&ndash;1.8)</td><td>Net zero CO<sub>2</sub> around 2050, then net removal. The Paris 1.5&nbsp;&deg;C pathway.</td></tr>
+      <tr><td class="nm">SSP1&ndash;2.6</td><td class="num">2.6</td><td class="num">&asymp;445&nbsp;ppm</td>
+        <td class="num">1.8 (1.3&ndash;2.4)</td><td>Net zero shortly after 2050&ndash;2075; sustainability narrative. Comparable to RCP2.6.</td></tr>
+      <tr><td class="nm">SSP2&ndash;4.5</td><td class="num">4.5</td><td class="num">&asymp;600&nbsp;ppm</td>
+        <td class="num">2.7 (2.1&ndash;3.5)</td><td>&ldquo;Middle of the road&rdquo;: current trends broadly continue, emissions fall slowly after 2050.</td></tr>
+      <tr><td class="nm">SSP3&ndash;7.0</td><td class="num">7.0</td><td class="num">&asymp;870&nbsp;ppm</td>
+        <td class="num">3.6 (2.8&ndash;4.6)</td><td>Regional rivalry, no climate policy, high non-CO<sub>2</sub> and aerosol emissions.</td></tr>
+      <tr><td class="nm">SSP5&ndash;8.5</td><td class="num">8.5</td><td class="num">&asymp;1135&nbsp;ppm</td>
+        <td class="num">4.4 (3.3&ndash;5.7)</td><td>Fossil-fuelled development. Comparable to RCP8.5. See the plausibility card below.</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="font-size:12.5px;color:var(--text-muted)">&Delta;T in &deg;C relative to
+  1850&ndash;1900, best estimate with the <i>very likely</i> range, as assessed in IPCC AR6 WG1 Table&nbsp;SPM.1.
+  Concentrations are approximate scenario values, rounded.</p>
+
+  <div class="q"><b>Question.</b> RCP8.5 and SSP5&ndash;8.5 both reach 8.5&nbsp;W&nbsp;m<sup>&minus;2</sup>.
+  Does that mean they give the same climate?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Almost, for the global mean &mdash; but not regionally. The 8.5 is a
+    <em>total</em>, and it can be assembled from different ingredients. Two pathways with the same net forcing
+    but different aerosol loading have different regional patterns, because aerosol forcing is spatially
+    concentrated near its sources while CO<sub>2</sub> forcing is not. This is the same lesson as
+    <a href="../lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">Lecture&nbsp;6,
+    page&nbsp;2</a>: a global-mean W&nbsp;m<sup>&minus;2</sup> is a summary, and summaries lose the
+    geography.</span>
+  </div>
+</div>
+
+<h2 class="sec">The demonstration this lecture is built around</h2>
+
+<div class="card demo">
+  <h3>The chain, end to end</h3>
+  <p class="cap">Choose an emission pathway. The page then runs a real carbon cycle and a real energy balance
+  model to give you a concentration, a forcing and a temperature. Everything below the emission curve is
+  computed here, in your browser, from equations you have already met.</p>
+
+  <p class="note" style="margin-top:0">This is not a picture of a projection. It is a projection &mdash; a small
+  one, but an honest one, with three components you can name. Carbon is carried by the
+  <b>impulse-response model</b> of Joos et&nbsp;al. (2013): a pulse of CO<sub>2</sub> released into the
+  atmosphere decays as a sum of four exponentials, one of which never decays at all. Forcing is
+  <span class="eqn">&Delta;F = 5.35&nbsp;ln(C/C<sub>0</sub>)</span>, the formula from
+  <a href="../lecture-6-response-of-the-climate-system-to-perturbations/forcing-and-feedback.html">Lecture&nbsp;6,
+  page&nbsp;1</a>. Temperature comes from the <b>two-layer energy balance model</b> &mdash; the same slab-ocean
+  equation as <a href="../lecture-6-response-of-the-climate-system-to-perturbations/transient-response.html">Lecture&nbsp;6,
+  page&nbsp;5</a> and <a href="../pc-lab-2-energy-balance-model/">PC&nbsp;Lab&nbsp;2</a>, with a deep ocean
+  attached underneath so it can store heat.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Scenario</span>
+    <button class="ghost" id="p19">SSP1&ndash;1.9</button>
+    <button class="ghost" id="p26">SSP1&ndash;2.6</button>
+    <button class="ghost" id="p45" aria-pressed="true">SSP2&ndash;4.5</button>
+    <button class="ghost" id="p70">SSP3&ndash;7.0</button>
+    <button class="ghost" id="p85">SSP5&ndash;8.5</button>
+    <button class="ghost" id="ppol">Current policies</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="pkY"><span>Emissions peak in</span> <b id="pkYv">2040</b></label>
+      <input type="range" id="pkY" min="2020" max="2090" step="5" value="2040">
+      <div class="hint">Before this year emissions rise; after it they fall.</div>
+    </div>
+    <div class="ctrl">
+      <label for="pkE"><span>Peak emission rate</span> <b id="pkEv">45</b></label>
+      <input type="range" id="pkE" min="20" max="130" step="1" value="45">
+      <div class="hint">GtCO<sub>2</sub> per year. Today&rsquo;s rate is about 40.</div>
+    </div>
+    <div class="ctrl">
+      <label for="nzY"><span>Net zero CO<sub>2</sub> in</span> <b id="nzYv">2140</b></label>
+      <input type="range" id="nzY" min="2040" max="2250" step="5" value="2140">
+      <div class="hint">The year the emission curve crosses zero.</div>
+    </div>
+    <div class="ctrl">
+      <label for="cdr"><span>Net removal afterwards</span> <b id="cdrv">0</b></label>
+      <input type="range" id="cdr" min="-15" max="0" step="0.5" value="0">
+      <div class="hint">GtCO<sub>2</sub> per year of engineered or biological removal, reached 30&nbsp;yr after net zero.</div>
+    </div>
+    <div class="ctrl">
+      <label for="nonco2"><span>Non-CO<sub>2</sub> forcing in 2100</span> <b id="nonco2v">+1.0</b></label>
+      <input type="range" id="nonco2" min="-0.5" max="2.5" step="0.1" value="1.0">
+      <div class="hint">W&nbsp;m<sup>&minus;2</sup>. Methane, N<sub>2</sub>O, ozone and aerosol combined. Today it is about +0.6.</div>
+    </div>
+    <div class="ctrl">
+      <label for="ecs"><span>Equilibrium climate sensitivity</span> <b id="ecsv">3.0</b></label>
+      <input type="range" id="ecs" min="1.8" max="5.2" step="0.1" value="3.0">
+      <div class="hint">K per CO<sub>2</sub> doubling. AR6 best estimate 3.0, <i>likely</i> 2.5&ndash;4.0.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 640" role="img" aria-label="Three stacked panels: CO2 emissions, atmospheric CO2 concentration, and global mean temperature change, from 1850 to 2100, for the chosen pathway"><g id="chG"></g></svg>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">CO<sub>2</sub> in 2100</div><div class="v" id="kC">&mdash;</div><div class="s">ppm</div></div>
+    <div class="kpi"><div class="k">Forcing in 2100</div><div class="v" id="kF">&mdash;</div><div class="s">W m<sup>&minus;2</sup>, total</div></div>
+    <div class="kpi"><div class="k">&Delta;T 2081&ndash;2100</div><div class="v" id="kT">&mdash;</div><div class="s">K vs 1850&ndash;1900</div></div>
+    <div class="kpi"><div class="k">Cumulative 2020&ndash;2100</div><div class="v" id="kE">&mdash;</div><div class="s">GtCO<sub>2</sub></div></div>
+  </div>
+
+  <div class="readout" id="chRead"></div>
+
+  <div class="warnbox"><b>What this model is and is not.</b> The carbon cycle here is <em>linear</em>: a pulse
+  of CO<sub>2</sub> decays the same way whatever the state of the climate. That is a real simplification, and it
+  is the wrong one in exactly one direction &mdash; a warmer ocean and a stressed biosphere take up
+  <em>less</em> carbon, so the true concentration for a given emission pathway is higher than this model says.
+  <a href="carbon-budgets.html">Page&nbsp;6</a> is about that missing feedback. The temperature model has no
+  geography, no seasons and no internal variability; <a href="projections-predictions.html">page&nbsp;2</a>
+  adds the variability back and <a href="temperature-patterns.html">page&nbsp;3</a> adds the geography.</div>
+
+  <div class="q"><b>Question.</b> Set the peak year to 2020 and net zero to 2050 &mdash; the SSP1&ndash;1.9
+  shape. The temperature curve flattens but does not come down. Emissions are zero. Why is it not cooling?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Because zero emissions means zero <em>additional</em> CO<sub>2</sub>, not zero
+    CO<sub>2</sub>. Look at the middle panel: the concentration stops rising and then declines only slowly, as
+    the ocean and land keep drawing down the excess. So the forcing stays high, and the system, which was still
+    catching up to it, continues to warm slightly &mdash; the committed warming of
+    <a href="../lecture-6-response-of-the-climate-system-to-perturbations/transient-response.html">Lecture&nbsp;6,
+    page&nbsp;5</a>. What is remarkable is that the two effects nearly cancel: the declining forcing pulls down
+    almost exactly as hard as the catching-up ocean pushes up. That near-cancellation has a name &mdash; the
+    zero-emissions commitment &mdash; and it is the reason &ldquo;net zero stops the warming&rdquo; is
+    approximately true. <a href="long-view.html">Page&nbsp;7</a> takes it apart.</span>
+  </div>
+
+  <div class="q"><b>Question.</b> Now hold the pathway fixed and drag climate sensitivity from 2.5 to 4.0
+  &mdash; the AR6 <i>likely</i> range. Compare the size of that change with the difference between
+  SSP2&ndash;4.5 and SSP5&ndash;8.5.
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>They are comparable, and which one dominates depends on when you look. Near the
+    middle of the century the sensitivity range and the scenario range are of similar width; by 2100 the
+    scenario range is clearly larger. That crossover is the whole subject of
+    <a href="projections-predictions.html">page&nbsp;2</a>, where we take the same three sources of spread
+    &mdash; internal variability, model physics, scenario &mdash; and measure them against each other properly.
+    </span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The forcing that goes away: aerosols</h3>
+  <p class="cap">One of the more uncomfortable results in the whole subject, and it is in the scenario data
+  rather than the climate model.</p>
+
+  <p class="note" style="margin-top:0">Every RCP and every SSP has sulphur dioxide emissions <em>falling</em>
+  through the twenty-first century, in some cases steeply. This is not a climate assumption; it is an air
+  quality one. SO<sub>2</sub> causes acid rain and kills people through particulate pollution, so every
+  plausible development story cleans it up, and the fossil-fuelled ones clean it up fastest because they can
+  afford to.</p>
+
+  <p class="note">But sulphate aerosol is a <b>negative</b> forcing &mdash;
+  <a href="../lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">Lecture&nbsp;6,
+  page&nbsp;2</a> put it near &minus;1.1&nbsp;W&nbsp;m<sup>&minus;2</sup>, the single largest uncertainty in the
+  present-day forcing ledger. Removing it is a positive forcing. So the cleaner air of the coming decades will,
+  on its own, add warming. Set the non-CO<sub>2</sub> slider above to +2.0 in the demonstration and you can see
+  the size of it.</p>
+
+  <div class="warnbox"><b>This is not an argument for dirty air.</b> Aerosols have a residence time of days;
+  CO<sub>2</sub> has a residence time you can read off the middle panel above. Using one to mask the other means
+  committing to it forever, and stopping for any reason &mdash; a recession, a war, a policy &mdash; unmasks the
+  full warming within about a decade. The asymmetry of the two lifetimes is the entire reason this is a trap
+  rather than a strategy. It is also, in miniature, the argument against solar geoengineering.</div>
+</div>
+
+<div class="card">
+  <h3>How plausible is a scenario?</h3>
+  <p class="cap">Scenarios carry no probability &mdash; but they are not therefore all equally worth quoting.</p>
+
+  <p class="note" style="margin-top:0">RCP8.5 and SSP5&ndash;8.5 were designed as high-end pathways: roughly the
+  90th percentile of the no-policy literature at the time they were written, with coal use in 2100 several times
+  today&rsquo;s. They are frequently, and wrongly, labelled &ldquo;business as usual&rdquo;.
+  Hausfather and Peters (2020) argued in <i>Nature</i> that this label should be retired: the collapse in the
+  cost of renewables and the policies already enacted have made a coal-dominated 2100 substantially less likely
+  than it looked in 2005.</p>
+
+  <p class="note">Where does that leave the range you should have in your head? Current policies, extrapolated,
+  point at roughly <b>2.5&ndash;3&nbsp;&deg;C</b> by 2100 &mdash; near SSP2&ndash;4.5. Pledges, if fully
+  delivered, take that down towards 2&nbsp;&deg;C. That is a considerable achievement compared with the
+  4&nbsp;&deg;C world of a decade ago, and nowhere near the stated target. Both halves of that sentence are
+  true, and you should be suspicious of any account that gives you only one of them.</p>
+
+  <div class="q"><b>Question.</b> If SSP5&ndash;8.5 is unlikely, why does the IPCC still run it?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Three reasons, and they are all good ones. First, it is a clean experiment: the
+    signal-to-noise ratio is large, so it is the best scenario for <em>diagnosing</em> a mechanism, which is why
+    most process studies use it. Second, it brackets the possibility of strong carbon-cycle feedbacks &mdash; a
+    world with moderate emissions and a badly behaved land sink can end up on a high-forcing pathway without a
+    coal boom. Third, risk is not the same as expectation: a 5&nbsp;% chance of 5&nbsp;&deg;C is worth planning
+    for, and you cannot plan for what you have not simulated. The error is not running it. The error is
+    calling it &ldquo;business as usual&rdquo;.</span>
+  </div>
+
+  <p class="note"><b>Try it yourself.</b> The interactive policy model at
+  <a href="https://en-roads.climateinteractive.org/" target="_blank" rel="noopener">En-ROADS</a>
+  (Climate Interactive and MIT Sloan) lets you build a pathway from actual policy levers &mdash; carbon price,
+  electrification, deforestation, methane &mdash; rather than from the abstract peak-and-decline shape used
+  above. The two models will not agree in detail. Finding out <em>which lever</em> moves your temperature most,
+  and why, is the point.</p>
+</div>
+
+<p class="foot">After Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;6.1&ndash;6.2 and figures 6.1 and 6.4 (RCP forcings, CO<sub>2</sub> emissions and concentrations,
+SO<sub>2</sub> emissions). Scenario descriptions, 2100 concentrations and assessed warming ranges are from IPCC
+AR6 WG1 (2021), Table&nbsp;SPM.1 and the Annex&nbsp;III scenario data; RCP definitions from van Vuuren
+et&nbsp;al. (2011) and the SSP framework from Riahi et&nbsp;al. (2017) and O&rsquo;Neill et&nbsp;al. (2016). The
+plausibility discussion follows Hausfather and Peters, <i>Nature</i> 577, 618&ndash;620 (2020).
+&nbsp;&middot;&nbsp; <b>The demonstration is computed, not drawn.</b> The carbon cycle is the multi-model mean
+CO<sub>2</sub> impulse response of Joos et&nbsp;al., <i>Atmos. Chem. Phys.</i> 13, 2793&ndash;2825 (2013), with
+a<sub>0</sub>&nbsp;=&nbsp;0.2173 and (a<sub>i</sub>,&nbsp;&tau;<sub>i</sub>) = (0.2240, 394.4&nbsp;yr),
+(0.2824, 36.54&nbsp;yr), (0.2763, 4.304&nbsp;yr), integrated as four reservoirs with 1&nbsp;ppm =
+2.124&nbsp;PgC. The energy balance is the two-layer model of Geoffroy et&nbsp;al., <i>J. Climate</i> 26,
+1841&ndash;1857 (2013) with the multi-model mean parameters C&nbsp;=&nbsp;7.3 and
+C<sub>0</sub>&nbsp;=&nbsp;106&nbsp;W&nbsp;yr&nbsp;m<sup>&minus;2</sup>&nbsp;K<sup>&minus;1</sup>,
+&gamma;&nbsp;=&nbsp;0.73&nbsp;W&nbsp;m<sup>&minus;2</sup>&nbsp;K<sup>&minus;1</sup> and efficacy
+&epsilon;&nbsp;=&nbsp;1.28; &lambda; is set from the sensitivity slider as 3.7/ECS. The historical branch uses a
+smooth exponential emission curve whose amplitude is <b>calibrated by the page</b> so that the model reproduces
+415&nbsp;ppm in 2020; the cumulative historical emissions this implies are printed in the readout so you can
+compare them with the observed 2400&nbsp;GtCO<sub>2</sub>. The emission pathways are the parametric
+peak-and-decline shapes set by the sliders, tuned so the presets reproduce the assessed AR6 warming &mdash;
+<b>they are not the marker scenario time series</b>. Non-CO<sub>2</sub> forcing is prescribed, not computed.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="projections-predictions.html">projections, predictions and where the
+uncertainty comes from &rarr;</a></p>
+
+<div class="nav">
+  <a href="../">&larr; EE501 course page</a>
+  <a href="projections-predictions.html">2 &middot; Projections, predictions and uncertainty &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(p,x1,y1,x2,y2,col,w){
+    put(p,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:col,'stroke-width':w||2});
+    const a=Math.atan2(y2-y1,x2-x1),h=7;
+    put(p,'polygon',{points:[x2,y2,x2-h*Math.cos(a-0.42),y2-h*Math.sin(a-0.42),
+      x2-h*Math.cos(a+0.42),y2-h*Math.sin(a+0.42)].join(' '),fill:col});
+  }
+
+  /* ── 1 · the scenario chain schematic ───────────────────────── */
+  (function(){
+    const g=$('chainG'); if(!g) return;
+    const boxes=[
+      ['Socio-economic story','population, energy,\nland use','integrated assessment','a choice, not a\nprediction'],
+      ['Emissions','GtCO₂/yr, CH₄, SO₂','energy-economic model','the scenario itself'],
+      ['Concentration','ppm','carbon cycle model','sink strength,\nfeedbacks'],
+      ['Radiative forcing','W m⁻²','radiative transfer','small — 5.35 ln(C/C₀)'],
+      ['Climate response','ΔT, ΔP, Δ sea level','coupled climate model','sensitivity,\ninternal variability']
+    ];
+    const W=152,H=76,y=64,gap=(880-40-5*W)/4;
+    boxes.forEach((b,i)=>{
+      const x=20+i*(W+gap);
+      const col=i<2?'var(--warn)':(i===4?'var(--pos)':'var(--ocean)');
+      put(g,'rect',{x:x,y:y,width:W,height:H,rx:11,fill:'var(--surface-2)',stroke:col,'stroke-width':1.3});
+      put(g,'text',{x:x+W/2,y:y+24,'text-anchor':'middle','font-size':12.5,
+        fill:'var(--text-primary)','font-weight':600},b[0].replace(/ /g,' '));
+      b[1].split('\n').forEach((ln,j)=>put(g,'text',{x:x+W/2,y:y+42+j*13,'text-anchor':'middle',
+        'font-size':10.5,fill:'var(--text-muted)'},ln));
+      // model type above
+      put(g,'text',{x:x+W/2,y:y-14,'text-anchor':'middle','font-size':10,
+        fill:'var(--text-muted)','letter-spacing':'.04em'},b[2]);
+      // uncertainty below
+      b[3].split('\n').forEach((ln,j)=>put(g,'text',{x:x+W/2,y:y+H+22+j*13,'text-anchor':'middle',
+        'font-size':10.5,fill:col},ln));
+      if(i<4) arrow(g,x+W+4,y+H/2,x+W+gap-4,y+H/2,'var(--text-muted)',1.8);
+    });
+    put(g,'text',{x:20,y:26,'font-size':11,fill:'var(--text-muted)',
+      'letter-spacing':'.08em'},'WHAT MAKES THE LINK');
+    put(g,'text',{x:20,y:y+H+62,'font-size':11,fill:'var(--text-muted)',
+      'letter-spacing':'.08em'},'WHERE THE UNCERTAINTY IS');
+    // brace: climate model only covers last link
+    put(g,'path',{d:'M '+(20+3*(W+gap))+' 218 h '+(2*W+gap),fill:'none',
+      stroke:'var(--pos)','stroke-width':1.6});
+    put(g,'text',{x:20+3*(W+gap)+(2*W+gap)/2,y:236,'text-anchor':'middle','font-size':11,
+      fill:'var(--pos)','font-weight':600},'what a climate model actually does');
+  })();
+
+  /* ── 2 · the scenario chain, computed ───────────────────────── */
+  (function(){
+    const g=$('chG'); if(!g) return;
+
+    /* --- physical constants ------------------------------------ */
+    const PPM_PER_PGC = 1/2.124;          // ppm per PgC
+    const GTCO2_PER_PGC = 3.664;
+    const C_PRE = 278;                    // ppm, 1850
+    const C_2020 = 415;                   // ppm, calibration target
+    const F2X = 3.7;                      // W m-2 per doubling
+    // Joos et al. (2013) impulse response
+    const AA=[0.2173,0.2240,0.2824,0.2763];
+    const TT=[Infinity,394.4,36.54,4.304];
+    // Geoffroy et al. (2013) two-layer, multi-model mean
+    const CU=7.3, CD=106, GAM=0.73, EFF=1.28;
+
+    const Y0=1850, Y1=2100, YEND=2100, DT=0.25;
+
+    /* --- emission pathway -------------------------------------- */
+    let P={pkY:2040,pkE:45,nzY:2140,cdr:0,nc:1.0,ecs:3.0};
+    const E2020=40;                        // GtCO2/yr, anchors both branches
+    let HISTK=64;                          // e-folding time, calibrated below
+
+    function eHist(t){ return E2020*Math.exp((t-2020)/HISTK); }
+    function eFut(t){
+      const E0=E2020;
+      if(t<=P.pkY){
+        if(P.pkY<=2020) return P.pkE;                 // already at peak
+        return E0 + (P.pkE-E0)*(t-2020)/(P.pkY-2020);
+      }
+      if(t<=P.nzY){
+        const f=(t-P.pkY)/Math.max(1,P.nzY-P.pkY);
+        return P.pkE*(1-f);
+      }
+      // after net zero: ramp to the removal floor over 30 yr, then hold
+      const f=Math.min(1,(t-P.nzY)/30);
+      return P.cdr*f;
+    }
+    function emis(t){ return t<2020 ? eHist(t) : eFut(t); }
+
+    /* --- run the coupled carbon + energy model ----------------- */
+    function run(){
+      const n=Math.round((YEND-Y0)/DT)+1;
+      const yr=new Array(n), Ce=new Array(n), Ct=new Array(n),
+            Tt=new Array(n), Ft=new Array(n);
+      let M=[0,0,0,0], T=0, TD=0, cum2020=0, cumHist=0;
+      for(let i=0;i<n;i++){
+        const t=Y0+i*DT;
+        const E=emis(t);                       // GtCO2/yr
+        const Ec=E/GTCO2_PER_PGC;              // PgC/yr
+        // carbon reservoirs
+        for(let k=0;k<4;k++){
+          const dec = TT[k]===Infinity ? 0 : M[k]/TT[k];
+          M[k] += (AA[k]*Ec - dec)*DT;
+        }
+        const air=M[0]+M[1]+M[2]+M[3];
+        const C=C_PRE + air*PPM_PER_PGC;
+        // forcing
+        const Fc=5.35*Math.log(C/C_PRE);
+        let Fn;                                // non-CO2
+        if(t<=2020) Fn=0.26*Fc;                // ~+0.56 W/m2 in 2020
+        else Fn=0.56 + (P.nc-0.56)*Math.min(1,(t-2020)/80);
+        const F=Fc+Fn;
+        // two-layer energy balance
+        const lam=F2X/P.ecs;
+        const dT =(F - lam*T - EFF*GAM*(T-TD))/CU;
+        const dTD=(GAM*(T-TD))/CD;
+        T  += dT*DT;  TD += dTD*DT;
+        if(t<2020) cumHist+=E*DT; else cum2020+=E*DT;
+        yr[i]=t; Ce[i]=E; Ct[i]=C; Tt[i]=T; Ft[i]=F;
+      }
+      return {yr,Ce,Ct,Tt,Ft,cum2020,cumHist};
+    }
+
+    /* --- calibrate the historical branch ----------------------- */
+    (function calibrate(){
+      // find the historical e-folding time such that C(2020) = 415 ppm,
+      // holding E(2020) fixed at the observed 40 GtCO2/yr so the curve is continuous
+      function c2020(k){
+        HISTK=k;
+        let M=[0,0,0,0];
+        const n=Math.round((2020-Y0)/DT);
+        for(let i=0;i<n;i++){
+          const t=Y0+i*DT, Ec=eHist(t)/GTCO2_PER_PGC;
+          for(let k=0;k<4;k++){
+            const dec=TT[k]===Infinity?0:M[k]/TT[k];
+            M[k]+=(AA[k]*Ec-dec)*DT;
+          }
+        }
+        return C_PRE+(M[0]+M[1]+M[2]+M[3])*PPM_PER_PGC;
+      }
+      let lo=10,hi=200;
+      for(let it=0;it<50;it++){
+        const mid=(lo+hi)/2;
+        if(c2020(mid)<C_2020) lo=mid; else hi=mid;
+      }
+      HISTK=(lo+hi)/2;
+    })();
+
+    /* --- assessed AR6 ranges for the presets ------------------- */
+    const PRESETS={
+      p19:{pkY:2020,pkE:40,nzY:2050,cdr:-8, nc:0.6,name:'SSP1–1.9',ar6:[1.4,1.0,1.8],c100:390,col:'var(--s19)'},
+      p26:{pkY:2025,pkE:42,nzY:2075,cdr:-5, nc:0.7,name:'SSP1–2.6',ar6:[1.8,1.3,2.4],c100:445,col:'var(--s26)'},
+      p45:{pkY:2040,pkE:45,nzY:2140,cdr:0,  nc:1.0,name:'SSP2–4.5',ar6:[2.7,2.1,3.5],c100:600,col:'var(--s45)'},
+      p70:{pkY:2090,pkE:80,nzY:2250,cdr:0,  nc:1.9,name:'SSP3–7.0',ar6:[3.6,2.8,4.6],c100:870,col:'var(--s70)'},
+      p85:{pkY:2085,pkE:125,nzY:2250,cdr:0, nc:1.5,name:'SSP5–8.5',ar6:[4.4,3.3,5.7],c100:1135,col:'var(--s85)'},
+      ppol:{pkY:2030,pkE:44,nzY:2180,cdr:0, nc:1.2,name:'current policies',ar6:null,c100:null,col:'var(--warn)'}
+    };
+    let active='p45';
+
+    /* --- drawing ----------------------------------------------- */
+    const L=64,R=858,PH=176,PGAP=24;
+    /* round tick step giving 4–6 intervals, so axis labels are readable numbers */
+    function niceAxis(min,max){
+      const raw=(max-min)/6, mag=Math.pow(10,Math.floor(Math.log10(raw)));
+      let step=mag;
+      for(const m of [1,2,2.5,5,10]) { if(mag*m>=raw){ step=mag*m; break; } }
+      return {lo:Math.floor(min/step)*step, hi:Math.ceil(max/step)*step, step:step};
+    }
+    function panel(idx,ymin,ymax,label,unit){
+      const A=niceAxis(ymin,ymax);
+      ymin=A.lo; ymax=A.hi;
+      const T0=14+idx*(PH+PGAP), B=T0+PH;
+      const X=t=>L+(t-Y0)/(Y1-Y0)*(R-L);
+      const Y=v=>B-(v-ymin)/(ymax-ymin)*(B-T0);
+      put(g,'rect',{x:L,y:T0,width:R-L,height:PH,fill:'var(--surface-2)',opacity:.45,rx:6});
+      // future shading
+      put(g,'rect',{x:X(2020),y:T0,width:X(Y1)-X(2020),height:PH,fill:'var(--acc)',opacity:.05});
+      // gridlines on round values
+      const dec=A.step<1?(A.step<0.2?2:1):0;
+      for(let v=ymin;v<=ymax+1e-9;v+=A.step){
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(dec));
+      }
+      for(let t=1900;t<=2100;t+=50){
+        put(g,'line',{x1:X(t),y1:T0,x2:X(t),y2:B,stroke:'var(--grid)','stroke-width':1});
+        if(idx===2) put(g,'text',{x:X(t),y:B+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},t);
+      }
+      if(ymin<0&&ymax>0) put(g,'line',{x1:L,y1:Y(0),x2:R,y2:Y(0),stroke:'var(--text-muted)',
+        'stroke-width':1,'stroke-dasharray':'2 3'});
+      put(g,'text',{x:L,y:T0-4,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},label);
+      put(g,'text',{x:R,y:T0-4,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},unit);
+      return {X,Y,T0,B};
+    }
+
+    function draw(){
+      clr(g);
+      const r=run();
+      const P0=PRESETS[active];
+
+      // panel 1: emissions
+      const eMax=Math.max(50,Math.ceil(Math.max(...r.Ce)/25)*25);
+      const eMin=Math.min(0,Math.floor(Math.min(...r.Ce)/5)*5);
+      const p1=panel(0,eMin,eMax,'CO₂ emissions','GtCO₂ per year');
+      let d1='';
+      for(let i=0;i<r.yr.length;i+=2) d1+=(d1?'L':'M')+p1.X(r.yr[i]).toFixed(1)+' '+p1.Y(r.Ce[i]).toFixed(1);
+      put(g,'path',{d:d1,fill:'none',stroke:P0.col,'stroke-width':2.2});
+      put(g,'text',{x:p1.X(2022),y:p1.T0+16,'font-size':10.5,fill:'var(--text-muted)'},'projection →');
+      put(g,'text',{x:p1.X(2018),y:p1.T0+16,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},'← calibrated history');
+
+      // panel 2: concentration
+      const cMax=Math.max(500,Math.ceil(Math.max(...r.Ct)/100)*100);
+      const p2=panel(1,250,cMax,'Atmospheric CO₂','ppm');
+      let d2='';
+      for(let i=0;i<r.yr.length;i+=2) d2+=(d2?'L':'M')+p2.X(r.yr[i]).toFixed(1)+' '+p2.Y(r.Ct[i]).toFixed(1);
+      put(g,'path',{d:d2,fill:'none',stroke:P0.col,'stroke-width':2.2});
+      put(g,'line',{x1:L,y1:p2.Y(C_PRE),x2:R,y2:p2.Y(C_PRE),stroke:'var(--text-muted)',
+        'stroke-width':1,'stroke-dasharray':'3 3'});
+      put(g,'text',{x:L+6,y:p2.Y(C_PRE)-5,'font-size':10,fill:'var(--text-muted)'},'pre-industrial 278 ppm');
+      put(g,'circle',{cx:p2.X(2020),cy:p2.Y(C_2020),r:3.4,fill:'var(--text-primary)'});
+      put(g,'text',{x:p2.X(2020)-7,y:p2.Y(C_2020)-7,'text-anchor':'end','font-size':10,
+        fill:'var(--text-primary)'},'2020 observed: 415');
+
+      // panel 3: temperature
+      const tMax=Math.max(2,Math.ceil(Math.max(...r.Tt)*2)/2+0.5);
+      const p3=panel(2,0,tMax,'Global mean surface temperature','K above 1850–1900');
+      [1.5,2.0].forEach(v=>{
+        if(v<tMax){
+          put(g,'line',{x1:L,y1:p3.Y(v),x2:R,y2:p3.Y(v),stroke:'var(--warn)',
+            'stroke-width':1,'stroke-dasharray':'4 3',opacity:.75});
+          put(g,'text',{x:L+6,y:p3.Y(v)-5,'font-size':10,fill:'var(--warn)'},v.toFixed(1)+' °C');
+        }
+      });
+      let d3='';
+      for(let i=0;i<r.yr.length;i+=2) d3+=(d3?'L':'M')+p3.X(r.yr[i]).toFixed(1)+' '+p3.Y(r.Tt[i]).toFixed(1);
+      put(g,'path',{d:d3,fill:'none',stroke:P0.col,'stroke-width':2.4});
+      // AR6 assessed range marker
+      if(P0.ar6){
+        const x=p3.X(2092);
+        put(g,'line',{x1:x,y1:p3.Y(Math.min(P0.ar6[2],tMax)),x2:x,y2:p3.Y(P0.ar6[1]),
+          stroke:'var(--text-primary)','stroke-width':2.4,opacity:.55});
+        [1,2].forEach(k=>{ if(P0.ar6[k]<tMax)
+          put(g,'line',{x1:x-5,y1:p3.Y(P0.ar6[k]),x2:x+5,y2:p3.Y(P0.ar6[k]),
+            stroke:'var(--text-primary)','stroke-width':2.4,opacity:.55}); });
+        put(g,'circle',{cx:x,cy:p3.Y(Math.min(P0.ar6[0],tMax)),r:4,fill:'var(--text-primary)',opacity:.8});
+        put(g,'text',{x:x-9,y:p3.Y(Math.min(P0.ar6[0],tMax))+4,'text-anchor':'end','font-size':10,
+          fill:'var(--text-primary)'},'AR6 assessed');
+      }
+
+      /* --- numbers ---------------------------------------------- */
+      const iEnd=r.yr.length-1;
+      const i81=r.yr.findIndex(v=>v>=2081);
+      let tm=0,cnt=0;
+      for(let i=i81;i<=iEnd;i++){tm+=r.Tt[i];cnt++;}
+      tm/=cnt;
+      $('kC').textContent=Math.round(r.Ct[iEnd]);
+      $('kF').textContent=r.Ft[iEnd].toFixed(2);
+      $('kT').textContent=tm.toFixed(2);
+      $('kE').textContent=Math.round(r.cum2020);
+
+      const cumPgC=r.cum2020/GTCO2_PER_PGC;
+      const tcre=((tm - 1.25)/cumPgC*1000);
+      let verdict;
+      if(P0.ar6){
+        const inRange = tm>=P0.ar6[1] && tm<=P0.ar6[2];
+        const dc=Math.round(100*(r.Ct[iEnd]-P0.c100)/P0.c100);
+        verdict='For '+P0.name+' AR6 assesses <b>'+P0.ar6[0].toFixed(1)+'&nbsp;&deg;C</b> '+
+          '(<i>very likely</i> '+P0.ar6[1].toFixed(1)+'&ndash;'+P0.ar6[2].toFixed(1)+'). This model gives <b>'+
+          tm.toFixed(2)+'&nbsp;&deg;C</b> &mdash; '+(inRange?'inside that range':'<b>outside</b> that range')+
+          '. Its 2100 concentration is '+Math.round(r.Ct[iEnd])+'&nbsp;ppm against the scenario&rsquo;s '+
+          P0.c100+' ('+(dc>=0?'+':'')+dc+'&nbsp;%)'+
+          (dc<-8?' &mdash; <b>and that gap is the point</b>: the higher the emissions, the more a linear carbon '+
+            'cycle underestimates what stays in the air. <a href="carbon-budgets.html">Page&nbsp;6</a> is '+
+            'about the feedback this model is missing.':'.');
+      } else {
+        verdict='A current-policies shape, for comparison. AR6 does not assess a range for it; '+
+          'independent assessments put continuation of current policy near 2.5&ndash;3&nbsp;&deg;C.';
+      }
+      $('chRead').innerHTML=
+        'Cumulative emissions 2020&ndash;2100: <span class="big">'+Math.round(r.cum2020)+
+        '</span> GtCO<sub>2</sub> = '+Math.round(cumPgC)+' PgC. '+
+        'Warming per 1000&nbsp;PgC emitted since 2020, implied by this run: <b>'+tcre.toFixed(2)+
+        '&nbsp;K</b> &mdash; compare the assessed TCRE of 1.65&nbsp;K (<i>likely</i> 1.0&ndash;2.3), which '+
+        '<a href="carbon-budgets.html">page&nbsp;6</a> uses to size a carbon budget.<br>'+
+        verdict+'<br>'+
+        '<span style="color:var(--text-muted);font-size:12.5px">Calibration diagnostic: to reach '+
+        '415&nbsp;ppm in 2020 this linear carbon cycle needs '+Math.round(r.cumHist)+
+        '&nbsp;GtCO<sub>2</sub> of historical emissions, against the observed &asymp;2400 &mdash; about a '+
+        'fifth low, because a constant-airborne-fraction pulse response does not capture the growing land '+
+        'sink. Treat concentrations as good to roughly &plusmn;10&nbsp;% and the warming, which is what the '+
+        'page is really for, as rather better than that.</span>';
+    }
+
+    /* --- wiring ------------------------------------------------- */
+    const S={pkY:$('pkY'),pkE:$('pkE'),nzY:$('nzY'),cdr:$('cdr'),nonco2:$('nonco2'),ecs:$('ecs')};
+    function readSliders(){
+      P.pkY=+S.pkY.value; P.pkE=+S.pkE.value; P.nzY=Math.max(+S.nzY.value,P.pkY+5);
+      P.cdr=+S.cdr.value; P.nc=+S.nonco2.value; P.ecs=+S.ecs.value;
+      $('pkYv').textContent=P.pkY; $('pkEv').textContent=P.pkE;
+      $('nzYv').textContent=P.nzY; $('cdrv').textContent=P.cdr.toFixed(1);
+      $('nonco2v').textContent=(P.nc>=0?'+':'')+P.nc.toFixed(1);
+      $('ecsv').textContent=P.ecs.toFixed(1);
+    }
+    Object.values(S).forEach(el=>el.addEventListener('input',()=>{
+      readSliders(); draw();
+    }));
+    Object.keys(PRESETS).forEach(k=>{
+      $(k).addEventListener('click',()=>{
+        const p=PRESETS[k]; active=k;
+        S.pkY.value=p.pkY; S.pkE.value=p.pkE; S.nzY.value=p.nzY;
+        S.cdr.value=p.cdr; S.nonco2.value=p.nc;
+        Object.keys(PRESETS).forEach(j=>$(j).setAttribute('aria-pressed',String(j===k)));
+        readSliders(); draw();
+      });
+    });
+    readSliders(); draw();
+  })();
+
+  /* ── reveal-answer buttons ──────────────────────────────────── */
+  document.querySelectorAll('.rev').forEach(b=>{
+    const a=b.nextElementSibling;
+    b.addEventListener('click',()=>{
+      const open=!a.hidden;
+      a.hidden=open;
+      b.textContent=open?'Reveal answer':'Hide answer';
+      b.setAttribute('aria-expanded',String(!open));
+    });
+  });
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

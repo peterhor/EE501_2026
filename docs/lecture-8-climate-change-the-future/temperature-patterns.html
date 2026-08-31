@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The geography of warming</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --land:#a0703c; --sea:#1f6fb2; --ice:#7fb3d5; --air:#8a8fa0;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --land:#bd8a52; --sea:#2f83c9; --ice:#6fa2c4; --air:#9aa0b2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .rev{display:block;margin:9px 0 0;border:1px solid var(--acc);background:transparent;color:var(--acc);
+    border-radius:8px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+  .rev:hover{background:var(--acc);color:var(--surface-1)}
+  .ans{display:block;margin:9px 0 0}
+  .ans[hidden]{display:none}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Climate change: the future &middot; 3 of 7</p>
+
+<header>
+  <div>
+    <h1>The geography of warming</h1>
+    <p class="sub">Nobody lives in the global mean. The maps of projected temperature change have two features
+    so robust that they appear in every model, in every scenario, and in the observations already: land warms
+    more than ocean, by about half again, and the Arctic warms more than everywhere, by a factor of two to
+    four. Neither is a modelling artefact. Both follow from physics you can do on this page.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Two patterns, and a warning about how to read the maps</h3>
+  <p class="cap">The multi-model mean maps in your lecturer&rsquo;s slides carry hatching and stippling. Those
+  marks are not decoration and they are the first thing to look at.</p>
+
+  <p class="note" style="margin-top:0">A projected change map shows the multi-model mean warming over some
+  future period relative to a reference. The conventional marking, used in the IPCC figures, is:</p>
+
+  <ul class="pl">
+    <li><b>Stippling</b> &mdash; the change is larger than twice the standard deviation of internal
+    variability <em>and</em> at least 90&nbsp;% of models agree on its sign. A robust signal.</li>
+    <li><b>Hatching</b> &mdash; the change is <em>smaller</em> than one standard deviation of internal
+    variability. In other words: whatever the colour says, it is within the noise.</li>
+    <li><b>Neither</b> &mdash; somewhere in between; a real signal, but not one you would bet on locally.</li>
+  </ul>
+
+  <p class="note">That is exactly the signal-to-noise arithmetic of
+  <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture&nbsp;7,
+  page&nbsp;1</a> and the first band of the uncertainty partition on
+  <a href="projections-predictions.html">page&nbsp;2</a>, applied grid box by grid box. On the temperature maps
+  almost nothing is hatched, because the warming signal is large compared with temperature variability. On the
+  <a href="water-cycle.html">precipitation</a> maps, huge areas are hatched. Comparing the two figures side by
+  side teaches more than either alone.</p>
+
+  <div class="q"><b>Question.</b> Two maps of the same quantity, RCP2.6 and RCP8.5. The RCP2.6 map has far more
+  hatching. Are the RCP2.6 models less reliable?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>No. Internal variability is the same in both &mdash; it is a property of the
+    climate system, not of the scenario. What differs is the <em>signal</em>: RCP2.6 has a smaller forced
+    change, so more of the map falls below the one-standard-deviation bar. The hatching is telling you the
+    warming is small, which is the good news, not that the model is bad. This is the same confusion the
+    fractional-variance plot on <a href="projections-predictions.html">page&nbsp;2</a> invites, and it is worth
+    naming out loud.</span>
+  </div>
+</div>
+
+<h2 class="sec">The demonstration this page is built around</h2>
+
+<div class="card demo">
+  <h3>Why land warms faster than ocean</h3>
+  <p class="cap">Not thermal inertia. The land&ndash;sea contrast is about 1.5 in equilibrium too, when there
+  is no inertia left to appeal to. The real answer is about moisture, and it is a calculation you can do in one
+  line.</p>
+
+  <p class="note" style="margin-top:0"><b>The wrong explanation first, because everyone reaches for it.</b>
+  Land has a small heat capacity, ocean has a large one, so land responds faster. That is true, and it explains
+  part of the contrast in a <em>transient</em> run. But run the same model to equilibrium, wait a thousand
+  years until nothing is lagging anything, and the contrast is still there, still around 1.5. Heat capacity
+  cannot explain a steady state.</p>
+
+  <p class="note"><b>The right explanation.</b> Over the deep tropics and much of the mid-latitudes the
+  free troposphere is close to horizontally uniform &mdash; the atmosphere cannot sustain large temperature
+  gradients aloft, because they get flattened out by waves and by the overturning circulation. So a warming
+  aloft is shared. But the surface is connected to the free troposphere by moist convection and boundary-layer
+  mixing, which carry <b>moist static energy</b>, not temperature:</p>
+
+  <div class="eq">
+    h &nbsp;=&nbsp; c<sub>p</sub>T &nbsp;+&nbsp; L<sub>v</sub>q &nbsp;+&nbsp; gz
+    &nbsp;&nbsp;&nbsp;&nbsp;&rarr;&nbsp;&nbsp;&nbsp;&nbsp;
+    &Delta;h<sub>land</sub> &nbsp;=&nbsp; &Delta;h<sub>ocean</sub>
+    <div class="u" style="margin-top:8px">
+    with q = RH &middot; q<sub>s</sub>(T) and RH held fixed, this gives
+    &nbsp;&nbsp;
+    <b>&Delta;T<sub>land</sub> / &Delta;T<sub>ocean</sub>
+    = [c<sub>p</sub> + L<sub>v</sub>&middot;RH<sub>o</sub>&middot;(dq<sub>s</sub>/dT)<sub>o</sub>]
+    &divide; [c<sub>p</sub> + L<sub>v</sub>&middot;RH<sub>l</sub>&middot;(dq<sub>s</sub>/dT)<sub>l</sub>]</b></div>
+  </div>
+
+  <p class="note">Read the formula before you touch the sliders. Warming a moist surface takes a lot of energy
+  because most of it goes into evaporation rather than into temperature. Warming a dry surface takes less,
+  because there is less water to evaporate. If the two surfaces must share the same energy increase, the dry one
+  ends up hotter. <b>Land is dry. That is the whole argument.</b></p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="To"><span>Ocean surface temperature</span> <b id="Tov">25.0</b></label>
+      <input type="range" id="To" min="0" max="30" step="0.5" value="25">
+      <div class="hint">&deg;C.</div>
+    </div>
+    <div class="ctrl">
+      <label for="Tl"><span>Land surface temperature</span> <b id="Tlv">20.0</b></label>
+      <input type="range" id="Tl" min="-10" max="35" step="0.5" value="20">
+      <div class="hint">&deg;C. Take it to the ocean value to remove the temperature difference.</div>
+    </div>
+    <div class="ctrl">
+      <label for="RHo"><span>Relative humidity over ocean</span> <b id="RHov">80</b></label>
+      <input type="range" id="RHo" min="30" max="100" step="1" value="80">
+      <div class="hint">Per cent. Near-surface air over the open ocean sits at about 80&nbsp;%.</div>
+    </div>
+    <div class="ctrl">
+      <label for="RHl"><span>Relative humidity over land</span> <b id="RHlv">50</b></label>
+      <input type="range" id="RHl" min="10" max="100" step="1" value="50">
+      <div class="hint">Per cent. Drag it up to 80 and watch the contrast collapse.</div>
+    </div>
+  </div>
+
+  <div class="two">
+    <svg viewBox="0 0 430 300" role="img" aria-label="Schematic of a land column and an ocean column sharing the same free-tropospheric warming, with the surface warming larger over land"><g id="lsG"></g></svg>
+    <svg viewBox="0 0 430 300" role="img" aria-label="Land to ocean warming ratio plotted against land relative humidity, for several ocean relative humidities, with the observed range marked"><g id="lrG"></g></svg>
+  </div>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">Contrast ratio</div><div class="v" id="kR">&mdash;</div><div class="s">&Delta;T<sub>land</sub> / &Delta;T<sub>ocean</sub></div></div>
+    <div class="kpi"><div class="k">Ocean warming</div><div class="v" id="kTo">1.00</div><div class="s">K, by definition</div></div>
+    <div class="kpi"><div class="k">Land warming</div><div class="v" id="kTl">&mdash;</div><div class="s">K, for the same &Delta;h</div></div>
+    <div class="kpi"><div class="k">Observed &amp; modelled</div><div class="v">1.4&ndash;1.7</div><div class="s">the target to hit</div></div>
+  </div>
+
+  <div class="readout" id="lsRead"></div>
+
+  <div class="q"><b>Question.</b> Set both relative humidities to 80&nbsp;% and both temperatures to
+  25&nbsp;&deg;C. The ratio goes to exactly 1. Now raise only the ocean temperature to 30&nbsp;&deg;C. The ratio
+  goes above 1 again, with identical humidities. Where did that come from?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>From the curvature of the Clausius&ndash;Clapeyron relation. q<sub>s</sub> grows
+    exponentially with temperature, so dq<sub>s</sub>/dT is itself larger at higher temperature. A warmer
+    surface therefore spends even more of any energy increase on evaporation, and warms even less. So there are
+    <em>two</em> ingredients in the land&ndash;sea contrast: land is drier, and land &mdash; away from the
+    tropics &mdash; is often colder. Both push the same way. You will meet that exponential again on
+    <a href="water-cycle.html">page&nbsp;4</a>, where it is the central quantity.</span>
+  </div>
+
+  <div class="q"><b>Question.</b> The contrast is largest in dry mid-latitude continental interiors and in
+  regions where soil moisture is projected to fall. Connect that to
+  <a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Lecture&nbsp;3</a>.
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Through the Bowen ratio. A surface with plenty of water partitions its available
+    energy into latent heat &mdash; a low Bowen ratio &mdash; and stays cool. Dry out the soil and the same net
+    radiation has nowhere to go but sensible heat, the Bowen ratio rises, and the surface heats. Here that shows
+    up as a lower effective RH over land, and it is a <em>feedback</em>: warming dries the soil, drying raises
+    the contrast, the higher contrast warms the land further. This is why projected summer warming over southern
+    Europe is so much larger than the global mean, and why <a href="water-cycle.html">page&nbsp;4</a> and
+    <a href="extremes.html">page&nbsp;5</a> keep coming back to soil moisture.</span>
+  </div>
+</div>
+
+<div class="card demo">
+  <h3>Why the Arctic warms fastest</h3>
+  <p class="cap">Ask a class why, and everyone says ice&ndash;albedo. It is a real contributor, and it is not
+  the largest one.</p>
+
+  <p class="note" style="margin-top:0">Start with a piece of arithmetic that has nothing to do with ice at all.
+  A surface at temperature T sheds energy at &sigma;T<sup>4</sup>, so the extra radiation released per extra
+  kelvin is <b>4&sigma;T<sup>3</sup></b> &mdash; the Planck feedback of
+  <a href="../lecture-6-response-of-the-climate-system-to-perturbations/feedback-parameter.html">Lecture&nbsp;6,
+  page&nbsp;3</a>. That quantity is <em>smaller where it is colder</em>. A cold place is worse at getting rid of
+  extra energy, so the same forcing warms it more &mdash; before any feedback is invoked.</p>
+
+  <svg viewBox="0 0 880 260" role="img" aria-label="Planck response 4 sigma T cubed plotted against temperature, with the implied relative warming for the same forcing marked at polar and tropical emission temperatures"><g id="plG"></g></svg>
+
+  <div class="ctrl" style="max-width:420px;margin-top:10px">
+    <label for="Tpol"><span>Emission temperature of the polar column</span> <b id="Tpolv">240</b></label>
+    <input type="range" id="Tpol" min="215" max="275" step="1" value="240">
+    <div class="hint">K. Compare with a tropical column near 270&nbsp;K.</div>
+  </div>
+  <div class="readout" id="plRead"></div>
+
+  <p class="note"><b>Now add the rest, roughly in order of how much they contribute.</b> The ordering below
+  follows the feedback decomposition of Pithan and Mauritsen (2014), and the first entry surprises most
+  people.</p>
+
+  <table>
+    <thead><tr><th>Mechanism</th><th>How it works</th><th>Sign and size</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Lapse-rate feedback</td>
+        <td>The Arctic atmosphere is strongly stably stratified in winter: a temperature <em>inversion</em>,
+        with warm air over cold surface. Extra energy added near the surface stays near the surface instead of
+        being convected aloft and radiated away. In the tropics the opposite happens &mdash; warming is
+        amplified aloft and radiates efficiently, a negative feedback.</td>
+        <td>The <b>largest</b> single contributor to the contrast between polar and tropical warming.</td></tr>
+      <tr><td class="nm">Planck (temperature) feedback</td>
+        <td>The 4&sigma;T<sup>3</sup> argument above. Weaker damping where it is cold.</td>
+        <td>Second largest. Computed in the panel above.</td></tr>
+      <tr><td class="nm">Surface albedo</td>
+        <td>Sea ice and snow retreat, exposing dark ocean and ground. The classic ice&ndash;albedo feedback
+        of <a href="../pc-lab-2-energy-balance-model/">PC&nbsp;Lab&nbsp;2</a> and
+        <a href="../lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">Lecture&nbsp;6,
+        page&nbsp;4</a>.</td>
+        <td>Third. Important, seasonal, and it is not the whole story.</td></tr>
+      <tr><td class="nm">Ocean heat uptake and mixing</td>
+        <td>Where sea ice retreats, the ocean gains a lid in winter it did not have: heat absorbed in summer is
+        released to the atmosphere in autumn instead of being insulated from it. Autumn is when Arctic
+        amplification is largest.</td>
+        <td>Positive, strongly seasonal.</td></tr>
+      <tr><td class="nm">Poleward energy transport</td>
+        <td>A moister atmosphere carries more latent heat poleward even if the mass circulation does not change.
+        Dry static transport tends to weaken as the equator-to-pole gradient relaxes; moist transport
+        strengthens.</td>
+        <td>Net positive, partly self-cancelling.</td></tr>
+      <tr><td class="nm">Clouds</td>
+        <td>More low cloud over open water in autumn and winter traps longwave radiation with little
+        compensating shortwave effect, because there is no sun.</td>
+        <td>Positive but uncertain, as usual.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warnbox"><b>Antarctica is different, and the difference is instructive.</b> The Southern Ocean
+  warms slowly and Antarctic sea ice has not retreated the way Arctic sea ice has. The reason is not that the
+  physics differs &mdash; it is that the Southern Ocean has a deep mixed layer and upwells cold water from
+  below, so heat added at the surface is carried away downward instead of accumulating.
+  <b>Polar amplification is an Arctic phenomenon on the timescale of a century</b>; the Southern Hemisphere
+  version arrives later. Two hemispheres, same physics, different ocean.</div>
+
+  <div class="q"><b>Question.</b> If the lapse-rate feedback is the largest term, why do the popular
+  explanations always say ice&ndash;albedo?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Partly because it is visible: you can photograph the ice going and you cannot
+    photograph a temperature inversion. Partly because it was identified first, back in the energy-balance-model
+    work of the 1960s. And partly because the decomposition is genuinely recent and genuinely subtle &mdash; the
+    lapse-rate and Planck feedbacks are &ldquo;temperature&rdquo; feedbacks and are easily mistaken for part of
+    the baseline response rather than as terms that vary with latitude. The practical consequence matters: a
+    model can get Arctic amplification approximately right with too little sea-ice loss, if its polar
+    inversion is too strong. Getting the number right is not the same as getting the mechanism
+    right.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Pattern scaling: what you can and cannot get away with</h3>
+  <p class="cap">The workhorse approximation behind most regional impact studies, and the reason it usually
+  works.</p>
+
+  <p class="note" style="margin-top:0">To a surprisingly good approximation, the <em>shape</em> of the warming
+  pattern does not depend on the scenario &mdash; only its amplitude does. Write it as
+  <span class="eq" style="display:inline-block;padding:4px 10px;margin:0 4px;font-size:15px">&Delta;T(x, t)
+  &asymp; P(x) &middot; &Delta;T<sub>global</sub>(t)</span> where P is a fixed map of local warming per degree
+  of global warming. Then one map plus one global time series gives you every scenario and every year, which is
+  why so much of the impacts literature works this way, and why an assessment can talk about &ldquo;a
+  1.5&nbsp;&deg;C world&rdquo; and &ldquo;a 2&nbsp;&deg;C world&rdquo; without naming a scenario.</p>
+
+  <p class="note">The land&ndash;sea contrast and the polar amplification you have just derived <em>are</em> P,
+  in summary form: P &asymp; 1.4&ndash;1.6 over land, 0.8&ndash;0.9 over ocean, 2&ndash;4 in the Arctic. The
+  derivations above explain why P should be roughly scenario-independent: neither argument mentions the
+  forcing at all.</p>
+
+  <p class="note"><b>Where it breaks.</b> Wherever the response is not proportional to the forcing.</p>
+  <ul class="pl">
+    <li><b>Aerosols.</b> Regionally concentrated and on a different time course from CO<sub>2</sub>, so
+    scenarios with different aerosol paths have genuinely different patterns.</li>
+    <li><b>Anything that can run out.</b> Sea ice that has already gone cannot retreat further, so Arctic
+    amplification saturates in high scenarios. Soil moisture likewise.</li>
+    <li><b>Circulation shifts and thresholds.</b> An AMOC weakening (<a href="long-view.html">page&nbsp;7</a>)
+    produces a North Atlantic cold patch that is not proportional to anything.</li>
+    <li><b>Precipitation.</b> Pattern scaling is much less reliable for precipitation than for temperature,
+    because the dynamic part of the response &mdash; <a href="water-cycle.html">page&nbsp;4</a> &mdash; does not
+    scale.</li>
+  </ul>
+</div>
+
+<p class="foot">After Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;6.3 and figures 6.11 (multi-model mean surface temperature change with hatching and stippling, after
+Stocker et&nbsp;al., 2013), 6.12 (mechanisms of the land&ndash;sea contrast, modified from Joshi et&nbsp;al.,
+2013) and 6.13 (processes in polar amplification). <b>Figure 6.11 is an observational-scale model field and is
+not reproduced here</b> &mdash; your lecturer shows the original; the hatching and stippling conventions are
+explained in the text above instead.
+&nbsp;&middot;&nbsp; <b>Both demonstrations are computed, exactly, from the equations shown.</b> The
+land&ndash;sea contrast follows the moist-static-energy argument of Joshi et&nbsp;al., <i>Clim. Dyn.</i> 30,
+455&ndash;465 (2008) in the fixed-relative-humidity form used by Byrne and O&rsquo;Gorman, <i>J. Climate</i> 26,
+4000&ndash;4016 (2013); saturation vapour pressure uses Bolton&rsquo;s (1980) formula
+e<sub>s</sub> = 6.112&nbsp;exp[17.67(T&minus;273.15)/(T&minus;29.65)]&nbsp;hPa at 1000&nbsp;hPa, with
+dq<sub>s</sub>/dT evaluated numerically, c<sub>p</sub> = 1005&nbsp;J&nbsp;kg<sup>&minus;1</sup>&nbsp;K<sup>&minus;1</sup>
+and L<sub>v</sub> = 2.5&times;10<sup>6</sup>&nbsp;J&nbsp;kg<sup>&minus;1</sup>. It is a
+<b>single-column argument and deliberately omits</b> horizontal advection, changes in relative humidity itself,
+and the surface energy budget &mdash; which is why it lands on the observed 1.4&ndash;1.7 rather than
+reproducing a particular model. The Planck panel evaluates 4&sigma;T<sup>3</sup> with
+&sigma; = 5.67&times;10<sup>&minus;8</sup>&nbsp;W&nbsp;m<sup>&minus;2</sup>&nbsp;K<sup>&minus;4</sup>. The
+ordering of polar-amplification mechanisms follows Pithan and Mauritsen, <i>Nature Geoscience</i> 7, 181&ndash;184
+(2014); the entries in the table are descriptions, not quantities read from a figure.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="water-cycle.html">the water cycle and its two different rates &rarr;</a></p>
+
+<div class="nav">
+  <a href="projections-predictions.html">&larr; 2 &middot; Projections, predictions and uncertainty</a>
+  <a href="water-cycle.html">4 &middot; The water cycle response &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  function arrow(p,x1,y1,x2,y2,col,w){
+    put(p,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:col,'stroke-width':w||2});
+    const a=Math.atan2(y2-y1,x2-x1),h=7;
+    put(p,'polygon',{points:[x2,y2,x2-h*Math.cos(a-0.42),y2-h*Math.sin(a-0.42),
+      x2-h*Math.cos(a+0.42),y2-h*Math.sin(a+0.42)].join(' '),fill:col});
+  }
+
+  /* thermodynamics ------------------------------------------------ */
+  const CP=1005, LV=2.5e6, PSFC=1000;
+  function es(TC){ return 6.112*Math.exp(17.67*TC/(TC+243.5)); }        // hPa, TC in °C
+  function qs(TC){ const e=es(TC); return 0.622*e/(PSFC-0.378*e); }
+  function dqsdT(TC){ return (qs(TC+0.01)-qs(TC-0.01))/0.02; }
+  function ratio(TlC,ToC,RHl,RHo){
+    return (CP+LV*RHo*dqsdT(ToC))/(CP+LV*RHl*dqsdT(TlC));
+  }
+
+  /* ── 1 · land–sea contrast ──────────────────────────────────── */
+  (function(){
+    const gS=$('lsG'), gR=$('lrG'); if(!gS||!gR) return;
+    const S={To:$('To'),Tl:$('Tl'),RHo:$('RHo'),RHl:$('RHl')};
+
+    function drawSchem(r){
+      clr(gS);
+      const W=430;
+      // free troposphere band
+      put(gS,'rect',{x:20,y:26,width:W-40,height:56,rx:9,fill:'var(--air)',opacity:.16});
+      put(gS,'text',{x:W/2,y:50,'text-anchor':'middle','font-size':12,
+        fill:'var(--text-secondary)','font-weight':600},'free troposphere');
+      put(gS,'text',{x:W/2,y:68,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},'warms nearly uniformly — Δh is shared');
+      // columns
+      const cols=[['ocean',60,'var(--sea)',1.0],['land',250,'var(--land)',r]];
+      cols.forEach(c=>{
+        const x=c[1],w=120;
+        put(gS,'rect',{x:x,y:214,width:w,height:34,rx:6,fill:c[2],opacity:.55});
+        put(gS,'text',{x:x+w/2,y:236,'text-anchor':'middle','font-size':12.5,
+          fill:'var(--text-primary)','font-weight':600},c[0]);
+        // mixing arrow
+        arrow(gS,x+w/2,212,x+w/2,86,'var(--text-muted)',1.6);
+        put(gS,'text',{x:x+w/2,y:104,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},'Δh');
+        // partition bar: how the same Δh splits
+        const dT=c[3], TC = c[0]==='land'?+S.Tl.value:+S.To.value;
+        const RH = (c[0]==='land'?+S.RHl.value:+S.RHo.value)/100;
+        const dry=CP*dT, lat=LV*RH*dqsdT(TC)*dT, tot=dry+lat;
+        const BW=w, BY=128, BH=64;
+        put(gS,'rect',{x:x,y:BY,width:BW*dry/tot,height:BH,rx:4,fill:'var(--pos)',opacity:.75});
+        put(gS,'rect',{x:x+BW*dry/tot,y:BY,width:BW*lat/tot,height:BH,rx:4,fill:'var(--sea)',opacity:.6});
+        put(gS,'text',{x:x+BW*dry/tot/2,y:BY+38,'text-anchor':'middle','font-size':11,
+          fill:'var(--text-primary)','font-weight':600},(100*dry/tot).toFixed(0)+'%');
+        put(gS,'text',{x:x+BW*dry/tot+BW*lat/tot/2,y:BY+38,'text-anchor':'middle','font-size':11,
+          fill:'var(--text-primary)','font-weight':600},(100*lat/tot).toFixed(0)+'%');
+        put(gS,'text',{x:x+w/2,y:BY+80,'text-anchor':'middle','font-size':12.5,
+          fill:'var(--text-primary)','font-weight':600},'ΔT = '+dT.toFixed(2)+' K');
+      });
+      put(gS,'text',{x:20,y:BYlabel(),'font-size':10.5,fill:'var(--pos)'},'■ into temperature');
+      put(gS,'text',{x:20,y:BYlabel()+14,'font-size':10.5,fill:'var(--sea)'},'■ into evaporating water');
+      put(gS,'text',{x:W-20,y:20,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},
+        'same Δh, split differently');
+      function BYlabel(){return 274;}
+    }
+
+    function drawCurve(r){
+      clr(gR);
+      const L=52,R=414,T=26,B=248;
+      const X=rh=>L+(rh-10)/(100-10)*(R-L);
+      const ymax=2.4, ymin=0.8;
+      const Y=v=>B-(v-ymin)/(ymax-ymin)*(B-T);
+      put(gR,'rect',{x:L,y:T,width:R-L,height:B-T,fill:'var(--surface-2)',opacity:.45,rx:6});
+      // observed band
+      put(gR,'rect',{x:L,y:Y(1.7),width:R-L,height:Y(1.4)-Y(1.7),fill:'var(--acc)',opacity:.14});
+      put(gR,'text',{x:R-5,y:Y(1.7)-4,'text-anchor':'end','font-size':10,
+        fill:'var(--acc)'},'observed & modelled 1.4–1.7');
+      for(let v=1.0;v<=ymax;v+=0.4){
+        put(gR,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(gR,'text',{x:L-7,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(1));
+      }
+      for(let rh=20;rh<=100;rh+=20){
+        put(gR,'line',{x1:X(rh),y1:T,x2:X(rh),y2:B,stroke:'var(--grid)','stroke-width':1});
+        put(gR,'text',{x:X(rh),y:B+15,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},rh+'%');
+      }
+      put(gR,'line',{x1:L,y1:Y(1),x2:R,y2:Y(1),stroke:'var(--text-muted)','stroke-width':1,
+        'stroke-dasharray':'3 3'});
+      const To=+S.To.value, Tl=+S.Tl.value;
+      [[60,.35],[80,1],[95,.35]].forEach(o=>{
+        let d='';
+        for(let rh=10;rh<=100;rh+=1){
+          const v=ratio(Tl,To,rh/100,o[0]/100);
+          d+=(d?'L':'M')+X(rh).toFixed(1)+' '+Y(Math.min(ymax,Math.max(ymin,v))).toFixed(1);
+        }
+        put(gR,'path',{d:d,fill:'none',stroke:'var(--sea)','stroke-width':o[1]>0.5?2.4:1.5,
+          opacity:o[1]>0.5?1:0.45});
+        put(gR,'text',{x:X(13),y:Y(Math.min(ymax,ratio(Tl,To,0.13,o[0]/100)))-5,'font-size':10,
+          fill:'var(--sea)',opacity:o[1]>0.5?1:0.6},'RH ocean '+o[0]+'%');
+      });
+      const rhl=+S.RHl.value;
+      put(gR,'circle',{cx:X(rhl),cy:Y(Math.min(ymax,Math.max(ymin,r))),r:5,
+        fill:'var(--pos)',stroke:'var(--surface-1)','stroke-width':1.6});
+      put(gR,'text',{x:L,y:T-6,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'ΔT land / ΔT ocean');
+      put(gR,'text',{x:R,y:B+31,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},'relative humidity over land');
+    }
+
+    function draw(){
+      const To=+S.To.value, Tl=+S.Tl.value, RHo=+S.RHo.value/100, RHl=+S.RHl.value/100;
+      $('Tov').textContent=To.toFixed(1); $('Tlv').textContent=Tl.toFixed(1);
+      $('RHov').textContent=(RHo*100).toFixed(0); $('RHlv').textContent=(RHl*100).toFixed(0);
+      const r=ratio(Tl,To,RHl,RHo);
+      drawSchem(r); drawCurve(r);
+      $('kR').textContent=r.toFixed(2);
+      $('kTl').textContent=r.toFixed(2);
+      const fo=LV*RHo*dqsdT(To)/(CP+LV*RHo*dqsdT(To));
+      const fl=LV*RHl*dqsdT(Tl)/(CP+LV*RHl*dqsdT(Tl));
+      const inRange = r>=1.4&&r<=1.7;
+      $('lsRead').innerHTML=
+        'For every kelvin of ocean warming this column gives <span class="big">'+r.toFixed(2)+
+        '</span> K over land'+(inRange?' &mdash; <b>inside the 1.4&ndash;1.7 that models and observations give</b>, '+
+        'from a one-line argument with no model in it.':'.')+'<br>'+
+        'Of the energy added at the ocean surface, <b>'+(100*fo).toFixed(0)+'&nbsp;%</b> goes into '+
+        'evaporating water and only '+(100*(1-fo)).toFixed(0)+'&nbsp;% into raising the temperature. '+
+        'Over land the split is <b>'+(100*fl).toFixed(0)+'&nbsp;%</b> and '+(100*(1-fl)).toFixed(0)+
+        '&nbsp;%. The land surface is worse at hiding energy in water vapour, so it shows it as heat. '+
+        'That single asymmetry is the land&ndash;sea contrast.';
+    }
+    Object.values(S).forEach(el=>el.addEventListener('input',draw));
+    draw();
+  })();
+
+  /* ── 2 · Planck response vs temperature ─────────────────────── */
+  (function(){
+    const g=$('plG'); if(!g) return;
+    const SB=5.67e-8;
+    const el=$('Tpol');
+    function draw(){
+      clr(g);
+      const Tp=+el.value; $('Tpolv').textContent=Tp;
+      const Ttrop=270;
+      const L=64,R=600,T=22,B=210;
+      const X=t=>L+(t-215)/(300-215)*(R-L);
+      const Y=v=>B-(v-2.0)/(6.5-2.0)*(B-T);
+      put(g,'rect',{x:L,y:T,width:R-L,height:B-T,fill:'var(--surface-2)',opacity:.45,rx:6});
+      for(let v=2;v<=6.5;v+=1){
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},v.toFixed(0));
+      }
+      for(let t=220;t<=300;t+=20){
+        put(g,'line',{x1:X(t),y1:T,x2:X(t),y2:B,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X(t),y:B+16,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},t+' K');
+      }
+      let d='';
+      for(let t=215;t<=300;t+=1) d+=(d?'L':'M')+X(t).toFixed(1)+' '+Y(4*SB*t*t*t).toFixed(1);
+      put(g,'path',{d:d,fill:'none',stroke:'var(--pos)','stroke-width':2.4});
+      put(g,'text',{x:L,y:T-5,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Planck response 4σT³, W m⁻² K⁻¹');
+      [[Ttrop,'tropical column','var(--warn)'],[Tp,'polar column','var(--neg)']].forEach(m=>{
+        const y=Y(4*SB*m[0]*m[0]*m[0]);
+        put(g,'line',{x1:X(m[0]),y1:y,x2:X(m[0]),y2:B,stroke:m[2],'stroke-width':1.4,'stroke-dasharray':'3 3'});
+        put(g,'circle',{cx:X(m[0]),cy:y,r:4.5,fill:m[2]});
+        put(g,'text',{x:X(m[0]),y:y-9,'text-anchor':'middle','font-size':10.5,fill:m[2]},m[1]);
+      });
+      // bar comparison on the right
+      const lp=4*SB*Tp*Tp*Tp, lt=4*SB*Ttrop*Ttrop*Ttrop;
+      const rel=lt/lp;
+      const BX=650, BW=190;
+      put(g,'text',{x:BX,y:T+10,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Warming for the same');
+      put(g,'text',{x:BX,y:T+25,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'forcing, Planck only');
+      const mx=Math.max(1,rel);
+      [['tropical',1,'var(--warn)'],['polar',rel,'var(--neg)']].forEach((b,i)=>{
+        const y=T+48+i*54;
+        put(g,'rect',{x:BX,y:y,width:BW*b[1]/mx,height:26,rx:5,fill:b[2],opacity:.75});
+        put(g,'text',{x:BX+6,y:y+18,'font-size':11.5,fill:'var(--text-primary)','font-weight':600},
+          b[0]+' × '+b[1].toFixed(2));
+      });
+      put(g,'text',{x:BX,y:T+164,'font-size':11,fill:'var(--text-muted)'},'no ice, no clouds,');
+      put(g,'text',{x:BX,y:T+178,'font-size':11,fill:'var(--text-muted)'},'no lapse-rate feedback');
+      $('plRead').innerHTML=
+        'At '+Tp+'&nbsp;K a column sheds <b>'+lp.toFixed(2)+'&nbsp;W&nbsp;m<sup>&minus;2</sup></b> for each '+
+        'extra kelvin; at 270&nbsp;K it sheds '+lt.toFixed(2)+'. The same forcing therefore produces '+
+        '<span class="big">'+rel.toFixed(2)+'&times;</span> as much warming in the cold column &mdash; '+
+        '<b>with no ice, no clouds and no feedbacks of any kind</b>. Everything on the list below is added on '+
+        'top of this.';
+    }
+    el.addEventListener('input',draw);
+    draw();
+  })();
+
+  /* ── reveal-answer buttons ──────────────────────────────────── */
+  document.querySelectorAll('.rev').forEach(b=>{
+    const a=b.nextElementSibling;
+    b.addEventListener('click',()=>{
+      const open=!a.hidden;
+      a.hidden=open;
+      b.textContent=open?'Reveal answer':'Hide answer';
+      b.setAttribute('aria-expanded',String(!open));
+    });
+  });
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

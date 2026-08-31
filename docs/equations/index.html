@@ -597,12 +597,118 @@ a.back:hover { color: #14403f; }
     </div>
   </div>
 
+  <!-- PART VII -->
+  <div style="width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+    <div style="display: flex; align-items: baseline; gap: 20px; padding: 0 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: #b0431f;">PART VII</span>
+      <h2 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: -0.01em;">Projecting the future</h2>
+      <span style="flex: 1; height: 1px; background: #d6d1c3;"></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #6d6858;">Chapter 6</span>
+    </div>
+    <p style="margin: 0 4px 8px; max-width: 78ch; font-size: 17px; line-height: 1.6; color: #4a4638;">The relations used in Lecture 8. Chapter 6 is, like Chapter 5, largely descriptive, so these are named rather than numbered. Every one of them is evaluated live on the corresponding <a href="../lecture-8-climate-change-the-future/scenarios.html" style="color:#b0431f;">teaching page</a> — this part is the reference card for what those demonstrations are actually solving.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #ddd8cb; border: 1px solid #ddd8cb;">
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">IRF</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Atmospheric lifetime of a CO₂ pulse</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$a(t) = a_0 + \sum_{i=1}^{3} a_i\,e^{-t/\tau_i}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Joos et al. (2013). Not one lifetime but four, spanning three orders of magnitude: the surface ocean and biosphere in years, the thermocline in decades, the deep ocean in centuries — and \(a_0\), the fifth of the pulse that <b>none of them can remove</b>. The fit is calibrated to 1000 years; past that, \(a_0\) has to be split by hand into carbonate compensation and silicate weathering. <b>The lifetime of a molecule and the lifetime of a perturbation are different quantities.</b></div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">a₀ = 0.2173<br />a₁ = 0.2240, τ = 394.4 yr<br />a₂ = 0.2824, τ = 36.54 yr<br />a₃ = 0.2763, τ = 4.304 yr<br />1 ppm = 2.124 PgC</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">2-layer</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Two-layer energy balance</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$C\frac{\mathrm{d}T}{\mathrm{d}t} = F - \lambda T - \varepsilon\gamma(T - T_0), \qquad C_0\frac{\mathrm{d}T_0}{\mathrm{d}t} = \gamma(T - T_0)$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Geoffroy et al. (2013). Part V's slab with a deep ocean bolted underneath, which is what lets one model have <em>both</em> a fast transient response and a slow commitment. ECS = \(F_{2\times}/\lambda\); TCR ≈ \(F_{2\times}/(\lambda + \varepsilon\gamma)\), which is why the transient response is always the smaller number.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">C = 7.3 W yr m⁻² K⁻¹<br />C₀ = 106 &nbsp; γ = 0.73 &nbsp; ε = 1.28<br />λ = 3.7/ECS<br />ECS 3.0 ⇒ TCR ≈ 1.7 K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">C–C</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Clausius–Clapeyron</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{1}{e_s}\frac{\mathrm{d}e_s}{\mathrm{d}T} = \frac{L_v}{R_v T^{2}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The most reused number in Lecture 8. It sets the water-vapour feedback, the land–sea contrast, the intensification of heavy rainfall, the vapour pressure deficit that dries soils, and the freshwater flux to the North Atlantic. Note it is <b>not a constant</b> — the \(T^{-2}\) makes it larger where it is colder.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">at 0 °C &nbsp;⇒ 7.3 % K⁻¹<br />at 15 °C ⇒ 6.5 % K⁻¹<br />at 27 °C ⇒ 6.1 % K⁻¹<br />L<sub>v</sub> = 2.5×10⁶ &nbsp; R<sub>v</sub> = 461.5</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">P</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Energetic constraint on global precipitation</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$L_v\,\Delta P = k\,\Delta T - f\,\Delta F, \qquad \frac{\mathrm{d}\ln M}{\mathrm{d}T} = \frac{\mathrm{d}\ln P}{\mathrm{d}T} - \frac{\mathrm{d}\ln q}{\mathrm{d}T}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Held and Soden (2006); the fast-adjustment term \(f\Delta F\) is Allen and Ingram (2002). The atmosphere can only rain as fast as it can radiate away the latent heat, so precipitation rises at 1–3 %/K while moisture rises at 7. <b>The difference is not optional: the overturning circulation has to weaken to absorb it.</b></div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">L<sub>v</sub>P₀ = 80 W m⁻² (Part I)<br />k ≈ 2.2 W m⁻² K⁻¹ &nbsp; f ≈ 0.8<br />moisture +6.5 %/K<br />precipitation +1.5 %/K<br />mass flux −5.0 %/K</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">land/sea</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Land–sea warming contrast</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\Delta T_l}{\Delta T_o} = \frac{c_p + L_v\,\mathrm{RH}_o\,(\mathrm{d}q_s/\mathrm{d}T)_o}{c_p + L_v\,\mathrm{RH}_l\,(\mathrm{d}q_s/\mathrm{d}T)_l}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Joshi et al. (2008), in the fixed-relative-humidity form of Byrne and O'Gorman (2013). From \(\Delta h_l = \Delta h_o\) with \(h = c_pT + L_vq\): if two surfaces must absorb the same increase in moist static energy, the drier one spends less of it on evaporation and more on temperature. <b>Not thermal inertia</b> — this survives to equilibrium.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ocean 25 °C, RH 80 %<br />land 20 °C, RH 50 %<br />⇒ ratio 1.59<br />observed & modelled 1.4–1.7</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">tails</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Frequency of an extreme under a shifted distribution</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{PR} = \frac{p_1}{p_0} = \frac{\Phi^{c}\!\left((x - \mu_1)/\sigma_1\right)}{\Phi^{c}\!\left(x/\sigma_0\right)}, \qquad \mathrm{FAR} = 1 - \frac{1}{\mathrm{PR}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">No climate physics at all — only the steepness of a Gaussian tail. A one-σ shift multiplies the frequency of a 3σ event by 17. With a local amplification of 1.3 and σ = 1.8 K this reproduces <b>all eight</b> assessed AR6 multipliers for hot extremes to within a few per cent. Read backwards it is the probability ratio of event attribution.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">1-in-10 hot day, computed / AR6<br />1.0 °C &nbsp;×2.9 / ×2.8<br />2.0 °C &nbsp;×5.6 / ×5.6<br />4.0 °C &nbsp;×9.5 / ×9.4</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">TCRE</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Cumulative emissions and the remaining budget</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T \approx \mathrm{TCRE}\times E_{\text{cum}}, \qquad \mathrm{RCB} = \frac{T_{\text{target}} - T_{\text{hist}} - T_{\text{non-CO}_2}}{\mathrm{TCRE}}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The near-linearity is an accident: the logarithmic saturation of CO₂ forcing very nearly cancels the declining ocean uptake of heat and carbon. It holds over the range that matters and it is what converts a temperature target into a quantity. Note the budget <em>divides</em> by the uncertain quantity, so it is far more sensitive to TCRE than the warming itself is.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">TCRE 1.65 K/1000 PgC<br />likely 1.0–2.3<br />= 0.45 K/1000 GtCO₂<br />1.5 °C ⇒ 500 GtCO₂ from 2020<br />2.0 °C ⇒ 1350 GtCO₂</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">SLR</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Thermal expansion of the ocean</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta \eta = \kappa \int N\,\mathrm{d}t, \qquad \kappa \approx 0.12\ \mathrm{m}\ (10^{24}\,\mathrm{J})^{-1}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The <em>expansion efficiency of heat</em>. \(N\) is the net downward flux at the top of the atmosphere — in the two-layer model above, the \(\gamma(T-T_0)\) going into the deep box. Because the deep ocean takes a millennium to fill, this term does not stop when emissions do. It is the clearest commitment in the whole system.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">κ = 0.11 ± 0.01 assessed<br />2100, SSP5-8.5: ≈0.3 m<br />total GMSL 0.63–1.01 m<br />commitment 2–3 m per °C<br />over 2000 yr</div>
+      </div>
+
+      <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #b0431f; padding-top: 6px;">MISI</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 19px; font-weight: 500;">Grounding-line flux and marine ice sheet instability</div>
+          <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$h_g = \frac{\rho_w}{\rho_i}d, \qquad q_g \propto h_g^{\frac{m+n+3}{m+1}} \approx h_g^{4.75}$$</div>
+          <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Schoof (2007). Equilibrium requires \(q_g = a x\); the equilibrium is <b>stable only where \(\mathrm{d}q_g/\mathrm{d}x > a\)</b>, which needs a bed deepening seaward. On a bed deepening <em>inland</em>, retreat feeds itself. The stable and unstable roots merge in a saddle-node bifurcation — the same structure as Stommel in Part VI and as Daisyworld and the Sahara in the labs.</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">n = 3 (Glen) &nbsp; m = 1/3<br />ρ<sub>w</sub>/ρ<sub>i</sub> = 1.12<br />W. Antarctic marine basins<br />≈ 3–4 m of sea level</div>
+      </div>
+
+    </div>
+  </div>
+
   <div style="width: 100%; max-width: 1060px; margin-top: 32px; background: #faf8f3; border: 1px solid #ddd8cb; padding: 36px 40px; display: flex; flex-direction: column; gap: 18px;">
     <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #b0431f;">Notes on scope</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; font-size: 16.5px; line-height: 1.6; color: #4a4638;">
       <p style="margin: 0;">The Chapter 3 PDF supplied ends at Eq. 3.30 (RMS error metric for model validation), so Eqs. 3.42–3.43 are not in it. Chapter 2 likewise ends at Eq. 2.49 — Part III covers 2.40 through 2.49. Send the missing pages and they'll be added here.</p>
       <p style="margin: 0;">Equations 4.2 and 4.3 are written with square roots, the standard IPCC form for CH₄ and N₂O; the text layer of the PDF drops radical symbols. All numerical values are as printed in Goosse et al. (2010).</p>
     <p style="margin: 0;">Part VI is a companion to Lecture 7 rather than a transcription of Chapter 5, which sets out the physics of variability and of past climates largely in words. The insolation integral and the global annual mean are standard results of orbital mechanics; the signal-to-noise scaling is the argument behind Fig. 5.1 written out; the Stommel, seesaw and Imbrie–Imbrie relations are the published conceptual models named in the right-hand column, used on the teaching pages to make Chapter 5's qualitative statements quantitative; and the regression is Chapter 5's own detection and attribution formulation, of which Fig. 5.43 is the worked illustration.</p>
+    <p style="margin: 0;">Part VII is likewise a companion to Lecture 8 rather than a transcription of Chapter 6. The impulse response, the two-layer energy balance and the grounding-line flux law are published models used live on the teaching pages, named in the right-hand column; Clausius–Clapeyron and the Gaussian tail are exact; the precipitation constraint uses representative values of k and f rather than measured ones. Assessed quantities — TCRE, the remaining budgets, the sea level ranges, the extreme-event multipliers — are from IPCC AR6 WG1 (2021) and are quoted, not derived here. Which figure on which page is computed, schematic, quoted or omitted is set out in the <a href="../lecture-7-climate-change-past-and-present/provenance.html" style="color:#b0431f;">provenance appendix</a>.</p>
     <p style="margin: 0;">Part V uses ΔQ = 3.7 W m⁻² for a CO₂ doubling and λ<sub>0</sub> = −3.2 W m⁻² K⁻¹, following AR5 and the values Goosse quotes from Soden and Held (2006). The textbook's own worked examples use 3.8 for both, so its climate sensitivities come out slightly larger. Equations 4.6, 4.8, 4.9, 4.11 and 4.12 are intermediate steps and are folded into the entries above rather than listed separately.</p>
     </div>
   </div>

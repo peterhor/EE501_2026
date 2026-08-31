@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extremes and distribution shifts</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
+    --hot:#c8443a; --cold:#2a78d6; --old:#8a8880;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
+    --hot:#d9564c; --cold:#3987e5; --old:#9a988e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .rev{display:block;margin:9px 0 0;border:1px solid var(--acc);background:transparent;color:var(--acc);
+    border-radius:8px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+  .rev:hover{background:var(--acc);color:var(--surface-1)}
+  .ans{display:block;margin:9px 0 0}
+  .ans[hidden]{display:none}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00B7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.two{grid-template-columns:1fr}}
+  ul.pl{font-size:13.5px;color:var(--text-secondary);margin:8px 0 0;padding-left:22px}
+  ul.pl li{margin:0 0 5px}
+  ul.pl b{color:var(--text-primary)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13.5px}
+  .nav a{color:var(--acc);text-decoration:none;font-weight:600}
+  .nav a:hover{text-decoration:underline}
+  a{color:var(--acc)}
+  td.ok{color:var(--acc);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+Climate change: the future &middot; 5 of 7</p>
+
+<header>
+  <div>
+    <h1>Extremes and distribution shifts</h1>
+    <p class="sub">Nothing is damaged by the mean. Crops fail, people die and infrastructure breaks in the
+    tail of the distribution, and the tail moves in a way that is deeply counter-intuitive: a shift far too
+    small to notice in the average multiplies the frequency of rare events several times over. This page is
+    mostly one calculation, done properly &mdash; and it turns out to reproduce the IPCC&rsquo;s assessed
+    numbers almost exactly.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3>Why the tail is so much more sensitive than the middle</h3>
+  <p class="cap">The whole page in one idea, before any numbers.</p>
+
+  <p class="note" style="margin-top:0">Take a bell-shaped distribution of summer temperatures and slide it to
+  the right by a small amount. Near the middle, where the curve is nearly flat, the change in probability is
+  tiny. Out in the tail, where the curve is falling steeply, the <em>same</em> horizontal shift produces an
+  enormous <em>fractional</em> change &mdash; because you are comparing two small numbers, and the ratio of two
+  small numbers can be huge.</p>
+
+  <p class="note">This is not a subtlety about climate. It is a property of any steeply-falling function, and it
+  means the correct summary of the situation is not &ldquo;summers are a bit warmer&rdquo; but &ldquo;the
+  summer that used to happen once a generation now happens most years&rdquo;. Both statements describe the same
+  1&nbsp;&deg;C.</p>
+
+  <div class="q"><b>Question.</b> Before you touch the demonstration, guess. If the mean of a normal
+  distribution moves by one standard deviation, by what factor does the probability of exceeding the old
+  three-sigma threshold change?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Just under <b>17</b>. The probability goes from 0.00135 to 0.0228 &mdash; a
+    once-in-740 event becomes a once-in-44 event. Almost nobody guesses above five. Do the same exercise for a
+    <em>four</em>-sigma threshold and the factor is about 44. The rarer the event you started with, the more
+    dramatically its frequency changes &mdash; which is exactly why the events that break things are the ones
+    changing fastest.</span>
+  </div>
+</div>
+
+<h2 class="sec">The demonstration this page is built around</h2>
+
+<div class="card demo">
+  <h3>Moving the distribution</h3>
+  <p class="cap">Set a global warming, and the page works out what it does to the local extreme temperature
+  distribution. The tail probabilities are exact &mdash; there is no fitting and no simulation, only the normal
+  distribution and arithmetic.</p>
+
+  <p class="note" style="margin-top:0">The chain has three steps and you control all of them. Global warming
+  becomes local warming through the amplification factor of
+  <a href="temperature-patterns.html">page&nbsp;3</a> &mdash; hot extremes over land warm faster than the
+  global mean. Local warming becomes a shift in <em>standard deviations</em> by dividing by &sigma;, the
+  year-to-year spread of the annual hottest day at that place. And a shift in standard deviations becomes a
+  probability, exactly.</p>
+
+  <div class="rowbtns">
+    <span class="lbl">Reference event</span>
+    <button class="ghost" id="r10" aria-pressed="true">1-in-10 year</button>
+    <button class="ghost" id="r20">1-in-20</button>
+    <button class="ghost" id="r50">1-in-50</button>
+    <button class="ghost" id="r100">1-in-100</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="dTg"><span>Global warming above pre-industrial</span> <b id="dTgv">2.0</b></label>
+      <input type="range" id="dTg" min="0.5" max="4.5" step="0.1" value="2.0">
+      <div class="hint">K. Today is about 1.3.</div>
+    </div>
+    <div class="ctrl">
+      <label for="amp"><span>Local amplification of hot extremes</span> <b id="ampv">1.30</b></label>
+      <input type="range" id="amp" min="0.8" max="2.2" step="0.05" value="1.30">
+      <div class="hint">Local extreme warming per degree of global warming. Land values run 1.2&ndash;1.8.</div>
+    </div>
+    <div class="ctrl">
+      <label for="sig"><span>&sigma; of the annual hottest day</span> <b id="sigv">1.8</b></label>
+      <input type="range" id="sig" min="0.8" max="4.0" step="0.1" value="1.8">
+      <div class="hint">K. Small &sigma; means a stable climate &mdash; and a more violent change in the tail.</div>
+    </div>
+    <div class="ctrl">
+      <label for="dsig"><span>Change in variability</span> <b id="dsigv">0</b></label>
+      <input type="range" id="dsig" min="-25" max="50" step="1" value="0">
+      <div class="hint">Per cent change in &sigma;. Leave at 0 for a pure shift; raise it to see the tail explode.</div>
+    </div>
+  </div>
+
+  <div class="two">
+    <svg viewBox="0 0 430 320" role="img" aria-label="Two normal distributions, before and after warming, with the tail beyond a fixed threshold shaded in each"><g id="pdfG"></g></svg>
+    <svg viewBox="0 0 430 320" role="img" aria-label="Return period on a logarithmic axis against temperature threshold, before and after warming"><g id="rpG"></g></svg>
+  </div>
+
+  <div class="kpis" style="margin-top:12px">
+    <div class="kpi"><div class="k">Frequency</div><div class="v" id="kMul">&mdash;</div><div class="s">times more often</div></div>
+    <div class="kpi"><div class="k">New return period</div><div class="v" id="kRet">&mdash;</div><div class="s">years</div></div>
+    <div class="kpi"><div class="k">Intensity</div><div class="v" id="kInt">&mdash;</div><div class="s">K hotter, same rarity</div></div>
+    <div class="kpi"><div class="k">Old cold extreme</div><div class="v" id="kCold">&mdash;</div><div class="s">times as often</div></div>
+  </div>
+
+  <div class="readout" id="exRead"></div>
+
+  <h2 class="sec" style="margin-top:26px">Does it agree with the IPCC?</h2>
+
+  <p class="note" style="margin-top:0">The table below computes the frequency multiplier from the model above at
+  four warming levels, and puts it next to the value assessed in IPCC AR6 from the full model archive and the
+  observational record. <b>Nothing in the left column has been fitted to the right column.</b> The only inputs
+  are the amplification and &sigma; you set with the sliders.</p>
+
+  <table>
+    <thead><tr><th>Warming</th><th class="num">1-in-10, computed</th><th class="num">AR6</th>
+      <th class="num">1-in-50, computed</th><th class="num">AR6</th></tr></thead>
+    <tbody id="cmpBody"></tbody>
+  </table>
+  <p class="note" style="font-size:12.5px;color:var(--text-muted)">AR6 values are the assessed frequencies of
+  hot temperature extremes over land relative to 1850&ndash;1900, read from IPCC AR6 WG1 Summary for
+  Policymakers, Figure&nbsp;SPM.3.</p>
+
+  <div class="q"><b>Question.</b> With the default settings the agreement is close at every warming level. What
+  does that tell you &mdash; and what does it <em>not</em> tell you?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>It tells you the mechanism is right: to a very good approximation, the projected
+    increase in hot extremes is <b>a shifted distribution and nothing more</b>. No new physics is needed, no
+    change in variability is needed, and the enormous multipliers in the IPCC figure are an arithmetic
+    consequence of a few degrees of warming rather than a separate claim. That is genuinely reassuring about the
+    assessment, and it is the most useful thing to take away.<br><br>
+    What it does <em>not</em> tell you: that the shift is the same everywhere (it is not &mdash; the
+    amplification varies a great deal by region and season), that variability is unchanged everywhere (in some
+    regions, particularly where soil moisture dries out, &sigma; rises and makes things worse than this), or
+    that temperature extremes are the whole story. Drought, rainfall and compound events do not follow a
+    single Gaussian.</span>
+  </div>
+
+  <div class="q"><b>Question.</b> Set &sigma; to 0.9&nbsp;K &mdash; a tropical value, where the year-to-year
+  swing is small. The multiplier becomes enormous. Is a stable climate more or less vulnerable?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>More, and this is one of the more important results in the whole field. The
+    tropics have small interannual variability, so the same absolute warming is a much larger shift in units of
+    &sigma;. That means tropical extremes leave the historical range sooner &mdash; the earliest
+    <em>time of emergence</em> anywhere on Earth is in the tropics, not in the Arctic, even though the Arctic
+    warms three times faster. It is the same &sigma; in the denominator as in
+    <a href="../lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture&nbsp;7,
+    page&nbsp;1</a>, doing the same work. And the ecological version is sharper still: organisms adapted to a
+    narrow range have little margin, so a small absolute change can exceed their thermal tolerance while a
+    larger change elsewhere does not.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>The same arithmetic, run backwards: event attribution</h3>
+  <p class="cap">Where the probability ratio stops being a projection and becomes a claim about an event that
+  has already happened.</p>
+
+  <p class="note" style="margin-top:0">A journalist asks whether last summer&rsquo;s heatwave was caused by
+  climate change. The question as posed has no answer &mdash; no single event has a single cause. But a
+  different question does have an answer, and it is the one the demonstration above is already computing:</p>
+
+  <div class="eq">
+    PR &nbsp;=&nbsp; p<sub>1</sub> / p<sub>0</sub>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    FAR &nbsp;=&nbsp; 1 &nbsp;&minus;&nbsp; p<sub>0</sub>/p<sub>1</sub>
+    <div class="u" style="margin-top:8px">p<sub>1</sub> — probability of the event in the world we have
+    &nbsp;&middot;&nbsp; p<sub>0</sub> — in a counterfactual world without the anthropogenic forcing</div>
+  </div>
+
+  <p class="note">The probability ratio is the frequency multiplier you just computed. The
+  <b>fraction of attributable risk</b> converts it to a statement about a particular event: if the event is ten
+  times more likely now, then nine tenths of its present probability would not exist without the forcing. That
+  is a defensible, quantitative, falsifiable claim &mdash; and it is a claim about probabilities, never about a
+  single event&rsquo;s cause.</p>
+
+  <p class="note">The counterfactual world is the hard part, and it comes from exactly the machinery of
+  <a href="../lecture-7-climate-change-past-and-present/attribution.html">Lecture&nbsp;7, page&nbsp;6</a>:
+  large ensembles run with and without the anthropogenic forcing, with the fingerprint regression establishing
+  that the forced signal is really there. Event attribution is detection and attribution applied to a tail
+  instead of a trend, and the reason it needs enormous ensembles is that you are estimating a small
+  probability twice.</p>
+
+  <div class="warnbox"><b>Two honest limits.</b> First, PR is very sensitive to how the event is defined
+  &mdash; the same heatwave gets a different number depending on whether you frame it as a three-day mean or a
+  single day, a national average or one station. Choose the definition after seeing the data and you have
+  cherry-picked, which is the trap
+  <a href="../lecture-7-climate-change-past-and-present/attribution.html">Lecture&nbsp;7&rsquo;s</a> last
+  demonstration is about. Second, the method works far better for temperature than for rainfall or storms,
+  because the temperature distribution is well behaved and well sampled. Where you see a confident PR for a
+  heatwave and a cautious &ldquo;consistent with&rdquo; for a flood, that asymmetry is real and is about
+  statistics, not about caution.</div>
+</div>
+
+<div class="card">
+  <h3>Rainfall extremes, and why they behave differently from mean rainfall</h3>
+  <p class="cap">The 7&nbsp;% versus 2&nbsp;% gap of <a href="water-cycle.html">page&nbsp;4</a>, arriving where
+  it does the most damage.</p>
+
+  <p class="note" style="margin-top:0">Global mean precipitation is rationed by the atmosphere&rsquo;s energy
+  budget. An individual storm is not: it converges the moisture available in its neighbourhood and rains it out.
+  So the <b>intensity of heavy rainfall follows the moisture content</b>, at roughly the
+  Clausius&ndash;Clapeyron rate of 7&nbsp;% per kelvin, while the mean rises at 1&ndash;3&nbsp;%. The
+  consequences are two, and they sound contradictory until you see the mechanism.</p>
+
+  <ul class="pl">
+    <li><b>When it rains, it rains harder.</b> AR6 assesses the intensity of the annual wettest day rising
+    about 7&nbsp;% per degree of global warming, and a 1-in-10-year heavy precipitation event becoming
+    about 1.7 times as frequent at 2&nbsp;&deg;C of warming and 2.7 times at 4&nbsp;&deg;C.</li>
+    <li><b>And there are more dry days between the rains.</b> If the total is nearly fixed and each event
+    delivers more, the events must become less frequent. The same region can get more flooding
+    <em>and</em> more drought, from one mechanism, without any contradiction at all.</li>
+  </ul>
+
+  <div class="q"><b>Worked aside.</b> Suppose the tail of daily rainfall is exponential, P(X&nbsp;&gt;&nbsp;x)
+  = exp(&minus;x/&beta;), and warming multiplies &beta; by 1.21 (three kelvin at 7&nbsp;%/K). What happens to a
+  1-in-100-year daily rainfall?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden>Scaling &beta; turns the exceedance probability p into
+    p<sup>1/1.21</sup>, so the return period T becomes T<sup>1/1.21</sup>: 100 years becomes
+    100<sup>0.826</sup> &asymp; <b>45 years</b>, a frequency multiplier of 2.2. Notice that this is a
+    <em>bigger</em> effect for rarer events, the same way the Gaussian tail was.<br><br>
+    And an honest caveat, because this one matters. Real rainfall tails are <b>heavier than
+    exponential</b> &mdash; a generalised Pareto with a positive shape parameter fits far better &mdash; so the
+    true multiplier is larger than this calculation gives, which is why AR6&rsquo;s assessed numbers exceed it.
+    A pure Gaussian works remarkably well for temperature and a pure exponential does not work for rainfall.
+    That is why the demonstration on this page is about heat and not about floods.</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Compound events, and the reason the risk is worse than any single number</h3>
+  <p class="cap">The frontier of this part of the subject, and the part impact assessments most often miss.</p>
+
+  <p class="note" style="margin-top:0">The demonstration above treats one variable in isolation. Real damage
+  usually comes from combinations &mdash; and the combinations are <em>not independent</em>, so multiplying
+  individual probabilities together underestimates the risk, often by a lot.</p>
+
+  <ul class="pl">
+    <li><b>Hot and dry together.</b> The physical link is the soil-moisture feedback you have now met three
+    times: dry soil cannot evaporate, so the Bowen ratio rises
+    (<a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Lecture&nbsp;3</a>) and the heatwave
+    gets hotter. Drought and heatwave are not two independent draws; each makes the other worse. Europe 2003,
+    Russia 2010 and western North America 2021 were all of this kind.</li>
+    <li><b>Storm surge on a high tide on a raised sea level.</b> The sea-level rise of
+    <a href="long-view.html">page&nbsp;7</a> is slow and undramatic and it changes the flooding statistics
+    enormously, because it moves the whole surge distribution up &mdash; the same shift argument as this page,
+    applied to water instead of temperature.</li>
+    <li><b>Sequences.</b> Drought followed by intense rain on baked ground; a wet winter that saturates soil
+    followed by a storm. The order matters and a marginal distribution cannot see it.</li>
+    <li><b>Spatially concurrent events.</b> Simultaneous harvest failure in several breadbaskets, because they
+    are linked by the same mode of variability
+    (<a href="../lecture-7-climate-change-past-and-present/modes-of-variability.html">Lecture&nbsp;7,
+    page&nbsp;2</a>). Independence fails at exactly the moment when it would have saved you.</li>
+  </ul>
+
+  <div class="q"><b>Question.</b> Where in this course have you already seen a system in which two variables
+  reinforce each other until the combination flips into a different state?
+    <button class="rev" aria-expanded="false">Reveal answer</button>
+    <span class="ans" hidden><a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a> &mdash;
+    vegetation and precipitation in the Sahara, where each sustains the other and the pair has two stable states.
+    Compound events are the statistical face of the same idea: coupled variables, a joint distribution with much
+    more weight in the corner than independence would give, and in the extreme case a threshold beyond which the
+    system does not come back. <a href="long-view.html">Page&nbsp;7</a> returns to that last possibility with
+    the ocean circulation.</span>
+  </div>
+</div>
+
+<p class="foot">After Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate Modelling</i>,
+ch.&nbsp;6.3.3 and figures 6.20 (effect of a mean shift on extreme temperatures, after Solomon et&nbsp;al., 2007)
+and 6.21 (projected change in annual maximum five-day precipitation, after Collins et&nbsp;al., 2013).
+<b>Figure 6.21 is a model field and is not reproduced here</b>; your lecturer shows it, along with the AR6
+Figure&nbsp;SPM.3 panels for hot extremes, heavy precipitation and agricultural drought.
+&nbsp;&middot;&nbsp; <b>The demonstration is exact arithmetic, not a simulation.</b> Tail probabilities of the
+normal distribution are evaluated with the Abramowitz and Stegun (1964) rational approximation 26.2.17, whose
+absolute error is below 7.5&times;10<sup>&minus;8</sup>; thresholds are inverted by bisection. The default
+amplification of 1.3 and &sigma; = 1.8&nbsp;K are <b>representative land values chosen once</b>, and are not
+tuned per warming level &mdash; the agreement with all eight assessed AR6 multipliers follows from the two
+numbers together. Assessed frequency multipliers for hot extremes and heavy precipitation are read from IPCC
+AR6 WG1 (2021) Summary for Policymakers, Figure&nbsp;SPM.3; the assessed intensity increases for the 1-in-10-year
+hot day are +1.2, +1.9, +2.6 and +5.1&nbsp;&deg;C at 1, 1.5, 2 and 4&nbsp;&deg;C of global warming. A pure
+shift cannot reproduce the small extra intensification AR6 assesses for the very rarest events, which implies a
+slight increase in variability in the far tail; that is stated rather than modelled here. Probability ratio and
+fraction of attributable risk follow Allen, <i>Nature</i> 421, 891&ndash;892 (2003) and Stott et&nbsp;al.,
+<i>Nature</i> 432, 610&ndash;614 (2004); the compound-event framing follows Zscheischler et&nbsp;al.,
+<i>Nature Climate Change</i> 8, 469&ndash;477 (2018).
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="carbon-budgets.html">cumulative emissions and the carbon budget &rarr;</a></p>
+
+<div class="nav">
+  <a href="water-cycle.html">&larr; 4 &middot; The water cycle response</a>
+  <a href="carbon-budgets.html">6 &middot; Cumulative emissions and carbon budgets &rarr;</a>
+</div>
+
+</div>
+<script>
+(function(){
+  const SVGNS='http://www.w3.org/2000/svg';
+  const $=id=>document.getElementById(id);
+  function put(p,t,a,txt){const e=document.createElementNS(SVGNS,t);
+    for(const k in a) e.setAttribute(k,a[k]);
+    if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
+  function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+
+  /* normal tail, Abramowitz & Stegun 26.2.17 ---------------------- */
+  function sf(z){
+    const az=Math.abs(z);
+    const t=1/(1+0.2316419*az);
+    const d=0.3989422804014327*Math.exp(-az*az/2);
+    const p=d*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+    return z>=0?p:1-p;
+  }
+  function isf(p){                       // inverse survival, by bisection
+    let lo=-9,hi=9;
+    for(let i=0;i<80;i++){const m=(lo+hi)/2; if(sf(m)>p) lo=m; else hi=m;}
+    return (lo+hi)/2;
+  }
+  const pdf=z=>0.3989422804014327*Math.exp(-z*z/2);
+
+  /* ── the demonstration ──────────────────────────────────────── */
+  (function(){
+    const gP=$('pdfG'), gR=$('rpG'); if(!gP||!gR) return;
+    const S={dTg:$('dTg'),amp:$('amp'),sig:$('sig'),dsig:$('dsig')};
+    const RET={r10:10,r20:20,r50:50,r100:100};
+    let ret=10;
+
+    // AR6 SPM.3 assessed frequency multipliers for hot extremes over land
+    const AR6=[
+      [1.0, 2.8, 4.8],[1.5, 4.1, 8.6],[2.0, 5.6,13.9],[4.0, 9.4,39.2]
+    ];
+
+    function stats(dTg,amp,sig,fs,T){
+      const shift=amp*dTg;               // K, local warming of the extreme
+      const s1=sig*fs;
+      const p0=1/T, z0=isf(p0);          // threshold in units of sigma0, about the old mean
+      const x =z0*sig;                   // threshold in K above the old mean
+      const p1=sf((x-shift)/s1);
+      return {shift,x,p0,p1,s1,z0};
+    }
+
+    function draw(){
+      const dTg=+S.dTg.value, amp=+S.amp.value, sig=+S.sig.value, ds=+S.dsig.value;
+      $('dTgv').textContent=dTg.toFixed(1); $('ampv').textContent=amp.toFixed(2);
+      $('sigv').textContent=sig.toFixed(1); $('dsigv').textContent=(ds>0?'+':'')+ds;
+      const fs=1+ds/100;
+      const st=stats(dTg,amp,sig,fs,ret);
+      const mul=st.p1/st.p0;
+
+      /* --- PDFs --- */
+      clr(gP);
+      const L=44,R=418,T=34,B=246;
+      const lo=-4*sig, hi=st.shift+4.4*sig*fs;
+      const X=x=>L+(x-lo)/(hi-lo)*(R-L);
+      const pkmax=Math.max(pdf(0)/sig,pdf(0)/st.s1);
+      const Y=v=>B-v/pkmax*(B-T);
+      put(gP,'rect',{x:L,y:T,width:R-L,height:B-T,fill:'var(--surface-2)',opacity:.45,rx:6});
+      function shade(mu,s,col,op){
+        let d='M'+X(st.x).toFixed(1)+' '+B;
+        for(let x=st.x;x<=hi;x+=(hi-lo)/400) d+='L'+X(x).toFixed(1)+' '+Y(pdf((x-mu)/s)/s).toFixed(1);
+        d+='L'+X(hi).toFixed(1)+' '+B+'Z';
+        put(gP,'path',{d:d,fill:col,opacity:op,stroke:'none'});
+      }
+      function curve(mu,s,col,w,dash){
+        let d='';
+        for(let x=lo;x<=hi;x+=(hi-lo)/400) d+=(d?'L':'M')+X(x).toFixed(1)+' '+Y(pdf((x-mu)/s)/s).toFixed(1);
+        const a={d:d,fill:'none',stroke:col,'stroke-width':w};
+        if(dash) a['stroke-dasharray']=dash;
+        put(gP,'path',a);
+      }
+      shade(0,sig,'var(--old)',.45);
+      shade(st.shift,st.s1,'var(--hot)',.42);
+      curve(0,sig,'var(--old)',1.8,'5 3');
+      curve(st.shift,st.s1,'var(--hot)',2.4);
+      put(gP,'line',{x1:X(st.x),y1:T,x2:X(st.x),y2:B,stroke:'var(--text-primary)','stroke-width':1.6});
+      put(gP,'text',{x:X(st.x),y:T-6,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-primary)'},'the old 1-in-'+ret);
+      put(gP,'line',{x1:L,y1:B,x2:R,y2:B,stroke:'var(--text-muted)','stroke-width':1});
+      for(let k=-4;k<=8;k+=2){
+        const x=k*sig;
+        if(x<lo||x>hi) continue;
+        put(gP,'text',{x:X(x),y:B+15,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},(k>0?'+':'')+(k*sig).toFixed(0));
+      }
+      put(gP,'text',{x:L,y:B+31,'font-size':11,fill:'var(--text-muted)'},'K above the old mean');
+      put(gP,'text',{x:L,y:T+14,'font-size':11,fill:'var(--old)'},'before');
+      put(gP,'text',{x:L,y:T+29,'font-size':11,fill:'var(--hot)'},'after '+dTg.toFixed(1)+' K of global warming');
+      // arrow marking the shift
+      put(gP,'line',{x1:X(0),y1:B-8,x2:X(st.shift),y2:B-8,stroke:'var(--hot)','stroke-width':1.6});
+      put(gP,'polygon',{points:[X(st.shift),B-8,X(st.shift)-6,B-12,X(st.shift)-6,B-4].join(' '),
+        fill:'var(--hot)'});
+      put(gP,'text',{x:(X(0)+X(st.shift))/2,y:B-13,'text-anchor':'middle','font-size':10,
+        fill:'var(--hot)'},'+'+st.shift.toFixed(1)+' K');
+      put(gP,'text',{x:L,y:T+270,'font-size':11,fill:'var(--text-muted)'},
+        'The shaded areas are the two probabilities. Their ratio is the whole result.');
+
+      /* --- return period curve --- */
+      clr(gR);
+      const L2=54,R2=418,T2=34,B2=250;
+      const xlo=0, xhi=st.shift+4.4*sig*fs;
+      const X2=x=>L2+(x-xlo)/(xhi-xlo)*(R2-L2);
+      const Y2=T_=>B2-(Math.log10(T_)-0)/(3-0)*(B2-T2);
+      put(gR,'rect',{x:L2,y:T2,width:R2-L2,height:B2-T2,fill:'var(--surface-2)',opacity:.45,rx:6});
+      [1,10,100,1000].forEach(t=>{
+        put(gR,'line',{x1:L2,y1:Y2(t),x2:R2,y2:Y2(t),stroke:'var(--grid)','stroke-width':1});
+        put(gR,'text',{x:L2-7,y:Y2(t)+4,'text-anchor':'end','font-size':10.5,
+          fill:'var(--text-muted)'},t);
+      });
+      function rcurve(mu,s,col,w,dash){
+        let d='';
+        for(let x=xlo;x<=xhi;x+=(xhi-xlo)/300){
+          const T_=1/Math.max(1e-9,sf((x-mu)/s));
+          if(T_<1||T_>1000) continue;
+          d+=(d?'L':'M')+X2(x).toFixed(1)+' '+Y2(T_).toFixed(1);
+        }
+        const a={d:d,fill:'none',stroke:col,'stroke-width':w};
+        if(dash) a['stroke-dasharray']=dash;
+        put(gR,'path',a);
+      }
+      rcurve(0,sig,'var(--old)',1.8,'5 3');
+      rcurve(st.shift,st.s1,'var(--hot)',2.4);
+      // the reference event, before and after
+      put(gR,'circle',{cx:X2(st.x),cy:Y2(ret),r:5,fill:'var(--old)'});
+      const Tn=1/st.p1;
+      if(Tn>=1&&Tn<=1000){
+        put(gR,'circle',{cx:X2(st.x),cy:Y2(Tn),r:5,fill:'var(--hot)'});
+        put(gR,'line',{x1:X2(st.x),y1:Y2(ret),x2:X2(st.x),y2:Y2(Tn),
+          stroke:'var(--hot)','stroke-width':1.6,'stroke-dasharray':'3 3'});
+        put(gR,'text',{x:X2(st.x)+8,y:(Y2(ret)+Y2(Tn))/2,'font-size':11,
+          fill:'var(--hot)','font-weight':600},'×'+mul.toFixed(1)+' more often');
+      }
+      // same-rarity intensity arrow
+      const xNew=st.shift+st.s1*st.z0;
+      put(gR,'line',{x1:X2(st.x),y1:Y2(ret),x2:X2(xNew),y2:Y2(ret),
+        stroke:'var(--warn)','stroke-width':1.6});
+      put(gR,'circle',{cx:X2(xNew),cy:Y2(ret),r:4,fill:'var(--warn)'});
+      put(gR,'text',{x:(X2(st.x)+X2(xNew))/2,y:Y2(ret)-8,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--warn)'},'+'+(xNew-st.x).toFixed(1)+' K');
+      put(gR,'text',{x:L2,y:T2-6,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+        'Return period, years (log scale)');
+      put(gR,'text',{x:R2,y:B2+31,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},'K above the old mean');
+      for(let k=0;k<=10;k+=2){
+        const x=k*sig; if(x>xhi) continue;
+        put(gR,'text',{x:X2(x),y:B2+15,'text-anchor':'middle','font-size':10.5,
+          fill:'var(--text-muted)'},'+'+(k*sig).toFixed(0));
+      }
+
+      /* --- numbers --- */
+      const pc0=1/ret;                        // old cold extreme of the same rarity
+      const xc=-st.z0*sig;
+      const pc1=1-sf((xc-st.shift)/st.s1);
+      $('kMul').textContent='×'+mul.toFixed(1);
+      $('kRet').textContent=(Tn<1?'<1':Tn.toFixed(Tn<10?1:0));
+      $('kInt').textContent='+'+(xNew-st.x).toFixed(1);
+      $('kCold').textContent='×'+(pc1/pc0).toFixed(2);
+
+      $('exRead').innerHTML=
+        'A local hot extreme that used to occur once in '+ret+' years &mdash; '+
+        st.x.toFixed(1)+'&nbsp;K above the old mean &mdash; now occurs once in <b>'+
+        (Tn<1?'less than one':Tn.toFixed(Tn<10?1:0))+'</b> year'+(Tn>=2?'s':'')+
+        ', which is <span class="big">×'+mul.toFixed(1)+'</span> as often. '+
+        'Equivalently, the event of that same rarity is now <b>'+(xNew-st.x).toFixed(1)+
+        '&nbsp;K hotter</b>.<br>'+
+        'The shift is '+amp.toFixed(2)+' × '+dTg.toFixed(1)+' = <b>'+st.shift.toFixed(2)+
+        '&nbsp;K</b>, which is '+(st.shift/sig).toFixed(2)+'&nbsp;&sigma;. '+
+        'Meanwhile the cold extreme of the same original rarity is now only <b>×'+
+        (pc1/pc0).toFixed(2)+'</b> as frequent &mdash; the cold tail empties out at almost exactly the rate '+
+        'the warm tail fills. That symmetry is a signature of a <b>shift</b> rather than a change in '+
+        'variability, and it is one of the things observational records are checked for.';
+
+      /* --- AR6 comparison --- */
+      const rows=AR6.map(a=>{
+        const s10=stats(a[0],amp,sig,fs,10), s50=stats(a[0],amp,sig,fs,50);
+        const m10=s10.p1/s10.p0, m50=s50.p1/s50.p0;
+        const ok10=Math.abs(m10-a[1])/a[1]<0.15, ok50=Math.abs(m50-a[2])/a[2]<0.15;
+        return '<tr><td class="nm">'+a[0].toFixed(1)+' °C</td>'+
+          '<td class="num'+(ok10?' ok':'')+'">×'+m10.toFixed(1)+'</td><td class="num">×'+a[1].toFixed(1)+'</td>'+
+          '<td class="num'+(ok50?' ok':'')+'">×'+m50.toFixed(1)+'</td><td class="num">×'+a[2].toFixed(1)+'</td></tr>';
+      }).join('');
+      $('cmpBody').innerHTML=rows;
+    }
+
+    Object.values(S).forEach(el=>el.addEventListener('input',draw));
+    Object.keys(RET).forEach(k=>$(k).addEventListener('click',()=>{
+      ret=RET[k];
+      Object.keys(RET).forEach(j=>$(j).setAttribute('aria-pressed',String(j===k)));
+      draw();
+    }));
+    draw();
+  })();
+
+  /* ── reveal-answer buttons ──────────────────────────────────── */
+  document.querySelectorAll('.rev').forEach(b=>{
+    const a=b.nextElementSibling;
+    b.addEventListener('click',()=>{
+      const open=!a.hidden;
+      a.hidden=open;
+      b.textContent=open?'Reveal answer':'Hide answer';
+      b.setAttribute('aria-expanded',String(!open));
+    });
+  });
+
+  const btn=$('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>
