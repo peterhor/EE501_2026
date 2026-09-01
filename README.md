@@ -168,9 +168,7 @@ Completed in the current cleanup pass:
 10. Added `teacher/index.html`, the instructor-only index over the seven lecture outlines, and extended `.gitignore` to cover `teacher/` and the Lecture 8 outline path
 
 Still to do in the broader course cleanup:
-
-Continue checking provenance/source notes and scientific grounding page by page
-Check the TODO.md file for more tasks
+  Check the TODO.md file for more tasks
 
 ## Key files
 

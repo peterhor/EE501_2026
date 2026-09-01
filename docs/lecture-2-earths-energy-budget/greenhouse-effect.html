@@ -59,6 +59,7 @@
       font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
       font-size:21px;text-align:center;color:var(--text-primary);letter-spacing:.01em;overflow-x:auto}
   .eq small{display:block;font-family:inherit;font-size:13px;color:var(--text-muted);margin-top:8px;letter-spacing:0}
+  .eq + .defs{margin-top:-4px}
   .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 20px;margin:14px 0 4px}
   .def{font-size:14px;color:var(--text-secondary)}
   .def b{color:var(--text-primary);font-family:"Iowan Old Style",Georgia,serif;font-size:16px;margin-right:6px}
@@ -137,10 +138,22 @@
       A↑ = σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.1)
       <small>Stefan–Boltzmann for a blackbody (ε = 1) — this equation <em>defines</em> T<sub>e</sub></small>
     </div>
+    <div class="defs">
+      <div class="def"><b>A↑</b> emitted longwave flux, W m<sup>−2</sup></div>
+      <div class="def"><b>σ</b> Stefan-Boltzmann constant, 5.67 × 10<sup>−8</sup> W m<sup>−2</sup> K<sup>−4</sup></div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+    </div>
     <div class="eq">
       πR²(1−α<sub>p</sub>)S₀ = 4πR²σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.2)
       &nbsp;&nbsp;⟹&nbsp;&nbsp; T<sub>e</sub> = [ S₀(1−α<sub>p</sub>) / 4σ ]<sup>1/4</sup> &nbsp;&nbsp; (2.3–2.4)
       <small>R cancels — T<sub>e</sub> does not depend on planet size, only on S₀, α<sub>p</sub> and σ</small>
+    </div>
+    <div class="defs">
+      <div class="def"><b>R</b> planetary radius, here Earth's radius</div>
+      <div class="def"><b>α<sub>p</sub></b> planetary albedo, the reflected fraction of sunlight</div>
+      <div class="def"><b>S₀</b> solar constant at the top of the atmosphere, W m<sup>−2</sup></div>
+      <div class="def"><b>σ</b> Stefan-Boltzmann constant</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
     </div>
 
     <figure>
@@ -205,16 +218,33 @@
       σT<sub>a</sub><sup>4</sup> = ¼(1−α<sub>p</sub>)S₀ = σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.5)
       <small>⟹ T<sub>a</sub> = T<sub>e</sub> = 255 K — the layer sits at exactly the planet's emission temperature</small>
     </div>
+    <div class="defs">
+      <div class="def"><b>T<sub>a</sub></b> atmospheric layer temperature, K</div>
+      <div class="def"><b>α<sub>p</sub></b> planetary albedo</div>
+      <div class="def"><b>S₀</b> solar constant, W m<sup>−2</sup></div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+    </div>
 
     <p><strong>At the surface:</strong> the ground absorbs both the sunlight coming through the transparent
     atmosphere <em>and</em> the infrared radiated back down by the layer above it:</p>
     <div class="eq">
       σT<sub>s</sub><sup>4</sup> = ¼(1−α<sub>p</sub>)S₀ + σT<sub>a</sub><sup>4</sup> &nbsp;&nbsp; (2.6)
     </div>
+    <div class="defs">
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>α<sub>p</sub></b> planetary albedo</div>
+      <div class="def"><b>S₀</b> solar constant, W m<sup>−2</sup></div>
+      <div class="def"><b>T<sub>a</sub></b> atmospheric layer temperature, K</div>
+    </div>
     <p>Substituting Eq. 2.5 into Eq. 2.6 — both terms on the right are now σT<sub>e</sub><sup>4</sup>:</p>
     <div class="eq">
       σT<sub>s</sub><sup>4</sup> = σT<sub>e</sub><sup>4</sup> + σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.7)
       &nbsp;&nbsp;⟹&nbsp;&nbsp; T<sub>s</sub> = 2<sup>1/4</sup>T<sub>e</sub> = 1.19 T<sub>e</sub> &nbsp;&nbsp; (2.8)
+    </div>
+    <div class="defs">
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+      <div class="def"><b>2<sup>1/4</sup></b> the fourth-root response from Stefan-Boltzmann scaling</div>
     </div>
 
     <figure>
@@ -249,10 +279,26 @@
       σT<sub>s</sub><sup>4</sup> = ¼(1−α<sub>p</sub>)S₀ + εσT<sub>a</sub><sup>4</sup> &nbsp;&nbsp; (2.9)
       <small>surface balance: absorbed sunlight, plus the layer's downward greybody emission</small>
     </div>
+    <div class="defs">
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>α<sub>p</sub></b> planetary albedo</div>
+      <div class="def"><b>S₀</b> solar constant, W m<sup>−2</sup></div>
+      <div class="def"><b>ε</b> infrared emissivity and absorptivity of the layer</div>
+      <div class="def"><b>T<sub>a</sub></b> atmospheric layer temperature, K</div>
+    </div>
     <div class="eq">
       ¼(1−α<sub>p</sub>)S₀ = εσT<sub>a</sub><sup>4</sup> + (1−ε)σT<sub>s</sub><sup>4</sup> = σT<sub>e</sub><sup>4</sup> &nbsp;&nbsp; (2.10)
       <small>top-of-atmosphere balance: what leaves to space is the layer's own emission <em>plus</em> the
       surface radiation that escaped through the gap</small>
+    </div>
+    <div class="defs">
+      <div class="def"><b>α<sub>p</sub></b> planetary albedo</div>
+      <div class="def"><b>S₀</b> solar constant, W m<sup>−2</sup></div>
+      <div class="def"><b>ε</b> absorbed and emitted infrared fraction</div>
+      <div class="def"><b>1−ε</b> transmitted fraction of surface infrared</div>
+      <div class="def"><b>T<sub>a</sub></b> atmospheric layer temperature, K</div>
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
     </div>
 
     <p>Solving Eqs. 2.9–2.10 together (they share the unknowns T<sub>s</sub> and T<sub>a</sub>):</p>
@@ -262,6 +308,13 @@
       T<sub>a</sub> = [ 1 / (2−ε) ]<sup>1/4</sup> T<sub>e</sub> &nbsp;&nbsp; (2.13)
       <small>ε = 0 recovers Section 1 (T<sub>s</sub> = T<sub>e</sub>, no atmosphere); ε = 1 recovers
       Section 2 (T<sub>s</sub> = 2<sup>1/4</sup>T<sub>e</sub>)</small>
+    </div>
+    <div class="defs">
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>T<sub>a</sub></b> atmospheric layer temperature, K</div>
+      <div class="def"><b>ε</b> infrared emissivity of the layer</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+      <div class="def"><b>2−ε</b> the part of the radiative budget not blocked by the layer</div>
     </div>
 
     <h3 style="margin-top:22px">Try it — drag the atmosphere's infrared emissivity</h3>

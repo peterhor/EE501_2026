@@ -246,12 +246,24 @@
     the surface. It is coming from wherever in the atmosphere the temperature happens to be 255&nbsp;K.</p>
     <div class="eq">z<sub>e</sub> = (T<sub>s</sub> &minus; T<sub>e</sub>) / &Gamma; = (288 &minus; 255) / 6.5 &asymp; 5.1 km
       <small>the effective emission level &mdash; mid-troposphere, around the 500 hPa surface</small></div>
+    <div class="defs">
+      <div class="def"><b>z<sub>e</sub></b> effective emission height, km</div>
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+      <div class="def"><b>&Gamma;</b> lapse rate, K km<sup>&minus;1</sup></div>
+    </div>
     <p>Now run the argument the other way, which is how the greenhouse effect actually works. The emission
     temperature is pinned at 255&nbsp;K, because energy balance at the top of the atmosphere pins the
     outgoing flux at 239&nbsp;W&nbsp;m<sup>&minus;2</sup>. Then the surface temperature is not a free
     parameter at all:</p>
     <div class="eq">T<sub>s</sub> = T<sub>e</sub> + &Gamma; &middot; z<sub>e</sub>
       <small>the surface is warm because the emission level is high and the air below it lies on a slope</small></div>
+    <div class="defs">
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+      <div class="def"><b>&Gamma;</b> lapse rate, K km<sup>&minus;1</sup></div>
+      <div class="def"><b>z<sub>e</sub></b> effective emission height, km</div>
+    </div>
     <p>Adding CO<sub>2</sub> makes the atmosphere opaque a little higher up, so <b>z<sub>e</sub> rises</b>.
     At the new, higher level it is colder, so the planet emits less than 239 &mdash; it is now gaining
     energy. The whole profile warms until the emission level is back at 255&nbsp;K, and because the profile
@@ -320,6 +332,14 @@
     <div class="eq">&sigma;T<sub>k</sub><sup>4</sup> = k &middot; &sigma;T<sub>e</sub><sup>4</sup>
       &nbsp;&nbsp;&rArr;&nbsp;&nbsp; T<sub>s</sub> = (n+1)<sup>1/4</sup> T<sub>e</sub>
       <small>layers counted k = 1 at the top downward to k = n; the surface behaves as layer n+1</small></div>
+    <div class="defs">
+      <div class="def"><b>&sigma;</b> Stefan-Boltzmann constant</div>
+      <div class="def"><b>T<sub>k</sub></b> temperature of layer k, K</div>
+      <div class="def"><b>k</b> layer index counted downward from the top</div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>n</b> number of opaque atmospheric layers</div>
+    </div>
     <div class="ctl">
       <label for="nlay">Number of opaque layers</label>
       <input type="range" id="nlay" min="0" max="6" step="1" value="1">
