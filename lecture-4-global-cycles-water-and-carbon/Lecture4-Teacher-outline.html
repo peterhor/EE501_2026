@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global cycles: water and carbon — lecture outline</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --nr:#1baf7a; --sw:#eda100; --lw:#c8443a; --lh:#2a78d6; --gd:#8a6b45;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --nr:#199e70; --sw:#c98500; --lw:#d9564c; --lh:#3987e5; --gd:#a08258;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:66ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .private{background:var(--surface-2);border:1px dashed var(--lw);border-radius:10px;
+    padding:12px 16px;margin:0 0 22px;font-size:13px;color:var(--text-secondary);line-height:1.6}
+  .private b{color:var(--lw)}
+  .private code{font-size:12.5px;background:var(--surface-1);padding:1px 5px;border-radius:4px;
+    border:1px solid var(--line-soft)}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 24px;margin-bottom:14px}
+  h2.sec{font-size:15px;margin:34px 0 10px;color:var(--text-secondary);font-weight:600}
+
+  /* a block = one 45-minute chunk */
+  .blk{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:0;margin-bottom:16px;overflow:hidden}
+  .blk > .hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    padding:16px 24px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+  .blk > .hd .n{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--nr);font-weight:700}
+  .blk > .hd h3{font-size:18px;margin:0;letter-spacing:-.01em;flex:1 1 auto}
+  .blk > .hd .t{font-size:13px;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .blk > .bd{padding:18px 24px 22px}
+
+  .step{margin:0 0 20px}
+  .step:last-child{margin-bottom:0}
+  .step > .lbl{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin:0 0 6px}
+  ul{margin:0 0 0 0;padding-left:22px}
+  li{margin:0 0 6px;color:var(--text-secondary)}
+  li b, li strong{color:var(--text-primary);font-weight:600}
+  li > ul{margin-top:6px}
+  .eqn{display:inline-block;background:var(--surface-2);border-radius:7px;padding:3px 10px;
+    color:var(--text-primary);font-size:15px}
+
+  .show{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);
+    border-left:3px solid var(--nr);border-radius:0 9px 9px 0;padding:12px 16px;margin:14px 0 0;
+    font-size:13.5px;color:var(--text-secondary)}
+  .show .k{flex:0 0 auto;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--nr);font-weight:700;padding-top:2px}
+  .show b{color:var(--text-primary)}
+  .show a{color:var(--nr);font-weight:600;text-decoration:none}
+  .show a:hover{text-decoration:underline}
+
+  .ask{border-left:3px solid var(--lw);background:var(--surface-2);border-radius:0 9px 9px 0;
+    padding:12px 16px;margin:12px 0 0;font-size:13.5px;color:var(--text-secondary)}
+  .ask .k{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--lw);font-weight:700}
+  .ask b{color:var(--text-primary)}
+  .ask .ans{display:block;margin-top:6px;color:var(--text-muted);font-size:13px}
+
+  .brk{text-align:center;font-size:12.5px;color:var(--text-muted);margin:0 0 16px;
+    letter-spacing:.04em}
+  .brk span{background:var(--surface-0);padding:0 14px}
+  .brk{border-top:1px dashed var(--line);line-height:0;}
+  .brk span{position:relative;top:-1px;display:inline-block;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  th.raw{text-transform:none;letter-spacing:.02em;font-size:12.5px}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);white-space:nowrap}
+  td.nm{color:var(--text-primary);font-weight:600;white-space:nowrap}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .lo{columns:2;column-gap:32px}
+  @media(max-width:700px){.lo{columns:1}}
+  .lo li{break-inside:avoid}
+  .res{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:4px}
+  .res a{display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;
+    padding:12px 14px;text-decoration:none;color:var(--text-primary)}
+  .res a:hover{border-color:var(--nr)}
+  .res a .rn{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--nr);font-weight:700}
+  .res a .rt{font-size:14.5px;font-weight:600;margin:3px 0 2px}
+  .res a .rd{font-size:12.5px;color:var(--text-muted)}
+
+  @media print{
+    body{background:#fff;color:#000;font-size:11pt}
+    .wrap{max-width:none;padding:0}
+    .toggle,.crumb{display:none}
+    .blk,.card{break-inside:avoid;border:1px solid #bbb;box-shadow:none}
+    .blk > .hd{background:#f0f0f0}
+    .show,.ask{background:#f6f6f6}
+    a{color:#000;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="https://peterhor.github.io/EE501_2026/">EE501 course site &nearr;</a> &nbsp;&middot;&nbsp; Global cycles: water and carbon &nbsp;&middot;&nbsp; lecture outline</p>
+
+<p class="private"><b>Instructor copy &mdash; not on the student site.</b> This file lives outside
+<code>docs/</code>, so it is not part of the published GitHub Pages site. It <em>is</em> tracked in the
+repository, and the repository is public &mdash; treat this running order as readable by anyone, students
+included. The teaching pages it links to are public by design. Source decks, answer keys and report templates
+stay excluded.</p>
+
+<header>
+  <div>
+    <h1>Global cycles: water and carbon &mdash; lecture outline</h1>
+    <p class="sub">A running order for the Wednesday 08:15&ndash;12:00 slot, with the point to make at each
+    step, the number to put on the board, which interactive page to open, and the question to throw back at the
+    room. Built from <i>Lecture 4 &mdash; Global cycles of water and carbon</i> and the four teaching pages that
+    go with it.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3 style="font-size:17px;margin:0 0 10px">The one sentence the whole session is built on</h3>
+  <p style="font-size:17px;line-height:1.55;margin:0 0 14px">
+    Every cycle in this lecture is the <b>same equation</b> &mdash; dS/dt = in &minus; out &mdash; applied to a
+    different box. What distinguishes one reservoir from another is not the equation but the
+    <b>residence time</b>, and residence time is what decides whether a perturbation is a blip or something
+    the planet keeps.</p>
+  <p class="note">Say it at the start, and then land it four times: the atmosphere holds nine days of water
+  and so cannot force anything; the ocean holds three thousand years and so remembers everything; CO<sub>2</sub>
+  has no chemical sink and so accumulates; CH<sub>4</sub> has one and so can be turned off. Everything else in
+  the four hours is detail hung on that frame.</p>
+  <p class="note"><b>The second thread, worth naming explicitly once.</b> Both cycles are enormous fluxes that
+  very nearly cancel. 486 units of water evaporate and 486 fall. 203 PgC leaves the atmosphere each year and
+  about 201 comes back. We are not overwhelming either cycle &mdash; we are biasing it by a few per cent, one
+  way, for two centuries. That is a different and much less intuitive kind of problem, and students who leave
+  with only "humans emit a lot of CO<sub>2</sub>" have missed it.</p>
+</div>
+
+<h2 class="sec">Learning outcomes</h2>
+
+<div class="card">
+  <p class="note" style="margin:0 0 12px">By the end of the session students should be able to:</p>
+  <ul class="lo">
+    <li>Apply the <b>reservoir balance equation</b> to any box and derive the runoff and E&minus;P relations from it.</li>
+    <li>Compute a <b>residence time</b> from a stock and a flux, and say what it does and does not tell you.</li>
+    <li>State roughly where the world&rsquo;s water is, and why <b>availability</b> is the binding constraint.</li>
+    <li>Explain the <b>soil water balance</b> and distinguish water-limited from energy-limited evapotranspiration.</li>
+    <li>Read an <b>E &minus; P</b> field and connect it to sea surface salinity and to ocean circulation.</li>
+    <li>Write down the <b>global carbon budget</b> and identify which term is missing from any given version of it.</li>
+    <li>Define the <b>airborne fraction</b> and say why it has stayed near 45 %.</li>
+    <li>Explain why <b>carbonate chemistry</b>, not solubility, lets the ocean hold so much carbon.</li>
+    <li>Distinguish <b>DIC and alkalinity</b>, and predict how each responds to adding CO<sub>2</sub> or to shell formation.</li>
+    <li>Describe the <b>three pumps</b> and explain why one of them works against the other two.</li>
+    <li>Trace the cascade <b>GPP &rarr; NPP &rarr; NEP &rarr; NBP</b> and say what is subtracted at each step.</li>
+    <li>Explain the <b>weathering thermostat</b> and its timescale.</li>
+    <li>Explain why <b>methane responds to emissions cuts and CO<sub>2</sub> does not</b>.</li>
+  </ul>
+</div>
+
+<h2 class="sec">Running order</h2>
+
+<p class="note" style="margin:0 0 14px;color:var(--text-muted)">
+Timings assume the 08:15&ndash;12:00 slot with two short breaks. They are a shape, not a schedule.
+<b>Block 3 is the one to protect</b> &mdash; the budget arithmetic and its missing term is the single most
+examinable thing in the session. <b>Block 5 is the one to cut into</b> if you are running long; the geological
+cycle survives being told rather than derived.</p>
+
+<!-- ══════════════════ OPEN ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Open</span>
+    <h3>Framing: two cycles, one equation</h3>
+    <span class="t">08:15 · 10 min</span>
+  </div>
+  <div class="bd">
+    <div class="step">
+      <p class="lbl">Points</p>
+      <ul>
+        <li>Previous sessions were about <b>energy</b>. Today is about <b>mass</b> &mdash; where two particular substances are, and how fast they move between the places they can be.</li>
+        <li>Write <span class="eqn">dS/dt = inputs &minus; outputs</span> on the board and leave it there for four hours. Every diagram today is a special case of it.</li>
+        <li>Introduce the two quantities that will be asked of every reservoir: <b>how big</b> (the stock) and <b>how fast</b> (the residence time). Stress that they are independent &mdash; big and slow, small and fast, and every combination.</li>
+        <li>Outline the four sections: the hydrological cycle → the carbon budget → the ocean → land, rock and methane.</li>
+      </ul>
+    </div>
+    <div class="ask"><span class="k">Warm-up</span><br>
+      <b>A glass of water and a glass of Coca-Cola are left open on the windowsill for a week. What is left in
+      each?</b> Get to: the water evaporates entirely; the Coke goes flat first and then evaporates. Two
+      different substances, two different escape routes, two different timescales &mdash; and the fizz going
+      first is quite literally today&rsquo;s ocean chemistry running backwards. Come back to it in Block 4.</div>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 1 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 1</span>
+    <h3>The global water balance and residence time</h3>
+    <span class="t">08:25 · 40 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The figure, one arrow at a time</p>
+      <ul>
+        <li>Put up Fig. 2.21 (the interactive version is cleaner). Do <b>not</b> read all the numbers out. Take the four vertical arrows first: ocean 413 up / 373 down, land 73 up / 113 down.</li>
+        <li>Ask the room to spot the pattern before you say it: <b>each pair fails to balance by exactly 40, in opposite directions</b>. Then reveal the two horizontal arrows that close it.</li>
+        <li><b>The point to land:</b> 86 % of the water cycle never touches land. It is an ocean cycle with a small terrestrial branch. The 40 that crosses the coastline is the <em>entire</em> renewable freshwater supply of the continents.</li>
+        <li>Units housekeeping: reservoirs in 10<sup>3</sup> km<sup>3</sup>, fluxes in 10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup>. Worth 20 seconds; saves confusion later.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/water-balance.html">Page 1 · The global water balance</a> &mdash; use the
+        <b>Highlight</b> switch. Go <em>Ocean loop</em> → <em>Land loop</em> → <em>The net 40</em> in that
+        order, and let the caption under the diagram carry the argument each time.
+      </div></div>
+      <div class="ask"><span class="k">Ask (from the slides)</span><br>
+        <b>Where in this figure is condensation included?</b>
+        <span class="ans">Nowhere explicitly &mdash; it is hidden inside the precipitation arrows. The figure is
+        a mass balance between reservoirs, and condensation is a phase change <em>within</em> the atmospheric
+        reservoir, not a transfer between reservoirs. Good follow-up: so where is the latent heat release in
+        this diagram? Also nowhere &mdash; and it is the single largest energy transfer in the climate system.
+        This diagram deliberately shows only half the story.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Where the water is</p>
+      <ul>
+        <li>96.5 % ocean. Of the fresh remainder, about 70 % is ice and most of the rest is groundwater.</li>
+        <li><b>Fresh, liquid and accessible is well under 0.1 % of the total.</b> That is the sentence for the exam.</li>
+        <li>Connect forward: the reason this matters for ecology is not the global number but the <em>distribution</em>, which Block 2 shows is set by atmospheric circulation.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · Residence time — the core idea of the whole lecture</p>
+      <ul>
+        <li><span class="eqn">&tau; = S / F<sub>out</sub></span>. Derive it out loud: at steady state the whole reservoir is replaced once every S/F years.</li>
+        <li>Do <b>two</b> on the board and let the page do the rest. Atmosphere: 12.7 / 486 = 0.026 yr = <b>9.5 days</b>. Ocean: 1 335 040 / 413 = <b>3200 years</b>.</li>
+        <li><b>The point to land:</b> the atmosphere holds one thousandth of one per cent of the water and turns it over forty times a year. The ocean holds 96.5 % and turns over once every three millennia. So the atmosphere is where the cycle <em>responds</em>; the ocean is where it <em>remembers</em>.</li>
+        <li>Flag now that this reasoning will <b>fail</b> for CO<sub>2</sub> in Block 3, and that the way it fails is the most important asymmetry in the course. Planting the flag here makes the payoff land.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/water-balance.html">Page 1</a> &mdash; the
+        <b>residence-time strip</b>. Nine days to nine thousand years on one logarithmic axis. Let them look at
+        it for a moment before you say anything.
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Water vapour rises 7 % per kelvin but precipitation only 2&ndash;3 %. What happens to &tau;?</b>
+        <span class="ans">S rises faster than F, so &tau; increases &mdash; vapour stays airborne longer and
+        therefore travels further before it falls. That is a large part of why the wet regions get wetter and
+        the dry regions drier: moisture is being exported further from where it evaporated.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 2 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 2</span>
+    <h3>Water on land, and E &minus; P at the ocean surface</h3>
+    <span class="t">09:05 · 30 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Shrink the box to one field</p>
+      <ul>
+        <li><span class="eqn">dS/dt = P &minus; ET &minus; R &minus; D</span> &mdash; the same equation, fourth time of asking. This is Fig. 2.23.</li>
+        <li>Name the two regimes explicitly and make them stick: <b>water-limited</b> (ET is set by how much rain there is) and <b>energy-limited</b> (ET is set by how much radiation there is, and the surplus becomes runoff).</li>
+        <li>The aridity index P/PET is the number that tells you which you are in. Below about 0.65, water-limited.</li>
+        <li><b>Connect back to the previous lecture.</b> ET here is F<sub>LH</sub> there. 1 mm of water = 2.45 MJ m<sup>&minus;2</sup>. The Bowen ratio and the soil water balance are the same constraint in different units. Students consistently fail to see this unless it is said out loud.</li>
+      </ul>
+      <div class="show"><span class="k">Show &mdash; the demonstration to spend time on</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/water-balance.html">Page 1 · the soil water bucket</a>.
+        A three-step routine that works well live. Read the four KPI tiles under the chart as you go rather
+        than quoting numbers from here &mdash; the rainfall is generated, so the exact figures shift a little
+        with the sliders.
+        <b style="display:block;margin-top:6px;font-weight:400">
+        (1) Load <em>Temperate oceanic</em>. Storage rides near capacity most of the year and only dips toward
+        the stress line in the driest summer spells; the aridity index is far above 1 and ET runs close to
+        potential. <em>Energy-limited</em> &mdash; the surplus is going down the river, and adding rain would
+        change the river, not the ET.<br>
+        (2) Switch to <em>Semi-arid</em> without touching anything else. Storage collapses below the stress
+        line for most of the year, ET falls to roughly a quarter of demand, and the runoff ticks nearly
+        vanish. <em>Water-limited</em> &mdash; same equation, same model, opposite answer.<br>
+        (3) Switch to <em>Monsoon</em> and let them watch storage fill in three months and drain for nine.
+        Then ask what would happen to a plant that could root twice as deep &mdash; and drag the capacity
+        slider to show them.</b>
+        <b style="display:block;margin-top:6px;font-weight:400;color:var(--text-muted)">Panel layout: rain
+        hangs downward from the ceiling on its own scale, ET rises from the mid-line on a much finer one. Say
+        so once &mdash; a wet day is twenty times a day&rsquo;s ET and they cannot share an axis.</b>
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Doubling the soil water capacity raises annual ET without a drop more rain. Where did the water come
+        from?</b>
+        <span class="ans">From runoff and drainage. A bigger bucket intercepts water that would otherwise have
+        left the same day and holds it until the plants can use it. Nothing was created; a flux was
+        redirected. Good follow-up: so what does deep ploughing, or soil compaction, or losing topsoil do to a
+        catchment&rsquo;s water balance &mdash; and to its Bowen ratio?</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · E − P and the salinity fingerprint</p>
+      <ul>
+        <li>Fig. 2.24. Two maxima at 25&deg;N and 25&deg;S, minima at the ITCZ and the storm tracks.</li>
+        <li><b>The pattern is set by circulation, not by local energy supply.</b> Subtropics are dry because of Hadley descent, not because they evaporate especially hard. Show <em>E and P separately</em> to prove it: E is comparatively flat, P does all the varying.</li>
+        <li>Then the payoff: switch to the <em>salinity</em> overlay. Salinity maxima sit on the E&minus;P maxima. The ocean has been recording the water cycle for us, everywhere, continuously.</li>
+        <li>Close the loop to circulation: freshwater flux is a buoyancy flux, and buoyancy drives the overturning. Forward reference to PC Lab 3.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/water-balance.html">Page 1</a> &mdash;
+        the <b>E &minus; P</b> panel, all three toggle states, in the order
+        <em>E &minus; P</em> → <em>E and P separately</em> → <em>vs salinity</em>.
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Salty water got saltier and fresh water got fresher, with no change in the mean. What does that
+        say?</b>
+        <span class="ans">That the <em>pattern</em> of E &minus; P has amplified without the global total
+        changing much &mdash; an intensifying hydrological cycle. And that the ocean is a better rain gauge than
+        the rain gauges: it integrates over years and covers 71 % of the planet, where the gauge network is
+        sparse, land-only and biased.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<p class="brk"><span>break · 09:35</span></p>
+
+<!-- ══════════════════ BLOCK 3 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 3</span>
+    <h3>The global carbon budget</h3>
+    <span class="t">09:50 · 35 min &nbsp;·&nbsp; protect this one</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Start with the observation, not the theory</p>
+      <ul>
+        <li>Keeling curve. 315 ppm in 1958, <b>425 ppm</b> in 2024. A 35 % rise inside one human lifetime, measured continuously at one mountain by one instrument lineage.</li>
+        <li>Then the wiggle. Ask what it is before telling them. ~6 ppm at Mauna Loa, ~16 ppm at Barrow, ~1 ppm at the South Pole.</li>
+        <li><b>The amplitude follows the land, not the latitude.</b> That is the whole answer, and it is worth extracting from the room rather than giving.</li>
+        <li>CH<sub>4</sub>: <b>~1930 ppb</b> on the NOAA global mean. Note the slide says 1950 &mdash; that is closer to a northern station such as Mauna Loa, which runs above the global mean. Show the 1999&ndash;2006 pause and say you will explain it in Block 6.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Page 2 · The global carbon budget</a> &mdash;
+        toggle the seasonal cycle off and on, then tick <b>show the growth rate</b> to make the point that the
+        curve is not merely rising but <em>steepening</em>. Then the <b>amplitude vs latitude</b> panel with the
+        land fraction behind it.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · The scale of the perturbation</p>
+      <ul>
+        <li>Reservoirs first, on a log axis: crust 5&times;10<sup>7</sup>, deep ocean 37 100, soils ~1950, atmosphere ~900, vegetation ~550 PgC.</li>
+        <li><b>The atmosphere is one of the smallest boxes.</b> Which is exactly why it is the one that moves.</li>
+        <li>Then the fluxes on a <em>linear</em> axis, deliberately: GPP 123, respiration 119, ocean 80 each way &mdash; and human emissions 11. Let the visual do the work.</li>
+        <li>Say the sentence: <b>a cycle that cancels to within 1 % is a cycle in which a 5 % bias accumulates relentlessly.</b></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · The budget, and the missing term</p>
+      <ul>
+        <li><span class="eqn">E<sub>fossil</sub> + E<sub>land-use</sub> = G<sub>atm</sub> + S<sub>ocean</sub> + S<sub>land</sub></span></li>
+        <li>Do the slide&rsquo;s arithmetic on the board exactly as it appears: 123.3 &minus; 119.8 = 3.5 land; 80.0 &minus; 78.4 = 1.6 ocean; total uptake 5.1; fossil 7.8; so the atmosphere gains <b>2.7</b>.</li>
+        <li>Then say: the measured growth for that decade was <b>4.0</b>. Stop. Let it sit. <b>This is the moment of the session</b> &mdash; do not rescue them too quickly.</li>
+        <li>The missing term is <b>land-use change</b>, about 1.1 PgC yr<sup>&minus;1</sup>. 2.7 + 1.1 = 3.8, and with rounding across the terms you recover 4.0.</li>
+        <li>Land-use change is not a rounding error. In the 1960s it was nearly half of total emissions. It is the term that makes deforestation a climate issue in its own right, not merely an ecological one.</li>
+      </ul>
+      <div class="show"><span class="k">Show &mdash; the demonstration to spend time on</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Page 2 · the budget ledger</a>.
+        <b style="display:block;margin-top:6px;font-weight:400">
+        (1) Load <em>Lecture arithmetic</em>. The two columns balance and the atmosphere gets 2.7. State that
+        the measured value was 4.0 and ask what is missing.<br>
+        (2) Drag the <b>land-use change</b> slider from 0 to 1.1 and let them watch the atmospheric slab grow
+        to 4.0 in real time. It is a five-second move and it is worth the whole build-up.<br>
+        (3) Then step the era presets 1960s → 2014&ndash;2023 and ask them to watch the <b>airborne
+        fraction</b> KPI. It barely moves while emissions triple. Ask why. That is the sinks doing an enormous
+        amount of unpaid work &mdash; and it is the cue for Blocks 4 and 5.</b>
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Why is the airborne fraction roughly constant at 45 % while emissions have tripled?</b>
+        <span class="ans">Because both sinks are driven by the atmospheric partial pressure, so they have grown
+        roughly in proportion to the emissions. Follow up with the important half: nothing guarantees it
+        continues. The ocean&rsquo;s buffer capacity falls as it fills (Block 4) and the land sink weakens as
+        respiration rises with temperature (Block 5). A rising airborne fraction means the atmosphere climbs
+        faster with no change in emissions at all.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Why carbon is not water — pay off the Block 1 flag</p>
+      <ul>
+        <li>Molecular residence time of CO<sub>2</sub>: 900 / 203 &asymp; <b>4 years</b>. Write it on the board next to the atmosphere&rsquo;s 9.5 days for water and let the parallel look convincing for a moment.</li>
+        <li>Then break it: <b>the number is true and it tells you nothing.</b> For every molecule that leaves, one comes back. Only the <em>imbalance</em> matters, so the quantity does not decay on 4 years &mdash; it decays on 10&ndash;100 years (surface ocean and biosphere), then ~1000 (deep ocean), and the last fifth on 10<sup>5</sup> years (weathering, Block 5).</li>
+        <li><b>The consequence worth stating slowly:</b> water vapour rains out in nine days, so its concentration is set by temperature &mdash; it can only be a <em>feedback</em>. CO<sub>2</sub> does not rain out, so its concentration is set by emissions &mdash; it is a <em>forcing</em>. Same absorption physics, opposite roles, and the difference is entirely residence time.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>All emissions stop tomorrow. Sketch CO<sub>2</sub> over the next century.</b>
+        <span class="ans">It falls fast at first &mdash; the sinks keep working while the gradient lasts &mdash;
+        then flattens well above 280 ppm and stays there for centuries. Roughly a quarter of an emitted pulse is
+        still in the air after a thousand years. It is not a tap you can turn off; it is a bathtub with a very
+        slow drain.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 4 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 4</span>
+    <h3>The oceanic carbon cycle</h3>
+    <span class="t">10:25 · 40 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The flux equation</p>
+      <ul>
+        <li><span class="eqn">&Phi;<sub>CO<sub>2</sub></sub> = k<sub>CO<sub>2</sub></sub> (p<sub>W</sub>CO<sub>2</sub> &minus; p<sub>A</sub>CO<sub>2</sub>)</span> &nbsp;(Eq. 2.41)</li>
+        <li>Partial pressure, not concentration &mdash; worth a sentence, because it is why the ocean can hold vastly more carbon than the air and still be a sink.</li>
+        <li>Three controls on p<sub>W</sub>, and they fight: temperature (warm → out), biology (photosynthesis → down), circulation (upwelling → up).</li>
+        <li>Show the zonal flux: the <b>equator is a source</b> and the mid-latitudes are sinks. Ask why the warm tropics are not simply the strongest sink you would expect from Henry's law &mdash; then reveal upwelling.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Dissolve, then react — the trick</p>
+      <ul>
+        <li>Eq. 2.42&ndash;2.45 in order. Do not dwell on each; the point is the <em>chain</em>.</li>
+        <li>Then Eq. 2.47, the net reaction, and slow right down: <span class="eqn">H<sub>2</sub>CO<sub>3</sub> + CO<sub>3</sub><sup>2&minus;</sup> &#8652; 2 HCO<sub>3</sub><sup>&minus;</sup></span></li>
+        <li><b>Read it aloud in words.</b> Adding CO<sub>2</sub> consumes a carbonate ion and makes two bicarbonates. The only form that exerts a partial pressure is converted into a form that does not. That is worth ~50&times; the physical solubility &mdash; and it is the flat-Coke question from the warm-up, run in reverse.</li>
+        <li>Then the price, in the same breath: every step releases H<sup>+</sup> and consumes CO<sub>3</sub><sup>2&minus;</sup>. <b>Acidification is not a side effect of the ocean sink; it is the ocean sink.</b> This sentence tends to be the one students remember.</li>
+        <li>Alkalinity (Eq. 2.48): the excess of bases over acids. The key property is that it is <em>conservative</em> under CO<sub>2</sub> addition but <em>not</em> under CaCO<sub>3</sub> formation. Park that; it detonates in step 4.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · The solver — the demonstration to spend time on</p>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Page 3 · the carbonate solver</a>.
+        It is a real equilibrium calculation, so the numbers it produces can be quoted.
+        <b style="display:block;margin-top:6px;font-weight:400">
+        (1) <em>Speciation vs pH</em>, water preset <em>Temperate surface</em>. Point at the KPI row:
+        ~89 % bicarbonate, ~10 % carbonate, <b>~0.5 % dissolved CO<sub>2</sub></b>. Say: less than one part in
+        a hundred of the ocean&rsquo;s carbon can ever leave. Note that seawater happens to sit almost exactly
+        between pK₁ and pK₂.<br>
+        (2) <em>The solubility pump</em>. Drag temperature 25 °C → 0 °C and stress that <b>nothing entered or
+        left the water</b> — only the constants changed. pCO₂ falls by a factor of three, about 4 % per degree.
+        That is the solubility pump derived, not asserted.<br>
+        (3) <em>Acidification</em>. Step the milestone markers 280 → 425 → 800 µatm. pH 8.16 → 8.01 → 7.7 at
+        full equilibrium, carbonate ion falling throughout, and the Revelle factor <em>rising</em>: the ocean
+        gets worse at its job the more it does it.</b>
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>A drop of 0.15 pH units sounds trivial. Is it?</b>
+        <span class="ans">The scale is logarithmic: that is a ~40 % rise in [H<sup>+</sup>] at equilibrium
+        (~30 % observed, since the surface lags the atmosphere). And the ecologically relevant variable is not
+        pH at all but [CO<sub>3</sub><sup>2&minus;</sup>] and the saturation state &Omega;, both of which the
+        page shows falling steadily. Ask which organisms care, and why the Southern Ocean and the deep sea
+        cross &Omega; = 1 first.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Three pumps, one of which is a traitor</p>
+      <ul>
+        <li>Soft tissue: photosynthesis at the surface, remineralisation at depth. Largest of the three. Nutrient-limited, not CO<sub>2</sub>-limited.</li>
+        <li>Solubility: cold water sinks and takes its carbon with it. Purely physical, and step 3 already derived it.</li>
+        <li><b>Carbonate: the one worth deriving on the board.</b> Making CaCO<sub>3</sub> removes 1 DIC and 2 alkalinity. Look at Eq. 2.48 &mdash; carbonate is counted <em>twice</em>. Net effect on pCO<sub>2</sub> is to <b>raise</b> it. Marine calcifiers are, on balance, a source.</li>
+        <li>Result: DIC ~15 % higher at depth. Switching the biological pump off in a model takes the pre-industrial atmosphere from 280 ppm to 450&ndash;500; running it at maximum efficiency pulls it toward 150. <b>The glacial 180 ppm sits inside that range</b> &mdash; which is why the ocean is the first place to look for the ice-age CO<sub>2</sub> problem.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Page 3</a> &mdash; step
+        the four pump buttons in order and watch the two depth profiles build up. On <em>+ Carbonate pump</em>,
+        point at how much more the <b>alkalinity</b> profile steepens than the DIC profile. That asymmetry is
+        the whole argument.
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Deep water eventually upwells with its extra 15 % of DIC. Why does that not undo the pumps?</b>
+        <span class="ans">Two reasons. It does outgas &mdash; that is exactly what the equatorial source in step
+        1 is. But biology at the surface immediately takes much of it back up, and the water is cold when it
+        first surfaces. The pumps are a steady-state circulation, not a one-way trip: what matters is the
+        standing gradient they maintain, not any individual parcel.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<p class="brk"><span>break · 11:05</span></p>
+
+<!-- ══════════════════ BLOCK 5 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 5</span>
+    <h3>The land, and the rocks</h3>
+    <span class="t">11:15 · 30 min &nbsp;·&nbsp; cut here if you are behind</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The production cascade</p>
+      <ul>
+        <li>Write the chain on the board and subtract as you go: <b>GPP 123 → NPP 63 → NEP 8 → NBP 2.3</b>.</li>
+        <li>Name what is removed at each step: autotrophic respiration (the plant), heterotrophic respiration (the decomposers), disturbance (fire, harvest, erosion).</li>
+        <li><b>The land sink is 2 % of the gross flux.</b> Say the consequence out loud: a few per cent change in respiration relative to production flips the sink into a source without anything visible happening. That is the mechanism behind nearly every carbon-cycle feedback in the models.</li>
+        <li>The terms are not synonyms and students routinely use them as if they were. A high-GPP forest can have zero NBP.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/land-rock-methane.html">Page 4</a> &mdash;
+        the <b>cascade waterfall</b>, then the <b>NPP heat map</b>. On the heat map, point at the boxed
+        northern growing season and say: <em>that rectangle is the Keeling sawtooth from Block 3</em>. Two
+        completely different datasets, one phenomenon.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Soil, and fire</p>
+      <ul>
+        <li>Soils hold ~3&times; the vegetation and ~2&times; the atmosphere; permafrost alone is about twice the atmosphere.</li>
+        <li>The pools differ by four orders of magnitude in turnover. <b>Peat and permafrost are not chemically stable &mdash; they are cold and wet.</b> Remove either condition and millennia of storage decomposes in decades.</li>
+        <li>Fire returns ~2.2 PgC yr<sup>&minus;1</sup>, comparable to the whole land sink &mdash; but half of it is African savanna that regrows within the year and nets out to nothing. <b>What matters is fire not followed by regrowth</b>: deforestation fire, and Indonesian peat.</li>
+        <li>The 1997 Indonesian peat fires: 0.8&ndash;2.6 PgC in one season, up to a quarter of that year&rsquo;s fossil emissions, from one event.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · The rocks — the slow thermostat</p>
+      <ul>
+        <li>Three reactions, and they form a loop: <b>sedimentation → metamorphism → weathering</b>.</li>
+        <li>Each moves only 0.1&ndash;0.3 PgC yr<sup>&minus;1</sup> &mdash; a hundredth of fossil fuel burning. Utterly negligible today.</li>
+        <li>But 39 000 PgC &divide; 0.1 PgC yr<sup>&minus;1</sup> = <b>~400 000 years</b> to cycle the entire ocean&ndash;atmosphere inventory. On that timescale it is the only thing that matters.</li>
+        <li><b>The thermostat.</b> Weathering goes faster when warm and wet → consumes more CO<sub>2</sub> → cools. Cooler → slower weathering → volcanic CO<sub>2</sub> accumulates → warms. A negative feedback with a 10<sup>5</sup>-year time constant. Far too slow to help us, and quite possibly why the Earth has had liquid water for four billion years.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask &mdash; the link back to PC Lab 1</span><br>
+        <b>This is planetary self-regulation with no foresight and no purpose. What was the other example?</b>
+        <span class="ans">Daisyworld. Map the two: the daisies ↔ silicate rock; albedo ↔ weathering rate;
+        the range of luminosity over which regulation holds ↔ the range of outgassing rate. Both are negative
+        feedbacks that emerge from ordinary physics, and neither requires the planet to want anything. Good
+        follow-up: what is the equivalent of Daisyworld&rsquo;s catastrophic collapse at high luminosity?</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 6 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 6</span>
+    <h3>Methane, and the close</h3>
+    <span class="t">11:45 · 15 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The one property that changes everything</p>
+      <ul>
+        <li>2 ppm against CO<sub>2</sub>'s 425, and still about a fifth of the anthropogenic forcing.</li>
+        <li><span class="eqn">CH<sub>4</sub> + OH&middot; → CH<sub>3</sub>&middot; + H<sub>2</sub>O</span> &mdash; roughly 90 % of the sink, and it is <b>destruction</b>, not transfer. CO<sub>2</sub> has no equivalent.</li>
+        <li>Therefore <span class="eqn">dB/dt = S &minus; B/&tau;</span> with &tau; &asymp; 9 years, and therefore a genuine steady state <b>B* = S&tau;</b>.</li>
+        <li><b>Say the asymmetry explicitly, and then say it again:</b> stabilising methane needs <em>constant</em> emissions; stabilising CO<sub>2</sub> needs <em>zero</em> emissions. This is the single most useful thing in the section and it is routinely misunderstood in public debate.</li>
+        <li>Organising idea worth 20 seconds: almost every anthropogenic methane source is a leak or an <em>anaerobic</em> process &mdash; a stomach, a paddy, a landfill, a bog. Methane is what carbon becomes when it decomposes without oxygen.</li>
+      </ul>
+      <div class="show"><span class="k">Show &mdash; the closing demonstration</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/land-rock-methane.html">Page 4 · the methane box model</a>.
+        <b style="display:block;margin-top:6px;font-weight:400">
+        (1) <em>Today</em>. Sources exceed the sink; methane is heading for ~2080 ppb.<br>
+        (2) <em>Methane Pledge</em> (−30 % anthropogenic). Watch the trajectory panel: a new, much lower plateau
+        inside about twenty years. Read off the temperature figure in the readout.<br>
+        (3) Say: <b>there is no CO<sub>2</sub> equivalent of that curve at any cut short of zero.</b><br>
+        (4) If time, <em>Wetland feedback</em> — natural emissions up 90 Tg yr⁻¹ and it outweighs the entire
+        pledge. The term policy cannot touch, and the argument for cutting the ones it can.</b>
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Close</p>
+      <ul>
+        <li>Go back to the board and to dS/dt = in − out, still sitting there from 08:15.</li>
+        <li>Recap by residence time rather than by topic: 9 days (atmospheric water, a feedback), 9 years (methane, switchable), centuries to millennia (CO<sub>2</sub>, effectively permanent), 10<sup>5</sup> years (rock, the thermostat).</li>
+        <li>Two lines forward: the modelling sessions turn this accounting into equations that integrate; PC Lab 3 takes one coupling (vegetation and precipitation) across a threshold.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<h2 class="sec">Numbers worth having on the board</h2>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Quantity</th><th class="num raw">Value</th><th>The one thing to say about it</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Global P = global E</td><td class="num">486</td><td>10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup>; the whole cycle</td></tr>
+      <tr><td class="nm">Ocean → land transport</td><td class="num">40</td><td>8 % of the cycle, and all the fresh water the continents get</td></tr>
+      <tr><td class="nm">&tau; atmosphere (water)</td><td class="num">9.5 d</td><td>Why water vapour can only be a feedback</td></tr>
+      <tr><td class="nm">&tau; ocean (water)</td><td class="num">3200 yr</td><td>Where the water cycle remembers</td></tr>
+      <tr><td class="nm">Water that is salt</td><td class="num">96.5 %</td><td>Fresh, liquid and accessible is under 0.1 %</td></tr>
+      <tr><td class="nm">CO<sub>2</sub> now / pre-industrial</td><td class="num">425 / 278</td><td>ppm; +53 %</td></tr>
+      <tr><td class="nm">CH<sub>4</sub> now / pre-industrial</td><td class="num">1930 / 722</td><td>ppb; +167 % — a far larger relative rise than CO<sub>2</sub></td></tr>
+      <tr><td class="nm">Fossil emissions, 2000s</td><td class="num">7.8</td><td>PgC yr<sup>&minus;1</sup>; the lecture&rsquo;s number</td></tr>
+      <tr><td class="nm">Land-use change</td><td class="num">1.1</td><td>The term missing from the slide</td></tr>
+      <tr><td class="nm">Measured atmospheric growth</td><td class="num">4.0</td><td>PgC yr<sup>&minus;1</sup> = 1.9 ppm yr<sup>&minus;1</sup></td></tr>
+      <tr><td class="nm">Airborne fraction</td><td class="num">45 %</td><td>Roughly constant while emissions tripled</td></tr>
+      <tr><td class="nm">1 ppm CO<sub>2</sub></td><td class="num">2.124</td><td>PgC — the conversion they will need in the exam</td></tr>
+      <tr><td class="nm">Gross land exchange</td><td class="num">123 / 119</td><td>PgC yr<sup>&minus;1</sup> each way; the flywheel</td></tr>
+      <tr><td class="nm">Seawater speciation</td><td class="num">90 / 10 / &lt;1</td><td>% HCO<sub>3</sub><sup>&minus;</sup> / CO<sub>3</sub><sup>2&minus;</sup> / H<sub>2</sub>CO<sub>3</sub></td></tr>
+      <tr><td class="nm">Revelle factor</td><td class="num">~10</td><td>1 % more DIC → 10 % more pCO<sub>2</sub>; and it is rising</td></tr>
+      <tr><td class="nm">Surface pH, 1750 → today</td><td class="num">8.17 → 8.05</td><td>~30 % more H<sup>+</sup>; the solver gives 8.16 → 8.01 at full equilibrium</td></tr>
+      <tr><td class="nm">DIC surface vs deep</td><td class="num">+15 %</td><td>What the three pumps buy you</td></tr>
+      <tr><td class="nm">Land cascade</td><td class="num">123 → 2.3</td><td>GPP → NBP; the sink is 2 % of the gross</td></tr>
+      <tr><td class="nm">Fire</td><td class="num">2.2</td><td>PgC yr<sup>&minus;1</sup>; mostly savanna, mostly net zero</td></tr>
+      <tr><td class="nm">Rock cycle turnover</td><td class="num">~400 000 yr</td><td>The thermostat&rsquo;s time constant</td></tr>
+      <tr><td class="nm">&tau; methane</td><td class="num">~9 yr</td><td>The reason methane has a steady state and CO<sub>2</sub> does not</td></tr>
+      <tr><td class="nm">1 ppb CH<sub>4</sub></td><td class="num">2.75</td><td>Tg CH<sub>4</sub></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Things that reliably go wrong</h2>
+
+<div class="card">
+  <ul>
+    <li><b>Residence time transferred uncritically from water to carbon.</b> They will compute 4 years for CO<sub>2</sub> and conclude the problem is short-lived. Pre-empt it in Block 1 and detonate it in Block 3.</li>
+    <li><b>GPP, NPP, NEP and NBP used interchangeably.</b> Insist on the cascade and on what is subtracted at each step.</li>
+    <li><b>&ldquo;The ocean absorbs CO<sub>2</sub> because it is soluble.&rdquo;</b> It is the <em>reaction</em>, not the solubility. The solver&rsquo;s speciation KPI settles this in one glance.</li>
+    <li><b>Assuming shell-building removes CO<sub>2</sub>.</b> The alkalinity bookkeeping is genuinely counter-intuitive; derive it rather than asserting it.</li>
+    <li><b>Confusing DIC with alkalinity.</b> Give them the one-liner: DIC is how much carbon; alkalinity is how much charge the bases carry. Adding CO<sub>2</sub> changes the first and not the second.</li>
+    <li><b>Treating methane as &ldquo;a weaker CO<sub>2</sub>&rdquo;.</b> It is a different kind of problem because it has a sink. Everything follows from that.</li>
+    <li><b>Reading the salinity–(E&minus;P) correspondence backwards</b>, as if salinity drove evaporation.</li>
+  </ul>
+</div>
+
+<h2 class="sec">Everything linked from here</h2>
+
+<div class="card">
+  <div class="res">
+    <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/water-balance.html"><div class="rn">Page 1</div>
+      <div class="rt">The global water balance</div>
+      <div class="rd">Scaled cycle diagram · residence times · soil water bucket · E − P and salinity</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/carbon-budget.html"><div class="rn">Page 2</div>
+      <div class="rt">The global carbon budget</div>
+      <div class="rd">Keeling curve · breathing biosphere · stocks and fluxes · the budget ledger</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/ocean-carbon.html"><div class="rn">Page 3</div>
+      <div class="rt">The oceanic carbon cycle</div>
+      <div class="rd">Air–sea flux · live carbonate solver · Bjerrum plot · the three pumps</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-4-global-cycles-water-and-carbon/land-rock-methane.html"><div class="rn">Page 4</div>
+      <div class="rt">Land, rock and methane</div>
+      <div class="rd">Production cascade · NPP heat map · soil pools · fire · rock cycle · methane box model</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/equations/"><div class="rn">Reference</div>
+      <div class="rt">Equation summary</div>
+      <div class="rd">Part III · the carbon cycle, Eq. 2.38–2.49</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/pc-lab-1-daisyworld/"><div class="rn">PC Lab 1</div>
+      <div class="rt">Daisyworld</div>
+      <div class="rd">The self-regulation comparison for the weathering thermostat</div></a>
+  </div>
+</div>
+
+<p class="foot">Structure follows <i>Lecture 4 &mdash; Global cycles of water and carbon</i> (EE501, 2025), which
+draws on Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>, section 2.3, Figs.
+2.21&ndash;2.31. Timings are a suggestion for the 08:15&ndash;12:00 slot and assume two short breaks. Numbers
+quoted here match the four teaching pages; each of those states in its own footnote which values come from the
+lecture, which come from the underlying literature, and which are representative figures chosen to close a
+budget. The SHOW links open the live site at peterhor.github.io, which is what you want in the lecture room.
+&nbsp;&middot;&nbsp; This page is designed to print &mdash; use the browser&rsquo;s print dialogue for a paper
+running order.</p>
+
+</div>
+
+<script>
+(function(){
+  const btn=document.getElementById('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

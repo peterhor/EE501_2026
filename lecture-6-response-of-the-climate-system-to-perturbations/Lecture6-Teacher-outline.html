@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Response of the climate system to perturbations — lecture outline</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --nr:#1baf7a; --sw:#eda100; --lw:#c8443a; --lh:#2a78d6; --gd:#8a6b45;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --nr:#199e70; --sw:#c98500; --lw:#d9564c; --lh:#3987e5; --gd:#a08258;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:66ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .private{background:var(--surface-2);border:1px dashed var(--lw);border-radius:10px;
+    padding:12px 16px;margin:0 0 22px;font-size:13px;color:var(--text-secondary);line-height:1.6}
+  .private b{color:var(--lw)}
+  .private code{font-size:12.5px;background:var(--surface-1);padding:1px 5px;border-radius:4px;
+    border:1px solid var(--line-soft)}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 24px;margin-bottom:14px}
+  h2.sec{font-size:15px;margin:34px 0 10px;color:var(--text-secondary);font-weight:600}
+
+  .blk{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:0;margin-bottom:16px;overflow:hidden}
+  .blk > .hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    padding:16px 24px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+  .blk > .hd .n{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--nr);font-weight:700}
+  .blk > .hd h3{font-size:18px;margin:0;letter-spacing:-.01em;flex:1 1 auto}
+  .blk > .hd .t{font-size:13px;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .blk > .bd{padding:18px 24px 22px}
+
+  .step{margin:0 0 20px}
+  .step:last-child{margin-bottom:0}
+  .step > .lbl{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin:0 0 6px}
+  ul{margin:0;padding-left:22px}
+  li{margin:0 0 6px;color:var(--text-secondary)}
+  li b, li strong{color:var(--text-primary);font-weight:600}
+  li > ul{margin-top:6px}
+  .eqn{display:inline-block;background:var(--surface-2);border-radius:7px;padding:3px 10px;
+    color:var(--text-primary);font-size:15px}
+
+  .show{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);
+    border-left:3px solid var(--nr);border-radius:0 9px 9px 0;padding:12px 16px;margin:14px 0 0;
+    font-size:13.5px;color:var(--text-secondary)}
+  .show .k{flex:0 0 auto;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--nr);font-weight:700;padding-top:2px}
+  .show b{color:var(--text-primary)}
+  .show a{color:var(--nr);font-weight:600;text-decoration:none}
+  .show a:hover{text-decoration:underline}
+
+  .ask{border-left:3px solid var(--lw);background:var(--surface-2);border-radius:0 9px 9px 0;
+    padding:12px 16px;margin:12px 0 0;font-size:13.5px;color:var(--text-secondary)}
+  .ask .k{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--lw);font-weight:700}
+  .ask b{color:var(--text-primary)}
+  .ask .ans{display:block;margin-top:6px;color:var(--text-muted);font-size:13px}
+
+  .brk{text-align:center;font-size:12.5px;color:var(--text-muted);margin:0 0 16px;
+    letter-spacing:.04em;border-top:1px dashed var(--line);line-height:0}
+  .brk span{background:var(--surface-0);padding:0 14px;position:relative;top:-1px;
+    display:inline-block;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  th.raw{text-transform:none;letter-spacing:.02em;font-size:12.5px}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);white-space:nowrap}
+  td.nm{color:var(--text-primary);font-weight:600;white-space:nowrap}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .lo{columns:2;column-gap:32px}
+  @media(max-width:700px){.lo{columns:1}}
+  .lo li{break-inside:avoid}
+  .res{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:4px}
+  .res a{display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;
+    padding:12px 14px;text-decoration:none;color:var(--text-primary)}
+  .res a:hover{border-color:var(--nr)}
+  .res a .rn{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--nr);font-weight:700}
+  .res a .rt{font-size:14.5px;font-weight:600;margin:3px 0 2px}
+  .res a .rd{font-size:12.5px;color:var(--text-muted)}
+
+  @media print{
+    body{background:#fff;color:#000;font-size:11pt}
+    .wrap{max-width:none;padding:0}
+    .toggle,.crumb{display:none}
+    .blk,.card{break-inside:avoid;border:1px solid #bbb;box-shadow:none}
+    .blk > .hd{background:#f0f0f0}
+    .show,.ask{background:#f6f6f6}
+    a{color:#000;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="https://peterhor.github.io/EE501_2026/">EE501 course site &nearr;</a> &nbsp;&middot;&nbsp; Response of the climate system to perturbations &nbsp;&middot;&nbsp; lecture outline</p>
+
+<p class="private"><b>Instructor copy &mdash; not on the student site.</b> This file lives outside
+<code>docs/</code>, so it is not part of the published GitHub Pages site. It <em>is</em> tracked in the
+repository, and the repository is public &mdash; treat this running order as readable by anyone, students
+included. The teaching pages it links to are public by design. Source decks, answer keys and report templates
+stay excluded.</p>
+
+<header>
+  <div>
+    <h1>Response of the climate system to perturbations &mdash; lecture outline</h1>
+    <p class="sub">A running order for the single slot the topic occupies &mdash; Tuesday
+    15&nbsp;September 08:15&ndash;12:00 &mdash; with the point to make at each step, the number to put on the
+    board, which interactive page to open, and the question to throw back at the room. Built from
+    <i>Lecture 6 &mdash; Response of the climate system to perturbations</i> and the six teaching pages that go
+    with it.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3 style="font-size:17px;margin:0 0 10px">The one sentence the whole session is built on</h3>
+  <p style="font-size:17px;line-height:1.55;margin:0 0 14px">
+    The climate does not respond to a forcing &mdash; it responds to a forcing <b>plus its own reaction to
+    it</b>, and the second part is two to three times larger than the first. Everything in this lecture is
+    an accounting of that amplification.</p>
+  <p class="note">Say it in the first five minutes and land it four times: the forcing is the easy part and it
+  is nearly settled; the feedbacks are the hard part and they are where all the uncertainty lives; the
+  amplification is a <em>division</em>, not a multiplication, which is why the uncertainty comes out lopsided;
+  and the transient response is slower than the forcing, so the number you measure today is not the number you
+  are heading for.</p>
+  <p class="note"><b>The spine, and it is a single arithmetic thread.</b> The whole lecture is one calculation
+  carried across four pages: 3.7 &rarr; &lambda;<sub>f</sub> &rarr; &Delta;T &rarr; &Delta;T(t). Say that out
+  loud at the start and again at the end. If a student can reproduce
+  <span class="eqn">3.7 / 1.26 &asymp; 2.9 K</span> and explain every symbol, they have the lecture.</p>
+  <p class="note"><b>The debt from Thursday.</b> Lecture 5 closed with <b>1.1 K</b> and <b>3 K</b> on the board
+  and a promise. Do not start this lecture without pointing at those two numbers. Block 3 pays the debt in
+  front of them, live, and it is worth the theatre.</p>
+  <p class="note"><b>The trap to head off early.</b> Students hear &ldquo;positive feedback&rdquo; as
+  &ldquo;good&rdquo; and &ldquo;negative feedback&rdquo; as &ldquo;bad&rdquo;. Kill it in Block 1 with the
+  loop-sign widget: positive means <em>destabilising</em>, and it amplifies cooling exactly as readily as
+  warming. The second trap follows immediately: a positive feedback parameter &lambda;<sub>i</sub> makes
+  &lambda;<sub>f</sub> <em>less</em> negative. Both signs are consistent; both get misread.</p>
+</div>
+
+<h2 class="sec">Learning outcomes</h2>
+
+<div class="card">
+  <p class="note" style="margin:0 0 12px">By the end of the session students should be able to:</p>
+  <ul class="lo">
+    <li>Define <b>forcing</b> and <b>feedback</b> and explain why the distinction depends on where the system boundary is drawn.</li>
+    <li>State the three clauses in the definition of <b>radiative forcing</b> and say why each is there.</li>
+    <li>Distinguish <b>RF from ERF</b>, and say for which agent the difference matters most.</li>
+    <li>Compute &Delta;Q for a given CO<sub>2</sub> concentration and explain why the response is <b>logarithmic</b>.</li>
+    <li>Quote <b>3.7 W m<sup>&minus;2</sup></b> for a doubling and use it as a yardstick for every other forcing.</li>
+    <li>List the major forcing agents with <b>sign and rough magnitude</b>, and identify the two that dominate the uncertainty.</li>
+    <li>Explain why <b>aerosol</b> cooling is temporary in a way greenhouse warming is not.</li>
+    <li>Write down <b>&Delta;R = &Delta;Q + &lambda;<sub>f</sub>&Delta;T<sub>s</sub></b> and say what each term is.</li>
+    <li>Explain why <b>&lambda;<sub>f</sub> must be negative</b> for the planet to have a climate.</li>
+    <li>Derive <b>&lambda;<sub>0</sub> = &minus;4&sigma;T<sub>e</sub><sup>3</sup></b> and get 1.1 K per doubling from it.</li>
+    <li>Decompose &lambda;<sub>f</sub> into five terms and give the <b>sign and mechanism</b> of each.</li>
+    <li>Explain why symmetric uncertainty in &lambda;<sub>f</sub> gives an <b>asymmetric</b> range in &Delta;T.</li>
+    <li>Say why <b>&lambda;<sub>w</sub> and &lambda;<sub>L</sub></b> are quoted together and cloud is not.</li>
+    <li>Explain the <b>lapse-rate feedback</b> and why its sign differs between tropics and high latitudes.</li>
+    <li>Explain why <b>low cloud cools and high cloud warms</b>, and why the feedback is uncertain.</li>
+    <li>Write down <b>C<sub>s</sub>dT/dt = &Delta;Q + &lambda;<sub>f</sub>&Delta;T</b>, give &tau; = &minus;C<sub>s</sub>/&lambda;<sub>f</sub>, and say what the <b>initial slope</b> does and does not contain.</li>
+    <li>Distinguish <b>ECS from TCR</b> and say why TCR is better constrained.</li>
+    <li>Explain <b>committed warming</b> and relate it to the observed radiative imbalance.</li>
+    <li>Distinguish <b>biogeochemical from biogeophysical</b> feedbacks and give one example where they oppose.</li>
+    <li>Explain the <b>&beta;</b> and <b>&gamma;</b> carbon feedbacks and their effect on the airborne fraction.</li>
+    <li>Place any named feedback on a <b>timescale</b> and give its sign.</li>
+  </ul>
+</div>
+
+<h2 class="sec">Running order</h2>
+
+<p class="note" style="margin:0 0 14px;color:var(--text-muted)">
+One slot, 225 minutes, two breaks. <b>Block 3 is the one to protect</b> &mdash; the feedback assembler is where
+the entire lecture lands, and it is the only place students watch a climate sensitivity being built from parts.
+<b>Block 6 is the one to cut into</b>; page 6 is written to be read rather than lectured, and the timescale
+ladder survives being pointed at for ninety seconds. If Block 1 or 2 runs long, take it out of Block 4 rather
+than Block 3.</p>
+
+<div class="res" style="margin:0 0 22px">
+  <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/forcing-and-feedback.html">
+    <div class="rn">Page 1</div><div class="rt">Forcing and feedback</div>
+    <div class="rd">GHG forcing calculator, loop-sign widget</div></a>
+  <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">
+    <div class="rn">Page 2</div><div class="rt">The forcing agents</div>
+    <div class="rd">AR5 ledger, land-use calculator, 1850–2020 timeline</div></a>
+  <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/feedback-parameter.html">
+    <div class="rn">Page 3</div><div class="rt">The feedback parameter</div>
+    <div class="rd">The feedback assembler — the centrepiece</div></a>
+  <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">
+    <div class="rn">Page 4</div><div class="rt">The physical feedbacks</div>
+    <div class="rd">Lapse-rate profile, cloud explorer, model scatter</div></a>
+  <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/transient-response.html">
+    <div class="rn">Page 5</div><div class="rt">The transient response</div>
+    <div class="rd">Live integrator, six forcing scenarios</div></a>
+  <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/biogeochemical-feedbacks.html">
+    <div class="rn">Page 6</div><div class="rt">Biogeochemical feedbacks</div>
+    <div class="rd">Airborne fraction, carbonate compensation, timescale ladder</div></a>
+</div>
+
+<h2 class="sec">Session &mdash; Tuesday 15 September, 08:15&ndash;12:00</h2>
+
+<!-- ══════════════════ OPEN ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Open</span>
+    <h3>Paying Thursday&rsquo;s debt</h3>
+    <span class="t">08:15 · 10 min</span>
+  </div>
+  <div class="bd">
+    <div class="step">
+      <p class="lbl">Points</p>
+      <ul>
+        <li>Write <span class="eqn">1.1 K</span> and <span class="eqn">3 K</span> on the board before saying anything. Ask who remembers what they are.</li>
+        <li>Restate it: same forcing, 3.7 W m<sup>&minus;2</sup>. A physically correct zero-dimensional model gives 1.1. Every GCM gives about 3. <b>Neither is wrong.</b></li>
+        <li>Announce the shape: today is entirely about the factor of three. By 10:40 you will have built it out of five numbers, in front of them.</li>
+        <li>Then the arithmetic spine, and leave it up all morning: <span class="eqn">3.7 &rarr; &lambda;<sub>f</sub> &rarr; &Delta;T &rarr; &Delta;T(t)</span>.</li>
+      </ul>
+    </div>
+    <div class="ask"><span class="k">Warm-up</span><br>
+      <b>The CO<sub>2</sub> forcing is 3.7 W m<sup>&minus;2</sup>. The Sun delivers 340. That is one per cent.
+      How can one per cent matter?</b>
+      <span class="ans">Two answers and you want both. First, it is one per cent of the <em>gross</em> flux but
+      an enormous fraction of the <em>net</em> imbalance, which is normally zero &mdash; the planet is a
+      balance, and you are leaning on one pan. Second, and better: the seasonal cycle in Bø is driven by an
+      insolation change of hundreds of W m<sup>&minus;2</sup> and produces 20 K, so 3.7 producing 3 K is not
+      obviously out of scale. Then note that they have just used a rough climate sensitivity argument, and that
+      making it rigorous is the morning&rsquo;s work.</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 1 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 1</span>
+    <h3>Two definitions, and one currency</h3>
+    <span class="t">08:25 · 35 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Forcing and feedback — do this slowly, it is the whole vocabulary</p>
+      <ul>
+        <li>Both definitions verbatim from the slides, then the two examples: the Sun dimming (forcing), and warming &rarr; evaporation &rarr; more vapour &rarr; more warming (feedback).</li>
+        <li>The distinguishing test: <b>can the system change it by responding?</b> If no, it is a forcing.</li>
+        <li>Then the awkward bit, and do not skip it: <b>the boundary is a choice.</b> Ice sheets are a feedback in a glacial-cycle study and a boundary condition in a glacial-circulation study. Same ice, same physics, different question.</li>
+        <li>Tie it explicitly to Thursday&rsquo;s <i>boundary conditions vs external forcings</i> columns. This is the same idea arriving for the third time; say so.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/forcing-and-feedback.html">Page 1</a> &mdash;
+        the box-and-loop schematic at the top. Point at the arrow crossing the boundary and the loop that does
+        not. Twenty seconds; it is a picture of a sentence.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Radiative forcing — the three clauses</p>
+      <ul>
+        <li>Motivate before defining: a volcano, a power station and a wheat field. <b>You need one number they all produce.</b></li>
+        <li>Then the definition, and go through the three-panel figure clause by clause: <b>at the tropopause</b>, <b>stratosphere adjusted</b>, <b>surface and troposphere fixed</b>.</li>
+        <li>The clause worth dwelling on is the third. Let the surface warm and you have started including feedbacks, and the number is no longer comparable between agents. <b>The definition is engineered to keep forcing and response apart.</b></li>
+        <li>Sign convention on the board and leave it: <b>downward positive</b>. It will matter in Block 3 and they will forget.</li>
+        <li>RF vs ERF in ninety seconds. Identical for CO<sub>2</sub>, very different for aerosols, because most of the aerosol effect runs through cloud.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · The calculator — answer the slide&rsquo;s own question</p>
+      <ul>
+        <li>Put <span class="eqn">&Delta;Q = 5.4 ln([CO<sub>2</sub>]/[CO<sub>2</sub>]<sub>r</sub>)</span> on the board and ask them to do 2 &times; CO<sub>2</sub> in their heads. Somebody will get 5.4 &times; 0.69.</li>
+        <li>Then open the demo and land <b>3.7</b>. Box it. Everything else today is measured in units of this.</li>
+        <li>Now drag to 1112 ppm and let them see the second doubling is worth the same. <b>Logarithmic, because the band core is saturated.</b> Good news and bad news, in that order.</li>
+        <li>Hit <b>Last glacial maximum</b>: −2.2 W m<sup>&minus;2</sup> from CO<sub>2</sub> alone against a 4&ndash;5 K colder world. Ask what supplies the rest &mdash; it is ice albedo, and it is a preview of Block 4.</li>
+        <li>Hit <b>2024</b>: +2.7 W m<sup>&minus;2</sup> of greenhouse forcing. Park it; Block 2 will take a watt off it.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-6-response-of-the-climate-system-to-perturbations/forcing-and-feedback.html">Page 1</a>, the
+        GHG calculator. Then, without leaving the page, the <b>loop-sign widget</b> underneath: load water
+        vapour, then snow&ndash;ice albedo, and make them count the minus signs before you press anything.
+        <b>Even number &rarr; positive loop.</b> That rule earns its keep four times today.
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Methane is a far stronger absorber per molecule than CO<sub>2</sub>. Why is its bar a quarter the
+        size?</b>
+        <span class="ans">Concentration &mdash; 2 ppm against 420 &mdash; and band position. Its band is
+        nowhere near saturated, which is why the dependence is a square root rather than a logarithm: it grows
+        faster per molecule from a much smaller base. Then the policy line: per kilogram <em>emitted</em>
+        methane is far worse, per kilogram <em>in the air</em> there is very little of it, and it is gone in a
+        decade. Both statements are true and people pick whichever suits them.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 2 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 2</span>
+    <h3>What has actually been pushing on the planet</h3>
+    <span class="t">09:00 · 35 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Build the ledger live — do not just show the finished chart</p>
+      <ul>
+        <li>Start with <b>Clear</b>, then CO<sub>2</sub> alone: 1.82. Then the rest of the greenhouse gases: about 3.3, comfortably more than one doubling.</li>
+        <li>Ask what the net anthropogenic forcing is before you switch on the aerosols. Somebody will say 3.3.</li>
+        <li>Switch them on. <b>2.25.</b> Let the silence sit for a second. <b>A third of the greenhouse forcing has been cancelled by pollution nobody chose to emit for that purpose.</b></li>
+        <li>Then the uncertainty bars, which is the real lesson. The two aerosol terms carry nearly all the spread, and they are <em>subtracted</em> from a well-known number.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask — this is the good one</span><br>
+        <b>Why does an uncertain aerosol forcing make the climate sensitivity uncertain?</b>
+        <span class="ans">Because we observe one warming and infer the sensitivity by dividing it by the
+        forcing. A large aerosol cooling means the applied forcing was small, so the climate must be very
+        sensitive to have warmed as much as it did. A small aerosol cooling means the opposite. The same
+        thermometer record is consistent with both. Say plainly: <b>the uncertainty in what we did to the
+        planet is nearly as large as the uncertainty in how it responds</b>, and most people assume only the
+        second exists.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Aerosols — the mechanisms, briskly</p>
+      <ul>
+        <li>The schematic: scattering (sulphate, cooling), absorption (black carbon, warming and it darkens snow), and then the cloud pathways, which are the bigger half.</li>
+        <li><b>Twomey in one sentence:</b> same water, more nuclei, smaller and more numerous droplets, brighter cloud. Then lifetime: smaller droplets rain out less readily.</li>
+        <li>Note that black carbon is a positive forcing and, on some estimates, second only to CO<sub>2</sub>. Aerosols are not one thing with one sign.</li>
+        <li>Optical depth in one line, since the slides use it: transmitted fraction is e<sup>&minus;&tau;</sup>, zero means transparent.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Aerosols last a week; CO<sub>2</sub> lasts a century. What follows?</b>
+        <span class="ans">That the cooling is rented and the warming is owned. Clean the air &mdash; which is
+        unambiguously the right thing to do for human health &mdash; and you unmask warming that has already
+        been paid for. This is not an argument against clean air; it is an argument for knowing what you are
+        holding. Note that this actually happened when marine fuel sulphur limits tightened in 2020.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · Land use — one calculation done by hand</p>
+      <ul>
+        <li>Do the three factors on the board before opening the demo: albedo change &times; insolation &times; area fraction.</li>
+        <li>Then the demo, and let them discover that the plain forest-to-crop contrast gives about &minus;0.44, three times the assessed value. Ask why. (Much cleared land was grassland; clearance is patchy.)</li>
+        <li>Push the <b>snow fraction</b> slider up and watch the number move hard. <b>Boreal clearance is mostly a snow-albedo story.</b></li>
+        <li>Then the punchline: deforestation warms in the tropics and can cool in the boreal zone. <b>&ldquo;Plant trees&rdquo; is a latitude-dependent recommendation.</b> This is the moment the ecologists in the room sit up.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Sun and volcanoes — the natural yardstick</p>
+      <ul>
+        <li>TSI varies by 1 in 1361 over the 11-year cycle. Do the (1&minus;&alpha;)/4 on the board: <b>0.18 W m<sup>&minus;2</sup></b>. Smaller than they expect.</li>
+        <li>Secular solar change since 1750: <b>+0.05</b>. Less than the cycle. A fortieth of the anthropogenic total. Say it once, plainly, and move on &mdash; do not turn it into a debate.</li>
+        <li>Volcanoes: only explosive, only because they reach the <b>stratosphere</b>, where there is no rain to remove the aerosol. One to three years instead of one week.</li>
+        <li>Then the timeline, with everything on. Krakatau and Pinatubo both hit &minus;3 &mdash; bigger than the whole anthropogenic forcing of their day &mdash; and both are gone in three years. Press <b>Sum</b>. <b>Volcanoes make the record bumpy; the trend is not theirs.</b></li>
+      </ul>
+      <div class="ask"><span class="k">Ask — plant this deliberately, it pays off in Block 5</span><br>
+        <b>The solar cycle forcing is bigger than the whole secular solar trend. Why can you barely see an
+        11-year cycle in the temperature record?</b>
+        <span class="ans">Do not answer it. Say &ldquo;hold that&rdquo; and write <b>11 yr?</b> in the corner
+        of the board. Block 5 answers it with the ocean&rsquo;s heat capacity, and the deferred payoff is worth
+        far more than the immediate answer.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="brk"><span>break &middot; 10 min</span></div>
+
+<!-- ══════════════════ BLOCK 3 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 3</span>
+    <h3>The feedback parameter &mdash; the centre of the lecture</h3>
+    <span class="t">09:45 · 55 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The linearisation — on the board, not the screen</p>
+      <ul>
+        <li>Write <span class="eqn">&Delta;R = &Delta;Q + &lambda;<sub>f</sub>&Delta;T<sub>s</sub></span> and leave it up for the rest of the morning. Everything else is a gloss on it.</li>
+        <li>Name the terms out loud: <b>what you did</b>, <b>what the system does back</b>, <b>what is left over and currently going into the ocean</b>.</li>
+        <li>Stress that &Delta;R is not bookkeeping &mdash; it is measured, it is about <b>0.9 W m<sup>&minus;2</sup></b>, and Block 5 uses it.</li>
+        <li>Then set &Delta;R = 0: <span class="eqn">&Delta;T<sub>s</sub> = &minus;&Delta;Q/&lambda;<sub>f</sub></span>. Say the words &ldquo;climate sensitivity is minus one over lambda&rdquo; and make them repeat it.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Why λf must be negative — the stability figure</p>
+      <ul>
+        <li>Show the four lines. Each starts at &Delta;R = &Delta;Q and the system slides down its own line until it crosses zero.</li>
+        <li><b>Steeper line, earlier crossing, less warming.</b> Flatter line, later crossing, more warming.</li>
+        <li>Then the red line, which never crosses. Ask what that world looks like. <b>Venus.</b> The fact that Earth has stayed within a few tens of kelvin for four billion years is a strong empirical statement that &lambda;<sub>f</sub> &lt; 0.</li>
+        <li>Head off the sign trap now, explicitly: a <em>positive</em> &lambda;<sub>i</sub> makes &lambda;<sub>f</sub> <em>less</em> negative and therefore warmer. Write both on the board side by side.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · λ₀ — derive it, do not show it</p>
+      <ul>
+        <li>Board work, and it takes two minutes. Start from the TOA balance they already have from Lecture 2, differentiate, assume uniform warming: <span class="eqn">&lambda;<sub>0</sub> = &minus;4&sigma;T<sub>e</sub><sup>3</sup></span>.</li>
+        <li>Put T<sub>e</sub> = 255 in and get <b>&minus;3.8</b>. Then say models give <b>&minus;3.2</b>, and say why: emission from a range of altitudes, some straight through the window, warming not uniform. <b>Not an error &mdash; a refinement.</b></li>
+        <li>Then <span class="eqn">3.7 / 3.2 = 1.16 K</span>. Point at the <b>1.1</b> still on the board from Thursday. <b>That is where it came from.</b> One feedback, the only one the 0-D model had.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · The assembler — the ten minutes the lecture exists for</p>
+      <ul>
+        <li>Open on <b>Planck only</b>. 1.16 K. Same number as the board.</li>
+        <li>Add <b>water vapour</b>. 2.6 K. Note the size of the jump from one feedback.</li>
+        <li>Add <b>lapse rate</b>, which pulls it back down &mdash; the first negative feedback that is not Planck.</li>
+        <li>Add <b>cloud</b> and <b>albedo</b>. Land on <b>&lambda;<sub>f</sub> = &minus;1.26</b> and <b>2.9 K</b>. Point at the <b>3</b> on the board. <b>Debt paid.</b></li>
+        <li>Now the part that matters more than the answer. Nudge <b>&lambda;<sub>c</sub> by &plusmn;0.4</b> &mdash; the published inter-model spread, one term &mdash; and watch it cover most of 2.2 to 4.4. <b>One uncertain feedback covers nearly the whole assessed range.</b></li>
+        <li>Then the right-hand panel deliberately. Equal steps in &lambda;<sub>f</sub>, unequal steps in &Delta;T. <b>It is a hyperbola.</b> The long high tail on every published sensitivity range is geometry, not pessimism.</li>
+        <li>Finish with <b>A glacial climate</b>: &lambda;<sub>&alpha;</sub> more than doubles. <b>There is no single true climate sensitivity</b> &mdash; it depends on the state you are in.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Why is every published climate sensitivity range lopsided &mdash; 1.5 to 4.5 rather than 2 to 4?</b>
+        <span class="ans">Because &Delta;T = &minus;&Delta;Q/&lambda;<sub>f</sub> is a hyperbola. Symmetric
+        error in &lambda;<sub>f</sub> becomes asymmetric error in &Delta;T, and the asymmetry gets worse as
+        &lambda;<sub>f</sub> approaches zero. This is worth labouring: it means the high tail cannot be
+        dismissed as alarmism, and it means <b>a small improvement in constraining cloud feedback is worth a
+        very large improvement in the warming estimate</b>. Show it by dragging rather than
+        asserting it.</span></div>
+      <div class="ask"><span class="k">Ask, if there is time</span><br>
+        <b>The feedback factor f<sub>f</sub> is about 2.5. What is it a factor of?</b>
+        <span class="ans">Of the blackbody response, not of the forcing. It says the real system warms two and
+        a half times as much as bare physics would give. Useful because it separates &ldquo;what the physics
+        demands&rdquo; from &ldquo;what the planet adds&rdquo;, and the second is the part that is
+        argued about.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">5 · The four caveats — read them, do not gloss them</p>
+      <ul>
+        <li>No spatial information; forcings are not equally efficient; feedbacks depend on the mean state; thresholds break the linearisation.</li>
+        <li>The fourth is the one to spend thirty seconds on, because <b>PC Lab 2 this afternoon is a threshold</b> and Lab 3 tomorrow is another.</li>
+        <li>Then defend the framework: it gives the right order of magnitude, it says which feedbacks are worth arguing about, and it lets a two-line calculation check a model that cost a million core-hours.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="brk"><span>break &middot; 10 min</span></div>
+
+<!-- ══════════════════ BLOCK 4 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 4</span>
+    <h3>Where the five numbers come from</h3>
+    <span class="t">10:50 · 35 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Water vapour — two facts and a consequence</p>
+      <ul>
+        <li>Clausius&ndash;Clapeyron: <b>7 % per kelvin</b>. That is thermodynamics.</li>
+        <li>Relative humidity stays roughly constant. That is an <em>observation</em>, not a derivation &mdash; flag the difference.</li>
+        <li>Then the bit worth the time: the radiative effect goes as the <b>logarithm</b> of vapour, so adding moisture to the already-wet tropical boundary layer does almost nothing and adding it to the dry upper troposphere does a great deal. <b>Same saturation argument as CO<sub>2</sub> in Block 1.</b></li>
+        <li>The ecological consequence, worth thirty seconds: total precipitation rises 2 %/K because the energy budget limits it, while available moisture rises 7 %/K. <b>Extreme rainfall intensifies faster than mean rainfall</b>, and that arithmetic is the whole reason.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Lapse rate — use the demo, this one is genuinely hard to say in words</p>
+      <ul>
+        <li>Set up first: <b>the planet radiates from about 5 km, not from the ground.</b> So what matters is how much the <em>emitting layer</em> warms.</li>
+        <li>Load <b>Uniform warming</b>: &lambda;<sub>L</sub> = 0 by construction, which is exactly the assumption &lambda;<sub>0</sub> made.</li>
+        <li>Load <b>Tropics</b>: the top warms more, the planet sheds heat more efficiently than the blackbody calculation says, <b>negative</b> feedback.</li>
+        <li>Load <b>High latitudes</b>: warming trapped near the surface under an inversion, planet sheds <em>less</em>, <b>positive</b>. Same physics, opposite sign, different place.</li>
+        <li>Global mean is negative because the tropics are half the planet and emit far more. <b>An area-weighted statement about very unequal places</b> &mdash; same lesson as the geography of the budget in Lecture 2.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        Then the <b>anticorrelation scatter</b> immediately after. Individually each model scatters widely; the
+        sum does not. Say the sentence: <b>&ldquo;a model that warms the upper troposphere strongly gets a big
+        negative lapse-rate feedback and, in the same air, a big positive water-vapour feedback&rdquo;</b>.
+        The errors cancel. That is why the pair is always quoted together &mdash; and why cloud, which has no
+        partner, dominates.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · Cloud — the height argument, with the explorer open</p>
+      <ul>
+        <li>Every cloud does two opposite things. Which wins is almost entirely about <b>height</b>.</li>
+        <li><b>Marine stratocumulus:</b> net &minus;29. Its top is below the clear-sky emission level, so the vapour above was already doing the trapping. It only reflects. <b>Low cloud cools, unambiguously.</b></li>
+        <li><b>Thin cirrus:</b> net +25. Cold top, barely reflects. <b>High thin cloud warms.</b></li>
+        <li><b>Deep convective tower:</b> near zero. Both effects maximised and nearly cancelling &mdash; a small residual between two numbers of order 50. Say why that is an uncomfortable thing to have to compute.</li>
+        <li>Then <b>Global mean mix</b>: about &minus;20 W m<sup>&minus;2</sup>. Clouds cool the present Earth by five times the whole anthropogenic forcing.</li>
+        <li>Now pivot to the actual feedback, which is about <em>change</em>: raise high tops (fixed anvil temperature, models agree) and lose low cloud (models disagree). Both positive. <b>The disagreement about how much low cloud is lost is the &plusmn;0.4 from Block 3.</b></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Ice, soil, ocean — fast, and pick two</p>
+      <ul>
+        <li><b>Snow&ndash;ice albedo:</b> the loop they already counted in Block 1. Note the seasonality &mdash; strongest in <em>spring</em>, when snow goes and the sun is high. Then sea-ice <b>insulation</b>, which is not radiative and explains why Arctic warming peaks in <em>winter</em>.</li>
+        <li>Warn against the standard oversimplification: <b>polar amplification is not one feedback.</b> Albedo, positive high-latitude lapse rate, transport, and the flatness of &sigma;T<sup>4</sup> where it is cold.</li>
+        <li><b>Soil moisture:</b> straight back to the Bowen ratio from Lecture 3. Dry soil spends its energy heating rather than evaporating. This is the feedback that turns a warm summer into a heatwave, and it acts in weeks, in the growing season. <b>The one on this page an ecologist will actually use.</b></li>
+        <li><b>Ocean advective feedback:</b> mention only, but mention it &mdash; it is the one with two stable states, and it is the shape of PC Lab 3.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        Finish the block on the <b>summary bar chart</b>. Say: <b>read the whiskers, not the bars.</b> On that
+        reading water vapour is large and well constrained, cloud is a third the size with four times the
+        uncertainty, and effort spent on cloud is worth more than effort spent anywhere else. That has been
+        true in every assessment since 1990.
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 5 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 5</span>
+    <h3>Adding time, and answering the 11-year question</h3>
+    <span class="t">11:25 · 20 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The equation, and the one term that surprises</p>
+      <ul>
+        <li>Take the equation already on the board and stop setting &Delta;R to zero: <span class="eqn">C<sub>s</sub> dT/dt = &Delta;Q + &lambda;<sub>f</sub>&Delta;T</span>. <b>The leftover energy heats something.</b></li>
+        <li>Write the solution and <span class="eqn">&tau; = &minus;C<sub>s</sub>/&lambda;<sub>f</sub></span>. Then ask them to look at it again. <b>&lambda;<sub>f</sub> is in the response time.</b> A more sensitive climate is also a <em>slower</em> one.</li>
+        <li>Then the initial slope: at t = 0, &Delta;T = 0, so dT/dt = &Delta;Q/C<sub>s</sub>, <b>with no &lambda;<sub>f</sub> in it at all</b>.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Run it — three scenarios, no more</p>
+      <ul>
+        <li><b>Step 2×CO<sub>2</sub>.</b> Two climates, 2 K and 4 K, indistinguishable for fifteen years. Let that sit. <b>Watching the early response does not identify the sensitivity.</b> This is the honest technical reason the 1.5&ndash;4.5 range has survived forty years of good data, and it is the answer to give when someone implies the uncertainty is carelessness.</li>
+        <li><b>Volcanic eruption.</b> &minus;3 W m<sup>&minus;2</sup>, and only a few tenths of a kelvin of cooling. Then drag the slab depth to 10 m and watch it grow. <b>Now answer the 11 yr? on the board.</b> The ocean is a low-pass filter: fast forcings do not get their full response. Deferred payoff, collected.</li>
+        <li><b>Ramp, then hold.</b> Forcing stops rising, temperature keeps climbing. Name it: <b>committed warming</b>, already forced, not yet realised, currently in transit into the ocean. Point at the imbalance panel &mdash; that is the measurable signature, and it is 0.9 W m<sup>&minus;2</sup> in the real world.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · Two numbers, and one honest calculation</p>
+      <ul>
+        <li><b>ECS vs TCR</b>, thirty seconds and the table. TCR is smaller, better constrained, and closer to what this century actually does. The gap between them is ocean heat uptake and nothing else.</li>
+        <li>If time: the closing card. &Delta;R &asymp; &Delta;Q + &lambda;<sub>f</sub>&Delta;T with 0.9, 2.7 and 1.2 gives &lambda;<sub>f</sub> &asymp; &minus;1.5 and about 1.9 K already committed. <b>A climate sensitivity from three measurements and one linear equation</b>, landing inside the assessed range.</li>
+        <li>Then mistrust it out loud: the aerosol uncertainty from Block 2 is inside &Delta;Q, and the pattern effect says this &lambda;<sub>f</sub> is probably too negative. Both push the answer up. <b>The calculation is worth doing precisely because every assumption in it is visible.</b></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 6 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 6</span>
+    <h3>When the biosphere is allowed to respond</h3>
+    <span class="t">11:45 · 10 min</span>
+  </div>
+  <div class="bd">
+    <div class="step">
+      <p class="lbl">Fast, and set the page as reading</p>
+      <ul>
+        <li><b>The distinction, in one line each.</b> Biogeo<em>chemical</em>: the biosphere changes atmospheric composition, so the effect is global. Biogeo<em>physical</em>: it changes surface properties, so the effect is local &mdash; and the two can oppose on the same hectare.</li>
+        <li><b>&beta; and &gamma;</b>, and only the mechanism. &beta;: sinks respond to concentration, and would do so with no warming at all. &gamma;: sinks weaken as it warms. Warn about the sign convention, which reads backwards.</li>
+        <li>Open the airborne-fraction demo and press <b>No climate&ndash;carbon feedback</b>, then <b>Best estimate</b>. About 0.6 K of extra warming <b>from no extra emission</b>. Say the consequence: a climate sensitivity quoted for a fixed CO<sub>2</sub> <em>concentration</em> systematically understates the response to an <em>emission</em>.</li>
+        <li><b>Tundra&ndash;taiga in thirty seconds</b>, and make it the ecological hook: trees mask snow, albedo falls, warming amplifies &mdash; while the same trees are taking up carbon. <b>Boreal afforestation can warm the planet.</b> This is where the case-study weeks and the physics weeks meet.</li>
+        <li>Point at the Sahara loop and say &ldquo;that is Lab 3&rdquo;. Mention permafrost and carbonate compensation exist; the page has them.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        Finish on the <b>timescale ladder</b> and nothing else. Read it twice, out loud.
+        <b>Vertically:</b> every question has its own effective sensitivity, and it grows as you go down.
+        <b>Horizontally:</b> nearly everything is red. Most loops in the climate system amplify, and the reason
+        the planet is stable anyway is that <em>one</em> negative feedback &mdash; &sigma;T<sup>4</sup>, hot
+        things radiate &mdash; is bigger than all the amplifiers put together. That is the last sentence of the
+        lecture and it is worth arriving at.
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CLOSE ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Close</span>
+    <h3>The six points, and the bridge</h3>
+    <span class="t">11:55 · 5 min</span>
+  </div>
+  <div class="bd">
+    <div class="step">
+      <p class="lbl">From the slides, in their own words if possible</p>
+      <ul>
+        <li>Definitions of <b>forcing</b> and <b>feedback</b>, and that the boundary is a choice.</li>
+        <li>Several anthropogenic and natural forcings perturb the climate; some positive (greenhouse gases, black carbon), some negative (sulphate, land use).</li>
+        <li>Many feedbacks act, of both signs. <b>Blackbody, lapse rate, water vapour, cloud, snow-and-ice albedo, tundra&ndash;taiga.</b></li>
+        <li>One number, <b>&lambda;<sub>f</sub></b>, collects them all, and <b>&minus;1/&lambda;<sub>f</sub></b> is the climate sensitivity.</li>
+        <li>Cloud dominates the uncertainty; the hyperbola makes the range lopsided.</li>
+        <li>The ocean makes the response slow, so today&rsquo;s warming is not the eventual warming.</li>
+      </ul>
+    </div>
+    <div class="step">
+      <p class="lbl">Then the sentence to finish on, and the bridge</p>
+      <ul>
+        <li>Point at <b>1.1</b> and <b>3</b>, still on the board since Thursday. <b>The gap is not a disagreement about physics. It is the planet's own response to what we did, and it is two thirds of the total.</b></li>
+        <li><b>PC Lab 2 this afternoon</b> is the ice-albedo feedback made runnable &mdash; the same loop they counted in Block 1, in a latitudinal model, strong enough to have a threshold. Tell them to expect the ice line and to expect it not to come back.</li>
+        <li><b>Tomorrow morning</b> is the past and present: the same feedbacks, run backwards against the palaeo record, and the attribution argument that Block 2&rsquo;s timeline was a preview of.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2 class="sec">Board plan</h2>
+
+<div class="card">
+  <p class="note" style="margin:0 0 10px">Things worth writing up and leaving up. Everything else can come off
+  the screen.</p>
+  <table>
+    <thead><tr><th>When</th><th class="raw">Put on the board</th><th>Why it stays up</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Open</td><td><b>1.1 K &nbsp;&nbsp; 3 K</b></td><td>Carried over from Thursday. The whole lecture is the gap between them, and you point at it three times.</td></tr>
+      <tr><td class="nm">Open</td><td>3.7 &rarr; &lambda;<sub>f</sub> &rarr; &Delta;T &rarr; &Delta;T(t)</td><td>The arithmetic spine. Tick each arrow off as you reach it.</td></tr>
+      <tr><td class="nm">Block 1</td><td>&Delta;Q = 5.4 ln([CO<sub>2</sub>]/[CO<sub>2</sub>]<sub>r</sub>), boxed answer <b>3.7</b></td><td>Every other forcing today is quoted against it.</td></tr>
+      <tr><td class="nm">Block 1</td><td><i>downward positive</i></td><td>They will forget, and it flips the sign of &lambda;<sub>f</sub> if they do.</td></tr>
+      <tr><td class="nm">Block 2</td><td><b>11 yr?</b> in a corner</td><td>Deliberately unanswered until Block 5.</td></tr>
+      <tr><td class="nm">Block 3</td><td>&Delta;R = &Delta;Q + &lambda;<sub>f</sub>&Delta;T<sub>s</sub></td><td>The central equation of the lecture. Never rub it out.</td></tr>
+      <tr><td class="nm">Block 3</td><td>&lambda;<sub>0</sub> = &minus;4&sigma;T<sub>e</sub><sup>3</sup> = &minus;3.8 &rarr; &minus;3.2</td><td>The one feedback derived rather than quoted.</td></tr>
+      <tr><td class="nm">Block 3</td><td>&minus;3.2 &nbsp; +1.8 &nbsp; &minus;0.8 &nbsp; +0.68 &nbsp; +0.26 &nbsp;&rarr;&nbsp; <b>&minus;1.26</b></td><td>Write them as a column and sum it by hand before the demo does. 3.7/1.26 = 2.9.</td></tr>
+      <tr><td class="nm">Block 5</td><td>&tau; = &minus;C<sub>s</sub>/&lambda;<sub>f</sub></td><td>Underline the &lambda;<sub>f</sub>. It is the counter-intuitive part.</td></tr>
+      <tr><td class="nm">Block 5</td><td>0.9 &nbsp; 2.7 &nbsp; 1.2</td><td>For the back-of-envelope sensitivity at the end of the block.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">If time runs short</h2>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Cut</th><th class="raw">What you lose</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Block 6 to 5 min</td><td>Carbonate compensation and permafrost detail</td><td class="nm">Cut first. Page 6 reads well alone; keep only the ladder.</td></tr>
+      <tr><td class="nm">Land-use calculator</td><td>One worked forcing estimate</td><td class="nm">Cut second &mdash; but keep the tropics-vs-boreal punchline, it is ten seconds.</td></tr>
+      <tr><td class="nm">Aerosol mechanism table</td><td>Twomey and lifetime effects</td><td class="nm">Cut third; the ledger already made the point that aerosols cancel a third.</td></tr>
+      <tr><td class="nm">Soil moisture and ocean advection</td><td>Two feedbacks outside &lambda;<sub>f</sub></td><td class="nm">Cut fourth, reluctantly &mdash; soil moisture is the one this audience will use.</td></tr>
+      <tr><td class="nm">The closing back-of-envelope</td><td>λ<sub>f</sub> from three observations</td><td class="nm">Cut fifth. Satisfying, not load-bearing.</td></tr>
+      <tr><td class="nm">The feedback assembler</td><td>The lecture</td><td class="nm">Never. Cut anything else first, including a whole block.</td></tr>
+      <tr><td class="nm">The two-sensitivity transient run</td><td>Why decades of data have not settled ECS</td><td class="nm">Never. It is the most transferable idea in the session.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Numbers to have in your head</h2>
+
+<div class="card">
+  <table>
+    <thead><tr><th class="raw">Quantity</th><th class="raw">Value</th><th class="raw">Where it comes up</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">2 × CO<sub>2</sub> forcing</td><td>3.7 W m<sup>&minus;2</sup></td><td>Everywhere. 5.4 ln 2 = 3.74.</td></tr>
+      <tr><td class="nm">Net anthropogenic forcing, 2011</td><td>+2.3 W m<sup>&minus;2</sup></td><td>Block 2 ledger. Greenhouse +3.3, aerosols &minus;0.9.</td></tr>
+      <tr><td class="nm">&lambda;<sub>0</sub></td><td>&minus;3.2 W m<sup>&minus;2</sup> K<sup>&minus;1</sup></td><td>&minus;3.8 from the envelope; &minus;3.2 from models.</td></tr>
+      <tr><td class="nm">&lambda;<sub>w</sub>, &lambda;<sub>L</sub>, &lambda;<sub>c</sub>, &lambda;<sub>&alpha;</sub></td><td>+1.8, &minus;0.8, +0.68, +0.26</td><td>Soden &amp; Held (2006). Sum with &lambda;<sub>0</sub>: &minus;1.26.</td></tr>
+      <tr><td class="nm">Cloud spread</td><td>&plusmn;0.4</td><td>Four times the albedo spread. The whole argument.</td></tr>
+      <tr><td class="nm">ECS</td><td>2.9 K best, 1.5&ndash;4.5 assessed</td><td>3.7/1.26.</td></tr>
+      <tr><td class="nm">TCR</td><td>1.4&ndash;2.5 K</td><td>Roughly 0.5&ndash;0.7 of ECS.</td></tr>
+      <tr><td class="nm">C<sub>s</sub>, 200 m of water</td><td>8.36 × 10<sup>8</sup> J K<sup>&minus;1</sup> m<sup>&minus;2</sup></td><td>&tau; = 14 yr at &lambda;<sub>f</sub> = &minus;1.85.</td></tr>
+      <tr><td class="nm">Earth energy imbalance</td><td>0.9 W m<sup>&minus;2</sup></td><td>Block 5. Over 90 % of it into the ocean.</td></tr>
+      <tr><td class="nm">Global net cloud effect</td><td>&minus;20 W m<sup>&minus;2</sup></td><td>Block 4. Five times the anthropogenic forcing.</td></tr>
+      <tr><td class="nm">Permafrost carbon</td><td>~1500 PgC</td><td>Block 6. Twice the atmosphere.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="foot">Built from <i>Lecture 6 &mdash; Response of the climate system to perturbations</i> (Hans Renssen,
+revised 2025) and Goosse et al., <i>Introduction to Climate Dynamics and Climate Modelling</i>, ch. 4. Timings
+assume the Tuesday 08:15&ndash;12:00 slot with two ten-minute breaks; they are a shape, not a schedule. Feedback
+values follow Soden and Held (2006) as quoted by Goosse; note that the textbook uses &Delta;Q = 3.8
+W m<sup>&minus;2</sup> and &lambda;<sub>0</sub> = &minus;3.8 in its own worked examples, while the teaching pages
+and this outline use the AR5 values of 3.7 and &minus;3.2, so figures differ slightly from the book in the second
+decimal. All six linked pages are public and self-contained &mdash; they work offline once loaded and need no
+network. This outline is not published.</p>
+
+</div>
+
+<script>
+(function(){
+  const btn=document.getElementById('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

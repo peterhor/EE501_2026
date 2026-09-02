@@ -17,22 +17,13 @@ Goosse2010_textbook/*
 *FASIT*
 *reportHR*
 
-# Instructor-only material: answer-key variants of the interactive labs, and
-# lecturer running orders / lecture outlines. Never published to docs/.
+# Answer-key variants of the interactive labs stay out. The eight lecture
+# running orders are the exception and are deliberately tracked (see README):
+# they live in the lecture folders, never under docs/, so they are in the
+# repository but not on the published site.
 *Teacher*.html
 *Teacher*.dc.html
-lecture-1-components-of-the-climate-system/Lecture1-Teacher-outline.html
-lecture-2-earths-energy-budget/Lecture2-Teacher-outline.html
-lecture-3-climate-at-a-local-scale/Lecture3-Teacher-outline.html
-lecture-4-global-cycles-water-and-carbon/Lecture4-Teacher-outline.html
-lecture-5-modelling-the-climate-system/Lecture5-Teacher-outline.html
-lecture-6-response-of-the-climate-system-to-perturbations/Lecture6-Teacher-outline.html
-lecture-7-climate-change-past-and-present/Lecture7-Teacher-outline.html
-lecture-8-climate-change-the-future/Lecture8-Teacher-outline.html
-
-# Instructor hub: the index over the lecture outlines above, plus any working
-# files kept beside it. Never published to docs/.
-teacher/
+!lecture-*/Lecture?-Teacher-outline.html
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained

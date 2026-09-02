@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Climate at a local scale — lecture outline</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --nr:#1baf7a; --sw:#eda100; --lw:#c8443a; --lh:#2a78d6; --gd:#8a6b45;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --nr:#199e70; --sw:#c98500; --lw:#d9564c; --lh:#3987e5; --gd:#a08258;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:66ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  .private{background:var(--surface-2);border:1px dashed var(--lw);border-radius:10px;
+    padding:12px 16px;margin:0 0 22px;font-size:13px;color:var(--text-secondary);line-height:1.6}
+  .private b{color:var(--lw)}
+  .private code{font-size:12.5px;background:var(--surface-1);padding:1px 5px;border-radius:4px;
+    border:1px solid var(--line-soft)}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 24px;margin-bottom:14px}
+  h2.sec{font-size:15px;margin:34px 0 10px;color:var(--text-secondary);font-weight:600}
+
+  /* a block = one 45-minute chunk */
+  .blk{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:0;margin-bottom:16px;overflow:hidden}
+  .blk > .hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    padding:16px 24px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+  .blk > .hd .n{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--nr);font-weight:700}
+  .blk > .hd h3{font-size:18px;margin:0;letter-spacing:-.01em;flex:1 1 auto}
+  .blk > .hd .t{font-size:13px;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .blk > .bd{padding:18px 24px 22px}
+
+  .step{margin:0 0 20px}
+  .step:last-child{margin-bottom:0}
+  .step > .lbl{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin:0 0 6px}
+  ul{margin:0 0 0 0;padding-left:22px}
+  li{margin:0 0 6px;color:var(--text-secondary)}
+  li b, li strong{color:var(--text-primary);font-weight:600}
+  li > ul{margin-top:6px}
+  .eqn{display:inline-block;background:var(--surface-2);border-radius:7px;padding:3px 10px;
+    color:var(--text-primary);font-size:15px}
+
+  .show{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);
+    border-left:3px solid var(--nr);border-radius:0 9px 9px 0;padding:12px 16px;margin:14px 0 0;
+    font-size:13.5px;color:var(--text-secondary)}
+  .show .k{flex:0 0 auto;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--nr);font-weight:700;padding-top:2px}
+  .show b{color:var(--text-primary)}
+  .show a{color:var(--nr);font-weight:600;text-decoration:none}
+  .show a:hover{text-decoration:underline}
+
+  .ask{border-left:3px solid var(--lw);background:var(--surface-2);border-radius:0 9px 9px 0;
+    padding:12px 16px;margin:12px 0 0;font-size:13.5px;color:var(--text-secondary)}
+  .ask .k{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--lw);font-weight:700}
+  .ask b{color:var(--text-primary)}
+  .ask .ans{display:block;margin-top:6px;color:var(--text-muted);font-size:13px}
+
+  .brk{text-align:center;font-size:12.5px;color:var(--text-muted);margin:0 0 16px;
+    letter-spacing:.04em}
+  .brk span{background:var(--surface-0);padding:0 14px}
+  .brk{border-top:1px dashed var(--line);line-height:0;}
+  .brk span{position:relative;top:-1px;display:inline-block;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  th.raw{text-transform:none;letter-spacing:.02em;font-size:12.5px}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-primary);white-space:nowrap}
+  td.nm{color:var(--text-primary);font-weight:600;white-space:nowrap}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .lo{columns:2;column-gap:32px}
+  @media(max-width:700px){.lo{columns:1}}
+  .lo li{break-inside:avoid}
+  .res{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:4px}
+  .res a{display:block;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;
+    padding:12px 14px;text-decoration:none;color:var(--text-primary)}
+  .res a:hover{border-color:var(--nr)}
+  .res a .rn{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--nr);font-weight:700}
+  .res a .rt{font-size:14.5px;font-weight:600;margin:3px 0 2px}
+  .res a .rd{font-size:12.5px;color:var(--text-muted)}
+
+  @media print{
+    body{background:#fff;color:#000;font-size:11pt}
+    .wrap{max-width:none;padding:0}
+    .toggle,.crumb{display:none}
+    .blk,.card{break-inside:avoid;border:1px solid #bbb;box-shadow:none}
+    .blk > .hd{background:#f0f0f0}
+    .show,.ask{background:#f6f6f6}
+    a{color:#000;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="https://peterhor.github.io/EE501_2026/">EE501 course site &nearr;</a> &nbsp;·&nbsp; Climate at a local scale &nbsp;·&nbsp; lecture outline</p>
+
+<p class="private"><b>Instructor copy &mdash; not on the student site.</b> This file lives outside
+<code>docs/</code>, so it is not part of the published GitHub Pages site. It <em>is</em> tracked in the
+repository, and the repository is public &mdash; treat this running order as readable by anyone, students
+included. The teaching pages it links to are public by design. Source decks, answer keys and report templates
+stay excluded.</p>
+
+<header>
+  <div>
+    <h1>Climate at a local scale &mdash; lecture outline</h1>
+    <p class="sub">A running order for the session, with the point to make at each step, the number to put on
+    the board, which interactive page to open, and the question to throw back at the room. Built from
+    <i>Lecture 3 &mdash; Climate at a Local Scale</i> and the four teaching pages that go with it.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="card">
+  <h3 style="font-size:17px;margin:0 0 10px">The one sentence the whole session is built on</h3>
+  <p style="font-size:17px;line-height:1.55;margin:0 0 14px">
+    The same sunlight falls on every surface. What happens next &mdash; how warm it gets, how much water it
+    evaporates, how deep the heat penetrates, how cold it goes at night &mdash; is decided by the
+    <b>properties of the surface</b>, not by the radiation arriving.</p>
+  <p class="note">Everything else is an elaboration of that. Each section takes one surface property
+  (albedo, water availability, thermal admittance, roughness, vegetation structure) and shows which term of the
+  budget it controls.</p>
+</div>
+
+<h2 class="sec">Learning outcomes</h2>
+
+<div class="card">
+  <p class="note" style="margin:0 0 12px">By the end of the session students should be able to:</p>
+  <ul class="lo">
+    <li>Write down the <b>radiative budget</b> and the <b>energy balance</b> of a surface and say which quantity joins them.</li>
+    <li>State the <b>sign convention</b> for each term and predict how each one flips between day and night.</li>
+    <li>Use the <b>bulk formulas</b> for F<sub>SH</sub> and F<sub>LH</sub>, and say what each of the three factors does.</li>
+    <li>Interpret a <b>Bowen ratio</b>, including a negative one, and explain what it says about the surface.</li>
+    <li>Explain the <b>oasis effect</b> and why F<sub>LH</sub> can exceed F<sub>NR</sub>.</li>
+    <li>Use the <b>damping depth</b> to predict amplitude decay and phase lag with depth.</li>
+    <li>Explain why a desert surface reaches extremes that a moist soil never does.</li>
+    <li>Predict when the surface layer is <b>convectively stable or unstable</b>, and why.</li>
+    <li>Explain why <b>albedo depends on solar altitude</b> and on canopy structure.</li>
+    <li>Describe how radiation, temperature, humidity, wind and CO<sub>2</sub> vary <b>inside a canopy</b>.</li>
+    <li>Given a land-cover change, <b>reason qualitatively</b> about the change in the local energy balance.</li>
+  </ul>
+</div>
+
+<h2 class="sec">Running order</h2>
+
+<p class="note" style="margin:0 0 14px;color:var(--text-muted)">
+Timings assume the 12:15&ndash;16:00 slot with two short breaks. They are a shape, not a schedule &mdash;
+block 2 is the one to protect, and block 4 is the one to cut into if you run long.</p>
+
+<!-- ══════════════════ BLOCK 0 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Open</span>
+    <h3>Framing: what changes when you zoom in</h3>
+    <span class="t">12:15 · 10 min</span>
+  </div>
+  <div class="bd">
+    <div class="step">
+      <p class="lbl">Points</p>
+      <ul>
+        <li>Last session was the <b>planetary</b> budget: one number for the whole Earth, 240 W m<sup>&minus;2</sup> in and out.</li>
+        <li>Today: stand on one square metre. Ask what the numbers look like <em>there</em>. They look nothing like the global average, and two patches a fence apart can differ enormously.</li>
+        <li>Set up the <b>idealised site</b> the whole first half assumes: horizontal, homogeneous, extensive, cloudless; a flat moist soil under grass. Say explicitly that we relax each of these later &mdash; the oasis breaks &ldquo;extensive&rdquo;, the forest breaks &ldquo;homogeneous&rdquo;.</li>
+        <li>Outline the six sections: radiative budget → energy balance → soil moisture → the oasis effect → snow and ice → vegetation.</li>
+      </ul>
+    </div>
+    <div class="ask"><span class="k">Warm-up</span><br>
+      <b>Why is a car park hotter than the lawn beside it on the same afternoon?</b> Take three or four
+      answers and write them on the board without judging them. Nearly every mechanism in the session will
+      appear in that list &mdash; colour, water, heat storage, roughness. Come back to the board at the end.</div>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 1 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 1</span>
+    <h3>The radiative budget</h3>
+    <span class="t">12:25 · 35 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · The equation</p>
+      <ul>
+        <li><span class="eqn">F<sub>NR</sub> = F<sub>solar</sub> &minus; &alpha;F<sub>solar</sub> + F<sub>IR↓</sub> &minus; F<sub>IR↑</sub></span> &nbsp;[W m<sup>&minus;2</sup>]</li>
+        <li>Four terms, two shortwave and two longwave. Go through them one at a time on the Fig. 2.20 diagram.</li>
+        <li><b>Sign convention</b> &mdash; spend a moment here, it pays for itself all afternoon. Radiative terms positive <em>towards</em> the surface; turbulent and conduction terms positive <em>away</em> from it.</li>
+        <li>F<sub>NR</sub> is not an output. It is the <b>energy the surface has left to spend</b>. That framing carries straight into the next block.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Worked example — short grass, Matador, 30 July 1971</p>
+      <ul>
+        <li>Put the five numbers on the board: F<sub>solar</sub> 27.3, reflected &minus;4.6, F<sub>IR↓</sub> 27.5, F<sub>IR↑</sub> &minus;36.8, giving F<sub>NR</sub> = <b>13.4</b> MJ m<sup>&minus;2</sup> day<sup>&minus;1</sup>.</li>
+        <li>Net shortwave <b>+22.7</b>, net longwave <b>&minus;9.3</b>. Half the day&rsquo;s gain is given straight back in the infrared.</li>
+        <li><b>The point to land:</b> the two longwave terms are individually enormous &mdash; both larger than the reflected sunlight &mdash; and they very nearly cancel. The budget is a small difference between two large numbers, which is exactly why small changes in either one matter so much.</li>
+        <li>Albedo here is only 0.16, so reflection is a minor term. Foreshadow: that will not be true of the next four surfaces.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/energy-balance.html">Page 1 · Where the energy goes at the surface</a> &mdash; select
+        <b>Grass</b>. Use the <b>scaled-arrow diagram</b> to make the &ldquo;two big longwave arrows nearly
+        cancel&rdquo; point visually, then the <b>waterfall</b> to walk the running total down term by term.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · Change the surface, keep the Sun</p>
+      <ul>
+        <li>Step through the sites without changing anything else. Suggested order: grass → moist soil → desert → snow.</li>
+        <li><b>Desert:</b> the most sunlight of any site (30.0) and only 9.0 MJ of net radiation. Albedo 0.30 throws away a third; the scorching surface radiates 39 MJ back out.</li>
+        <li><b>Snow, Antarctica, 21 hours of daylight:</b> F<sub>NR</sub> = <b>&minus;1.0</b>. A whole sunlit day that ends in deficit. This is usually the moment the room sits up.</li>
+        <li>Draw the conclusion out loud: <b>albedo is the single most powerful lever a surface has</b>, and it acts before anything else in the chain can.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/explorer/">The live explorer</a> &mdash; set the site to 45&deg;N and step through the six
+        surface presets. Same solar geometry, six different budgets. This is the clearest single demonstration
+        of the session&rsquo;s core sentence.
+        <b style="display:block;margin-top:6px;font-weight:400;color:var(--text-muted)">Must be opened from the
+        web address, not from a file on disk &mdash; check it loads before the lecture.</b>
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>The Antarctic snow gets more than 26 MJ of sunlight in a day. Why does it end the day colder?</b>
+        <span class="ans">Because 80 % is reflected before it can be absorbed, while F<sub>IR↑</sub> continues
+        all 24 hours regardless. Follow up: what would happen if it were dusted with soot?</span></div>
+    </div>
+
+  </div>
+</div>
+
+<p class="brk"><span>break · 13:00</span></p>
+
+<!-- ══════════════════ BLOCK 2 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 2</span>
+    <h3>The energy balance and the turbulent fluxes</h3>
+    <span class="t">13:15 · 45 min &nbsp;·&nbsp; the core of the session</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Spending the net radiation</p>
+      <ul>
+        <li><span class="eqn">F<sub>NR</sub> = F<sub>SH</sub> + F<sub>LH</sub> + F<sub>cond</sub> + heat storage</span></li>
+        <li>Same F<sub>NR</sub> as the last equation &mdash; write them one above the other so the join is obvious.</li>
+        <li>Name the terms physically: heating the air, evaporating water, conducting into the ground, warming the surface layer itself.</li>
+        <li><b>Worked example, Agassiz, 30 May 1978, moist bare soil:</b> F<sub>NR</sub> 18.0 = F<sub>SH</sub> 2.3 + F<sub>LH</sub> 13.4 + F<sub>cond</sub> 2.3. Three quarters of it goes into evaporation.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask (from the slides)</span><br>
+        <b>Why does the surface record both the highest and the lowest temperature of the day &mdash; not the
+        air at 1.2 m, not the soil at 0.2 m?</b>
+        <span class="ans">Because the surface is the only place the radiation is actually absorbed and emitted.
+        Everything else is heated or cooled second-hand. By day heat flows away from it in every direction; by
+        night it flows towards it from every direction.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · The bulk formulas</p>
+      <ul>
+        <li><span class="eqn">F<sub>SH</sub> = &rho; c<sub>p</sub> c<sub>h</sub> U<sub>a</sub> (T<sub>s</sub> &minus; T<sub>a</sub>)</span> &nbsp; and &nbsp; <span class="eqn">F<sub>LH</sub> = &rho; L<sub>v</sub> c<sub>L</sub> U<sub>a</sub> (q<sub>s</sub> &minus; q<sub>a</sub>)</span></li>
+        <li>Identical structure &mdash; say this explicitly. A transfer efficiency, times the wind, times a difference between the surface and the air.</li>
+        <li><b>All three factors must be non-zero.</b> No wind, no flux however hot the surface. No gradient, no flux however hard the wind blows.</li>
+        <li>c<sub>h</sub> is the surface&rsquo;s aerodynamic grip: the roughness length in disguise. A forest moves several hundred W m<sup>&minus;2</sup> on a light breeze; a lake cannot.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Page 2 · Sensible and latent heat</a> &mdash; load the
+        <b>Desert, noon</b> preset, then <b>Calm, no wind</b>, and let the class watch both fluxes collapse
+        together while nothing else changed.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · The Bowen ratio</p>
+      <ul>
+        <li><span class="eqn">B<sub>o</sub> = F<sub>SH</sub> / F<sub>LH</sub></span> &mdash; how the surface splits its turbulent loss.</li>
+        <li>B<sub>o</sub> &gt; 1: more energy than water. Desert &asymp; 37, pine forest 1.67. B<sub>o</sub> &lt; 1: barley 0.02, moist soil 0.17, fir forest 0.48.</li>
+        <li><b>The result worth deriving on the board.</b> Divide the two formulas. If c<sub>h</sub> = c<sub>L</sub>, then &rho;, c and U<sub>a</sub> all cancel:
+          <br><span class="eqn" style="margin-top:6px">B<sub>o</sub> = (c<sub>p</sub>/L<sub>v</sub>) &middot; &Delta;T/&Delta;q &asymp; 0.40 &middot; &Delta;T [K] / &Delta;q [g kg<sup>&minus;1</sup>]</span></li>
+        <li>So the Bowen ratio is <b>independent of wind speed and of roughness</b>. Blow harder and both fluxes grow together. The split is set only by the ratio of the two gradients &mdash; i.e. by how much water the surface can supply.</li>
+        <li>Pine vs fir is the case that proves it: same latitude, same month, albedo 0.08 and 0.09, and opposite balances. Nothing radiative explains it.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Page 2</a> &mdash; move the <b>wind</b> and <b>transfer coefficient</b>
+        sliders and let the class watch B<sub>o</sub> refuse to move. Then move &Delta;q and watch it swing.
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>A surface has &Delta;T = 8 K. How large must &Delta;q be before evaporation takes more energy than
+        heating the air?</b>
+        <span class="ans">B<sub>o</sub> = 1 needs &Delta;q &asymp; 0.40 &times; 8 &asymp; 3.2 g kg<sup>&minus;1</sup>.
+        Then: which surfaces can supply that, and which cannot?</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Heat storage, briefly</p>
+      <ul>
+        <li><span class="eqn">heat storage = &rho; c<sub>ground</sub> &middot; h<sub>su</sub> &middot; &delta;T<sub>s</sub>/&delta;t</span></li>
+        <li>Usually the smallest term over vegetation, and the reason cities stay warm at night.</li>
+        <li>The teaching point is the <b>product</b>: a thin layer with a low heat capacity changes temperature violently for a small energy input. Park that thought &mdash; block 3 pays it off.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 3 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 3</span>
+    <h3>Into the ground, and the effect of water</h3>
+    <span class="t">14:00 · 45 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Which way does F<sub>cond</sub> point?</p>
+      <ul>
+        <li>Draw the vertical profile through the soil&ndash;air interface, day and night, on the same axes.</li>
+        <li><b>Day:</b> surface warmest, soil cooler below, air cooler above. F<sub>cond</sub> downward, F<sub>SH</sub> upward, convectively unstable.</li>
+        <li><b>Night:</b> surface coldest. Soil warmer below, air warmer above &mdash; an inversion. F<sub>cond</sub> upward, F<sub>SH</sub> downward, convectively stable, turbulence suppressed.</li>
+        <li>Stress that the reversal happens because the surface leads and everything else follows.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Temperature waves in the soil</p>
+      <ul>
+        <li><span class="eqn">T(z,t) = T&#772; + A<sub>0</sub> e<sup>&minus;z/D</sup> sin(&omega;t &minus; z/D)</span> with <span class="eqn">D = &radic;(2&kappa;/&omega;)</span></li>
+        <li>The same D appears twice, and that is the whole story: the wave loses 63 % of its amplitude per damping depth <em>and</em> falls one radian (&asymp; 3.8 h) further behind in the same distance. <b>Weaker and later, locked together.</b></li>
+        <li>Daily wave in dry sand: D &asymp; 8 cm. Annual wave: &radic;365 &asymp; 19 times deeper, so metres rather than centimetres, and the lag runs to months.</li>
+        <li><b>Wet soil conducts far better than dry.</b> Water displaces still air in the pores; k rises faster than C, so &kappa; rises. Saturating sandy soil roughly doubles the damping depth &mdash; the heat spreads through twice as much material and the surface swing is correspondingly gentler.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/soil-temperature.html">Page 3 · Heat in the ground</a> &mdash; the <b>depth&ndash;time
+        heatmap</b> makes the tilt (the phase lag) visible in one glance. Switch dry sand → saturated sand and
+        let them watch the wave reach deeper.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · The Sahara, which ties it together</p>
+      <ul>
+        <li>Surface swings from <b>27 °C to 64 °C</b> in a day. Air at 2 m swings only about 11 K. Sand at 0.30 m: <b>no diurnal signal at all</b>.</li>
+        <li>Explain it with the damping depth: 0.30 m is nearly four D in dry sand, so 2 % of the amplitude survives. All the day&rsquo;s energy is trapped in a layer a few centimetres thick &mdash; and a thin layer with a low heat capacity has nowhere to put it but temperature.</li>
+        <li>At night the same thinness works in reverse: almost no stored heat to draw on, so radiative cooling drops the surface 35 K before dawn.</li>
+        <li><b>Note the low emissivity too</b> &mdash; desert sand is 0.84&ndash;0.91, among the lowest of any natural surface.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask (from the slides)</span><br>
+        <b>When is the air convectively stable, and when unstable?</b>
+        <span class="ans">Read it off the crossing of the surface and 2 m curves: unstable roughly 07:00&ndash;19:00
+        when the surface is hotter; stable overnight when it is colder. Follow up: what does that do to the
+        depth of the boundary layer?</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Soil moisture and the boundary layer</p>
+      <ul>
+        <li>Wet soil: energy goes to F<sub>LH</sub>, the surface stays cool, the boundary layer stays shallow and humid.</li>
+        <li>Dry soil: energy goes to F<sub>SH</sub>, the surface runs hot, the boundary layer grows deep and dry.</li>
+        <li>Same F<sub>NR</sub>, completely different atmosphere above it. This is the land&ndash;atmosphere coupling that PC Lab 3 explores in the Sahara.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">5 · The oasis effect</p>
+      <ul>
+        <li>A small moist patch inside a dry landscape: an oasis, an irrigated field, a city park in August.</li>
+        <li>Evaporation keeps the patch cooler than the hot dry air arriving from upwind, so <b>T<sub>s</sub> &minus; T<sub>a</sub> goes negative</b>, F<sub>SH</sub> reverses, and the air starts delivering heat <em>to</em> the surface.</li>
+        <li>The surface now has two supplies &mdash; radiation and advection &mdash; so <b>F<sub>LH</sub> can exceed F<sub>NR</sub></b>, and B<sub>o</sub> is negative. Measured irrigated field: F<sub>NR</sub> 16, F<sub>LH</sub> 21, F<sub>SH</sub> &minus;6.</li>
+        <li><b>It only works because the patch is small.</b> Irrigate the whole desert and the upwind air turns cool and humid, the advection stops, the effect vanishes. Genuinely local &mdash; it cannot appear in a global budget, because globally there is no upwind.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Page 2 · the oasis panel</a>, or load the <b>Irrigated field</b>
+        preset and point at the negative B<sub>o</sub> in the readout.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">6 · Snow and ice</p>
+      <ul>
+        <li>The balance now applies to a <b>volume</b>, not a surface: <span class="eqn">F<sub>NR</sub> + F<sub>rain</sub> = F<sub>LH</sub> + F<sub>SH</sub> + F<sub>cond</sub> + &Delta;S<sub>SH</sub> + &Delta;S<sub>LH</sub></span></li>
+        <li>&Delta;S<sub>LH</sub> carries melting and freezing &mdash; the term that has no counterpart over soil, and the one that matters most.</li>
+        <li>Cold pack in winter vs wet pack in spring: contrast the two.</li>
+        <li>Above the Arctic circle in winter the budget simplifies drastically &mdash; no sunlight, F<sub>rain</sub> zero, F<sub>LH</sub> and F<sub>cond</sub> negligible.</li>
+        <li><b>Snow insulates.</b> k &asymp; 0.08 W m<sup>&minus;1</sup> K<sup>&minus;1</sup> for fresh snow, some thirty-five times lower than rock. The snow surface can sit at &minus;30 °C while the soil beneath stays near 0 °C. Say plainly why that matters for plants, soil microbes and small mammals &mdash; a winter with little snow can be harder on an ecosystem than a colder one with deep snow.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<p class="brk"><span>break · 14:45</span></p>
+
+<!-- ══════════════════ BLOCK 4 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 4</span>
+    <h3>Vegetation and surface properties</h3>
+    <span class="t">15:00 · 45 min</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Albedo and emissivity across all surfaces</p>
+      <ul>
+        <li>Walk Table 1.1: albedo spans 0.03 (calm water, high Sun) to 0.95 (fresh snow) &mdash; a factor of thirty. Emissivity spans only 0.71 to 0.99, and almost everything living sits above 0.95.</li>
+        <li><b>That asymmetry is the headline.</b> In the longwave, nature is close to a blackbody and differences barely matter. In the shortwave the surface has enormous leverage. Which is why land-cover change is such a powerful climate forcing.</li>
+        <li><b>Emissivity = absorptivity</b> (Kirchhoff, same wavelength). So &epsilon; does double duty: it sets F<sub>IR↑</sub> through &epsilon;&sigma;T<sub>s</sub><sup>4</sup>, and it sets how much of F<sub>IR↓</sub> the surface takes in.</li>
+        <li>The two natural exceptions worth remembering: desert sand and old snow, both around 0.84&ndash;0.89.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/surface-properties.html">Page 4 · What the surface does to the radiation</a> &mdash; the
+        range chart, then hit <b>Sort by emissivity</b> to make the &ldquo;narrow range&rdquo; point land.
+      </div></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · Albedo is not a constant</p>
+      <ul>
+        <li>Albedo rises steeply at <b>low solar altitude</b> (large zenith angle): glancing incidence gives stronger Fresnel reflection off waxy leaves, and the beam penetrates less deeply so has fewer chances to be trapped.</li>
+        <li><b>Steepness is the structural signature.</b> Short grass is nearly flat with angle; pine falls from 0.20 to 0.08 across the same range, because a tall open conifer canopy is full of gaps that swallow a high Sun and barely exist for a low one.</li>
+        <li>Consequence: the same forest has a measurably higher daily-mean albedo in winter at high latitude, before any snow is involved.</li>
+      </ul>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>The bare oak canopy has a lower albedo than the same oak in leaf, at every solar altitude. Why does
+        putting leaves on a tree make it brighter?</b>
+        <span class="ans">Leads into multiple reflection: it is the <em>structure</em> that traps light, not the
+        optical properties of the individual element.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">3 · Why a canopy is darker than its own leaves</p>
+      <ul>
+        <li>A single leaf reflects 10&ndash;15 % of visible light. A closed canopy of the same leaves reflects <em>less</em>, because a reflected photon usually hits another leaf rather than escaping, and each encounter takes another bite.</li>
+        <li>Hence the rule: <b>taller vegetation generally has a lower albedo</b>. Grass 0.16&ndash;0.26, crops 0.18&ndash;0.25, deciduous forest 0.15&ndash;0.20, conifers 0.05&ndash;0.15.</li>
+        <li><b>This is a real climate feedback, not a curiosity.</b> Boreal conifer forest is among the darkest natural surfaces on Earth; the tundra it is advancing into is among the brightest in winter, because tundra is buried under snow while trees stand above it. Shrubs and trees moving north warm the local climate directly through albedo &mdash; separately from any carbon they store.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">4 · Inside the canopy</p>
+      <ul>
+        <li>Radiation is absorbed layer by layer: <span class="eqn">F(L) = F<sub>0</sub> e<sup>&minus;kL</sup></span>, controlled by <b>cumulative leaf area</b>, not by height.</li>
+        <li>Net radiation follows F<sub>solar</sub> closely inside the canopy, because longwave is nearly in balance between neighbouring leaves.</li>
+        <li>The <b>diffuse share rises from about 15 % above the canopy to about 46 % at the forest floor</b> &mdash; direct beam needs a clear line through every layer; diffuse light is scattered rather than blocked.</li>
+        <li><b>The active surface is not the ground.</b> In a tall stand it sits several metres up in the crown, where the absorption happens.</li>
+        <li>The canopy microclimate follows from that: T and vapour pressure bulge at the foliage-density peak; wind collapses to near zero inside and is strong above; CO<sub>2</sub> is highest at the ground where soil respiration releases it.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/surface-properties.html">Page 4</a> &mdash; set the canopy height slider to <b>0.2 m</b> and
+        read it as the grass stand from the slides, then back up to 12 m for a forest. Then the four spruce
+        profiles.
+      </div></div>
+      <div class="ask"><span class="k">Ask (from the slides)</span><br>
+        <b>What would those four profiles look like in a deciduous forest in winter?</b>
+        <span class="ans">Take them one at a time: foliage density first, then ask what each of the others
+        depends on. It is a good test of whether the mechanism landed or only the picture did.</span></div>
+    </div>
+
+    <div class="step">
+      <p class="lbl">5 · Two forests, side by side</p>
+      <ul>
+        <li><b>Barley field:</b> &alpha; 0.24; evaporative cooling keeps the canopy cool, suppressing F<sub>IR↑</sub>, while humid air radiates strongly down &mdash; so net longwave loss is unusually small. F<sub>LH</sub> takes 99 % of F<sub>NR</sub>.</li>
+        <li><b>Pine, Thetford 52&deg;N:</b> &alpha; 0.08, about 60 % of F<sub>NR</sub> to F<sub>SH</sub>, B<sub>o</sub> = 1.67.</li>
+        <li><b>Fir, Haney 49&deg;N:</b> &alpha; 0.09, about 68 % to F<sub>LH</sub>, B<sub>o</sub> = 0.48. F<sub>SH</sub> peaks <em>before</em> F<sub>NR</sub>; F<sub>LH</sub> peaks after.</li>
+        <li>Return to the slides&rsquo; own question: <b>what causes the difference between the pine and the fir?</b> Water availability, not radiation. This is the single best summary of the whole session.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ CLOSE ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Close</span>
+    <h3>Pulling it together</h3>
+    <span class="t">15:45 · 15 min</span>
+  </div>
+  <div class="bd">
+    <div class="step">
+      <p class="lbl">The summary that matters</p>
+      <ul>
+        <li>Go back to the board from the warm-up and tick off the mechanisms the class guessed. Nearly all of them will now have a name and a term in the budget.</li>
+        <li>The local budget depends on surface characteristics, and each one owns a term:</li>
+      </ul>
+      <table style="margin-top:12px">
+        <thead><tr><th>Surface property</th><th>Term it controls</th><th>Clearest example</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">Albedo</td><td>&alpha;F<sub>solar</sub></td><td>Antarctic snow 0.80 vs pine 0.08</td></tr>
+          <tr><td class="nm">Water availability</td><td>F<sub>SH</sub> : F<sub>LH</sub>, i.e. B<sub>o</sub></td><td>Desert 37 vs barley 0.02</td></tr>
+          <tr><td class="nm">Roughness length</td><td>c<sub>h</sub>, c<sub>L</sub> in both turbulent fluxes</td><td>Forest vs lake</td></tr>
+          <tr><td class="nm">Thermal admittance</td><td>F<sub>cond</sub> and the skin temperature</td><td>Dry sand: 64 °C by day, 27 °C by dawn</td></tr>
+          <tr><td class="nm">Vegetation type, height, cover</td><td>Where F<sub>NR</sub> is absorbed at all</td><td>0.2 m grass vs 12 m spruce</td></tr>
+          <tr><td class="nm">Leaf area index</td><td>Canopy extinction, diffuse fraction</td><td>15 % → 46 % diffuse at the floor</td></tr>
+          <tr><td class="nm">Emissivity</td><td>F<sub>IR↑</sub>, night-time cooling rate</td><td>Desert sand 0.84&ndash;0.91</td></tr>
+          <tr><td class="nm">Snow cover</td><td>&alpha;, and insulation of everything below</td><td>Soil at 0 °C under a &minus;30 °C surface</td></tr>
+        </tbody>
+      </table>
+      <p class="note"><b>Bridge to the next session.</b> Every one of these is a property of the surface, not
+      of the atmosphere. So changing land cover changes climate without changing anything about the incoming
+      radiation &mdash; which is exactly the mechanism PC Lab 1 (Daisyworld) and PC Lab 3 (abrupt vegetation
+      change in the Sahara) put into a model.</p>
+    </div>
+  </div>
+</div>
+
+<h2 class="sec">Numbers to have at hand</h2>
+
+<div class="card">
+  <p class="cap" style="font-size:13.5px;color:var(--text-muted);margin:0 0 12px">Daily totals in
+    MJ m<sup>&minus;2</sup> day<sup>&minus;1</sup>. The full table, with all four radiative terms, is on
+    <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/energy-balance.html" style="color:var(--nr)">page 1</a>.</p>
+  <table>
+    <thead><tr><th>Site</th><th class="num raw">&alpha;</th><th class="num raw">F<sub>NR</sub></th>
+      <th class="num raw">F<sub>SH</sub></th><th class="num raw">F<sub>LH</sub></th><th class="num raw">B<sub>o</sub></th>
+      <th>The one thing to say about it</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Short grass</td><td class="num">0.16</td><td class="num">13.4</td><td class="num">3.4</td><td class="num">9.1</td><td class="num">0.37</td><td>The longwave terms nearly cancel</td></tr>
+      <tr><td class="nm">Moist bare soil</td><td class="num">0.10</td><td class="num">18.0</td><td class="num">2.3</td><td class="num">13.4</td><td class="num">0.17</td><td>Three quarters goes to evaporation</td></tr>
+      <tr><td class="nm">Dry desert sand</td><td class="num">0.30</td><td class="num">9.0</td><td class="num">7.4</td><td class="num">0.2</td><td class="num">37.0</td><td>Most sunlight, least net radiation</td></tr>
+      <tr><td class="nm">Irrigated field</td><td class="num">0.22</td><td class="num">16.0</td><td class="num">&minus;6.0</td><td class="num">21.0</td><td class="num">&minus;0.29</td><td>F<sub>LH</sub> exceeds F<sub>NR</sub></td></tr>
+      <tr><td class="nm">Barley field</td><td class="num">0.24</td><td class="num">15.0</td><td class="num">0.3</td><td class="num">14.9</td><td class="num">0.02</td><td>Evapotranspiration takes 99 %</td></tr>
+      <tr><td class="nm">Douglas fir</td><td class="num">0.09</td><td class="num">16.8</td><td class="num">5.5</td><td class="num">11.4</td><td class="num">0.48</td><td>Darkest surface, two thirds to F<sub>LH</sub></td></tr>
+      <tr><td class="nm">Pine forest</td><td class="num">0.08</td><td class="num">15.0</td><td class="num">9.0</td><td class="num">5.4</td><td class="num">1.67</td><td>Same albedo as the fir, opposite split</td></tr>
+      <tr><td class="nm">Snow, 70&deg;S</td><td class="num">0.80</td><td class="num">&minus;1.0</td><td class="num">&minus;0.6</td><td class="num">0.3</td><td class="num">&minus;2.00</td><td>21 h of daylight, still a deficit</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>And four more worth memorising.</b> Damping depth of dry sand for the daily wave:
+  <b>8 cm</b> &mdash; and the annual wave goes &radic;365 &asymp; <b>19&times;</b> deeper. Phase lag:
+  <b>one radian, about 3.8 h, per damping depth</b>. Diffuse fraction at a forest floor:
+  <b>15 % → 46 %</b>. Bowen ratio shortcut: <b>B<sub>o</sub> &asymp; 0.40 &Delta;T/&Delta;q</b> with &Delta;q in
+  g kg<sup>&minus;1</sup>.</p>
+</div>
+
+<h2 class="sec">Everything linked from here</h2>
+
+<div class="card">
+  <div class="res">
+    <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/energy-balance.html"><div class="rn">Page 1</div>
+      <div class="rt">Surface energy balance</div>
+      <div class="rd">Eight measured sites · arrows, waterfall, Bowen strip, day/night</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/turbulent-fluxes.html"><div class="rn">Page 2</div>
+      <div class="rt">Turbulent fluxes</div>
+      <div class="rd">Bulk formulas, Bowen ratio, oasis effect, heat storage</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/soil-temperature.html"><div class="rn">Page 3</div>
+      <div class="rt">Heat in the ground</div>
+      <div class="rd">Damping depth, phase lag, the Sahara diurnal cycle</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/surface-properties.html"><div class="rn">Page 4</div>
+      <div class="rt">Surface properties</div>
+      <div class="rd">Table 1.1, albedo vs solar altitude, inside the canopy</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-3-climate-at-a-local-scale/explorer/"><div class="rn">Live demo</div>
+      <div class="rt">Energy balance explorer</div>
+      <div class="rd">Diurnal budget for six surfaces, real solar geometry</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/equations/"><div class="rn">Reference</div>
+      <div class="rt">Equation summary</div>
+      <div class="rd">Part II · heat balance at the surface, Eq. 2.34–2.36</div></a>
+  </div>
+</div>
+
+<p class="foot">Structure follows <i>Lecture 3 &mdash; Climate at a Local Scale</i> (EE501, 2025), which draws
+its case studies from Oke, <i>Boundary Layer Climates</i> (2nd edn, 1987). Timings are a suggestion for the
+12:15&ndash;16:00 slot and assume two short breaks. Numbers quoted here match the four teaching pages; each of
+those states in its own footnote which values come from the lecture and which are representative figures chosen
+to close a budget. The SHOW links open the live site at peterhor.github.io, which is what you want in the lecture room &mdash; the explorer only runs over http, not from a local file. &nbsp;·&nbsp; This page is designed to print &mdash; use the browser&rsquo;s print dialogue
+for a paper running order.</p>
+
+</div>
+
+<script>
+(function(){
+  const btn=document.getElementById('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

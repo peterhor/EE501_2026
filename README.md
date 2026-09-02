@@ -113,29 +113,32 @@ The source lab folders are:
 
 Several classes of files are intentionally excluded through `.gitignore` and are not part of the public site:
 
-1. Teacher outlines such as `Lecture5-Teacher-outline.html`
-2. The `teacher/` folder, which holds the index over those outlines
-3. PPTX lecture decks
-4. Screenshots and uploads used during preparation
-5. Answer keys, reports, and worked solutions
-6. Reference textbook material in `Goosse2010_textbook/`
-7. Preview `.dc.html` exports and duplicate root-level runtime files
+1. PPTX lecture decks
+2. Screenshots and uploads used during preparation
+3. Answer keys, reports, and worked solutions
+4. Reference textbook material in `Goosse2010_textbook/`
+5. Preview `.dc.html` exports and duplicate root-level runtime files
 
 This keeps the public site in `docs/` while allowing the lecture mother folders to contain working and instructor-facing material locally.
 
+The teacher outlines and `teacher/index.html` are the deliberate exception: they are tracked in the repository, but they live outside `docs/` and so are never served as part of the course site. See below.
+
 ### Teacher outline hub
 
-Each lecture keeps its own running order inside its own mother folder, at `lecture-N-<topic>/LectureN-Teacher-outline.html`, next to the deck it was built from. `teacher/index.html` is the single index over all eight: the week at a glance, what each session is built on, its block-by-block running order, and the published pages each outline drives. Open it locally in a browser; it is not part of the site and is not committed.
+Each lecture keeps its own running order inside its own mother folder, at `lecture-N-<topic>/LectureN-Teacher-outline.html`, next to the deck it was built from. `teacher/index.html` is the single index over all eight: the week at a glance, what each session is built on, its block-by-block running order, and the published pages each outline drives. Open it locally in a browser, or read it on GitHub.
 
 The outlines are the authority. The hub summarizes them and links to them, so where the two disagree the outline is right.
 
-Three `.gitignore` rules keep this side of the repository private, and it is worth knowing them before renaming anything:
+There are two separate boundaries here, and they do not sit in the same place:
 
-1. `teacher/` is ignored wholesale, so working files dropped beside the hub are ignored too
-2. `*Teacher*.html` catches the outlines by name wherever they sit
-3. The current outline paths are additionally listed one by one, so keep the word `Teacher` in any outline filename and the explicit list can go stale without anything leaking
+1. `docs/` is the published site. The hub and the outlines sit outside it, so they are not on the GitHub Pages site and are not linked from the landing page
+2. The repository itself is public. The outlines are tracked in it, so anyone browsing the repository on GitHub can read them, reveal answers included
 
-`git status --short` should never show an outline, a deck, or anything under `teacher/`.
+Write the outlines on that second assumption. What is still kept out of the repository entirely: the source decks, the lab answer keys and report templates, the preparation screenshots and uploads, and the Goosse textbook material.
+
+The outlines are un-ignored by a single negation. `.gitignore` keeps `*Teacher*.html` as the catch-all for lab answer keys, followed by `!lecture-*/Lecture?-Teacher-outline.html` to let the running orders through. Keep an outline filename in that shape and it stays tracked; give a new answer key a `Teacher` name and it stays out.
+
+Before pushing, `git status --short --untracked-files=all` should show outlines and the hub, and never a deck, an answer key, or anything under `uploads`.
 
 ## Workflow
 
@@ -165,7 +168,8 @@ Completed in the current cleanup pass:
 7. Updated the private teacher-outline links to the new published lecture paths
 8. Renamed the root and published lab folders to explicit `pc-lab-*` names and updated lab links
 9. Deduplicated the confirmed identical Lecture 2 insolation runtime assets by making the root preview reuse the canonical copies under `docs/`
-10. Added `teacher/index.html`, the instructor-only index over the seven lecture outlines, and extended `.gitignore` to cover `teacher/` and the Lecture 8 outline path
+10. Added `teacher/index.html`, the index over the lecture outlines
+11. Un-ignored the eight teacher outlines and the hub so they are tracked in the repository, while leaving decks, answer keys and uploads excluded
 
 Still to do in the broader course cleanup:
   Check the TODO.md file for more tasks
@@ -175,5 +179,5 @@ Still to do in the broader course cleanup:
 1. `README.md`: repository overview and structure
 2. `TODO.md`: active project and content-cleanup tasks
 3. `docs/index.html`: live landing page and schedule
-4. `teacher/index.html`: instructor-only index over the eight lecture outlines (local only)
+4. `teacher/index.html`: index over the eight lecture outlines (tracked, but outside `docs/` so not on the site)
 5. `.gitignore`: local-only and instructor-only exclusions
