@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -144,6 +148,12 @@ Response of the climate system to perturbations &middot; 4 of 6</p>
   <div class="eq" style="margin-top:14px">column water vapour &asymp; W<sub>0</sub> &middot;
     1.07<sup>&Delta;T</sup>
     <span class="u">&nbsp;&nbsp; +7&thinsp;% per K &rarr; +30&thinsp;% for 4 K of warming</span></div>
+  <div class="defs">
+    <div class="def"><b>column water vapour</b> total precipitable water in an atmospheric column, kg m<sup>&minus;2</sup></div>
+    <div class="def"><b>W<sub>0</sub></b> its unperturbed value, kg m<sup>&minus;2</sup></div>
+    <div class="def"><b>&Delta;T</b> warming of the column, K</div>
+    <div class="def"><b>1.07</b> the Clausius&ndash;Clapeyron scaling, +7 % of water vapour per kelvin at constant relative humidity</div>
+  </div>
 
   <p class="note"><b>The observable consequence beyond temperature:</b> a wetter atmosphere carries more latent
   heat and delivers it in heavier bursts. Global mean precipitation is limited by the energy budget and rises

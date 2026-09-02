@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -129,6 +133,12 @@ Climate change: the future &middot; 4 of 7</p>
         1/e<sub>s</sub> &middot; de<sub>s</sub>/dT &nbsp;=&nbsp; L<sub>v</sub> / (R<sub>v</sub>T<sup>2</sup>)
         <div class="u" style="margin-top:6px">&asymp; 7&nbsp;% per kelvin near 288&nbsp;K</div>
       </div>
+      <div class="defs">
+        <div class="def"><b>e<sub>s</sub></b> saturation vapour pressure, Pa</div>
+        <div class="def"><b>T</b> absolute temperature, K</div>
+        <div class="def"><b>L<sub>v</sub></b> latent heat of vaporisation of water, 2.5&times;10<sup>6</sup> J kg<sup>&minus;1</sup></div>
+        <div class="def"><b>R<sub>v</sub></b> specific gas constant for water vapour, 461.5 J kg<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+      </div>
       <p class="note">Relative humidity stays roughly constant as the climate warms &mdash; a robust result
       across models and observations &mdash; so the actual water content follows the saturation value. That is
       also why water vapour is the largest positive feedback in
@@ -144,6 +154,12 @@ Climate change: the future &middot; 4 of 7</p>
         L<sub>v</sub>P &nbsp;=&nbsp; R<sub>atm</sub> &nbsp;+&nbsp; SH
         <div class="u" style="margin-top:6px">80&nbsp;W&nbsp;m<sup>&minus;2</sup> of latent heat, from the
         global energy budget</div>
+      </div>
+      <div class="defs">
+        <div class="def"><b>L<sub>v</sub></b> latent heat of vaporisation, 2.5&times;10<sup>6</sup> J kg<sup>&minus;1</sup></div>
+        <div class="def"><b>P</b> global-mean precipitation rate, kg m<sup>&minus;2</sup> s<sup>&minus;1</sup></div>
+        <div class="def"><b>R<sub>atm</sub></b> net radiative cooling of the atmosphere, W m<sup>&minus;2</sup></div>
+        <div class="def"><b>SH</b> sensible heat flux from the surface into the atmosphere, W m<sup>&minus;2</sup></div>
       </div>
       <p class="note">You already assembled that ledger in
       <a href="../lecture-2-earths-energy-budget/global-budget.html">Lecture&nbsp;2, page&nbsp;7</a>: about
@@ -183,6 +199,12 @@ Climate change: the future &middot; 4 of 7</p>
     <b>d&nbsp;ln&nbsp;M/dT &nbsp;=&nbsp; d&nbsp;ln&nbsp;P/dT &nbsp;&minus;&nbsp; d&nbsp;ln&nbsp;q/dT</b>
     <div class="u" style="margin-top:8px">M — convective mass flux &nbsp;&middot;&nbsp;
     q — boundary-layer specific humidity</div>
+  </div>
+  <div class="defs">
+    <div class="def"><b>P</b> precipitation rate, kg m<sup>&minus;2</sup> s<sup>&minus;1</sup></div>
+    <div class="def"><b>M</b> convective mass flux &mdash; the rate at which the circulation lifts air, kg m<sup>&minus;2</sup> s<sup>&minus;1</sup></div>
+    <div class="def"><b>q</b> boundary-layer specific humidity, kg kg<sup>&minus;1</sup></div>
+    <div class="def"><b>T</b> global-mean temperature, K; d ln X/dT is the fractional change in X per kelvin</div>
   </div>
 
   <div class="ctrls">
@@ -265,6 +287,12 @@ Climate change: the future &middot; 4 of 7</p>
     &delta;(P &minus; E) &nbsp;&asymp;&nbsp; &alpha;&nbsp;&Delta;T &middot; (P &minus; E)
     <div class="u" style="margin-top:6px">with &alpha; &asymp; 0.07&nbsp;K<sup>&minus;1</sup> &mdash;
     the existing pattern, amplified</div>
+  </div>
+  <div class="defs">
+    <div class="def"><b>P &minus; E</b> precipitation minus evaporation &mdash; the net moisture the circulation delivers, mm day<sup>&minus;1</sup></div>
+    <div class="def"><b>&delta;(P &minus; E)</b> its change under warming, mm day<sup>&minus;1</sup></div>
+    <div class="def"><b>&alpha;</b> Clausius&ndash;Clapeyron scaling rate, &asymp;0.07 K<sup>&minus;1</sup></div>
+    <div class="def"><b>&Delta;T</b> global-mean warming, K</div>
   </div>
 
   <svg viewBox="0 0 880 250" role="img" aria-label="Schematic zonal mean profile of precipitation minus evaporation, with the amplified profile under warming drawn on top"><g id="peG"></g></svg>

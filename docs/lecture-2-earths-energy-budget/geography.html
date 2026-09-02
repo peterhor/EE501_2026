@@ -59,6 +59,7 @@
       font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
       font-size:21px;text-align:center;color:var(--text-primary);letter-spacing:.01em;overflow-x:auto}
   .eq small{display:block;font-family:inherit;font-size:13px;color:var(--text-muted);margin-top:8px;letter-spacing:0}
+  .eq + .defs{margin-top:-4px}
   .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 20px;margin:14px 0 4px}
   .def{font-size:14px;color:var(--text-secondary)}
   .def b{color:var(--text-primary);font-family:"Iowan Old Style",Georgia,serif;font-size:16px;margin-right:6px}
@@ -197,6 +198,14 @@
     Written locally, the top-of-atmosphere net radiation is:</p>
     <div class="eq">R<sub>TOA</sub>(&phi;,&lambda;) = Q(&phi;) &middot; [1 &minus; &alpha;(&phi;,&lambda;)] &nbsp;&minus;&nbsp; OLR(&phi;,&lambda;)
       <small>absorbed solar radiation minus outgoing longwave radiation, W m<sup>&minus;2</sup></small></div>
+    <div class="defs">
+      <div class="def"><b>R<sub>TOA</sub></b> net radiation at the top of the atmosphere, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>&phi;</b> latitude</div>
+      <div class="def"><b>&lambda;</b> longitude</div>
+      <div class="def"><b>Q(&phi;)</b> incoming solar irradiance at the top of the atmosphere, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>&alpha;</b> planetary albedo at that location, the reflected fraction (dimensionless)</div>
+      <div class="def"><b>OLR</b> outgoing longwave radiation, W m<sup>&minus;2</sup></div>
+    </div>
     <p>The two terms are controlled by completely different things, and this is the point of the whole
     page:</p>
     <div class="two">
@@ -378,6 +387,12 @@
     <b>moved somewhere else</b>:</p>
     <div class="eq">&part;E<sub>s</sub>/&part;t = R<sub>TOA</sub> &minus; F<sub>transport</sub>
       <small>rate of change of stored energy = net radiation at the top &minus; net export sideways</small></div>
+    <div class="defs">
+      <div class="def"><b>E<sub>s</sub></b> energy stored in the column, J m<sup>&minus;2</sup></div>
+      <div class="def"><b>t</b> time, s</div>
+      <div class="def"><b>R<sub>TOA</sub></b> net radiation at the top of the atmosphere, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>F<sub>transport</sub></b> net horizontal export of energy out of the column, W m<sup>&minus;2</sup></div>
+    </div>
     <p>Three quantities, and any two of them determine the third. What makes this equation useful is that
     the two terms on the right dominate on <b>completely different timescales</b>, so you can nearly always
     neglect one of them &mdash; provided you know which.</p>
@@ -402,6 +417,12 @@
     <span class="eq" style="display:inline-block;padding:3px 10px;font-size:16px;margin:0">C = &rho; c<sub>p</sub> h</span>
     &mdash; density times specific heat times the depth actually involved in the exchange. Two things vary,
     and they multiply:</p>
+    <div class="defs">
+      <div class="def"><b>C</b> heat capacity of the column per unit area, J m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+      <div class="def"><b>&rho;</b> density of the medium, kg m<sup>&minus;3</sup></div>
+      <div class="def"><b>c<sub>p</sub></b> specific heat capacity at constant pressure, J kg<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+      <div class="def"><b>h</b> depth of the layer actually involved in the exchange, m</div>
+    </div>
     <table>
       <thead><tr><th>Medium</th><th class="num" style="text-align:right">&rho;c<sub>p</sub></th>
         <th class="num" style="text-align:right">Depth involved</th>
@@ -447,10 +468,26 @@
     <div class="eq">C &middot; dT/dt = A sin(&omega;t) &minus; &lambda;T
       <small>&omega; = 2&pi; per year; A is the seasonal amplitude of the forcing; &lambda; is how strongly the
       surface sheds heat per kelvin</small></div>
+    <div class="defs">
+      <div class="def"><b>C</b> heat capacity of the column per unit area, J m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+      <div class="def"><b>T</b> temperature anomaly of the column, K</div>
+      <div class="def"><b>t</b> time, s</div>
+      <div class="def"><b>A</b> amplitude of the seasonal swing in net radiation, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>&omega;</b> angular frequency of the seasonal cycle, 2&pi; per year</div>
+      <div class="def"><b>&lambda;</b> damping coefficient &mdash; heat shed per degree of warming, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    </div>
     <p>It has an exact periodic solution, and both parts of it are worth having:</p>
     <div class="eq">amplitude = A / &radic;(&lambda;&sup2; + (C&omega;)&sup2;) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
       lag = arctan(C&omega; / &lambda;)
       <small>a bigger heat capacity does two things at once: it damps the swing <em>and</em> delays it</small></div>
+    <div class="defs">
+      <div class="def"><b>amplitude</b> peak-to-mean temperature swing of the column, K</div>
+      <div class="def"><b>lag</b> phase delay of the temperature peak behind the radiation peak, radians</div>
+      <div class="def"><b>A</b> amplitude of the seasonal forcing, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>&lambda;</b> damping coefficient, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+      <div class="def"><b>C</b> heat capacity per unit area, J m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+      <div class="def"><b>&omega;</b> angular frequency, 2&pi; per year</div>
+    </div>
     <div class="ctl">
       <label for="depth">Depth involved <span id="depthUnit" style="color:var(--text-muted)"></span></label>
       <input type="range" id="depth" min="-1" max="2.3" step="0.02" value="1.7">
@@ -509,6 +546,14 @@
     latitude &phi; and you have the total energy that must cross that circle of latitude, northward:</p>
     <div class="eq">F(&phi;) = 2&pi;a&sup2; &int;<sub>&minus;&pi;/2</sub><sup>&phi;</sup> R<sub>TOA</sub>(&phi;&prime;) cos&phi;&prime; d&phi;&prime;
       <small>a = 6371 km; the cos&thinsp;&phi; is the shrinking circumference of a latitude circle</small></div>
+    <div class="defs">
+      <div class="def"><b>F(&phi;)</b> total northward energy transport across the latitude circle at &phi;, W</div>
+      <div class="def"><b>a</b> Earth's radius, 6371 km</div>
+      <div class="def"><b>&phi;</b> latitude at which the transport is evaluated, radians</div>
+      <div class="def"><b>&phi;&prime;</b> integration variable running from the South Pole (&minus;&pi;/2) to &phi;</div>
+      <div class="def"><b>R<sub>TOA</sub>(&phi;&prime;)</b> zonal-mean net radiation at latitude &phi;&prime;, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>cos&phi;&prime;</b> the shrinking circumference of a latitude circle towards the poles</div>
+    </div>
     <p>This is not a new measurement. It is the <em>same</em> zonal curve from &sect;4, integrated. And that
     is the point worth making in class: the entire poleward heat transport of the climate system is a
     derived quantity &mdash; nobody measures 5 petawatts crossing 35&deg;&nbsp;N. It is inferred from

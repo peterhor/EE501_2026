@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -125,6 +129,12 @@
   <div class="eq"><b>Water balance of a reservoir</b><br>
     dS/dt &nbsp;=&nbsp; inputs &minus; outputs
     <span class="u">&nbsp;&nbsp;[10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>S</b> amount of water stored in the reservoir, 10<sup>3</sup> km<sup>3</sup></div>
+    <div class="def"><b>t</b> time, yr</div>
+    <div class="def"><b>inputs</b> all fluxes entering the box &mdash; precipitation, inflow, melt, 10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup></div>
+    <div class="def"><b>outputs</b> all fluxes leaving it &mdash; evaporation, runoff, drainage, 10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup></div>
+  </div>
   <p class="note"><b>Draw the box around the whole planet</b> and dS/dt = 0 to a very good approximation:
   global evaporation must equal global precipitation, 486&times;10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup>
   of each. <b>Draw it around the land only</b> and you get P &minus; ET = R, the runoff equation.
@@ -175,6 +185,11 @@
   <h3>Size divided by throughput</h3>
   <div class="eq">&tau; &nbsp;=&nbsp; S / F<sub>out</sub>
     <span class="u">&nbsp;&nbsp;[yr] = [10<sup>3</sup> km<sup>3</sup>] &divide; [10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>&tau;</b> residence time &mdash; how long the average water molecule stays in the reservoir, yr</div>
+    <div class="def"><b>S</b> amount of water stored in the reservoir, 10<sup>3</sup> km<sup>3</sup></div>
+    <div class="def"><b>F<sub>out</sub></b> throughput &mdash; the flux leaving it at steady state, 10<sup>3</sup> km<sup>3</sup> yr<sup>&minus;1</sup></div>
+  </div>
   <p class="note" style="margin-bottom:14px">The residence time of a reservoir at steady state is how long the
   average water molecule stays in it. It is the single most useful number in the whole cycle, because it tells
   you <b>how fast that reservoir can respond to a change</b> &mdash; and the answers here run from nine days to
@@ -207,6 +222,14 @@
   changes the storage. This is the box in Fig. 2.23, integrated forward day by day.</p>
   <div class="eq">dS/dt &nbsp;=&nbsp; P &minus; ET &minus; R<sub>surface</sub> &minus; D<sub>drainage</sub>
     <span class="u">&nbsp;&nbsp;[mm day<sup>&minus;1</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>S</b> water stored in the soil column, mm</div>
+    <div class="def"><b>t</b> time, days</div>
+    <div class="def"><b>P</b> precipitation reaching the ground, mm day<sup>&minus;1</sup></div>
+    <div class="def"><b>ET</b> evapotranspiration &mdash; evaporation plus plant transpiration, mm day<sup>&minus;1</sup></div>
+    <div class="def"><b>R<sub>surface</sub></b> surface runoff, mm day<sup>&minus;1</sup></div>
+    <div class="def"><b>D<sub>drainage</sub></b> deep drainage below the root zone, mm day<sup>&minus;1</sup></div>
+  </div>
   <div class="rowbtns" style="margin-top:16px">
     <span class="lbl">Climate</span>
     <div class="seg" id="climSeg"></div>

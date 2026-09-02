@@ -43,6 +43,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -222,6 +226,17 @@ Climate change: past and present &middot; 4 of 6</p>
     <span class="u"><br>q is the overturning strength; &Delta;T and &Delta;S the low-minus-high-latitude
     temperature and salinity differences; H the freshwater flux to the northern box. Temperature is held at
     its equilibrium value, because the atmosphere restores it far faster than the ocean can change it.</span></div>
+  <div class="defs">
+    <div class="def"><b>q</b> overturning strength of the circulation, m<sup>3</sup> s<sup>&minus;1</sup> (sign gives the direction)</div>
+    <div class="def"><b>k</b> hydraulic constant relating the density contrast to the flow</div>
+    <div class="def"><b>&alpha;</b> thermal expansion coefficient of seawater, K<sup>&minus;1</sup></div>
+    <div class="def"><b>&beta;</b> haline contraction coefficient of seawater, per unit salinity</div>
+    <div class="def"><b>&Delta;T</b> low-minus-high-latitude temperature difference, K</div>
+    <div class="def"><b>&Delta;S</b> low-minus-high-latitude salinity difference, psu</div>
+    <div class="def"><b>V</b> volume of a box, m<sup>3</sup></div>
+    <div class="def"><b>t</b> time, s</div>
+    <div class="def"><b>H</b> freshwater flux into the northern box, expressed as a salinity sink</div>
+  </div>
 
   <p class="note" style="margin-top:0">Read the two equations against each other. The first says the flow is
   driven by density, and salt <em>opposes</em> temperature. The second says the flow itself removes the
@@ -298,6 +313,12 @@ Climate change: past and present &middot; 4 of 6</p>
   <div class="eq">dT<sub>S</sub>/dt &nbsp;=&nbsp; (&minus;T<sub>N</sub> &minus; T<sub>S</sub>) / &tau;
     <span class="u"><br>the southern temperature relaxes towards the negative of the northern one, with a
     reservoir time constant &tau; of order 1000 years</span></div>
+  <div class="defs">
+    <div class="def"><b>T<sub>S</sub></b> Southern Ocean (Antarctic) temperature anomaly, K</div>
+    <div class="def"><b>T<sub>N</sub></b> northern (Greenland) temperature anomaly, K</div>
+    <div class="def"><b>t</b> time, yr</div>
+    <div class="def"><b>&tau;</b> time constant of the southern heat reservoir, of order 1000 yr</div>
+  </div>
 
   <div class="ctrls">
     <div class="ctrl">

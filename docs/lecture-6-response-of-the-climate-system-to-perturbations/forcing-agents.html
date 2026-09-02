@@ -44,6 +44,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -238,6 +242,14 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
     &nbsp;&times;&nbsp; &tau;<sub>up</sub>
     <span class="u"><br>S&#772;<sub>surf</sub> = 185 W m<sup>&minus;2</sup> reaching the surface in the global
     mean; &tau;<sub>up</sub> &asymp; 0.85 of the extra reflection makes it back out to space</span></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;Q</b> global-mean radiative forcing of the land-use change, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&Delta;&alpha;<sub>s</sub></b> change in surface albedo of the converted land (dimensionless); brightening is positive, so the leading minus sign makes the forcing negative</div>
+    <div class="def"><b>S&#772;<sub>surf</sub></b> solar flux reaching the surface in the global mean, 185 W m<sup>&minus;2</sup></div>
+    <div class="def"><b>A<sub>converted</sub></b> area of land converted, m<sup>2</sup></div>
+    <div class="def"><b>A<sub>Earth</sub></b> total surface area of the Earth, 5.10&times;10<sup>14</sup> m<sup>2</sup></div>
+    <div class="def"><b>&tau;<sub>up</sub></b> fraction of the extra reflected radiation that reaches space, &asymp;0.85 (dimensionless)</div>
+  </div>
 
   <div class="ctrls">
     <div class="ctrl">
@@ -288,6 +300,12 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
       cycle &mdash; a tenth of a per cent.</p>
       <div class="eq" style="font-size:14.5px;margin-top:10px">&Delta;Q<sub>solar</sub> =
         &Delta;S<sub>0</sub> (1 &minus; &alpha;<sub>p</sub>) / 4 &asymp; 0.175 &middot; &Delta;S<sub>0</sub></div>
+      <div class="defs">
+        <div class="def"><b>&Delta;Q<sub>solar</sub></b> radiative forcing from a change in solar output, W m<sup>&minus;2</sup></div>
+        <div class="def"><b>&Delta;S<sub>0</sub></b> change in total solar irradiance, W m<sup>&minus;2</sup> (about 1 out of 1361 over the sunspot cycle)</div>
+        <div class="def"><b>&alpha;<sub>p</sub></b> planetary albedo, 0.3 (dimensionless)</div>
+        <div class="def"><b>/ 4</b> the disc-to-sphere geometry factor: a disc intercepts, a sphere radiates</div>
+      </div>
       <ul class="pl">
         <li>The division by four is the geometry from
         <a href="../lecture-2-earths-energy-budget/stefan-boltzmann.html">Lecture&nbsp;2</a>: a disc intercepts, a sphere

@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -286,6 +290,13 @@
   <div class="eq"><b>cost</b> &nbsp;&prop;&nbsp; N<sub>x</sub> N<sub>y</sub> N<sub>z</sub> &times; (1/&Delta;t)
     &nbsp;&prop;&nbsp; (1/&Delta;x)<sup>2</sup> &times; N<sub>z</sub> &times; (1/&Delta;x)
     &nbsp;=&nbsp; N<sub>z</sub> &Delta;x<sup>&minus;3</sup></div>
+  <div class="defs">
+    <div class="def"><b>cost</b> total computational work of a simulation of fixed length</div>
+    <div class="def"><b>N<sub>x</sub>, N<sub>y</sub></b> number of grid points in the two horizontal directions</div>
+    <div class="def"><b>N<sub>z</sub></b> number of vertical levels</div>
+    <div class="def"><b>&Delta;t</b> time step, s &mdash; it must shrink with &Delta;x to satisfy the CFL condition</div>
+    <div class="def"><b>&Delta;x</b> horizontal grid spacing, m</div>
+  </div>
   <p class="note">The last factor is the one people forget. You cannot refine the grid and keep the time step:
   the <b>CFL condition</b> requires that nothing travels more than one grid box in one step, so
   &Delta;t must shrink with &Delta;x. Halving the grid spacing therefore costs eight times more, not four
@@ -352,6 +363,12 @@
   complex to be physically represented in the model by a simplified process</em>. A parameterisation does not
   simulate the process. It predicts what the process would have done to the grid-box mean.</p>
   <div class="eq">effect on the resolved state &nbsp;=&nbsp; <i>f</i> ( resolved state, tunable parameters )</div>
+  <div class="defs">
+    <div class="def"><b>effect on the resolved state</b> the tendency the unresolved process imposes on the grid-box mean &mdash; heating, drying, momentum drag</div>
+    <div class="def"><b><i>f</i></b> the parameterisation itself: a diagnostic function, not a simulation of the process</div>
+    <div class="def"><b>resolved state</b> the variables the model actually carries in that grid box &mdash; temperature, humidity, wind</div>
+    <div class="def"><b>tunable parameters</b> coefficients with no directly measurable value, fixed by calibration</div>
+  </div>
   <table>
     <thead><tr><th>Process</th><th>Real scale</th><th>What the parameterisation predicts</th><th>Key parameters</th></tr></thead>
     <tbody>

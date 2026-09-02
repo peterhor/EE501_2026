@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -218,6 +222,16 @@
       <span class="u">&nbsp; limestone subducted and cooked; CO<sub>2</sub> returns via volcanoes</span><br>
     <b>3 &middot; Weathering</b> &nbsp; CaSiO<sub>3</sub> + H<sub>2</sub>CO<sub>3</sub> &nbsp;&rarr;&nbsp; CaCO<sub>3</sub> + SiO<sub>2</sub> + H<sub>2</sub>O
       <span class="u">&nbsp; uplifted silicate rock consumes carbonic acid from rain</span></div>
+  <div class="defs">
+    <div class="def"><b>Ca<sup>2+</sup></b> dissolved calcium ion, delivered to the sea by rivers</div>
+    <div class="def"><b>CO<sub>3</sub><sup>2&minus;</sup></b> dissolved carbonate ion</div>
+    <div class="def"><b>CaCO<sub>3</sub></b> calcium carbonate &mdash; shells and, once buried, limestone; &darr; marks removal to the sediment</div>
+    <div class="def"><b>SiO<sub>2</sub></b> silica (quartz)</div>
+    <div class="def"><b>CaSiO<sub>3</sub></b> calcium silicate, the metamorphic rock produced at depth</div>
+    <div class="def"><b>CO<sub>2</sub></b> carbon dioxide; &uarr; marks its return to the atmosphere through volcanoes</div>
+    <div class="def"><b>H<sub>2</sub>CO<sub>3</sub></b> carbonic acid, formed when rainwater dissolves atmospheric CO<sub>2</sub></div>
+    <div class="def"><b>H<sub>2</sub>O</b> water</div>
+  </div>
   <p class="note"><b>The three reactions are a closed loop, and they very nearly cancel.</b> Each moves only
   about 0.1&ndash;0.3 PgC yr<sup>&minus;1</sup> &mdash; a hundredth of what fossil fuel burning moves, and
   utterly negligible on any human timescale. But run them for ten million years and they have cycled the
@@ -247,6 +261,12 @@
   <div class="eq"><b>The sink</b> &nbsp;&nbsp; CH<sub>4</sub> + OH&middot; &nbsp;&rarr;&nbsp;
     CH<sub>3</sub>&middot; + H<sub>2</sub>O
     <span class="u">&nbsp;&nbsp; and onward to CO<sub>2</sub> through several steps</span></div>
+  <div class="defs">
+    <div class="def"><b>CH<sub>4</sub></b> methane</div>
+    <div class="def"><b>OH&middot;</b> the hydroxyl radical &mdash; the atmosphere's main oxidising agent, produced by sunlight</div>
+    <div class="def"><b>CH<sub>3</sub>&middot;</b> methyl radical, which oxidises onward to CO<sub>2</sub> in several further steps</div>
+    <div class="def"><b>H<sub>2</sub>O</b> water vapour</div>
+  </div>
   <p class="note" style="margin-top:14px"><b>Carbon dioxide has no chemical sink in the atmosphere.</b> It can
   only be removed by being transferred somewhere else &mdash; dissolved in the ocean, built into a plant &mdash;
   and the ocean and the biosphere can and do give it back. Methane is different: the hydroxyl radical
@@ -255,6 +275,13 @@
   <b>lifetime</b> &mdash; about nine years &mdash; and therefore a genuine steady state.</p>
   <div class="eq">dB/dt &nbsp;=&nbsp; S &minus; B/&tau;
     <span class="u">&nbsp;&nbsp; at steady state, B* = S&tau;</span></div>
+  <div class="defs">
+    <div class="def"><b>B</b> burden &mdash; the total amount of methane in the atmosphere, Tg</div>
+    <div class="def"><b>t</b> time, yr</div>
+    <div class="def"><b>S</b> source strength &mdash; total methane emissions, Tg yr<sup>&minus;1</sup></div>
+    <div class="def"><b>&tau;</b> atmospheric lifetime, about 9 yr for methane</div>
+    <div class="def"><b>B*</b> steady-state burden, reached when the source and the sink balance, Tg</div>
+  </div>
   <p class="note" style="margin-top:14px">That one line is the entire difference between the two gases. Hold
   methane emissions constant and the concentration <em>stops rising</em> and settles at S&tau;. Hold
   CO<sub>2</sub> emissions constant and the concentration keeps climbing indefinitely. Stabilising methane

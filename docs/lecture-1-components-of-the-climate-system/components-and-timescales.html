@@ -50,6 +50,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -203,6 +207,12 @@ Components of the climate system &middot; 2 of 7</p>
     C = &rho; c<sub>p</sub> d
     <span class="u">density &times; specific heat &times; the depth that actually participates</span>
   </div>
+  <div class="defs">
+    <div class="def"><b>C</b> effective heat capacity per unit area, J m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&rho;</b> density of the material, kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>c<sub>p</sub></b> specific heat capacity at constant pressure, J kg<sup>&minus;1</sup> K<sup>&minus;1</sup> (1004 for air, 3985 for seawater)</div>
+    <div class="def"><b>d</b> depth of the layer that actually participates, m</div>
+  </div>
 
   <p>The last factor is the one that requires judgement. The whole atmosphere participates on any timescale
   longer than a few weeks, so d is its full scale height's worth of mass. The ocean is different: on a
@@ -221,6 +231,14 @@ Components of the climate system &middot; 2 of 7</p>
     T(t) = (&Delta;F / &lambda;)(1 &minus; e<sup>&minus;t/&tau;</sup>),
     &nbsp;&nbsp; <b>&tau; = C / &lambda;</b>
     <span class="u">the equilibrium warming is set by &lambda; alone; how long you wait for it is set by C</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>C</b> effective heat capacity per unit area, J m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>T</b> temperature anomaly from the unperturbed state, K</div>
+    <div class="def"><b>t</b> time, s</div>
+    <div class="def"><b>&Delta;F</b> imposed radiative forcing, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&lambda;</b> climate feedback parameter &mdash; restoring flux per degree of warming, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&tau;</b> e-folding response time, s</div>
   </div>
 
   <div class="xref"><b>You will meet this equation twice more.</b> It is the zero-dimensional energy balance

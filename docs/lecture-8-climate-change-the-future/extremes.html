@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -265,6 +269,12 @@ Climate change: the future &middot; 5 of 7</p>
     FAR &nbsp;=&nbsp; 1 &nbsp;&minus;&nbsp; p<sub>0</sub>/p<sub>1</sub>
     <div class="u" style="margin-top:8px">p<sub>1</sub> — probability of the event in the world we have
     &nbsp;&middot;&nbsp; p<sub>0</sub> — in a counterfactual world without the anthropogenic forcing</div>
+  </div>
+  <div class="defs">
+    <div class="def"><b>PR</b> probability ratio &mdash; how many times more likely the event has become (dimensionless)</div>
+    <div class="def"><b>FAR</b> fraction of attributable risk &mdash; the share of the event's likelihood attributable to the forcing (0&ndash;1)</div>
+    <div class="def"><b>p<sub>1</sub></b> probability of the event in the world we actually have</div>
+    <div class="def"><b>p<sub>0</sub></b> probability of the same event in a counterfactual world without anthropogenic forcing</div>
   </div>
 
   <p class="note">The probability ratio is the frequency multiplier you just computed. The

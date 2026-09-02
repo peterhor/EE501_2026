@@ -44,6 +44,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -246,6 +250,14 @@ Climate change: the future &middot; 2 of 7</p>
     V<sub>internal</sub> = &sigma;<sup>2</sup> of the averaging period &nbsp;&middot;&nbsp;
     V<sub>model</sub> = (f<sub>m</sub> &middot; mean response)<sup>2</sup> &nbsp;&middot;&nbsp;
     V<sub>scenario</sub> = variance of the responses across scenarios</div>
+  </div>
+  <div class="defs">
+    <div class="def"><b>V<sub>total</sub>(t)</b> total variance of the projected warming at lead time t, K<sup>2</sup></div>
+    <div class="def"><b>V<sub>internal</sub></b> variance from internal variability &mdash; &sigma;<sup>2</sup> of the averaging period; it does not grow with lead time</div>
+    <div class="def"><b>V<sub>model</sub>(t)</b> variance from model disagreement, (f<sub>m</sub> &middot; mean response)<sup>2</sup></div>
+    <div class="def"><b>f<sub>m</sub></b> fractional spread across models (dimensionless)</div>
+    <div class="def"><b>V<sub>scenario</sub>(t)</b> variance of the responses across emission scenarios, K<sup>2</sup></div>
+    <div class="def"><b>t</b> lead time &mdash; how far into the future the projection reaches</div>
   </div>
 
   <p class="note">Each term behaves differently with lead time and that is the whole story.

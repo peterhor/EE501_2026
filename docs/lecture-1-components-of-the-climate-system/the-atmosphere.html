@@ -50,6 +50,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -211,6 +215,15 @@ Components of the climate system &middot; 3 of 7</p>
     <span class="u">R<sub>g</sub> = R/M = 8.314 / 0.02896 = 287.0 J&nbsp;K<sup>&minus;1</sup>kg<sup>&minus;1</sup>
     for dry air</span>
   </div>
+  <div class="defs">
+    <div class="def"><b>p</b> pressure, Pa</div>
+    <div class="def"><b>V</b> volume occupied by the gas, m<sup>3</sup></div>
+    <div class="def"><b>n</b> amount of gas, mol</div>
+    <div class="def"><b>R</b> universal gas constant, 8.314 J K<sup>&minus;1</sup> mol<sup>&minus;1</sup></div>
+    <div class="def"><b>&rho;</b> air density, kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>R<sub>g</sub></b> specific gas constant for dry air, 287.0 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup></div>
+    <div class="def"><b>T</b> absolute temperature, K</div>
+  </div>
   <p>The four gas laws in the slides are all special cases of this one equation with something held fixed:
   Boyle (V &prop; 1/p at fixed T), Charles (V &prop; T at fixed p), Gay-Lussac (p &prop; T at fixed V) and
   Avogadro (V &prop; n at fixed p, T). There is no need to memorise four laws.</p>
@@ -231,6 +244,12 @@ Components of the climate system &middot; 3 of 7</p>
     T<sub>v</sub> = T (1 + 0.608 q)
     <span class="u">q = specific humidity, kg of vapour per kg of moist air. In the humid tropics
     T<sub>v</sub> &minus; T reaches about 4&nbsp;K.</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>T<sub>v</sub></b> virtual temperature &mdash; the temperature dry air would need to have this moist air's density, K</div>
+    <div class="def"><b>T</b> actual air temperature, K</div>
+    <div class="def"><b>q</b> specific humidity, kg of vapour per kg of moist air (dimensionless)</div>
+    <div class="def"><b>0.608</b> (1&nbsp;&minus;&nbsp;&epsilon;)/&epsilon; with &epsilon; = 0.622, the ratio of the molar masses of water vapour and dry air</div>
   </div>
 </div>
 
@@ -309,6 +328,14 @@ Components of the climate system &middot; 3 of 7</p>
     &nbsp;&nbsp;&rArr;&nbsp;&nbsp; <b>&part;p/&part;z = &minus;&rho;g</b>
     <span class="u">the pressure drop across any layer is exactly the weight of the air in it</span>
   </div>
+  <div class="defs">
+    <div class="def"><b>&rho;</b> air density, kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>A</b> horizontal area of the slab, m<sup>2</sup></div>
+    <div class="def"><b>&Delta;z</b> thickness of the slab, m</div>
+    <div class="def"><b>g</b> acceleration due to gravity, 9.81 m s<sup>&minus;2</sup></div>
+    <div class="def"><b>p<sub>bottom</sub>, p<sub>top</sub></b> pressure on the lower and upper faces, Pa</div>
+    <div class="def"><b>&part;p/&part;z</b> vertical pressure gradient, Pa m<sup>&minus;1</sup>, with z height above the surface, m</div>
+  </div>
 
   <svg viewBox="0 0 880 250" role="img" aria-label="Force balance on an air parcel: pressure force from below, pressure force from above, and weight, summing to zero"><g id="hyG"></g></svg>
 
@@ -327,6 +354,15 @@ Components of the climate system &middot; 3 of 7</p>
     &nbsp;&nbsp; H = R<sub>g</sub>T/g
     <span class="u">an exponential decay with a scale height H of 7&ndash;8 km &mdash; exactly, if T is
     constant with height</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>p(z)</b> pressure at height z, Pa</div>
+    <div class="def"><b>p<sub>s</sub></b> surface pressure, Pa</div>
+    <div class="def"><b>z</b> height above the surface, m</div>
+    <div class="def"><b>g</b> acceleration due to gravity, 9.81 m s<sup>&minus;2</sup></div>
+    <div class="def"><b>R<sub>g</sub></b> specific gas constant for dry air, 287 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup></div>
+    <div class="def"><b>T</b> absolute temperature, K</div>
+    <div class="def"><b>H</b> scale height &mdash; the height over which pressure falls by a factor e, m</div>
   </div>
   <p class="note"><b>Where the exponential comes from is worth one sentence.</b> Each layer must support the
   weight of everything above it, and the weight of everything above it is proportional to how much is there.
@@ -349,6 +385,14 @@ Components of the climate system &middot; 3 of 7</p>
     p(z) = p<sub>s</sub> [ 1 &minus; &Gamma;z/T<sub>s</sub> ]<sup>g/(R<sub>g</sub>&Gamma;)</sup>
     <span class="u">with &Gamma; = 6.5 K km<sup>&minus;1</sup>, T<sub>s</sub> = 288.15 K and
     p<sub>s</sub> = 1013.25 hPa this is the International Standard Atmosphere</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>T(z), p(z)</b> temperature (K) and pressure (Pa) at height z</div>
+    <div class="def"><b>T<sub>s</sub>, p<sub>s</sub></b> surface temperature (K) and surface pressure (Pa)</div>
+    <div class="def"><b>z</b> height above the surface, m</div>
+    <div class="def"><b>&Gamma;</b> environmental lapse rate, &minus;dT/dz, K m<sup>&minus;1</sup> (quoted as K km<sup>&minus;1</sup>)</div>
+    <div class="def"><b>g</b> acceleration due to gravity, 9.81 m s<sup>&minus;2</sup></div>
+    <div class="def"><b>R<sub>g</sub></b> specific gas constant for dry air, 287 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup></div>
   </div>
 
   <div class="ctrls">
@@ -475,6 +519,11 @@ Components of the climate system &middot; 3 of 7</p>
     &Gamma;<sub>d</sub> = g / c<sub>p</sub> = 9.807 / 1004 = <b>9.8 K km<sup>&minus;1</sup></b>
     <span class="u">the dry adiabatic lapse rate &mdash; a constant, the same everywhere on Earth</span>
   </div>
+  <div class="defs">
+    <div class="def"><b>&Gamma;<sub>d</sub></b> dry adiabatic lapse rate &mdash; cooling of an unsaturated parcel per metre of ascent, K m<sup>&minus;1</sup></div>
+    <div class="def"><b>g</b> acceleration due to gravity, 9.807 m s<sup>&minus;2</sup></div>
+    <div class="def"><b>c<sub>p</sub></b> specific heat capacity of dry air at constant pressure, 1004 J kg<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+  </div>
   <p>Once the parcel cools to its dewpoint, water starts to condense, and condensation <em>releases</em>
   latent heat into the parcel &mdash; about 2.5&nbsp;MJ for every kilogram of water. The parcel still cools,
   but more slowly. That is the answer to the question in the slides:</p>
@@ -483,6 +532,16 @@ Components of the climate system &middot; 3 of 7</p>
     (c<sub>p</sub> + L<sub>v</sub><sup>2</sup>r<sub>s</sub>&epsilon;/R<sub>d</sub>T<sup>2</sup>)
     <span class="u">the saturated adiabatic lapse rate. Not a constant: about 4 K km<sup>&minus;1</sup> in
     warm moist air, tending to &Gamma;<sub>d</sub> when it is too cold to hold any water.</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>&Gamma;<sub>m</sub></b> saturated (moist) adiabatic lapse rate, K m<sup>&minus;1</sup></div>
+    <div class="def"><b>g</b> acceleration due to gravity, 9.81 m s<sup>&minus;2</sup></div>
+    <div class="def"><b>L<sub>v</sub></b> latent heat of vaporisation of water, 2.5&times;10<sup>6</sup> J kg<sup>&minus;1</sup></div>
+    <div class="def"><b>r<sub>s</sub></b> saturation mixing ratio, kg of vapour per kg of dry air</div>
+    <div class="def"><b>R<sub>d</sub></b> specific gas constant for dry air, 287 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup></div>
+    <div class="def"><b>T</b> absolute temperature, K</div>
+    <div class="def"><b>c<sub>p</sub></b> specific heat capacity of dry air, 1004 J kg<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&epsilon;</b> ratio of the molar masses of water vapour and dry air, 0.622</div>
   </div>
   <p>Compare either of these with the <b>environmental</b> lapse rate &mdash; what the surrounding air
   actually does, which is a matter of observation, not theory &mdash; and you have the stability of the

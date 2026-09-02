@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -153,6 +157,13 @@ Response of the climate system to perturbations &middot; 6 of 6</p>
 
   <div class="eq">C<sub>E</sub> = &Delta;C<sub>A</sub> + &Delta;C<sub>O</sub> + &Delta;C<sub>L</sub>
     <span class="u"><br>emitted = stays in the air + taken up by the ocean + stored on land, all in PgC</span></div>
+  <div class="defs">
+    <div class="def"><b>C<sub>E</sub></b> cumulative carbon emitted, PgC</div>
+    <div class="def"><b>&Delta;C<sub>A</sub></b> change in the atmospheric carbon stock, PgC</div>
+    <div class="def"><b>&Delta;C<sub>O</sub></b> carbon taken up by the ocean, PgC</div>
+    <div class="def"><b>&Delta;C<sub>L</sub></b> carbon stored on land, PgC</div>
+    <div class="def"><b>PgC</b> petagram of carbon, 10<sup>15</sup> g</div>
+  </div>
 
   <p class="note" style="margin-top:14px">This is the budget from
   <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture&nbsp;4</a> and nothing on this page changes it. What is
@@ -163,6 +174,13 @@ Response of the climate system to perturbations &middot; 6 of 6</p>
     &nbsp;&nbsp;&nbsp;&nbsp;
     &Delta;C<sub>O</sub> = <span style="color:var(--oce)">&beta;<sub>O</sub></span>
     &Delta;C<sub>A</sub> + <span style="color:var(--pos)">&gamma;<sub>O</sub></span> &Delta;T</div>
+  <div class="defs">
+    <div class="def"><b>&Delta;C<sub>L</sub>, &Delta;C<sub>O</sub></b> carbon taken up by the land and by the ocean, PgC</div>
+    <div class="def"><b>&Delta;C<sub>A</sub></b> change in the atmospheric carbon stock, PgC</div>
+    <div class="def"><b>&Delta;T</b> global-mean surface warming, K</div>
+    <div class="def"><b>&beta;<sub>L</sub>, &beta;<sub>O</sub></b> concentration&ndash;carbon sensitivities &mdash; uptake per unit of atmospheric carbon, PgC per PgC (dimensionless)</div>
+    <div class="def"><b>&gamma;<sub>L</sub>, &gamma;<sub>O</sub></b> climate&ndash;carbon sensitivities &mdash; uptake per degree of warming, PgC K<sup>&minus;1</sup></div>
+  </div>
 
   <table>
     <thead><tr><th>Parameter</th><th>Name</th><th>Mechanism</th><th class="num">Sign</th></tr></thead>
@@ -353,6 +371,14 @@ Response of the climate system to perturbations &middot; 6 of 6</p>
     K<sub>CaCO3</sub> = [CO<sub>3</sub><sup>2&minus;</sup>]<sub>sat</sub>[Ca<sup>2+</sup>]<sub>sat</sub>
     <span class="u"><br>carbonate falls with depth, solubility rises with pressure &mdash; so somewhere in
     between is the <b>saturation horizon</b></span></div>
+  <div class="defs">
+    <div class="def"><b>[CO<sub>3</sub><sup>2&minus;</sup>]</b> carbonate ion concentration, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>Alk</b> total alkalinity &mdash; the excess of bases over acids, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>DIC</b> dissolved inorganic carbon, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>K<sub>CaCO3</sub></b> solubility product of calcium carbonate; it rises with pressure, so deeper water dissolves shells</div>
+    <div class="def"><b>[CO<sub>3</sub><sup>2&minus;</sup>]<sub>sat</sub></b> carbonate concentration at saturation, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>[Ca<sup>2+</sup>]<sub>sat</sub></b> calcium concentration at saturation, mol kg<sup>&minus;1</sup></div>
+  </div>
 
   <div class="ctrls">
     <div class="ctrl">

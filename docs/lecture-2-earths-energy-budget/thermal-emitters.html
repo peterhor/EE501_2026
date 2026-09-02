@@ -55,6 +55,12 @@
     box-shadow:0 6px 20px rgba(0,0,0,.15);z-index:50;max-width:230px}
   .tt .s{display:block;color:var(--text-secondary);font-size:12px;margin-top:2px}
   .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);padding-top:14px;margin-top:26px}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
   .crumb a{color:var(--text-muted)}
 </style>
@@ -97,6 +103,19 @@
 
 <div class="card">
   <h2>The numbers</h2>
+  <p class="cap">Two formulas produce the two computed columns: Stefan&ndash;Boltzmann gives the total flux,
+  Wien's displacement law gives the wavelength the spectrum peaks at.</p>
+  <div class="eq">
+    A&uarr; = &sigma;T<sup>4</sup> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lambda;<sub>max</sub> = b / T
+  </div>
+  <div class="defs">
+    <div class="def"><b>A&uarr;</b> radiated flux per square metre of emitting surface, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&sigma;</b> Stefan&ndash;Boltzmann constant, 5.670374419 &times; 10<sup>&minus;8</sup> W m<sup>&minus;2</sup> K<sup>&minus;4</sup></div>
+    <div class="def"><b>T</b> absolute temperature of the emitter, K</div>
+    <div class="def"><b>&lambda;<sub>max</sub></b> wavelength at which the spectrum peaks, &micro;m</div>
+    <div class="def"><b>b</b> Wien displacement constant, 2898 &micro;m&middot;K</div>
+    <div class="def"><b>&epsilon;</b> emissivity, taken as 1 (a perfect blackbody) throughout this page</div>
+  </div>
   <table>
     <thead><tr><th>Source</th><th class="num">T</th><th class="num raw">λ<sub>max</sub></th>
       <th class="num raw">σT⁴</th><th class="num">Visible share</th><th>Seen as</th></tr></thead>

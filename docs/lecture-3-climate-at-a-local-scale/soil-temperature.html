@@ -40,7 +40,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:15px 16px;margin:10px 0;
     font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
-  .syms{font-size:13.5px;color:var(--text-secondary);margin:10px 0 0;line-height:1.85}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .syms b{color:var(--text-primary);font-weight:600}
   .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
@@ -103,15 +106,24 @@
   travelling, decaying wave.</p>
   <div class="eq">T(z, t) &nbsp;=&nbsp; T&#772; &nbsp;+&nbsp; A<sub>0</sub> &middot; e<sup>&minus;z/D</sup>
     &middot; sin(&omega;t &minus; z/D)</div>
+  <div class="defs">
+    <div class="def"><b>T(z, t)</b> soil temperature at depth z and time t, K</div>
+    <div class="def"><b>T&#772;</b> time-averaged soil temperature, the same at every depth, K</div>
+    <div class="def"><b>A<sub>0</sub></b> amplitude of the temperature wave at the surface, K</div>
+    <div class="def"><b>z</b> depth below the surface, m</div>
+    <div class="def"><b>D</b> damping depth &mdash; the depth over which the wave loses a factor e of its amplitude, m</div>
+    <div class="def"><b>&omega;</b> angular frequency of the forcing, 2&pi;/24 h daily or 2&pi;/365 d annually, s<sup>&minus;1</sup></div>
+    <div class="def"><b>t</b> time, s</div>
+  </div>
   <div class="eq" style="font-size:16px">D &nbsp;=&nbsp; &radic;(2&kappa; / &omega;)
     &nbsp;&nbsp;&nbsp;&nbsp; &kappa; &nbsp;=&nbsp; k / C
     <span class="u">&nbsp;&nbsp;the damping depth, and the thermal diffusivity behind it</span></div>
-  <div class="syms">
-    <b>A<sub>0</sub></b> amplitude of the surface temperature wave [K] &nbsp;·&nbsp;
-    <b>&omega;</b> angular frequency, 2&pi;/24 h for the daily cycle and 2&pi;/365 d for the annual one<br>
-    <b>&kappa;</b> thermal diffusivity [m<sup>2</sup> s<sup>&minus;1</sup>] &nbsp;·&nbsp;
-    <b>k</b> thermal conductivity [W m<sup>&minus;1</sup> K<sup>&minus;1</sup>] &nbsp;·&nbsp;
-    <b>C</b> volumetric heat capacity [J m<sup>&minus;3</sup> K<sup>&minus;1</sup>]
+  <div class="defs">
+    <div class="def"><b>D</b> damping depth, m</div>
+    <div class="def"><b>&kappa;</b> thermal diffusivity, m<sup>2</sup> s<sup>&minus;1</sup></div>
+    <div class="def"><b>&omega;</b> angular frequency, 2&pi;/24 h daily or 2&pi;/365 d annually, s<sup>&minus;1</sup></div>
+    <div class="def"><b>k</b> thermal conductivity, W m<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>C</b> volumetric heat capacity, J m<sup>&minus;3</sup> K<sup>&minus;1</sup></div>
   </div>
   <p class="note">The same D appears twice, and that is the whole story. <b>e<sup>&minus;z/D</sup></b> says the
   wave loses 63 % of its amplitude in every damping depth. <b>&minus;z/D</b> inside the sine says it also falls

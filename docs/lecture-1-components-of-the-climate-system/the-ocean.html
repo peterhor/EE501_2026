@@ -50,6 +50,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -217,6 +221,12 @@ Components of the climate system &middot; 5 of 7</p>
     depth-integrated transport: <b>M = &tau; / (&rho;f)</b>, at <b>90&deg;</b> to the right
     <span class="u">The 90&deg; result does not depend on the eddy viscosity, on the depth, or on any
     detail of how the turbulence works. It follows from the force balance alone.</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>M</b> Ekman mass transport integrated over the depth of the spiral, per metre of width across the flow, kg m<sup>&minus;1</sup> s<sup>&minus;1</sup></div>
+    <div class="def"><b>&tau;</b> wind stress exerted on the sea surface, N m<sup>&minus;2</sup></div>
+    <div class="def"><b>&rho;</b> seawater density, &asymp;1027 kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>f</b> Coriolis parameter, f = 2&Omega; sin&phi;, s<sup>&minus;1</sup></div>
   </div>
   <p class="note"><b>That independence is the important part.</b> The shape of the spiral depends on a
   turbulent mixing coefficient nobody can measure well. The <em>total</em> transport does not depend on it at

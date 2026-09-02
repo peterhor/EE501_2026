@@ -50,6 +50,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -276,6 +280,9 @@ Components of the climate system &middot; 6 of 7</p>
     L<sub>f</sub> = 3.34 &times; 10<sup>5</sup> J kg<sup>&minus;1</sup>
     <span class="u">the latent heat of fusion &mdash; the energy cost of turning ice at 0 &deg;C into water at
     0 &deg;C, with nothing else changing</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>L<sub>f</sub></b> latent heat of fusion of water &mdash; energy per kilogram needed to melt ice with no change in temperature, J kg<sup>&minus;1</sup></div>
   </div>
   <p class="note"><b>This is why melting is slow even when the forcing is large.</b> It is also why the
   cryosphere's response is so nonlinear: nothing happens to the temperature at all until the ice is gone, and

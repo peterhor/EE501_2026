@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -173,6 +177,12 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
     <b>at the tropopause</b>, with stratospheric temperatures allowed to reach a new radiative equilibrium
     while surface and tropospheric temperatures are held at their unperturbed values
     <span class="u"><br>[W m<sup>&minus;2</sup>], global and annual mean, downward positive</span></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;Q</b> radiative forcing, W m<sup>&minus;2</sup>, global and annual mean, downward positive</div>
+    <div class="def"><b>tropopause</b> the level at which the change is evaluated &mdash; the boundary between troposphere and stratosphere</div>
+    <div class="def"><b>stratospheric adjustment</b> stratospheric temperatures are let go to a new radiative equilibrium first</div>
+    <div class="def"><b>held fixed</b> surface and tropospheric temperatures stay at their unperturbed values, so no feedback is included</div>
+  </div>
 
   <svg viewBox="0 0 880 300" role="img" aria-label="Three-panel definition of radiative forcing: unperturbed, instantaneous forcing at the tropopause, and stratosphere-adjusted forcing">
     <g id="rfG"></g>
@@ -220,6 +230,13 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
     &Delta;Q<sub>N2O</sub> = 0.12 ( &radic;[N<sub>2</sub>O] &minus; &radic;[N<sub>2</sub>O]<sub>r</sub> )
     <span class="u"><br>CO<sub>2</sub> in ppm, CH<sub>4</sub> and N<sub>2</sub>O in ppb.
     Reference year 1750: 278 ppm, 715 ppb, 270 ppb.</span></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;Q<sub>CO2</sub>, &Delta;Q<sub>CH4</sub>, &Delta;Q<sub>N2O</sub></b> radiative forcing of each gas, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>[CO<sub>2</sub>]</b> atmospheric CO<sub>2</sub> concentration, ppm</div>
+    <div class="def"><b>[CH<sub>4</sub>], [N<sub>2</sub>O]</b> methane and nitrous oxide concentrations, ppb</div>
+    <div class="def"><b>subscript r</b> the reference (pre-industrial, 1750) value: 278 ppm, 715 ppb, 270 ppb</div>
+    <div class="def"><b>5.4, 0.036, 0.12</b> empirical coefficients fitted to line-by-line radiative transfer, W m<sup>&minus;2</sup></div>
+  </div>
 
   <div class="rowbtns" style="margin-top:16px">
     <span class="lbl">Jump to</span>

@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -128,6 +132,12 @@
   <div class="eq"><b>Eq. 2.41</b> &nbsp;&nbsp; &Phi;<sub>CO<sub>2</sub></sub> &nbsp;=&nbsp;
     k<sub>CO<sub>2</sub></sub> &middot; ( p<sub>W</sub>CO<sub>2</sub> &minus; p<sub>A</sub>CO<sub>2</sub> )
     <span class="u">&nbsp;&nbsp;[mol m<sup>&minus;2</sup> yr<sup>&minus;1</sup>], positive = sea to air</span></div>
+  <div class="defs">
+    <div class="def"><b>&Phi;<sub>CO<sub>2</sub></sub></b> air&ndash;sea CO<sub>2</sub> flux, mol m<sup>&minus;2</sup> yr<sup>&minus;1</sup>; positive means sea to air</div>
+    <div class="def"><b>k<sub>CO<sub>2</sub></sub></b> gas transfer (piston) velocity, rising roughly with the square of wind speed, m yr<sup>&minus;1</sup></div>
+    <div class="def"><b>p<sub>W</sub>CO<sub>2</sub></b> partial pressure of CO<sub>2</sub> in the surface water, &micro;atm</div>
+    <div class="def"><b>p<sub>A</sub>CO<sub>2</sub></b> partial pressure of CO<sub>2</sub> in the air just above, &micro;atm</div>
+  </div>
   <div class="kpis" style="margin-top:16px">
     <div class="kpi"><div class="k">p<sub>W</sub> &gt; p<sub>A</sub></div><div class="v">Source</div>
       <div class="s">supersaturated &mdash; the ocean releases CO<sub>2</sub></div></div>
@@ -173,6 +183,17 @@
       <span class="u">&nbsp; dissolved inorganic carbon</span><br>
     <b>Eq. 2.47</b> &nbsp; H<sub>2</sub>CO<sub>3</sub> + CO<sub>3</sub><sup>2&minus;</sup> &nbsp;&#8652;&nbsp; 2 HCO<sub>3</sub><sup>&minus;</sup>
       <span class="u">&nbsp; the net of 2.43 and 2.44 &mdash; the buffer reaction</span></div>
+  <div class="defs">
+    <div class="def"><b>CO<sub>2</sub>(g)</b> dissolved carbon dioxide gas &mdash; the only form that exerts a partial pressure</div>
+    <div class="def"><b>H<sub>2</sub>O</b> water</div>
+    <div class="def"><b>H<sub>2</sub>CO<sub>3</sub></b> carbonic acid</div>
+    <div class="def"><b>H<sup>+</sup></b> proton (hydrogen ion); its concentration sets pH</div>
+    <div class="def"><b>HCO<sub>3</sub><sup>&minus;</sup></b> bicarbonate ion &mdash; about 90 % of ocean DIC</div>
+    <div class="def"><b>CO<sub>3</sub><sup>2&minus;</sup></b> carbonate ion &mdash; the ion consumed when CO<sub>2</sub> is buffered, and the one shell-builders need</div>
+    <div class="def"><b>DIC</b> dissolved inorganic carbon, the sum of the three dissolved forms, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>K<sub>H</sub></b> Henry's-law solubility constant for CO<sub>2</sub> (Eq. 2.46)</div>
+    <div class="def"><b>&#8652;</b> a reversible equilibrium, not a one-way reaction</div>
+  </div>
   <p class="note"><b>Read Eq. 2.47 carefully, because it is the whole trick.</b> Add CO<sub>2</sub> to
   seawater and it does not simply sit there as dissolved gas. It consumes a carbonate ion and produces two
   bicarbonate ions. The dissolved gas &mdash; the only form that exerts a partial pressure and can escape back
@@ -189,6 +210,15 @@
   <div class="eq" style="margin-top:16px"><b>Eq. 2.48 &mdash; alkalinity</b><br>
     Alk &nbsp;=&nbsp; [HCO<sub>3</sub><sup>&minus;</sup>] + 2[CO<sub>3</sub><sup>2&minus;</sup>] +
     [B(OH)<sub>4</sub><sup>&minus;</sup>] + [OH<sup>&minus;</sup>] &minus; [H<sup>+</sup>] + &hellip;</div>
+  <div class="defs">
+    <div class="def"><b>Alk</b> total alkalinity &mdash; the excess of bases over acids, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>[HCO<sub>3</sub><sup>&minus;</sup>]</b> bicarbonate concentration, mol kg<sup>&minus;1</sup></div>
+    <div class="def"><b>[CO<sub>3</sub><sup>2&minus;</sup>]</b> carbonate concentration; it counts twice because it carries two charges</div>
+    <div class="def"><b>[B(OH)<sub>4</sub><sup>&minus;</sup>]</b> borate concentration, the largest of the minor contributions</div>
+    <div class="def"><b>[OH<sup>&minus;</sup>]</b> hydroxide concentration</div>
+    <div class="def"><b>[H<sup>+</sup>]</b> proton concentration, subtracted because it is an acid</div>
+    <div class="def"><b>&hellip;</b> further minor bases (phosphate, silicate) omitted here</div>
+  </div>
   <p class="note"><b>Alkalinity is the excess of bases over acids</b>, and it is the second number you need.
   DIC alone does not determine the chemistry: the same DIC at a different alkalinity gives a completely
   different pH and a completely different pCO<sub>2</sub>. Alkalinity is conservative &mdash; it does not

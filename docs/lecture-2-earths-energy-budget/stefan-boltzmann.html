@@ -53,6 +53,7 @@
       font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
       font-size:21px;text-align:center;color:var(--text-primary);letter-spacing:.01em;overflow-x:auto}
   .eq small{display:block;font-family:inherit;font-size:13px;color:var(--text-muted);margin-top:8px;letter-spacing:0}
+  .eq + .defs{margin-top:-4px}
   .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 20px;margin:14px 0 4px}
   .def{font-size:14px;color:var(--text-secondary)}
   .def b{color:var(--text-primary);font-family:"Iowan Old Style",Georgia,serif;font-size:16px;margin-right:6px}
@@ -142,6 +143,13 @@
       c = λ ν &nbsp;&nbsp;&nbsp;&nbsp; E = h ν = hc/λ
       <small>c = 2.998 × 10⁸ m/s · h = 6.626 × 10⁻³⁴ J s — the same h and c that build σ, in Section 1</small>
     </div>
+    <div class="defs">
+      <div class="def"><b>c</b> speed of light in vacuum, 2.998 × 10⁸ m s<sup>−1</sup></div>
+      <div class="def"><b>λ</b> wavelength, m</div>
+      <div class="def"><b>ν</b> frequency, s<sup>−1</sup> (Hz)</div>
+      <div class="def"><b>E</b> energy of one photon, J</div>
+      <div class="def"><b>h</b> Planck constant, 6.626 × 10<sup>−34</sup> J s</div>
+    </div>
   </div>
 </section>
 
@@ -175,6 +183,18 @@
       A↑ = ∫<sub>0</sub><sup>∞</sup>∫<sub>2π</sub> B<sub>λ</sub>(T) cos θ dΩ dλ = σT<sup>4</sup>,
       &nbsp;&nbsp; σ = 2π<sup>5</sup>k<sub>B</sub><sup>4</sup> / 15c<sup>2</sup>h<sup>3</sup>
       <small>σ is built entirely out of k<sub>B</sub>, h and c — it is not measured independently</small>
+    </div>
+    <div class="defs">
+      <div class="def"><b>A↑</b> emitted flux (upward irradiance), W m<sup>−2</sup></div>
+      <div class="def"><b>B<sub>λ</sub>(T)</b> Planck spectral radiance at wavelength λ and temperature T, W m<sup>−2</sup> sr<sup>−1</sup> m<sup>−1</sup></div>
+      <div class="def"><b>θ</b> angle from the surface normal; cos θ is the projection factor</div>
+      <div class="def"><b>dΩ</b> element of solid angle, integrated over the outward hemisphere (2π sr)</div>
+      <div class="def"><b>λ</b> wavelength, integrated from 0 to ∞, m</div>
+      <div class="def"><b>σ</b> Stefan-Boltzmann constant, 5.670 × 10<sup>−8</sup> W m<sup>−2</sup> K<sup>−4</sup></div>
+      <div class="def"><b>T</b> absolute temperature, K</div>
+      <div class="def"><b>k<sub>B</sub></b> Boltzmann constant, 1.381 × 10<sup>−23</sup> J K<sup>−1</sup></div>
+      <div class="def"><b>h</b> Planck constant, 6.626 × 10<sup>−34</sup> J s</div>
+      <div class="def"><b>c</b> speed of light, 2.998 × 10⁸ m s<sup>−1</sup></div>
     </div>
 
     <figure>
@@ -249,6 +269,12 @@
     <div class="eq">
       ψ + α + ζ = 1
       <small>ψ transmissivity · α reflectivity · ζ absorptivity — all dimensionless, all functions of λ</small>
+    </div>
+    <div class="defs">
+      <div class="def"><b>ψ</b> transmissivity — the fraction of the beam that passes straight through (0–1)</div>
+      <div class="def"><b>α</b> reflectivity, or albedo — the fraction reflected back (0–1)</div>
+      <div class="def"><b>ζ</b> absorptivity — the fraction absorbed and turned into heat (0–1)</div>
+      <div class="def"><b>λ</b> wavelength: all three fractions are functions of it</div>
     </div>
 
     <figure>
@@ -473,6 +499,12 @@
       <small>the <strong>Total Solar Irradiance (TSI)</strong>, or <em>solar constant</em>, S₀ — flux on a
       surface facing the Sun, above the atmosphere (Goosse et al. 2010, §2.1.1)</small>
     </div>
+    <div class="defs">
+      <div class="def"><b>S₀</b> total solar irradiance, or solar constant, at Earth's orbit, W m<sup>−2</sup></div>
+      <div class="def"><b>L☉</b> solar luminosity — the Sun's total radiated power, 3.83 × 10<sup>26</sup> W</div>
+      <div class="def"><b>r</b> Sun–Earth distance, 1 AU = 1.496 × 10<sup>11</sup> m</div>
+      <div class="def"><b>4πr²</b> area of the sphere the Sun's output is spread over at that distance, m²</div>
+    </div>
 
     <figure>
       <svg viewBox="0 0 800 220" role="img" aria-label="Inverse square law: light spreading over larger spheres">
@@ -543,6 +575,15 @@
       &nbsp;⟹&nbsp; T<sub>e</sub> = [ S₀(1−α<sub>p</sub>) / 4σ ]<sup>1/4</sup>
       <small>R cancels — a planet's radiating temperature does not depend on its size. This is Goosse et al. (2010) Eq. 2.2–2.4, with T<sub>e</sub> the effective emission temperature and α<sub>p</sub> the planetary albedo</small>
     </div>
+    <div class="defs">
+      <div class="def"><b>R</b> planetary radius, m — it cancels, so T<sub>e</sub> is size-independent</div>
+      <div class="def"><b>πR²</b> shadow disc that intercepts sunlight, m²</div>
+      <div class="def"><b>4πR²</b> whole spherical surface that emits, m²</div>
+      <div class="def"><b>S₀</b> solar constant, 1361 W m<sup>−2</sup></div>
+      <div class="def"><b>α<sub>p</sub></b> planetary albedo, the reflected fraction of sunlight (0.30 for Earth)</div>
+      <div class="def"><b>σ</b> Stefan-Boltzmann constant, 5.670 × 10<sup>−8</sup> W m<sup>−2</sup> K<sup>−4</sup></div>
+      <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
+    </div>
 
     <h3 style="margin-top:22px">Try it</h3>
     <div class="ctl">
@@ -585,6 +626,11 @@
     </ul>
     <div class="eq" style="font-size:18px">
       L☉ / L⊕ = (R☉/R⊕)² × (T☉/T⊕)⁴ = 1.19 × 10<sup>4</sup> × 2.64 × 10<sup>5</sup> ≈ 3.1 × 10<sup>9</sup>
+    </div>
+    <div class="defs">
+      <div class="def"><b>L☉, L⊕</b> total radiated power of the Sun and of the Earth, W</div>
+      <div class="def"><b>R☉, R⊕</b> radius of the Sun (6.96 × 10⁸ m) and of the Earth (6.37 × 10⁶ m)</div>
+      <div class="def"><b>T☉, T⊕</b> emission temperature of the Sun (5772 K) and of the Earth (255 K)</div>
     </div>
 
     <h3 style="margin-top:24px">Where everything sits, on a log scale</h3>

@@ -512,7 +512,8 @@ Every figure on this page can be exported as PNG, and the underlying series as C
       {sym:'p', name:'Pressure', what:'Force per unit area of the air above. Falls by half every 5.5 km.', mag:'1013 hPa at sea level', col:'gcm'},
       {sym:'&rho;', name:'Density', what:'The unknown this equation is usually solved for in a model.', mag:'1.225 kg m⁻³ standard', col:'sea'},
       {sym:'R<sub>g</sub>', name:'Gas constant', what:'For dry air 287.05 J kg⁻¹ K⁻¹; humidity is handled through T_v rather than by changing R.', mag:'R_d = R*/M_d', col:'mut'},
-      {sym:'T<sub>v</sub>', name:'Virtual temperature', what:'The temperature dry air would need to have the density of this moist air.', mag:'T + up to 4 K in the tropics', col:'emic'}
+      {sym:'T', name:'Temperature', what:'Absolute temperature of the air, in kelvin — never °C. Replaced by T_v whenever the air is moist.', mag:'200 – 320 K', col:'warn'},
+      {sym:'T<sub>v</sub>', name:'Virtual temperature', what:'The temperature dry air would need to have the density of this moist air. T_v = T(1 + 0.608 q), with q the specific humidity.', mag:'T + up to 4 K in the tropics', col:'emic'}
     ],
     derivation:['Start from p = ρR_gT and solve for the unknown this equation actually closes in a model: ρ = p/(R_gT).','Replace T with the virtual temperature T_v = T(1 + 0.608 q) so that a single dry-air gas constant R_d still applies to moist air — the 0.608 factor is just the ratio of the gas constants of vapour and dry air.','Evaluate ρ for the ambient air and again for the (dry) envelope air at the same pressure but a different temperature — the two boxes in the diagram.','The lift is the weight of the ambient air displaced minus the weight of the air actually inside the envelope: (ρ_ambient − ρ_envelope)·V.'],
     connects:'ρ solved here is the last of the seven unknowns; every other screen either sets an input to this equation (p, T, q) or, like continuity (Eq. 3.6), was itself derived assuming this equation of state throughout.',
@@ -532,6 +533,9 @@ Every figure on this page can be exported as PNG, and the underlying series as C
     consts:'c ≈ 340 m s⁻¹ ; hypsometric Δz = (R_d T̄/g)·ln(p₁/p₂)',
     views:[['scale','Magnitude of every term'],['thick','1000–500 hPa thickness']], mode:'scale', ctrls:['L','U','W','lat'],
     terms:[
+      {sym:'&part;p/&part;z', name:'Vertical pressure gradient', what:'How fast pressure p (Pa) falls with height z (m) — the left side of hydrostatic balance.', mag:'&minus;12 Pa m⁻¹ at sea level', col:'gcm'},
+      {sym:'&minus;&rho;g', name:'Weight of the air', what:'Density ρ (kg m⁻³) times gravity g = 9.81 m s⁻²: the weight per unit volume that the pressure drop must carry.', mag:'≈ 12 N m⁻³ at sea level', col:'sea'},
+      {sym:'<b>&nabla;</b> &middot; <b><i>v</i></b>', name:'Velocity divergence', what:'Divergence of the wind v = (u, v, w); set to zero by the quasi-Boussinesq approximation, which is what filters sound waves.', mag:'10⁻⁵ s⁻¹', col:'warn'},
       {sym:'(dw/dt) / g', name:'Hydrostatic check', what:'If this ratio is tiny, the vertical equation of motion reduces to ∂p/∂z = −ρg.', mag:'10⁻⁶ synoptic, 10⁻² convective', col:'gcm'},
       {sym:'Ro = U/(fL)', name:'Rossby number', what:'Ratio of inertia to Coriolis. Ro ≪ 1 justifies geostrophic balance.', mag:'0.1 synoptic, 20 in a hurricane', col:'ebm'},
       {sym:'M = U/c', name:'Mach number', what:'Small M is what makes the Boussinesq filtering of sound waves harmless.', mag:'≈ 0.03', col:'rcm'},

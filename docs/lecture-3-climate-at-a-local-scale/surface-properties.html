@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:15px 16px;margin:10px 0;
     font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
   .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:7px 15px;
     font-size:13px;cursor:pointer;font-family:inherit}
@@ -112,6 +116,14 @@
       F<sub>IR↑</sub> &nbsp;=&nbsp; &epsilon; &sigma; T<sub>s</sub><sup>4</sup>
       &nbsp;+&nbsp; (1 &minus; &epsilon;) F<sub>IR↓</sub>
       <span class="u">&nbsp;&nbsp;emitted, plus the fraction reflected</span></div>
+    <div class="defs">
+      <div class="def"><b>F<sub>IR↑</sub></b> total upward longwave flux leaving the surface, W m<sup>&minus;2</sup></div>
+      <div class="def"><b>&epsilon;</b> surface emissivity, equal to its absorptivity by Kirchhoff's law (0&ndash;1)</div>
+      <div class="def"><b>&sigma;</b> Stefan&ndash;Boltzmann constant, 5.67&times;10<sup>&minus;8</sup> W m<sup>&minus;2</sup> K<sup>&minus;4</sup></div>
+      <div class="def"><b>T<sub>s</sub></b> surface temperature, K</div>
+      <div class="def"><b>1 &minus; &epsilon;</b> the fraction of incoming longwave the surface reflects rather than absorbs</div>
+      <div class="def"><b>F<sub>IR↓</sub></b> downward longwave radiation from the atmosphere, W m<sup>&minus;2</sup></div>
+    </div>
   </div>
   <p class="note"><b>Notice how much narrower the emissivity range is.</b> Albedo spans 0.03 to 0.95 &mdash; a
   factor of thirty. Emissivity spans 0.71 to 0.99, and almost everything living sits above 0.95. In the
@@ -157,6 +169,12 @@
   quantity is not height but <em>cumulative leaf area</em> &mdash; the LAI accumulated above you.</p>
   <div class="eq">F(L) &nbsp;=&nbsp; F<sub>0</sub> &middot; e<sup>&minus;kL</sup>
     <span class="u">&nbsp;&nbsp;Beer&ndash;Lambert, with L the cumulative leaf area index from the top</span></div>
+  <div class="defs">
+    <div class="def"><b>F(L)</b> radiation flux surviving below cumulative leaf area L, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>0</sub></b> flux arriving at the top of the canopy, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>k</b> extinction coefficient of the canopy, dimensionless (&asymp;0.5 for randomly oriented leaves)</div>
+    <div class="def"><b>L</b> cumulative leaf area index measured down from the top, m<sup>2</sup> leaf per m<sup>2</sup> ground</div>
+  </div>
   <div class="ctrl" style="margin-top:16px">
     <label for="lai">Total leaf area index</label>
     <input type="range" id="lai" min="0.4" max="9" step="0.1" value="5">

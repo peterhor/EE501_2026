@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -244,6 +248,14 @@ Climate change: past and present &middot; 5 of 6</p>
     &lambda;<sub>f</sub> = &minus;1.26 W m<sup>&minus;2</sup> K<sup>&minus;1</sup> and a 200&nbsp;m slab,
     giving &tau; &asymp; 21 years &mdash; long enough to smooth a volcano, short enough to follow a
     century</span></div>
+  <div class="defs">
+    <div class="def"><b>C<sub>s</sub></b> effective heat capacity of the slab, here 200 m of ocean, J K<sup>&minus;1</sup> m<sup>&minus;2</sup></div>
+    <div class="def"><b>T<sub>s</sub></b> global-mean surface temperature, K</div>
+    <div class="def"><b>t</b> time, yr</div>
+    <div class="def"><b>&Delta;Q(t)</b> total radiative forcing at time t &mdash; volcanic, solar, greenhouse, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&lambda;<sub>f</sub></b> climate feedback parameter, &minus;1.26 W m<sup>&minus;2</sup> K<sup>&minus;1</sup> here</div>
+    <div class="def"><b>&tau;</b> resulting response time, &minus;C<sub>s</sub>/&lambda;<sub>f</sub> &asymp; 21 yr</div>
+  </div>
 
   <div class="rowbtns">
     <span class="lbl">Forcings included</span>

@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -353,6 +357,14 @@ Climate change: the future &middot; 7 of 7</p>
     q<sub>g</sub> &nbsp;&prop;&nbsp; h<sub>g</sub><sup>&thinsp;4.75</sup>
     <div class="u" style="margin-top:8px">d — water depth at the grounding line &nbsp;&middot;&nbsp;
     the exponent follows from the ice-flow and basal-friction laws</div>
+  </div>
+  <div class="defs">
+    <div class="def"><b>h<sub>g</sub></b> ice thickness at the grounding line, m</div>
+    <div class="def"><b>&rho;<sub>w</sub></b> density of seawater, about 1028 kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>&rho;<sub>i</sub></b> density of ice, about 917 kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>d</b> water depth at the grounding line, m</div>
+    <div class="def"><b>q<sub>g</sub></b> ice flux through the grounding line, m<sup>2</sup> yr<sup>&minus;1</sup></div>
+    <div class="def"><b>4.75</b> the exponent that follows from the ice-flow and basal-friction laws</div>
   </div>
 
   <p class="note">Now the argument. The ice sheet is in balance when the outflow equals the snow accumulated

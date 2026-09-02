@@ -43,6 +43,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -187,6 +191,19 @@ Climate change: past and present &middot; 3 of 6</p>
       a/r = (1 + e cos&nbsp;&nu;)/(1 &minus; e<sup>2</sup>),&nbsp;&nbsp; &nu; = &lambda; &minus; &omega;&#772;
       <br>&lambda; is the solar longitude (0&deg; at the March equinox, 90&deg; at the June solstice);
       &omega;&#772; is the longitude of perihelion</span></div>
+  <div class="defs">
+    <div class="def"><b>Q&#773;<sub>day</sub></b> daily-mean insolation at the top of the atmosphere, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>S<sub>0</sub></b> solar constant at the mean Sun&ndash;Earth distance, 1361 W m<sup>&minus;2</sup></div>
+    <div class="def"><b>a/r</b> ratio of the semi-major axis to the current Sun&ndash;Earth distance &mdash; the eccentricity correction</div>
+    <div class="def"><b>H<sub>0</sub></b> half-day length as an hour angle, radians</div>
+    <div class="def"><b>&phi;</b> latitude</div>
+    <div class="def"><b>&delta;</b> solar declination &mdash; the latitude directly under the Sun</div>
+    <div class="def"><b>&epsilon;</b> obliquity, the tilt of the rotation axis</div>
+    <div class="def"><b>&lambda;</b> solar longitude: 0&deg; at the March equinox, 90&deg; at the June solstice</div>
+    <div class="def"><b>e</b> orbital eccentricity (dimensionless)</div>
+    <div class="def"><b>&nu;</b> true anomaly &mdash; angle from perihelion</div>
+    <div class="def"><b>&omega;&#772;</b> longitude of perihelion, which sets the precession</div>
+  </div>
 
   <p class="note">There is no approximation in that expression, and the demonstration below evaluates it
   directly. Everything you are about to see follows from those three parameters and nothing else &mdash; no
@@ -330,6 +347,14 @@ Climate change: past and present &middot; 3 of 6</p>
     growing
     <span class="u"><br><i>y</i> is ice volume, <i>x</i> the normalised (and sign-reversed) 65&deg;N June
     insolation, <i>b</i> the melt/growth asymmetry</span></div>
+  <div class="defs">
+    <div class="def"><b><i>y</i></b> ice volume, normalised</div>
+    <div class="def"><b><i>x</i></b> the normalised, sign-reversed 65&deg;N June insolation &mdash; the forcing the ice relaxes towards</div>
+    <div class="def"><b><i>t</i></b> time, kyr</div>
+    <div class="def"><b>&tau;</b> response time, shorter when melting than when growing, kyr</div>
+    <div class="def"><b>&tau;<sub>0</sub></b> mean response time, about 17 kyr</div>
+    <div class="def"><b><i>b</i></b> melt/growth asymmetry, 0&ndash;1 &mdash; the whole mechanism of the 100-kyr cycle</div>
+  </div>
 
   <div class="ctrls">
     <div class="ctrl">

@@ -38,6 +38,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -96,9 +100,23 @@
   <div class="eq"><b>1 · Radiative budget</b><br>
     F<sub>NR</sub> &nbsp;=&nbsp; F<sub>solar</sub> &minus; &alpha;F<sub>solar</sub> &nbsp;+&nbsp; F<sub>IR↓</sub> &minus; F<sub>IR↑</sub>
     <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>F<sub>NR</sub></b> net radiation left at the surface, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>solar</sub></b> incoming shortwave (solar) flux reaching the surface, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&alpha;</b> surface albedo &mdash; the reflected fraction of F<sub>solar</sub> (0&ndash;1)</div>
+    <div class="def"><b>F<sub>IR↓</sub></b> downward longwave radiation from the atmosphere, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>IR↑</sub></b> upward longwave radiation leaving the surface, W m<sup>&minus;2</sup></div>
+  </div>
   <div class="eq"><b>2 · Energy balance</b><br>
     F<sub>NR</sub> &nbsp;=&nbsp; F<sub>SH</sub> &nbsp;+&nbsp; F<sub>LH</sub> &nbsp;+&nbsp; F<sub>cond</sub> &nbsp;+&nbsp; heat storage
     <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>F<sub>NR</sub></b> net radiation available at the surface, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>SH</sub></b> sensible heat flux &mdash; heat carried to the air by turbulence, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>LH</sub></b> latent heat flux &mdash; energy carried away as water vapour, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>cond</sub></b> conduction of heat downward into the ground, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>heat storage</b> rate at which energy accumulates in the thin surface layer itself, W m<sup>&minus;2</sup></div>
+  </div>
   <p class="note"><b>Sign convention used here.</b> Positive means energy <em>arriving at</em> the surface for
   the radiative terms, and energy <em>leaving</em> the surface for F<sub>SH</sub>, F<sub>LH</sub> and
   F<sub>cond</sub>. So a positive F<sub>NR</sub> is a surface being loaded with energy, and a positive
@@ -142,6 +160,11 @@
 <div class="card">
   <h3>How the surface splits its turbulent loss</h3>
   <div class="eq">B<sub>o</sub> &nbsp;=&nbsp; F<sub>SH</sub> / F<sub>LH</sub></div>
+  <div class="defs">
+    <div class="def"><b>B<sub>o</sub></b> Bowen ratio, dimensionless</div>
+    <div class="def"><b>F<sub>SH</sub></b> sensible heat flux, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>F<sub>LH</sub></b> latent heat flux, W m<sup>&minus;2</sup></div>
+  </div>
   <p class="cap" style="margin-top:14px">All eight sites on one axis. The scale is logarithmic in
   |B<sub>o</sub>|, because the spread runs over three orders of magnitude &mdash; and it crosses zero, which an
   isolated surface is not supposed to be able to do.</p>

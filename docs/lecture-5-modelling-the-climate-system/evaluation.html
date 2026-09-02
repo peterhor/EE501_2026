@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -182,6 +186,14 @@ Modelling the climate system &middot; 5 of 5</p>
     &nbsp;&nbsp;&nbsp;
     <b>RMSE</b> = &radic;[ (1/n) &Sigma;<sub>k</sub> (T<sub>mod,k</sub> &minus; T<sub>obs,k</sub>)<sup>2</sup> ]
     <span class="u"><br>n grid points with observations available</span></div>
+  <div class="defs">
+    <div class="def"><b>bias</b> mean signed error, model minus observed, K</div>
+    <div class="def"><b>RMSE</b> root-mean-square error &mdash; errors squared so they cannot cancel, K</div>
+    <div class="def"><b>n</b> number of grid points with observations available</div>
+    <div class="def"><b>k</b> index running over those grid points</div>
+    <div class="def"><b>T<sub>mod,k</sub></b> modelled temperature at grid point k, K</div>
+    <div class="def"><b>T<sub>obs,k</sub></b> observed temperature at the same point, K</div>
+  </div>
   <p class="note"><b>Bias can be zero when everything is wrong.</b> A model too warm in the tropics and equally
   too cold at the poles has no bias at all. This is not a hypothetical &mdash; it is the normal situation, and
   it is why the RMSE, which squares the errors so they cannot cancel, is reported alongside it. Neither number
@@ -355,6 +367,13 @@ Modelling the climate system &middot; 5 of 5</p>
     X<sub>corrected</sub>(t) &nbsp;=&nbsp; X&#772;<sub>obs,ref</sub> &nbsp;+&nbsp;
     [ X<sub>raw</sub>(t) &minus; X&#772;<sub>raw,ref</sub> ]
     <span class="u">&nbsp;&nbsp;take the model&rsquo;s <i>change</i>, not its <i>value</i></span></div>
+  <div class="defs">
+    <div class="def"><b>X<sub>corrected</sub>(t)</b> bias-corrected value of the variable at time t</div>
+    <div class="def"><b>X&#772;<sub>obs,ref</sub></b> observed mean over the reference period (e.g. 1981&ndash;2010)</div>
+    <div class="def"><b>X<sub>raw</sub>(t)</b> the model's raw output at time t</div>
+    <div class="def"><b>X&#772;<sub>raw,ref</sub></b> the model's own mean over the same reference period</div>
+    <div class="def"><b>t</b> time</div>
+  </div>
   <p class="note">Written this way the logic is obvious: keep the model&rsquo;s anomaly, throw away its absolute
   value, and graft the anomaly onto the observed mean over a reference period. It is the most-used correction
   in the whole of impact modelling, and it assumes only that the bias is <b>constant in time</b>.</p>

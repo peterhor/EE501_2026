@@ -42,6 +42,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -181,6 +185,18 @@ Climate change: the future &middot; 3 of 7</p>
     <b>&Delta;T<sub>land</sub> / &Delta;T<sub>ocean</sub>
     = [c<sub>p</sub> + L<sub>v</sub>&middot;RH<sub>o</sub>&middot;(dq<sub>s</sub>/dT)<sub>o</sub>]
     &divide; [c<sub>p</sub> + L<sub>v</sub>&middot;RH<sub>l</sub>&middot;(dq<sub>s</sub>/dT)<sub>l</sub>]</b></div>
+  </div>
+  <div class="defs">
+    <div class="def"><b>h</b> moist static energy per unit mass, J kg<sup>&minus;1</sup></div>
+    <div class="def"><b>c<sub>p</sub></b> specific heat of air at constant pressure, 1004 J kg<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>T</b> temperature, K</div>
+    <div class="def"><b>L<sub>v</sub></b> latent heat of vaporisation, 2.5&times;10<sup>6</sup> J kg<sup>&minus;1</sup></div>
+    <div class="def"><b>q</b> specific humidity, kg kg<sup>&minus;1</sup>, written as RH &middot; q<sub>s</sub>(T)</div>
+    <div class="def"><b>g</b> acceleration due to gravity, 9.81 m s<sup>&minus;2</sup></div>
+    <div class="def"><b>z</b> height, m</div>
+    <div class="def"><b>RH</b> relative humidity, held fixed; subscripts l and o mark land and ocean values</div>
+    <div class="def"><b>q<sub>s</sub>(T)</b> saturation specific humidity at temperature T; dq<sub>s</sub>/dT is its slope</div>
+    <div class="def"><b>&Delta;T<sub>land</sub>, &Delta;T<sub>ocean</sub></b> warming over land and over ocean, K</div>
   </div>
 
   <p class="note">Read the formula before you touch the sliders. Warming a moist surface takes a lot of energy
@@ -340,8 +356,9 @@ Climate change: the future &middot; 3 of 7</p>
   <p class="note" style="margin-top:0">To a surprisingly good approximation, the <em>shape</em> of the warming
   pattern does not depend on the scenario &mdash; only its amplitude does. Write it as
   <span class="eq" style="display:inline-block;padding:4px 10px;margin:0 4px;font-size:15px">&Delta;T(x, t)
-  &asymp; P(x) &middot; &Delta;T<sub>global</sub>(t)</span> where P is a fixed map of local warming per degree
-  of global warming. Then one map plus one global time series gives you every scenario and every year, which is
+  &asymp; P(x) &middot; &Delta;T<sub>global</sub>(t)</span> &mdash; where &Delta;T(x,&nbsp;t) is the warming
+  at location x and time t in K, &Delta;T<sub>global</sub>(t) is the global-mean warming at that time in K,
+  and P(x) is a fixed map of local warming per degree of global warming, dimensionless. Then one map plus one global time series gives you every scenario and every year, which is
   why so much of the impacts literature works this way, and why an assessment can talk about &ldquo;a
   1.5&nbsp;&deg;C world&rdquo; and &ldquo;a 2&nbsp;&deg;C world&rdquo; without naming a scenario.</p>
 

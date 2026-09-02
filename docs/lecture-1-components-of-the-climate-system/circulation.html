@@ -50,6 +50,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -188,6 +192,11 @@ Components of the climate system &middot; 4 of 7</p>
     s<sup>&minus;1</sup>. Zero at the equator, maximal at the poles, and of opposite sign in the two
     hemispheres.</span>
   </div>
+  <div class="defs">
+    <div class="def"><b>f</b> Coriolis parameter, s<sup>&minus;1</sup></div>
+    <div class="def"><b>&Omega;</b> Earth's angular rotation rate, 7.292&times;10<sup>&minus;5</sup> s<sup>&minus;1</sup></div>
+    <div class="def"><b>&phi;</b> latitude, degrees (positive north)</div>
+  </div>
   <p>A moving parcel with no other force acting on it is turned continuously to the <b>right</b> in the
   northern hemisphere and to the <b>left</b> in the southern, at a rate f&nbsp;&times;&nbsp;speed. Turning at
   a constant rate means going in a circle &mdash; an <b>inertial circle</b> &mdash; of radius U/f and period
@@ -273,6 +282,12 @@ Components of the climate system &middot; 4 of 7</p>
     <b>u<sub>g</sub> = |&nabla;p| / (&rho; f)</b>
     <span class="u">the geostrophic wind. Stronger where the isobars are packed, and &mdash; for the same
     packing &mdash; stronger nearer the equator, because f is smaller there.</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>u<sub>g</sub></b> geostrophic wind speed, m s<sup>&minus;1</sup></div>
+    <div class="def"><b>|&nabla;p|</b> magnitude of the horizontal pressure gradient, Pa m<sup>&minus;1</sup></div>
+    <div class="def"><b>&rho;</b> air density, kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>f</b> Coriolis parameter, s<sup>&minus;1</sup></div>
   </div>
   <p>Near the ground, friction enters and the balance becomes three-way. Friction always opposes the motion,
   so the wind slows <em>and</em> turns: it now crosses the isobars at an angle, blowing partly inward towards

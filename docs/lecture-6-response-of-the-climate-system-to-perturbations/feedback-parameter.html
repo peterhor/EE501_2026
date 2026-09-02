@@ -43,6 +43,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-secondary);vertical-align:top}
   th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -128,6 +132,12 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     <span class="u"><br>&Delta;R = imbalance in the radiative budget [W m<sup>&minus;2</sup>], downward
     positive &nbsp;&middot;&nbsp; &lambda;<sub>f</sub> = climate feedback parameter
     [W m<sup>&minus;2</sup> K<sup>&minus;1</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;R</b> imbalance left in the radiative budget, W m<sup>&minus;2</sup>, downward positive</div>
+    <div class="def"><b>&Delta;Q</b> radiative forcing applied to the system, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&lambda;<sub>f</sub></b> climate feedback parameter &mdash; the net radiative response per degree, W m<sup>&minus;2</sup> K<sup>&minus;1</sup> (negative for a stable climate)</div>
+    <div class="def"><b>&Delta;T<sub>s</sub></b> change in global-mean surface temperature, K</div>
+  </div>
 
   <ul class="pl">
     <li><b>&Delta;Q</b> is what you did to the system &mdash; the whole of
@@ -144,6 +154,11 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
 
   <div class="eq">&Delta;T<sub>s</sub> = &minus; &Delta;Q / &lambda;<sub>f</sub>
     <span class="u">&nbsp;&nbsp; at equilibrium, where the accumulation has stopped</span></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;T<sub>s</sub></b> equilibrium change in global-mean surface temperature, K</div>
+    <div class="def"><b>&Delta;Q</b> radiative forcing, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&lambda;<sub>f</sub></b> climate feedback parameter, W m<sup>&minus;2</sup> K<sup>&minus;1</sup>; (&minus;1/&lambda;<sub>f</sub>) is the climate sensitivity, K per W m<sup>&minus;2</sup></div>
+  </div>
 
   <p class="note">The quantity (&minus;1/&lambda;<sub>f</sub>) is the <b>climate sensitivity</b>: kelvin per
   watt per square metre. Everything else on this page is an argument about its value.</p>
@@ -190,6 +205,17 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     <span style="color:var(--wv)">&lambda;<sub>w</sub></span> +
     <span style="color:var(--cld)">&lambda;<sub>c</sub></span> +
     <span style="color:var(--alb)">&lambda;<sub>&alpha;</sub></span></div>
+  <div class="defs">
+    <div class="def"><b>&lambda;<sub>f</sub></b> total climate feedback parameter, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>R</b> net radiative flux at the tropopause, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>T<sub>s</sub></b> global-mean surface temperature, K</div>
+    <div class="def"><b>x<sub>i</sub></b> the i-th climate variable a feedback acts through &mdash; humidity, lapse rate, cloud, albedo</div>
+    <div class="def"><b>&lambda;<sub>0</sub></b> Planck (blackbody) feedback, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&lambda;<sub>L</sub></b> lapse-rate feedback, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&lambda;<sub>w</sub></b> water-vapour feedback, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&lambda;<sub>c</sub></b> cloud feedback, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&lambda;<sub>&alpha;</sub></b> surface-albedo feedback, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+  </div>
 
   <p class="note" style="margin-top:14px">Each term is a product of two things you can think about separately:
   <b>how much does variable x change per kelvin of warming</b>, and <b>how much does the radiation budget care
@@ -219,6 +245,14 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     <b>&lambda;<sub>0</sub> = &part;R/&part;T = &minus;4&sigma;T<sub>e</sub><sup>3</sup></b>
     <span class="u"><br>with T<sub>e</sub> = 255 K: &lambda;<sub>0</sub> = &minus;3.8 W m<sup>&minus;2</sup>
     K<sup>&minus;1</sup>. Detailed radiative calculations give <b>&minus;3.2</b>.</span></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;R</b> net radiative flux at the top of the atmosphere, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&alpha;</b> planetary albedo, held fixed here (dimensionless)</div>
+    <div class="def"><b>S<sub>0</sub></b> solar constant, 1361 W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&sigma;</b> Stefan&ndash;Boltzmann constant, 5.67&times;10<sup>&minus;8</sup> W m<sup>&minus;2</sup> K<sup>&minus;4</sup></div>
+    <div class="def"><b>T<sub>e</sub></b> effective emission temperature, 255 K</div>
+    <div class="def"><b>&lambda;<sub>0</sub></b> Planck feedback parameter, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+  </div>
 
   <p class="note">The difference between &minus;3.8 and &minus;3.2 is not an error. The envelope calculation
   treats the planet as a single blackbody at one temperature; the real one emits from a range of altitudes and
@@ -228,6 +262,11 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
   <div class="eq"><b>If &lambda;<sub>0</sub> were the only feedback:</b>
     &Delta;T<sub>s,0</sub> = &minus;&Delta;Q/&lambda;<sub>0</sub> = 3.7 / 3.2 =
     <b>1.16 K</b> for a CO<sub>2</sub> doubling</div>
+  <div class="defs">
+    <div class="def"><b>&Delta;T<sub>s,0</sub></b> the reference (Planck-only) warming, K</div>
+    <div class="def"><b>&Delta;Q</b> radiative forcing of a CO<sub>2</sub> doubling, 3.7 W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&lambda;<sub>0</sub></b> Planck feedback parameter, &minus;3.2 W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+  </div>
 
   <p class="note"><b>This is the 1.1 K from <a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture&nbsp;5</a>.</b>
   The zero-dimensional model on that page had exactly one feedback &mdash; this one &mdash; because
@@ -307,6 +346,13 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     </span>
     &nbsp;&middot;&nbsp; &Delta;T<sub>s,0</sub>
     &nbsp;=&nbsp; <b>f<sub>f</sub> &middot; &Delta;T<sub>s,0</sub></b></div>
+  <div class="defs">
+    <div class="def"><b>&Delta;T<sub>s</sub></b> equilibrium warming with all feedbacks acting, K</div>
+    <div class="def"><b>&Delta;T<sub>s,0</sub></b> the Planck-only reference warming, 1.16 K for a CO<sub>2</sub> doubling</div>
+    <div class="def"><b>f<sub>f</sub></b> climate feedback factor &mdash; the amplification of the reference warming (dimensionless)</div>
+    <div class="def"><b>&lambda;<sub>0</sub></b> Planck feedback, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>&lambda;<sub>L</sub>, &lambda;<sub>w</sub>, &lambda;<sub>c</sub>, &lambda;<sub>&alpha;</sub></b> lapse-rate, water-vapour, cloud and surface-albedo feedbacks, W m<sup>&minus;2</sup> K<sup>&minus;1</sup></div>
+  </div>
 
   <p class="note" style="margin-top:14px">f<sub>f</sub> is the <b>climate feedback factor</b>: the factor by
   which the real system's response exceeds the bare blackbody response. With the standard values it is about

@@ -48,3 +48,9 @@ lecture-6-response-of-the-climate-system-to-perturbations/Lecture6-Response-of-t
 lecture-7-climate-change-past-and-present/Lecture7-Climate-change-past-and-present2025.pptx
 lecture-8-climate-change-the-future/Lecture8-Climate-change-the future2026.pptx
 TODO.md
+
+# Generated lecture decks and their build sources (figures are reused from the
+# copyrighted source decks, so these stay out of the repository too).
+lecture-*/Lecture*-2026.pptx
+lecture-*/*- 2026.pptx
+lecture-*/slide-source/

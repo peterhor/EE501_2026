@@ -45,6 +45,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -236,6 +240,18 @@ Modelling the climate system &middot; 4 of 5</p>
     <span style="color:var(--ebm)">k<sub>i</sub> (T<sub>f</sub> &minus; T<sub>a</sub>) / (h + (k<sub>i</sub>/k<sub>s</sub>) h<sub>s</sub>)</span>
     &nbsp;&minus;&nbsp; <span style="color:var(--gcm)">F<sub>w</sub></span>
     <span class="u">&nbsp;&nbsp;conduction up &minus; ocean heat in</span></div>
+  <div class="defs">
+    <div class="def"><b>&rho;<sub>i</sub></b> density of sea ice, about 917 kg m<sup>&minus;3</sup></div>
+    <div class="def"><b>L<sub>f</sub></b> latent heat of fusion, 3.34&times;10<sup>5</sup> J kg<sup>&minus;1</sup></div>
+    <div class="def"><b>h</b> ice thickness, m; dh/dt is its growth rate, m s<sup>&minus;1</sup></div>
+    <div class="def"><b>t</b> time, s</div>
+    <div class="def"><b>k<sub>i</sub></b> thermal conductivity of ice, about 2.03 W m<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>k<sub>s</sub></b> thermal conductivity of snow, about 0.31 W m<sup>&minus;1</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>h<sub>s</sub></b> snow thickness on top of the ice, m</div>
+    <div class="def"><b>T<sub>f</sub></b> freezing temperature at the ice base, &minus;1.8 &deg;C for seawater</div>
+    <div class="def"><b>T<sub>a</sub></b> air temperature above the snow surface, &deg;C</div>
+    <div class="def"><b>F<sub>w</sub></b> ocean heat flux arriving at the ice base from below, W m<sup>&minus;2</sup></div>
+  </div>
 
   <div class="ctrls">
     <div class="ctrl">
@@ -382,6 +398,12 @@ Modelling the climate system &middot; 4 of 5</p>
   <div class="eq" style="margin-top:16px"><b>Statistical downscaling</b><br>
     T<sub>loc</sub> &nbsp;=&nbsp; a<sub>sd</sub> &nbsp;+&nbsp; b<sub>sd</sub> T<sub>GCM</sub>
     <span class="u">&nbsp;&nbsp;predictand from predictor</span></div>
+  <div class="defs">
+    <div class="def"><b>T<sub>loc</sub></b> the local temperature being predicted &mdash; the predictand, K</div>
+    <div class="def"><b>T<sub>GCM</sub></b> the coarse-grid model temperature used as predictor, K</div>
+    <div class="def"><b>a<sub>sd</sub></b> intercept of the regression, fitted over a period with both model and station data, K</div>
+    <div class="def"><b>b<sub>sd</sub></b> slope of the regression, dimensionless</div>
+  </div>
   <p class="note">The simplest possible statistical downscaling: fit a straight line between what the model
   produces at the grid scale and what a station actually recorded, over a period where you have both, then
   apply that line to the model&rsquo;s future output. It is cheap, it works well for temperature, and it can be

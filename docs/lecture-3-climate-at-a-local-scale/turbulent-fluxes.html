@@ -40,7 +40,10 @@
   .eq{background:var(--surface-2);border-radius:10px;padding:15px 16px;margin:10px 0;
     font-size:17px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px}
-  .syms{font-size:13.5px;color:var(--text-secondary);margin:10px 0 0;line-height:1.85}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .syms b{color:var(--text-primary);font-weight:600}
   .presets{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
   .pb{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
@@ -101,18 +104,24 @@
   <div class="eq" style="border-left:3px solid var(--sh)">
     F<sub>SH</sub> &nbsp;=&nbsp; &rho; &middot; c<sub>p</sub> &middot; c<sub>h</sub> &middot; U<sub>a</sub> &middot; (T<sub>s</sub> &minus; T<sub>a</sub>)
     <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
+  <div class="defs">
+    <div class="def"><b>F<sub>SH</sub></b> sensible heat flux, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&rho;</b> air density, about 1.2 kg m<sup>&minus;3</sup> near sea level</div>
+    <div class="def"><b>c<sub>p</sub></b> specific heat of dry air, 1004 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup></div>
+    <div class="def"><b>c<sub>h</sub></b> bulk transfer coefficient for heat &mdash; the surface's aerodynamic grip on the air, dimensionless</div>
+    <div class="def"><b>U<sub>a</sub></b> wind speed at the reference level (10 m), m s<sup>&minus;1</sup></div>
+    <div class="def"><b>T<sub>s</sub> &minus; T<sub>a</sub></b> surface-to-air temperature difference, air taken at 2 m, K</div>
+  </div>
   <div class="eq" style="border-left:3px solid var(--lh)">
     F<sub>LH</sub> &nbsp;=&nbsp; &rho; &middot; L<sub>v</sub> &middot; c<sub>L</sub> &middot; U<sub>a</sub> &middot; (q<sub>s</sub> &minus; q<sub>a</sub>)
     <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
-  <div class="syms">
-    <b>&rho;</b> air density, about 1.2 kg m<sup>&minus;3</sup> near sea level &nbsp;·&nbsp;
-    <b>c<sub>p</sub></b> specific heat of dry air, 1004 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup> &nbsp;·&nbsp;
-    <b>L<sub>v</sub></b> latent heat of vaporisation, 2.50 &times; 10<sup>6</sup> J kg<sup>&minus;1</sup> at 0 °C<br>
-    <b>c<sub>h</sub>, c<sub>L</sub></b> dimensionless bulk transfer coefficients &mdash; the surface&rsquo;s
-    aerodynamic grip on the air &nbsp;·&nbsp;
-    <b>U<sub>a</sub></b> wind speed at the reference level (10 m)<br>
-    <b>T<sub>s</sub> &minus; T<sub>a</sub></b> surface-to-air temperature difference, air taken at 2 m &nbsp;·&nbsp;
-    <b>q<sub>s</sub> &minus; q<sub>a</sub></b> specific humidity difference, same two levels
+  <div class="defs">
+    <div class="def"><b>F<sub>LH</sub></b> latent heat flux, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&rho;</b> air density, about 1.2 kg m<sup>&minus;3</sup> near sea level</div>
+    <div class="def"><b>L<sub>v</sub></b> latent heat of vaporisation, 2.50&times;10<sup>6</sup> J kg<sup>&minus;1</sup> at 0 &deg;C</div>
+    <div class="def"><b>c<sub>L</sub></b> bulk transfer coefficient for water vapour, dimensionless (usually taken equal to c<sub>h</sub>)</div>
+    <div class="def"><b>U<sub>a</sub></b> wind speed at the reference level (10 m), m s<sup>&minus;1</sup></div>
+    <div class="def"><b>q<sub>s</sub> &minus; q<sub>a</sub></b> specific humidity difference between the surface and 2 m, kg kg<sup>&minus;1</sup></div>
   </div>
   <p class="note"><b>Three ingredients each, and all three must be non-zero.</b> No wind, no flux &mdash; however
   hot the surface is. No gradient, no flux &mdash; however hard the wind blows. And a rough surface moves far
@@ -190,6 +199,14 @@
       B<sub>o</sub> &nbsp;=&nbsp; (c<sub>p</sub> / L<sub>v</sub>) &middot;
       (T<sub>s</sub> &minus; T<sub>a</sub>) / (q<sub>s</sub> &minus; q<sub>a</sub>)
       &nbsp;&nbsp;&asymp;&nbsp;&nbsp; 0.40 &middot; &Delta;T [K] / &Delta;q [g kg<sup>&minus;1</sup>]</div>
+    <div class="defs">
+      <div class="def"><b>B<sub>o</sub></b> Bowen ratio, dimensionless</div>
+      <div class="def"><b>c<sub>p</sub></b> specific heat of dry air, 1004 J K<sup>&minus;1</sup> kg<sup>&minus;1</sup></div>
+      <div class="def"><b>L<sub>v</sub></b> latent heat of vaporisation, 2.50&times;10<sup>6</sup> J kg<sup>&minus;1</sup></div>
+      <div class="def"><b>T<sub>s</sub> &minus; T<sub>a</sub></b> surface-to-air temperature difference, &Delta;T, K</div>
+      <div class="def"><b>q<sub>s</sub> &minus; q<sub>a</sub></b> surface-to-air specific humidity difference, &Delta;q, kg kg<sup>&minus;1</sup></div>
+      <div class="def"><b>0.40</b> the value of c<sub>p</sub>/L<sub>v</sub> once &Delta;q is expressed in g kg<sup>&minus;1</sup></div>
+    </div>
     Blow harder and both fluxes grow together. Move to a rougher surface and both grow together. The <em>split</em>
     is set by nothing except the ratio of the two gradients &mdash; which is another way of saying it is set by
     how much water the surface can supply. Check it on the sliders: change U<sub>a</sub> or c<sub>h</sub> and
@@ -228,10 +245,11 @@
   itself &mdash; and how thin that layer is, is a property of the material.</p>
   <div class="eq">heat storage &nbsp;=&nbsp; &rho; c<sub>ground</sub> &middot; h<sub>su</sub> &middot;
     &delta;T<sub>s</sub>/&delta;t <span class="u">&nbsp;&nbsp;[W m<sup>&minus;2</sup>]</span></div>
-  <div class="syms">
-    <b>&rho; c<sub>ground</sub></b> volumetric heat capacity of the layer [J m<sup>&minus;3</sup> K<sup>&minus;1</sup>] &nbsp;·&nbsp;
-    <b>h<sub>su</sub></b> thickness of the surface layer [m] &nbsp;·&nbsp;
-    <b>&delta;T<sub>s</sub>/&delta;t</b> its warming rate [K s<sup>&minus;1</sup>]
+  <div class="defs">
+    <div class="def"><b>heat storage</b> rate at which energy accumulates in the surface layer, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&rho; c<sub>ground</sub></b> volumetric heat capacity of that layer, J m<sup>&minus;3</sup> K<sup>&minus;1</sup></div>
+    <div class="def"><b>h<sub>su</sub></b> thickness of the surface layer that participates, m</div>
+    <div class="def"><b>&delta;T<sub>s</sub>/&delta;t</b> rate of change of its temperature, K s<sup>&minus;1</sup></div>
   </div>
 
   <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:18px 0 14px">

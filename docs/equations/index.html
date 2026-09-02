@@ -238,7 +238,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$F_{LE} = L_v\,\rho_a\,c_L\,U_a\left(q_s - q_a\right)$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Evaporation cools the surface in proportion to wind speed and the humidity deficit. Its companion is the sensible heat flux (Eq. 2.33), \(F_{SH} = \rho_a c_p c_h U_a (T_s - T_a)\). Because \(q_s\) follows Clausius–Clapeyron, \(F_{LE}\) is far larger in the tropics.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">L<sub>v</sub> — latent heat of vaporisation<br />ρ<sub>a</sub> — air density<br />c<sub>L</sub>, c<sub>h</sub> — bulk coefficients, 5×10⁻⁵–1×10⁻³<br />U<sub>a</sub>, T<sub>a</sub>, q<sub>a</sub> — at 2 or 10 m<br />q<sub>s</sub> — surface specific humidity</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">F<sub>LE</sub> — latent heat flux, W m⁻²<br />L<sub>v</sub> — latent heat of vaporisation, 2.5×10⁶ J kg⁻¹<br />ρ<sub>a</sub> — air density, ≈1.2 kg m⁻³<br />c<sub>L</sub> — bulk transfer coefficient for moisture<br />U<sub>a</sub> — wind speed at 10 m, m s⁻¹<br />q<sub>s</sub> — surface specific humidity, kg kg⁻¹<br />q<sub>a</sub> — air specific humidity at 2 m, kg kg⁻¹</div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -248,7 +248,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$B_o = \frac{F_{SH}}{F_{LE}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">How the surface splits its turbulent heat loss. \(B_o \ll 1\) over warm ocean, \(B_o \gg 1\) over dry land where water availability limits evaporation.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">B<sub>o</sub> ≈ 1 — high-latitude ocean<br />B<sub>o</sub> &gt; 1 — arid land</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">B<sub>o</sub> — Bowen ratio, dimensionless<br />F<sub>SH</sub> — sensible heat flux, W m⁻²<br />F<sub>LE</sub> — latent heat flux, W m⁻²<div style="margin-top: 12px; color: #8a8574;">B<sub>o</sub> ≈ 1 — high-latitude ocean<br />B<sub>o</sub> &gt; 1 — arid land</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -258,7 +258,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\begin{aligned}\rho\,c_p\,h_{su}\frac{\partial T_s}{\partial t} =\;& \left(1-\alpha\right)F_{sol} + F_{IR}^{\downarrow} + F_{IR}^{\uparrow} \\ &+ F_{SE} + F_{LE} + F_{cond}\end{aligned}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Heat storage in a thin surface layer of thickness \(h_{su}\) equals the sum of all fluxes. This is how \(T_s\) is obtained in practice. Over snow or ice it holds only while \(T_s\) is below freezing; at the melting point a latent-heat-of-fusion term is added instead.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">F<sub>sol</sub> — incoming solar at surface<br />α — surface albedo<br />F<sub>IR</sub>↓ — downward longwave, 333 W m⁻²<br />F<sub>IR</sub>↑ — upward longwave (Stefan–Boltzmann), 396 W m⁻²<br />F<sub>cond</sub> — conduction from below (Fourier)<br />h<sub>su</sub> — surface layer thickness</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ρ — density of the surface layer, kg m⁻³<br />c<sub>p</sub> — specific heat capacity, J kg⁻¹ K⁻¹<br />h<sub>su</sub> — surface layer thickness, m<br />T<sub>s</sub> — surface temperature, K · t — time, s<br />α — surface albedo, 0–1<br />F<sub>sol</sub> — incoming solar at the surface, W m⁻²<br />F<sub>IR</sub><sup>↓</sup> — downward longwave, 333 W m⁻²<br />F<sub>IR</sub><sup>↑</sup> — upward longwave, −396 W m⁻²<br />F<sub>SE</sub> — sensible heat flux, W m⁻²<br />F<sub>LE</sub> — latent heat flux, W m⁻²<br />F<sub>cond</sub> — conduction from below, W m⁻²</div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -268,7 +268,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{CH_4} + 2\,\mathrm{O_2} \;\longrightarrow\; \mathrm{CO_2} + 2\,\mathrm{H_2O}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Methane is far more reactive than CO₂ and is removed by oxidation — which is why its atmospheric lifetime is short but its end product is another greenhouse gas.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">CH₄: 725 → 1780 ppb in 150 yr<br />CO₂: 280 (1800) → 384 ppm (2007)</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">CH₄ — methane<br />O₂ — molecular oxygen<br />CO₂ — carbon dioxide<br />H₂O — water<div style="margin-top: 12px; color: #8a8574;">CH₄: 725 → 1780 ppb in 150 yr<br />CO₂: 280 (1800) → 384 ppm (2007)</div></div>
       </div>
 
     </div>
@@ -296,7 +296,7 @@ a.back:hover { color: #14403f; }
           </div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Following dissolution (Eq. 2.39), carbonic acid dissociates twice, releasing H⁺ — this is ocean acidification. The reactions are fast enough to be treated as always in equilibrium.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">at equilibrium in seawater:<br />HCO₃⁻ ≈ 90 % of DIC<br />CO₃²⁻ ≈ 10 %<br />H₂CO₃ ≈ 0.5 %</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">H₂CO₃ — carbonic acid<br />H⁺ — proton; its concentration sets pH<br />HCO₃⁻ — bicarbonate ion<br />CO₃²⁻ — carbonate ion<div style="margin-top: 12px; color: #8a8574;">at equilibrium in seawater:<br />HCO₃⁻ ≈ 90 % of DIC<br />CO₃²⁻ ≈ 10 %<br />H₂CO₃ ≈ 0.5 %</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -306,7 +306,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{DIC} = \left[\mathrm{H_2CO_3}\right] + \left[\mathrm{HCO_3^{-}}\right] + \left[\mathrm{CO_3^{2-}}\right]$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Atmospheric CO₂ must balance the whole DIC pool, not just H₂CO₃ — the reason the ocean stores far more carbon than gases of similar solubility such as O₂.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">DIC is ~15 % higher at depth<br />than at the surface</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">DIC — dissolved inorganic carbon, mol kg⁻¹<br />[H₂CO₃] — dissolved CO₂ and carbonic acid<br />[HCO₃⁻] — bicarbonate concentration<br />[CO₃²⁻] — carbonate concentration<div style="margin-top: 12px; color: #8a8574;">DIC is ~15 % higher at depth<br />than at the surface</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -316,7 +316,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$K_H = \frac{\left[\mathrm{H_2CO_3}\right]}{p\mathrm{CO_2}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Links dissolved carbonic acid to the partial pressure of CO₂, so the air–sea flux (Eq. 2.38) can be written in terms of concentrations. \(K_H\) rises as water cools — cold water takes up CO₂, warm water releases it.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Eq. 2.38: Φ<sub>CO₂</sub> = k<sub>CO₂</sub>(p<sup>W</sup> − p<sup>A</sup>)<br />k — wind-dependent transfer coeff.</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">K<sub>H</sub> — Henry's-law solubility constant<br />[H₂CO₃] — dissolved CO₂ concentration, mol kg⁻¹<br />pCO₂ — partial pressure of CO₂ in the air, µatm<div style="margin-top: 12px; color: #8a8574;">Eq. 2.38: Φ<sub>CO₂</sub> = k<sub>CO₂</sub>(p<sup>W</sup> − p<sup>A</sup>)<br />k — wind-dependent transfer coeff.</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -326,7 +326,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{H_2CO_3} + \mathrm{CO_3^{2-}} \;\rightleftharpoons\; 2\,\mathrm{HCO_3^{-}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Only about 1 CO₂ molecule in 20 entering the ocean stays as H₂CO₃; the rest is buffered into bicarbonate. This slows equilibration to roughly 6 months — 20× longer than without the reaction.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">uptake depends on CO₃²⁻ availability<br />equilibration time ≈ 6 months</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">H₂CO₃ — dissolved CO₂ / carbonic acid<br />CO₃²⁻ — carbonate ion, consumed by the buffer<br />HCO₃⁻ — bicarbonate ion, two produced per CO₂<div style="margin-top: 12px; color: #8a8574;">uptake depends on CO₃²⁻ availability<br />equilibration time ≈ 6 months</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -336,7 +336,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\begin{aligned}\mathrm{Alk} =\;& \left[\mathrm{HCO_3^{-}}\right] + 2\left[\mathrm{CO_3^{2-}}\right] + \left[\mathrm{OH^{-}}\right] \\ &- \left[\mathrm{H^{+}}\right] + \left[\mathrm{B(OH)_4^{-}}\right] + \text{minor bases}\end{aligned}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The excess of bases over acids, dominated by bicarbonate and carbonate. A 1 % drop in Alk raises oceanic \(p\mathrm{CO_2}\) by about 10 %, weakening the ocean's uptake.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">−1 % Alk → +10 % pCO₂<br />B(OH)₄⁻ — borate ion</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Alk — total alkalinity, mol kg⁻¹<br />[HCO₃⁻] — bicarbonate · [CO₃²⁻] — carbonate (×2, two charges)<br />[OH⁻] — hydroxide · [H⁺] — proton, subtracted<br />[B(OH)₄⁻] — borate ion<div style="margin-top: 12px; color: #8a8574;">−1 % Alk → +10 % pCO₂<br />B(OH)₄⁻ — borate ion</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -346,7 +346,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$6\,\mathrm{CO_2} + 6\,\mathrm{H_2O} \;\rightleftharpoons\; \mathrm{C_6H_{12}O_6} + 6\,\mathrm{O_2}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Read left to right it is photosynthesis; right to left, respiration and remineralisation. Sinking organic matter drives the <strong>soft tissue pump</strong>, the largest contributor to the vertical DIC gradient. Nutrients (nitrate, phosphate, iron) usually limit production.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">three ocean pumps:<br />soft tissue · carbonate · solubility</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">CO₂ — carbon dioxide · H₂O — water<br />C₆H₁₂O₆ — glucose, the fixed organic carbon<br />O₂ — molecular oxygen<br />→ photosynthesis · ← respiration<div style="margin-top: 12px; color: #8a8574;">three ocean pumps:<br />soft tissue · carbonate · solubility</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -356,7 +356,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{Ca^{2+}} + \mathrm{CO_3^{2-}} \;\rightleftharpoons\; \mathrm{CaCO_3}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Shell building consumes CO₃²⁻, lowering alkalinity — so, counter-intuitively, it <em>raises</em> oceanic \(p\mathrm{CO_2}\) and reduces uptake. Sinking shells form the <strong>carbonate pump</strong>.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">calcite undersaturated below<br />~4500 m Atlantic · ~800 m Pacific</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Ca²⁺ — dissolved calcium ion<br />CO₃²⁻ — carbonate ion<br />CaCO₃ — calcium carbonate (shells, limestone)<div style="margin-top: 12px; color: #8a8574;">calcite undersaturated below<br />~4500 m Atlantic · ~800 m Pacific</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -366,7 +366,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{CaCO_3} + \mathrm{SiO_2} \;\longrightarrow\; \mathrm{CaSiO_3} + \mathrm{CO_2}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Buried limestone is carried down at plate boundaries and cooked into calcium silicate, releasing CO₂ that returns to the atmosphere through volcanism. A <em>source</em> of atmospheric CO₂.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">&gt;50×10⁶ GtC stored in the crust<br />~1000× the ocean stock</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">CaCO₃ — limestone, subducted<br />SiO₂ — silica (quartz)<br />CaSiO₃ — calcium silicate<br />CO₂ — returned to the air by volcanoes<div style="margin-top: 12px; color: #8a8574;">&gt;50×10⁶ GtC stored in the crust<br />~1000× the ocean stock</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -376,7 +376,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{CaSiO_3} + \mathrm{H_2CO_3} \;\longrightarrow\; \mathrm{CaCO_3} + \mathrm{SiO_2} + \mathrm{H_2O}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Uplifted silicate rock reacts with carbonic acid in rainwater. Products travel by river to the sea, so weathering is a CO₂ <em>sink</em>. With 2.48 it closes the long-term inorganic carbon cycle over millions of years.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">weathering → CO₂, → alkalinity<br />metamorphism + sedimentation → CO₂</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">CaSiO₃ — uplifted silicate rock<br />H₂CO₃ — carbonic acid in rainwater<br />CaCO₃ — carbonate, exported to the sea<br />SiO₂ — silica · H₂O — water<div style="margin-top: 12px; color: #8a8574;">weathering → CO₂, → alkalinity<br />metamorphism + sedimentation → CO₂</div></div>
       </div>
 
     </div>
@@ -401,7 +401,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta Q = 5.4 \ln\!\left(\frac{\left[\mathrm{CO_2}\right]}{\left[\mathrm{CO_2}\right]_r}\right)$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Logarithmic, not linear: each <em>doubling</em> adds the same ~3.7 W m⁻². Concentrations in ppm. Gives ≈ 1.7 W m⁻² for 1750–2005, the largest single anthropogenic forcing.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔQ — radiative forcing, W m⁻²<br />[ ]<sub>r</sub> — reference period<br />CO₂ 1750–2005: +1.7 W m⁻²</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔQ — radiative forcing, W m⁻²<br />[CO₂] — CO₂ concentration, ppm<br />[CO₂]<sub>r</sub> — reference (1750) value, 278 ppm<br />5.4 — empirical coefficient, W m⁻²<div style="margin-top: 12px; color: #8a8574;">CO₂ 1750–2005: +1.7 W m⁻²</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -411,7 +411,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta Q = 0.036\left(\sqrt{\left[\mathrm{CH_4}\right]} - \sqrt{\left[\mathrm{CH_4}\right]_r}\right)$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Square-root dependence, concentrations in ppb. Reference \(\left[\mathrm{CH_4}\right]_r = 715\) ppb.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">concentrations in ppb<br />CH₄ ref. 715 ppb (1750)</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔQ — radiative forcing, W m⁻²<br />[CH₄] — methane concentration, ppb<br />[CH₄]<sub>r</sub> — reference (1750) value, 715 ppb<br />0.036 — empirical coefficient, W m⁻² ppb<sup>−1/2</sup></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -421,7 +421,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta Q = 0.12\left(\sqrt{\left[\mathrm{N_2O}\right]} - \sqrt{\left[\mathrm{N_2O}\right]_r}\right)$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Same form as 4.2, in ppb, with \(\left[\mathrm{N_2O}\right]_r = 270\) ppb. For halocarbons a linear expression is adequate.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">N₂O ref. 270 ppb (1750)<br />halocarbons — linear in concentration</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔQ — radiative forcing, W m⁻²<br />[N₂O] — nitrous oxide concentration, ppb<br />[N₂O]<sub>r</sub> — reference (1750) value, 270 ppb<br />0.12 — empirical coefficient, W m⁻² ppb<sup>−1/2</sup><div style="margin-top: 12px; color: #8a8574;">halocarbons — linear in concentration</div></div>
       </div>
 
     </div>
@@ -446,7 +446,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta R = \Delta Q + \lambda_f \Delta T_s$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The linearisation the whole of Chapter 4 rests on: every feedback in the system, collapsed into one slope. \(\Delta R\) is the energy currently accumulating — about 0.9 W m⁻² today, almost all of it entering the ocean.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔR — imbalance, W m⁻²<br />λ<sub>f</sub> — feedback parameter, W m⁻² K⁻¹<br />downward positive</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔR — radiative imbalance, W m⁻², downward positive<br />ΔQ — applied radiative forcing, W m⁻²<br />λ<sub>f</sub> — climate feedback parameter, W m⁻² K⁻¹<br />ΔT<sub>s</sub> — global-mean surface warming, K</div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -456,7 +456,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T_s = -\frac{1}{\lambda_f}\,\Delta Q$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Set \(\Delta R = 0\). The quantity \((-1/\lambda_f)\) is the <em>climate sensitivity</em> in K per W m⁻². Defined against a CO₂ doubling it is the equilibrium climate sensitivity, likely 1.5–4.5 °C.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ECS 1.5 – 4.5 K<br />⇒ λ<sub>f</sub> between −2.5 and −0.8</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔT<sub>s</sub> — equilibrium warming, K<br />ΔQ — radiative forcing, W m⁻²<br />λ<sub>f</sub> — climate feedback parameter, W m⁻² K⁻¹<br />−1/λ<sub>f</sub> — climate sensitivity, K per W m⁻²<div style="margin-top: 12px; color: #8a8574;">ECS 1.5 – 4.5 K<br />⇒ λ<sub>f</sub> between −2.5 and −0.8</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -466,7 +466,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\lambda_f = \sum_i \lambda_i = \lambda_0 + \lambda_L + \lambda_w + \lambda_c + \lambda_\alpha$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Blackbody, lapse rate, water vapour, cloud, surface albedo. Circulation changes and biogeochemical feedbacks are excluded by construction.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">λ<sub>0</sub> = −3.2 &nbsp; λ<sub>w</sub> = +1.8<br />λ<sub>L</sub> = −0.8 &nbsp; λ<sub>c</sub> = +0.68<br />λ<sub>α</sub> = +0.26 &nbsp; ⇒ λ<sub>f</sub> ≈ −1.26</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">λ<sub>f</sub> — total feedback parameter, W m⁻² K⁻¹<br />λ<sub>i</sub> — the individual feedbacks summed<br />λ<sub>0</sub> — Planck (blackbody) response<br />λ<sub>L</sub> — lapse rate · λ<sub>w</sub> — water vapour<br />λ<sub>c</sub> — cloud · λ<sub>α</sub> — surface albedo<div style="margin-top: 12px; color: #8a8574;">λ<sub>0</sub> = −3.2 &nbsp; λ<sub>w</sub> = +1.8<br />λ<sub>L</sub> = −0.8 &nbsp; λ<sub>c</sub> = +0.68<br />λ<sub>α</sub> = +0.26 &nbsp; ⇒ λ<sub>f</sub> ≈ −1.26</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -476,7 +476,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\lambda_0 = \frac{\partial R}{\partial T} = -4\sigma T_e^{3}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Differentiate the top-of-atmosphere balance (Eq. 2.4) assuming uniform warming. With \(T_e = 255\) K this gives −3.8; radiative transfer calculations refine it to −3.2 W m⁻² K⁻¹. Alone it gives \(\Delta T_{s,0} = -\Delta Q/\lambda_0 \approx 1.2\) K per doubling.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>e</sub> — emission temperature, 255 K<br />σ = 5.67 × 10⁻⁸ W m⁻² K⁻⁴<br />the only negative feedback that is large</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">λ<sub>0</sub> — Planck feedback, W m⁻² K⁻¹<br />R — net top-of-atmosphere flux, W m⁻²<br />T — temperature the derivative is taken in, K<br />σ — 5.67 × 10⁻⁸ W m⁻² K⁻⁴<br />T<sub>e</sub> — emission temperature, 255 K<div style="margin-top: 12px; color: #8a8574;">the only large negative feedback</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -486,7 +486,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T_s = \frac{1}{1 + \dfrac{\lambda_L + \lambda_w + \lambda_c + \lambda_\alpha}{\lambda_0}}\;\Delta T_{s,0} = f_f\,\Delta T_{s,0}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">How much larger the real response is than the blackbody one. \(f_f &gt; 1\) means amplification. With the standard values \(f_f \approx 2.5\). Because this is a hyperbola in \(\lambda_f\), a symmetric uncertainty in the feedbacks gives a lopsided range in \(\Delta T_s\).</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">f<sub>f</sub> ≈ 2.5<br />ΔT<sub>s,0</sub> ≈ 1.16 K<br />⇒ ΔT<sub>s</sub> ≈ 2.9 K</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔT<sub>s</sub> — warming with all feedbacks, K<br />ΔT<sub>s,0</sub> — Planck-only reference warming, K<br />f<sub>f</sub> — climate feedback factor, dimensionless<br />λ<sub>0</sub> — Planck response, W m⁻² K⁻¹<br />λ<sub>L</sub>, λ<sub>w</sub>, λ<sub>c</sub>, λ<sub>α</sub> — the four other feedbacks<div style="margin-top: 12px; color: #8a8574;">f<sub>f</sub> ≈ 2.5<br />ΔT<sub>s,0</sub> ≈ 1.16 K<br />⇒ ΔT<sub>s</sub> ≈ 2.9 K</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -496,7 +496,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$C_s \frac{\mathrm{d}\Delta T_s}{\mathrm{d}t} = \Delta Q + \lambda_f \Delta T_s$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Eq. 4.4 with the imbalance heating a slab of heat capacity \(C_s\) instead of being discarded. This is Eq. 3.x of the zero-dimensional model, linearised about the present state.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">C<sub>s</sub> — heat capacity, J K⁻¹ m⁻²<br />200 m of water: 8.36 × 10⁸<br />ρc<sub>w</sub> = 4.18 × 10⁶ J m⁻³ K⁻¹</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">C<sub>s</sub> — heat capacity, J K⁻¹ m⁻²<br />ΔT<sub>s</sub> — surface warming, K · t — time, s<br />ΔQ — radiative forcing, W m⁻²<br />λ<sub>f</sub> — climate feedback parameter, W m⁻² K⁻¹<div style="margin-top: 12px; color: #8a8574;">200 m of water: C<sub>s</sub> = 8.36 × 10⁸<br />ρc<sub>w</sub> = 4.18 × 10⁶ J m⁻³ K⁻¹</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -506,7 +506,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T_s(t) = -\frac{\Delta Q}{\lambda_f}\left(1 - e^{-t/\tau}\right), \qquad \tau = -\frac{C_s}{\lambda_f}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">At \(t = \tau\) the system has realised 63 % of its equilibrium response. Note that \(\tau\) contains \(\lambda_f\): <b>a more sensitive climate is also a slower one</b>. At \(t = 0\) the slope is \(\Delta Q/C_s\), independent of \(\lambda_f\) — which is why the early years of a warming carry no information about climate sensitivity.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">τ — response time, s<br />λ<sub>f</sub> = −1.85 ⇒ τ ≈ 14 yr<br />λ<sub>f</sub> = −0.93 ⇒ τ ≈ 28 yr</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔT<sub>s</sub>(t) — warming reached at time t, K<br />ΔQ — step forcing, W m⁻²<br />λ<sub>f</sub> — feedback parameter, W m⁻² K⁻¹<br />C<sub>s</sub> — heat capacity, J K⁻¹ m⁻²<br />τ — e-folding response time, s<div style="margin-top: 12px; color: #8a8574;">λ<sub>f</sub> = −1.85 ⇒ τ ≈ 14 yr<br />λ<sub>f</sub> = −0.93 ⇒ τ ≈ 28 yr</div></div>
       </div>
 
     </div>
@@ -531,7 +531,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\bar{Q}_{\text{day}} = \frac{S_0}{\pi}\left(\frac{a}{r}\right)^{2}\left[H_0\sin\phi\sin\delta + \cos\phi\cos\delta\sin H_0\right]$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">With \(\cos H_0 = -\tan\phi\tan\delta\), \(\sin\delta = \sin\varepsilon\sin\lambda\) and \(a/r = (1 + e\cos\nu)/(1-e^2)\), \(\nu = \lambda - \bar\omega\). Exact. The three orbital parameters \(e,\ \varepsilon,\ \bar\omega\) enter here and nowhere else — everything the astronomical theory says about forcing is contained in this one expression.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">φ — latitude &nbsp; λ — solar longitude<br />ε — obliquity, 22.0–24.5°<br />e — eccentricity, 0–0.058<br />ω̄ — longitude of perihelion<br />65°N, June solstice, today: 478 W m⁻²</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Q̄<sub>day</sub> — daily mean insolation, W m⁻²<br />S₀ — solar constant, 1361 W m⁻²<br />a/r — semi-major axis over current distance<br />H₀ — half-day length as an hour angle, rad<br />φ — latitude · δ — solar declination<br />λ — solar longitude · ε — obliquity, 22.0–24.5°<br />e — eccentricity, 0–0.058 · ω̄ — longitude of perihelion<div style="margin-top: 12px; color: #8a8574;">65°N, June solstice, today: 478 W m⁻²</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -541,7 +541,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\bar{Q} = \frac{S_0}{4\sqrt{1-e^{2}}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Neither obliquity nor precession appears. Across the full range of eccentricity this varies by 0.17 %, about 0.5 W m⁻² — for comparison, a CO₂ doubling is 3.7. <b>Orbital forcing redistributes energy; it barely adds any.</b> That is why it needs an amplifier.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">e = 0.0167 ⇒ 340.3 W m⁻²<br />e = 0.058 &nbsp;⇒ 340.8 W m⁻²</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Q̄ — global annual mean insolation, W m⁻²<br />S₀ — solar constant, 1361 W m⁻²<br />e — orbital eccentricity, dimensionless<div style="margin-top: 12px; color: #8a8574;">e = 0.0167 ⇒ 340.3 W m⁻²<br />e = 0.058 &nbsp;⇒ 340.8 W m⁻²</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -551,7 +551,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{S}{N}(t) = \frac{b\,t}{\sigma/\sqrt{n}}, \qquad t_{\text{emerge}} = \frac{2\sigma}{b\sqrt{n}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">A trend \(b\) accumulates linearly while noise averages down as \(1/\sqrt{n}\). Both the area averaged over and the number of years contribute to \(n\), which is why the global mean shows a trend that a single grid box does not. Time of emergence is conventionally taken at \(S/N = 2\).</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">σ, annual mean SAT:<br />global 0.11 K &nbsp; Europe 0.45 K<br />grid box 0.7 K &nbsp; ice edge 1.8 K<br />after Hawkins &amp; Sutton (2012)</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">S/N — signal-to-noise ratio, dimensionless<br />b — forced trend, K yr⁻¹ · t — time, yr<br />σ — standard deviation of internal variability, K<br />n — number of years averaged<br />t<sub>emerge</sub> — time to emergence, yr<div style="margin-top: 12px; color: #8a8574;">σ, annual mean SAT:<br />global 0.11 K &nbsp; Europe 0.45 K<br />grid box 0.7 K &nbsp; ice edge 1.8 K<br />after Hawkins &amp; Sutton (2012)</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -561,7 +561,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$q = k(\alpha\Delta T - \beta\Delta S), \qquad V\frac{\mathrm{d}\Delta S}{\mathrm{d}t} = 2H - |q|\,\Delta S$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Stommel (1961). Temperature is restored fast and treated as fixed; salinity is prognostic. The equilibria are the roots of a quadratic in \(q\), giving <b>two stable branches</b> separated by an unstable one, and a saddle-node bifurcation at \(H_c\) beyond which the strong branch ceases to exist. The source of hysteresis and of abrupt change.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">q — overturning, Sv<br />H — freshwater flux, Sv<br />α, β — expansion coefficients<br />present-day Atlantic ≈ 18 Sv, ≈1 PW</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">q — overturning strength, Sv<br />k — hydraulic constant, Sv per unit density contrast<br />α — thermal expansion · β — haline contraction coefficient<br />ΔT — pole-to-equator temperature difference, K<br />ΔS — salinity difference, psu · V — box volume, m³<br />H — freshwater flux to the northern box, Sv · t — time, s<div style="margin-top: 12px; color: #8a8574;">present-day Atlantic ≈ 18 Sv, ≈1 PW</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -571,7 +571,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\mathrm{d}T_S}{\mathrm{d}t} = \frac{-T_N - T_S}{\tau}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Stocker and Johnsen (2003). The southern reservoir integrates the northern signal rather than mirroring it, which is why Antarctic ice cores show smooth maxima at the moment Greenland jumps. One equation, and the observed inter-hemispheric phasing follows.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">τ ≈ 1000 yr<br />short τ ⇒ mirror image<br />long τ ⇒ smoothed integral</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T<sub>S</sub> — southern temperature anomaly, K<br />T<sub>N</sub> — northern temperature anomaly, K<br />t — time, yr<br />τ — southern reservoir time constant, ≈1000 yr<div style="margin-top: 12px; color: #8a8574;">short τ ⇒ mirror image<br />long τ ⇒ smoothed integral</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -581,7 +581,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\mathrm{d}y}{\mathrm{d}t} = \frac{x - y}{\tau}, \qquad \tau = \begin{cases}\tau_0/(1+b) & \text{melting}\\[2pt] \tau_0/(1-b) & \text{growing}\end{cases}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Imbrie and Imbrie (1980). Ice melts faster than it grows. That single non-linearity turns a forcing containing only 19, 23 and 41 kyr into a sawtooth response with power near 100 kyr — <b>a frequency that is not in the forcing</b>. It does not, on its own, solve the 100-kyr problem.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">y — ice volume<br />x — normalised 65°N summer<br />insolation, sign reversed<br />τ<sub>0</sub> ≈ 17 kyr &nbsp; b ≈ 0.6</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">y — ice volume, normalised<br />x — normalised, sign-reversed 65°N June insolation<br />t — time, kyr · τ — response time, kyr<br />τ₀ — mean response time, ≈17 kyr<br />b — melt/growth asymmetry, ≈0.6</div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -591,7 +591,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$T(t) = \sum_{i=1}^{m} \beta_i\,\mathrm{Resp}_i(t) + u(t)$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Models supply the <em>shape</em> of each response — the fingerprint; the observations supply the amplitude through the fitted \(\beta_i\); the statistics of \(u\) come from long control simulations. \(\beta_i\) significantly greater than zero is <b>detection</b>; \(\beta_i\) consistent with one means the model amplitude needs no rescaling.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">β<sub>i</sub> — scaling coefficient<br />u — internal variability<br />worked example in Goosse<br />Fig. 5.43: β<sub>1</sub> = 0.6, β<sub>2</sub> = 1.2</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">T(t) — the observed temperature record, K<br />Resp<sub>i</sub>(t) — modelled fingerprint of forcing i<br />β<sub>i</sub> — fitted scaling coefficient, dimensionless<br />m — number of forcings included<br />u(t) — internal variability, K<div style="margin-top: 12px; color: #8a8574;">worked example in Goosse<br />Fig. 5.43: β₁ = 0.6, β₂ = 1.2</div></div>
       </div>
 
     </div>
@@ -616,7 +616,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$a(t) = a_0 + \sum_{i=1}^{3} a_i\,e^{-t/\tau_i}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Joos et al. (2013). Not one lifetime but four, spanning three orders of magnitude: the surface ocean and biosphere in years, the thermocline in decades, the deep ocean in centuries — and \(a_0\), the fifth of the pulse that <b>none of them can remove</b>. The fit is calibrated to 1000 years; past that, \(a_0\) has to be split by hand into carbonate compensation and silicate weathering. <b>The lifetime of a molecule and the lifetime of a perturbation are different quantities.</b></div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">a₀ = 0.2173<br />a₁ = 0.2240, τ = 394.4 yr<br />a₂ = 0.2824, τ = 36.54 yr<br />a₃ = 0.2763, τ = 4.304 yr<br />1 ppm = 2.124 PgC</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">a(t) — airborne fraction of a CO₂ pulse at time t<br />a₀ — fraction that never decays, 0.2173<br />a<sub>i</sub> — weight of decay mode i<br />τ<sub>i</sub> — time constant of mode i, yr<br />t — time since the pulse, yr<div style="margin-top: 12px; color: #8a8574;">a₀ = 0.2173<br />a₁ = 0.2240, τ = 394.4 yr<br />a₂ = 0.2824, τ = 36.54 yr<br />a₃ = 0.2763, τ = 4.304 yr<br />1 ppm = 2.124 PgC</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -626,7 +626,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$C\frac{\mathrm{d}T}{\mathrm{d}t} = F - \lambda T - \varepsilon\gamma(T - T_0), \qquad C_0\frac{\mathrm{d}T_0}{\mathrm{d}t} = \gamma(T - T_0)$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Geoffroy et al. (2013). Part V's slab with a deep ocean bolted underneath, which is what lets one model have <em>both</em> a fast transient response and a slow commitment. ECS = \(F_{2\times}/\lambda\); TCR ≈ \(F_{2\times}/(\lambda + \varepsilon\gamma)\), which is why the transient response is always the smaller number.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">C = 7.3 W yr m⁻² K⁻¹<br />C₀ = 106 &nbsp; γ = 0.73 &nbsp; ε = 1.28<br />λ = 3.7/ECS<br />ECS 3.0 ⇒ TCR ≈ 1.7 K</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">C — upper-layer heat capacity, W yr m⁻² K⁻¹<br />T — upper-layer (surface) warming, K · t — time, yr<br />F — radiative forcing, W m⁻²<br />λ — feedback parameter, W m⁻² K⁻¹<br />γ — heat exchange coefficient with the deep ocean<br />ε — efficacy of ocean heat uptake, dimensionless<br />C₀ — deep-ocean heat capacity · T₀ — deep-ocean warming, K<div style="margin-top: 12px; color: #8a8574;">C = 7.3 W yr m⁻² K⁻¹<br />C₀ = 106 &nbsp; γ = 0.73 &nbsp; ε = 1.28<br />λ = 3.7/ECS<br />ECS 3.0 ⇒ TCR ≈ 1.7 K</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -636,7 +636,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{1}{e_s}\frac{\mathrm{d}e_s}{\mathrm{d}T} = \frac{L_v}{R_v T^{2}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The most reused number in Lecture 8. It sets the water-vapour feedback, the land–sea contrast, the intensification of heavy rainfall, the vapour pressure deficit that dries soils, and the freshwater flux to the North Atlantic. Note it is <b>not a constant</b> — the \(T^{-2}\) makes it larger where it is colder.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">at 0 °C &nbsp;⇒ 7.3 % K⁻¹<br />at 15 °C ⇒ 6.5 % K⁻¹<br />at 27 °C ⇒ 6.1 % K⁻¹<br />L<sub>v</sub> = 2.5×10⁶ &nbsp; R<sub>v</sub> = 461.5</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">e<sub>s</sub> — saturation vapour pressure, Pa<br />T — absolute temperature, K<br />L<sub>v</sub> — latent heat of vaporisation, 2.5×10⁶ J kg⁻¹<br />R<sub>v</sub> — gas constant for water vapour, 461.5 J kg⁻¹ K⁻¹<div style="margin-top: 12px; color: #8a8574;">at 0 °C &nbsp;⇒ 7.3 % K⁻¹<br />at 15 °C ⇒ 6.5 % K⁻¹<br />at 27 °C ⇒ 6.1 % K⁻¹</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -646,7 +646,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$L_v\,\Delta P = k\,\Delta T - f\,\Delta F, \qquad \frac{\mathrm{d}\ln M}{\mathrm{d}T} = \frac{\mathrm{d}\ln P}{\mathrm{d}T} - \frac{\mathrm{d}\ln q}{\mathrm{d}T}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Held and Soden (2006); the fast-adjustment term \(f\Delta F\) is Allen and Ingram (2002). The atmosphere can only rain as fast as it can radiate away the latent heat, so precipitation rises at 1–3 %/K while moisture rises at 7. <b>The difference is not optional: the overturning circulation has to weaken to absorb it.</b></div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">L<sub>v</sub>P₀ = 80 W m⁻² (Part I)<br />k ≈ 2.2 W m⁻² K⁻¹ &nbsp; f ≈ 0.8<br />moisture +6.5 %/K<br />precipitation +1.5 %/K<br />mass flux −5.0 %/K</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">L<sub>v</sub> — latent heat of vaporisation, J kg⁻¹<br />ΔP — change in global mean precipitation<br />k — hydrological sensitivity, W m⁻² K⁻¹<br />ΔT — global mean warming, K<br />f — fast-adjustment fraction · ΔF — forcing change, W m⁻²<br />M — convective mass flux · q — boundary-layer humidity<div style="margin-top: 12px; color: #8a8574;">L<sub>v</sub>P₀ = 80 W m⁻² (Part I)<br />k ≈ 2.2 W m⁻² K⁻¹ &nbsp; f ≈ 0.8<br />moisture +6.5 %/K<br />precipitation +1.5 %/K<br />mass flux −5.0 %/K</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -656,7 +656,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\frac{\Delta T_l}{\Delta T_o} = \frac{c_p + L_v\,\mathrm{RH}_o\,(\mathrm{d}q_s/\mathrm{d}T)_o}{c_p + L_v\,\mathrm{RH}_l\,(\mathrm{d}q_s/\mathrm{d}T)_l}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Joshi et al. (2008), in the fixed-relative-humidity form of Byrne and O'Gorman (2013). From \(\Delta h_l = \Delta h_o\) with \(h = c_pT + L_vq\): if two surfaces must absorb the same increase in moist static energy, the drier one spends less of it on evaporation and more on temperature. <b>Not thermal inertia</b> — this survives to equilibrium.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ocean 25 °C, RH 80 %<br />land 20 °C, RH 50 %<br />⇒ ratio 1.59<br />observed & modelled 1.4–1.7</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔT<sub>l</sub>, ΔT<sub>o</sub> — warming over land and ocean, K<br />c<sub>p</sub> — specific heat of air, 1004 J kg⁻¹ K⁻¹<br />L<sub>v</sub> — latent heat of vaporisation, 2.5×10⁶ J kg⁻¹<br />RH<sub>o</sub>, RH<sub>l</sub> — relative humidity over ocean and land<br />q<sub>s</sub> — saturation specific humidity; dq<sub>s</sub>/dT its slope<div style="margin-top: 12px; color: #8a8574;">ocean 25 °C, RH 80 %<br />land 20 °C, RH 50 %<br />⇒ ratio 1.59<br />observed & modelled 1.4–1.7</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -666,7 +666,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\mathrm{PR} = \frac{p_1}{p_0} = \frac{\Phi^{c}\!\left((x - \mu_1)/\sigma_1\right)}{\Phi^{c}\!\left(x/\sigma_0\right)}, \qquad \mathrm{FAR} = 1 - \frac{1}{\mathrm{PR}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">No climate physics at all — only the steepness of a Gaussian tail. A one-σ shift multiplies the frequency of a 3σ event by 17. With a local amplification of 1.3 and σ = 1.8 K this reproduces <b>all eight</b> assessed AR6 multipliers for hot extremes to within a few per cent. Read backwards it is the probability ratio of event attribution.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">1-in-10 hot day, computed / AR6<br />1.0 °C &nbsp;×2.9 / ×2.8<br />2.0 °C &nbsp;×5.6 / ×5.6<br />4.0 °C &nbsp;×9.5 / ×9.4</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">PR — probability ratio, dimensionless<br />FAR — fraction of attributable risk, 0–1<br />p₁, p₀ — event probability with and without forcing<br />Φ<sup>c</sup> — complementary normal CDF (exceedance probability)<br />x — the event threshold, in °C<br />µ₁ — shifted mean · σ₁, σ₀ — standard deviations<div style="margin-top: 12px; color: #8a8574;">1-in-10 hot day, computed / AR6<br />1.0 °C &nbsp;×2.9 / ×2.8<br />2.0 °C &nbsp;×5.6 / ×5.6<br />4.0 °C &nbsp;×9.5 / ×9.4</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -676,7 +676,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta T \approx \mathrm{TCRE}\times E_{\text{cum}}, \qquad \mathrm{RCB} = \frac{T_{\text{target}} - T_{\text{hist}} - T_{\text{non-CO}_2}}{\mathrm{TCRE}}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The near-linearity is an accident: the logarithmic saturation of CO₂ forcing very nearly cancels the declining ocean uptake of heat and carbon. It holds over the range that matters and it is what converts a temperature target into a quantity. Note the budget <em>divides</em> by the uncertain quantity, so it is far more sensitive to TCRE than the warming itself is.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">TCRE 1.65 K/1000 PgC<br />likely 1.0–2.3<br />= 0.45 K/1000 GtCO₂<br />1.5 °C ⇒ 500 GtCO₂ from 2020<br />2.0 °C ⇒ 1350 GtCO₂</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">ΔT — global mean warming, K<br />TCRE — transient climate response to cumulative emissions<br />E<sub>cum</sub> — cumulative CO₂ emitted, PgC<br />RCB — remaining carbon budget, GtCO₂<br />T<sub>target</sub> — the warming limit aimed at, K<br />T<sub>hist</sub> — warming already realised, K<br />T<sub>non-CO₂</sub> — future warming from other forcers, K<div style="margin-top: 12px; color: #8a8574;">TCRE 1.65 K/1000 PgC<br />likely 1.0–2.3<br />= 0.45 K/1000 GtCO₂<br />1.5 °C ⇒ 500 GtCO₂ from 2020<br />2.0 °C ⇒ 1350 GtCO₂</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -686,7 +686,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$\Delta \eta = \kappa \int N\,\mathrm{d}t, \qquad \kappa \approx 0.12\ \mathrm{m}\ (10^{24}\,\mathrm{J})^{-1}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">The <em>expansion efficiency of heat</em>. \(N\) is the net downward flux at the top of the atmosphere — in the two-layer model above, the \(\gamma(T-T_0)\) going into the deep box. Because the deep ocean takes a millennium to fill, this term does not stop when emissions do. It is the clearest commitment in the whole system.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">κ = 0.11 ± 0.01 assessed<br />2100, SSP5-8.5: ≈0.3 m<br />total GMSL 0.63–1.01 m<br />commitment 2–3 m per °C<br />over 2000 yr</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">Δη — thermosteric sea-level rise, m<br />κ — expansion efficiency, m per 10²⁴ J<br />N — top-of-atmosphere energy imbalance, W m⁻²<br />t — time, integrated over the period, s<div style="margin-top: 12px; color: #8a8574;">κ = 0.11 ± 0.01 assessed<br />2100, SSP5-8.5: ≈0.3 m<br />total GMSL 0.63–1.01 m<br />commitment 2–3 m per °C<br />over 2000 yr</div></div>
       </div>
 
       <div style="background: #faf8f3; padding: 26px 32px; display: grid; grid-template-columns: 86px minmax(0, 1fr) 280px; gap: 28px; align-items: start;">
@@ -696,7 +696,7 @@ a.back:hover { color: #14403f; }
           <div style="padding: 14px 0; min-width: 0; overflow-x: auto;">$$h_g = \frac{\rho_w}{\rho_i}d, \qquad q_g \propto h_g^{\frac{m+n+3}{m+1}} \approx h_g^{4.75}$$</div>
           <div style="font-size: 16.5px; line-height: 1.55; color: #4a4638;">Schoof (2007). Equilibrium requires \(q_g = a x\); the equilibrium is <b>stable only where \(\mathrm{d}q_g/\mathrm{d}x > a\)</b>, which needs a bed deepening seaward. On a bed deepening <em>inland</em>, retreat feeds itself. The stable and unstable roots merge in a saddle-node bifurcation — the same structure as Stommel in Part VI and as Daisyworld and the Sahara in the labs.</div>
         </div>
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">n = 3 (Glen) &nbsp; m = 1/3<br />ρ<sub>w</sub>/ρ<sub>i</sub> = 1.12<br />W. Antarctic marine basins<br />≈ 3–4 m of sea level</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.85; color: #5c5747; border-left: 1px solid #e3ded1; padding-left: 20px;">h<sub>g</sub> — ice thickness at the grounding line, m<br />ρ<sub>w</sub>, ρ<sub>i</sub> — density of seawater and of ice, kg m⁻³<br />d — water depth at the grounding line, m<br />q<sub>g</sub> — ice flux through the grounding line, m² yr⁻¹<br />n — Glen flow-law exponent, 3 · m — friction exponent, 1/3<div style="margin-top: 12px; color: #8a8574;">n = 3 (Glen) &nbsp; m = 1/3<br />ρ<sub>w</sub>/ρ<sub>i</sub> = 1.12<br />W. Antarctic marine basins<br />≈ 3–4 m of sea level</div></div>
       </div>
 
     </div>
