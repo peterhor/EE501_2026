@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The land surface — albedo, water partitioning, soils and topography</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1; --grid:#e6e5df;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --atm:#2a78d6; --ocn:#12667f; --cry:#7b5bd6; --bio:#1baf7a; --ped:#8a6b45;
+    --warn:#d98324; --hot:#c8443a; --acc:#2a78d6;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a; --grid:#2e2e2b;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --atm:#5b9ae8; --ocn:#3d9dbd; --cry:#a78bea; --bio:#3cc596; --ped:#a08258;
+    --warn:#e09a44; --hot:#d9564c; --acc:#5b9ae8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:64ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  h2.sec{font-size:15px;margin:30px 0 10px;color:var(--text-secondary);font-weight:600}
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  h3{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}
+  .cap{font-size:13.5px;color:var(--text-muted);margin:0 0 14px}
+  p{margin:0 0 12px;color:var(--text-secondary)}
+  p:last-child{margin-bottom:0}
+  p b,li b,td b{color:var(--text-primary);font-weight:600}
+  ul,ol{margin:0 0 12px;padding-left:22px;color:var(--text-secondary)}
+  li{margin-bottom:6px}
+  a{color:var(--acc)}
+  svg{display:block;width:100%;height:auto}
+  .eq{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:10px 0 4px;
+    font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
+  .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
+  .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
+  .chip{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .seg button{border:0;background:var(--surface-1);color:var(--text-secondary);padding:6px 14px;
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line-soft);
+    color:var(--text-secondary);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num{color:var(--text-primary)}
+  td.nm{color:var(--text-primary);font-weight:600}
+  tr.on td{background:var(--surface-2)}
+  .note{font-size:13.5px;color:var(--text-secondary);margin:12px 0 0}
+  .note b{color:var(--text-primary)}
+  .q{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:16px 0 0;font-size:14px;
+    color:var(--text-secondary)}
+  .q b{color:var(--text-primary)}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:26px}
+  .foot a{color:var(--text-muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
+  .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--text-primary)}
+  .kpi .s{font-size:12px;color:var(--text-muted)}
+  .demo{border-color:var(--acc)}
+  .demo > h3::before{content:"Demonstration \00b7 ";color:var(--acc);font-weight:700;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px 20px;margin:14px 0 4px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--text-secondary);margin-bottom:2px;gap:10px}
+  .ctrl label b{color:var(--text-primary);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .ctrl input[type=range]{width:100%;accent-color:var(--acc);margin:0}
+  .ctrl .hint{font-size:11.5px;color:var(--text-muted)}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .rowbtns .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    font-weight:600;margin-right:2px}
+  .ghost{border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ghost:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .ghost[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+  .readout{background:var(--surface-2);border-radius:10px;padding:13px 15px;margin-top:14px;
+    font-size:14px;color:var(--text-secondary);line-height:1.62}
+  .readout b{color:var(--text-primary)}
+  .readout .big{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600}
+  .warnbox{border-left:3px solid var(--warn);padding-left:14px;margin-top:12px;font-size:13.5px;
+    color:var(--text-secondary)}
+  .warnbox b{color:var(--text-primary)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.two,.three{grid-template-columns:1fr}}
+  .stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .stepnav a{font-size:13px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--line);
+    background:var(--surface-1);padding:6px 12px;border-radius:999px}
+  .stepnav a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+  .pill{font-size:11.5px;letter-spacing:.04em;border-radius:999px;padding:3px 10px;
+    background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line-soft)}
+  .xref{background:var(--surface-2);border-radius:10px;padding:12px 15px;margin-top:14px;
+    font-size:13.5px;color:var(--text-secondary)}
+  .xref b{color:var(--text-primary)}
+  .xref a{font-weight:600;text-decoration:none}
+  .xref a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
+<a href="the-cryosphere.html">&larr; The cryosphere</a> &nbsp;&middot;&nbsp;
+Components of the climate system &middot; 7 of 8</p>
+
+<header>
+  <div>
+    <h1>The land surface</h1>
+    <p class="sub">The atmosphere never touches the Earth. It touches soil, leaves, snow and rock &mdash; and
+    what it touches decides how much sunlight is absorbed, how much water is returned to the air, how much
+    runs off, and how rough the flow is. The land surface is only 29&nbsp;% of the planet and it sets the
+    boundary conditions for most of what people care about.</p>
+  </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
+
+<div class="stepnav">
+  <a href="#s1">1 &middot; Six levers</a>
+  <a href="#s2">2 &middot; Albedo</a>
+  <a href="#s3">3 &middot; Where the rain goes</a>
+  <a href="#s4">4 &middot; Soils and topography</a>
+</div>
+
+<div class="xref" style="margin-bottom:18px"><b>A note on the name.</b> Goosse et al. call this component the
+<b>land surface</b>, and that is the name used throughout this course. You will also meet
+<b>pedosphere</b> (strictly the soil mantle &mdash; a <em>part</em> of the land surface, covered in
+Section&nbsp;4) and <b>lithosphere</b> or <b>geosphere</b> (the solid Earth, including the rock beneath the
+soil). They are not synonyms, and the differences matter: topography is lithosphere, soil carbon is
+pedosphere, and albedo is neither &mdash; it is a property of whatever happens to be on top.</div>
+
+<!-- ═══════════ 1 ═══════════ -->
+<h2 class="sec" id="s1">1 &middot; What the surface actually controls</h2>
+
+<div class="card">
+  <h3>Six properties, and where each one returns</h3>
+  <p class="cap">Goosse et al. (2010), &sect;1.5. Every item on this list appears again in a later lecture as
+  a term in an equation.</p>
+  <table>
+    <thead><tr><th>Property</th><th>What it controls</th><th>Where it returns</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Albedo</td><td>The fraction of sunlight reflected rather than absorbed &mdash;
+        the biggest single lever, and the one vegetation changes most.</td>
+        <td><a href="../lecture-3-climate-at-a-local-scale/surface-properties.html">L3.4</a>,
+        <a href="../lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">L6.4</a>,
+        <a href="../pc-lab-1-daisyworld/">Lab 1</a></td></tr>
+      <tr><td class="nm">Roughness length</td><td>How efficiently the surface exchanges momentum, heat and
+        moisture with the air. A forest is aerodynamically a hundred times rougher than grass.</td>
+        <td><a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">L3.2</a></td></tr>
+      <tr><td class="nm">Evapotranspiration</td><td>How much of the absorbed energy leaves as latent rather
+        than sensible heat &mdash; the Bowen ratio. Roots reach water that bare soil cannot.</td>
+        <td>Section 3 below,
+        <a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">L3.2</a></td></tr>
+      <tr><td class="nm">Water storage</td><td>Soil moisture: the buffer between rainfall and evaporation,
+        and the memory that turns a dry spring into a hot summer.</td>
+        <td><a href="../lecture-4-global-cycles-water-and-carbon/water-balance.html">L4.1</a>,
+        <a href="../lecture-5-modelling-the-climate-system/components.html">L5.4</a></td></tr>
+      <tr><td class="nm">Carbon in soil</td><td>Soil organic matter holds more carbon than the atmosphere and
+        the vegetation put together.</td>
+        <td>Section 4, <a href="the-biosphere.html">next page</a></td></tr>
+      <tr><td class="nm">Topography</td><td>Lifts air and makes it rain; steers the jet stream; decides where
+        ice sheets can grow and whether they are stable.</td>
+        <td>Section 4, <a href="circulation.html">part 4</a></td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Notice what is missing from that list: temperature.</b> The surface does not have a
+  temperature that it imposes on the atmosphere. It has <em>properties</em>, and the temperature is what comes
+  out when those properties are fed into an energy balance. That distinction is the whole of
+  <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3</a>, and it is why a change in
+  land cover is a change in climate rather than a response to one.</p>
+</div>
+
+<!-- ═══════════ 2 ═══════════ -->
+<h2 class="sec" id="s2">2 &middot; Albedo, and the trap in the boreal forest</h2>
+
+<div class="card">
+  <h3>The numbers</h3>
+  <p class="cap">Typical shortwave albedo of natural surfaces &mdash; after Goosse et al. (2010),
+  Table&nbsp;1.3. Real published ranges; the value for any particular surface depends on sun angle,
+  wetness and season.</p>
+  <table>
+    <thead><tr><th>Surface</th><th class="num">Albedo &alpha;</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Fresh snow</td><td class="num">0.75 &ndash; 0.90</td>
+        <td>The brightest natural surface on Earth. Ages quickly &mdash; old snow falls to 0.4&ndash;0.6.</td></tr>
+      <tr><td class="nm">Sea ice</td><td class="num">0.30 &ndash; 0.70</td>
+        <td>Bare ice at the low end, snow-covered at the high; melt ponds drop it sharply.</td></tr>
+      <tr><td class="nm">Desert sand</td><td class="num">0.20 &ndash; 0.45</td>
+        <td>Which is why the Sahara shows up so clearly from space.</td></tr>
+      <tr><td class="nm">Grassland, crops</td><td class="num">0.16 &ndash; 0.26</td><td>&nbsp;</td></tr>
+      <tr><td class="nm">Deciduous forest</td><td class="num">0.15 &ndash; 0.20</td>
+        <td>Changes seasonally as the leaves come and go.</td></tr>
+      <tr><td class="nm">Coniferous forest</td><td class="num">0.05 &ndash; 0.15</td>
+        <td><b>Almost as dark as the open ocean</b>, and it stays dark all winter.</td></tr>
+      <tr><td class="nm">Ocean (high sun)</td><td class="num">0.05 &ndash; 0.10</td>
+        <td>Rises steeply at low sun angles &mdash; over 0.5 near the poles in low light.</td></tr>
+      <tr><td class="nm">Planetary mean</td><td class="num">0.30</td>
+        <td>The number in every energy-balance calculation in
+        <a href="../lecture-2-earths-energy-budget/stefan-boltzmann.html">Lecture 2</a>. Clouds contribute
+        most of it.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card demo">
+  <h3>Build a landscape and read its albedo</h3>
+  <p class="cap">Mix surface types to make up a region, with or without snow lying on the ground, and see the
+  area-weighted albedo and what it does to the absorbed sunlight. The snow toggle is the interesting part:
+  snow only counts if it can be seen from above.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="a_for"><span>Coniferous forest</span> <b id="v_for">40 %</b></label>
+      <input type="range" id="a_for" min="0" max="100" step="1" value="40">
+      <div class="hint">&alpha; = 0.10 bare, 0.20 with snow in the canopy.</div>
+    </div>
+    <div class="ctrl">
+      <label for="a_tun"><span>Tundra or grassland</span> <b id="v_tun">40 %</b></label>
+      <input type="range" id="a_tun" min="0" max="100" step="1" value="40">
+      <div class="hint">&alpha; = 0.18 bare, 0.75 under snow.</div>
+    </div>
+    <div class="ctrl">
+      <label for="a_wat"><span>Open water</span> <b id="v_wat">20 %</b></label>
+      <input type="range" id="a_wat" min="0" max="100" step="1" value="20">
+      <div class="hint">&alpha; = 0.07 open, 0.60 frozen and snow-covered.</div>
+    </div>
+    <div class="ctrl">
+      <label for="a_ins"><span>Insolation at the surface</span> <b id="v_ins">180 W m<sup>&minus;2</sup></b></label>
+      <input type="range" id="a_ins" min="40" max="320" step="5" value="180">
+      <div class="hint">Annual mean; higher in the tropics, far lower in polar winter.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Season</span>
+    <div class="seg" id="segSnow">
+      <button data-s="0" aria-pressed="true">Snow-free</button>
+      <button data-s="1" aria-pressed="false">Snow on the ground</button>
+    </div>
+    <span class="lbl" style="margin-left:12px">Try</span>
+    <button class="ghost" data-l="0,90,10">All tundra</button>
+    <button class="ghost" data-l="90,0,10">All forest</button>
+    <button class="ghost" data-l="40,40,20">A mixed boreal landscape</button>
+  </div>
+
+  <svg viewBox="0 0 880 330" role="img" aria-label="Stacked bar of surface fractions with the area-weighted albedo in snow-free and snow-covered conditions, and the difference in absorbed solar radiation"><g id="alG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Albedo, snow-free</div><div class="v" id="kA0">&mdash;</div><div class="s">area-weighted mean</div></div>
+    <div class="kpi"><div class="k">Albedo, with snow</div><div class="v" id="kA1">&mdash;</div><div class="s">same landscape, snow lying</div></div>
+    <div class="kpi"><div class="k">Absorbed, current season</div><div class="v" id="kAbs">&mdash;</div><div class="s">(1 &minus; &alpha;) &times; insolation</div></div>
+    <div class="kpi"><div class="k">Seasonal albedo swing</div><div class="v" id="kSw">&mdash;</div><div class="s">and the W m<sup>&minus;2</sup> it is worth</div></div>
+  </div>
+
+  <div class="readout" id="alRo"></div>
+
+  <p class="note"><b>Now do the experiment that matters.</b> Press <b>all tundra</b>, then <b>all forest</b>,
+  with the snow on. Replacing tundra with forest at the same latitude changes the winter albedo from about
+  0.75 to about 0.20 &mdash; the trees stick up through the snow and hide it. That single change absorbs tens
+  of watts per square metre more sunlight, which is a <b>warming</b> effect, and it is large enough to compete
+  with the cooling effect of the carbon those same trees take up.</p>
+
+  <p class="q"><b>Question.</b> Planting boreal forest therefore has two opposing climate effects. Which wins,
+  and what does that imply about tree-planting as climate policy?
+  <span style="color:var(--text-muted)">In the <b>high-latitude boreal zone</b> the albedo effect frequently
+  wins: the forest is dark all winter under a low but non-zero sun, and the carbon uptake per hectare is
+  modest because growth is slow. Several studies find boreal afforestation to be net warming. In the
+  <b>tropics</b> the reverse is emphatically true: the albedo change is small, the carbon uptake is large, and
+  there is a third effect &mdash; intense evapotranspiration cooling the surface and forming cloud &mdash;
+  that also cools. The policy conclusion is not &ldquo;trees are bad&rdquo;; it is that <b>where</b> you plant
+  determines the sign of the answer, and a carbon-only accounting is the wrong accounting. The same
+  vegetation&ndash;albedo mechanism, run forward until it becomes an abrupt transition, is
+  <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a>.</span></p>
+
+  <p class="q"><b>Question.</b> Drag the insolation down to 40&nbsp;W&nbsp;m<sup>&minus;2</sup> &mdash; a polar
+  winter. The albedo difference is unchanged but the watts almost vanish. What does that tell you about when
+  the ice&ndash;albedo feedback operates?
+  <span style="color:var(--text-muted)">Albedo can only act on light that is arriving. In the polar night it
+  does nothing at all, however white the surface is, which is why the ice&ndash;albedo feedback is a
+  <em>summer</em> feedback and why the Arctic amplification observed in <em>winter</em> must be explained by
+  something else &mdash; principally the loss of sea ice as an insulating lid, letting ocean heat escape to
+  the atmosphere. Two different mechanisms, two different seasons, one phenomenon.
+  <a href="../lecture-8-climate-change-the-future/temperature-patterns.html">Lecture 8, part 3</a>.</span></p>
+
+  <div class="warnbox"><b>Computed</b> from an area-weighted mean of representative albedo values, listed
+  beside each slider and drawn from the published ranges in the table above. The fractions are normalised to
+  sum to 100&nbsp;%. This is a <b>bookkeeping calculation</b>, not a model: it has no sun-angle dependence, no
+  distinction between direct and diffuse radiation, no canopy radiative transfer, and no feedback of the
+  temperature change back onto the snow. Each of those would change the numbers; none of them changes the
+  sign of the forest-versus-tundra comparison, which is robust and observed.</div>
+</div>
+
+<!-- ═══════════ 3 ═══════════ -->
+<h2 class="sec" id="s3">3 &middot; Where the rain goes</h2>
+
+<div class="card">
+  <h3>The land splits water two ways, and energy decides how</h3>
+  <p>Rain arriving at the land surface has exactly two fates: it goes back to the atmosphere as
+  <b>evapotranspiration</b>, or it leaves sideways as <b>runoff</b>. Over a long enough period and a large
+  enough catchment, storage does not change and the split is complete:</p>
+  <div class="eq">
+    P = E + R
+    <span class="u">precipitation in, evapotranspiration up, runoff away &mdash; the long-term land water
+    balance</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>P</b> precipitation, mm yr<sup>&minus;1</sup></div>
+    <div class="def"><b>E</b> evapotranspiration &mdash; evaporation plus transpiration, mm yr<sup>&minus;1</sup></div>
+    <div class="def"><b>R</b> runoff, everything that leaves sideways, mm yr<sup>&minus;1</sup></div>
+  </div>
+  <p>What sets the split? Two ceilings, and the lower one wins. Evaporation cannot exceed the water that
+  arrives (<b>P</b>), and it cannot exceed what the available energy can vaporise
+  (<b>R<sub>n</sub>/&lambda;</b>, the net radiation divided by the latent heat of vaporisation). Their ratio
+  is the <b>dryness index</b>:</p>
+  <div class="eq">
+    &Phi; = R<sub>n</sub> / (&lambda;P)
+    <span class="u">&Phi; &lt; 1: more water than energy &mdash; <b>energy-limited</b>, and the surplus runs
+    off. &Phi; &gt; 1: more energy than water &mdash; <b>water-limited</b>, and nearly everything
+    evaporates.</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>&Phi;</b> dryness index, dimensionless</div>
+    <div class="def"><b>R<sub>n</sub></b> net radiation at the surface, W m<sup>&minus;2</sup></div>
+    <div class="def"><b>&lambda;</b> latent heat of vaporisation, 2.45 MJ kg<sup>&minus;1</sup></div>
+    <div class="def"><b>&lambda;P</b> the energy it would take to evaporate all the rain</div>
+  </div>
+  <p>Budyko's curve interpolates between those two limits and describes catchments across the world
+  remarkably well for something with no free parameters at all:</p>
+  <div class="eq">
+    E/P = [ &Phi; &middot; tanh(1/&Phi;) &middot; (1 &minus; e<sup>&minus;&Phi;</sup>) ]<sup>1/2</sup>
+    <span class="u">Budyko (1974). As &Phi;&rarr;0 it gives E/P&rarr;&Phi; (all the energy is used);
+    as &Phi;&rarr;&infin; it gives E/P&rarr;1 (all the water is used).</span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>E/P</b> evaporative index &mdash; the fraction of rainfall returned to the air</div>
+    <div class="def"><b>&Phi;</b> dryness index, R<sub>n</sub>/(&lambda;P)</div>
+    <div class="def"><b>tanh</b> hyperbolic tangent; it is what bends the curve between the two limits</div>
+    <div class="def"><b>1 &minus; E/P</b> the fraction left over, which becomes runoff</div>
+  </div>
+</div>
+
+<div class="card demo">
+  <h3>Split the precipitation</h3>
+  <p class="cap">Set the water supply and the energy supply and read off how the land divides them. The curve
+  is fixed; only your position on it moves.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="b_P"><span>Annual precipitation</span> <b id="v_bP">790 mm</b></label>
+      <input type="range" id="b_P" min="20" max="3500" step="5" value="790">
+      <div class="hint">The water ceiling.</div>
+    </div>
+    <div class="ctrl">
+      <label for="b_Rn"><span>Net radiation R<sub>n</sub></span> <b id="v_bRn">35 W m<sup>&minus;2</sup></b></label>
+      <input type="range" id="b_Rn" min="10" max="140" step="1" value="35">
+      <div class="hint">Annual mean at the surface. The energy ceiling.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Try</span>
+    <button class="ghost" data-b="790,35">Telemark</button>
+    <button class="ghost" data-b="2250,33">Bergen</button>
+    <button class="ghost" data-b="2200,110">Amazon</button>
+    <button class="ghost" data-b="25,120">Sahara</button>
+    <button class="ghost" data-b="500,35">Boreal Siberia</button>
+  </div>
+
+  <svg viewBox="0 0 880 360" role="img" aria-label="The Budyko curve of evaporative index against dryness index, with the energy limit and water limit drawn as asymptotes and the current setting marked"><g id="buG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Dryness index &Phi;</div><div class="v" id="kPhi">&mdash;</div><div class="s">R<sub>n</sub>/(&lambda;P)</div></div>
+    <div class="kpi"><div class="k">Evaporation E</div><div class="v" id="kE">&mdash;</div><div class="s">mm yr<sup>&minus;1</sup></div></div>
+    <div class="kpi"><div class="k">Runoff R</div><div class="v" id="kR">&mdash;</div><div class="s">mm yr<sup>&minus;1</sup>, = P &minus; E</div></div>
+    <div class="kpi"><div class="k">Regime</div><div class="v" id="kReg">&mdash;</div><div class="s">which ceiling binds</div></div>
+  </div>
+
+  <div class="readout" id="buRo"></div>
+
+  <p class="note"><b>Why this belongs in a lecture about components.</b> The same curve that predicts how much
+  water a river carries also predicts how the surface divides its <em>energy</em> between latent and sensible
+  heat &mdash; because every millimetre evaporated is 2.45&nbsp;MJ of latent heat that did not go into warming
+  the air. Water and energy at the land surface are the same problem written twice, and the Bowen ratio in
+  <a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">Lecture 3, part 2</a> is the other
+  half of it.</p>
+
+  <p class="q"><b>Question.</b> Press <b>Sahara</b>, then <b>Amazon</b>. Both have plenty of energy. Why does
+  one produce the largest river on Earth and the other produce none?
+  <span style="color:var(--text-muted)">Because the binding constraint is different. The Sahara sits far out
+  at &Phi;&nbsp;&gt;&nbsp;10: energy is abundant, water is not, so E/P is pinned at essentially 1 &mdash;
+  every drop that falls evaporates and runoff is nil. The Amazon sits near &Phi;&nbsp;&asymp;&nbsp;1.1, where
+  the two ceilings are comparable, so a large fraction of a very large precipitation total is left over. Note
+  what this means: the Amazon is a big river not because the fraction running off is unusual, but because
+  <em>P</em> is enormous. The fraction is ordinary; the quantity is not.</span></p>
+
+  <p class="q"><b>Question.</b> Deforest a tropical catchment. Roughness falls, rooting depth falls, and
+  albedo rises slightly. Which way does runoff move, and is that good?
+  <span style="color:var(--text-muted)">Runoff <b>rises</b>, at least at first: shallower roots reach less
+  water and a smoother, brighter surface evaporates less, so more of the same rainfall leaves sideways.
+  Whether that is good depends entirely on the timescale. Locally and immediately it means more water in the
+  river &mdash; and more flooding, more erosion, and less soil. Regionally and over years it can mean
+  <em>less rainfall</em>, because a large share of Amazon precipitation is water recycled from the forest
+  itself; cut enough of it and the moisture that would have fallen downwind never arrives. That
+  vegetation&ndash;precipitation coupling is a positive feedback, and it is the mechanism behind
+  <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a>.</span></p>
+
+  <div class="warnbox"><b>Computed</b> from the Budyko (1974) relation exactly as printed above, with
+  &lambda;&nbsp;=&nbsp;2.45&nbsp;MJ&nbsp;kg<sup>&minus;1</sup> and 1&nbsp;mm of water = 1&nbsp;kg&nbsp;m<sup>&minus;2</sup>.
+  It is a <b>long-term, large-catchment steady state</b>: it assumes storage does not change, so it says
+  nothing about any individual year, about seasonality, or about where within a catchment the water goes. Real
+  catchments scatter around this curve by roughly &plusmn;0.1 in E/P depending on vegetation, soil and how
+  seasonally the rain arrives &mdash; the scatter is the interesting part, and it is what the parameterised
+  versions of this relation exist to capture. The preset values are <b>approximate regional figures</b> for
+  orientation, not measurements from a named catchment.</div>
+</div>
+
+<!-- ═══════════ 4 ═══════════ -->
+<h2 class="sec" id="s4">4 &middot; Soils and topography &mdash; the slow boundary conditions</h2>
+
+<div class="card">
+  <h3>The pedosphere, properly</h3>
+  <p class="cap">Strictly, the <b>pedosphere</b> is the soil mantle: the weathered, biologically worked layer
+  between the rock and the air. It is a part of the land surface, not a separate component &mdash; but it does
+  three jobs no other part of the system does.</p>
+  <table>
+    <thead><tr><th>Job</th><th class="num">Scale</th><th>Why it matters for climate</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Water store</td><td class="num">~10&ndash;30 cm<br>of water</td>
+        <td>The buffer between rainfall and evaporation. A soil that has run dry cannot cool itself by
+        evaporating, so the energy goes into sensible heat instead and the air above it heats sharply. This is
+        why a dry spring makes a hot summer, and it is one of the strongest amplifiers of heatwaves.</td></tr>
+      <tr><td class="nm">Carbon store</td><td class="num">~1500&ndash;2400 Pg C<br>to 1 m</td>
+        <td><b>More than the atmosphere and all vegetation combined.</b> Cold, wet soils decompose slowly and
+        accumulate; warm the soil and respiration speeds up, which is a positive feedback.</td></tr>
+      <tr><td class="nm">Nutrient supply</td><td class="num">&mdash;</td>
+        <td>Depth, texture and nutrients set the ceiling on what can grow. Two places with identical climate
+        and different soil carry different vegetation &mdash; which is exactly why a climate classifier, good
+        as it is, is not a vegetation map.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>Soil is the slowest thing on the land surface that can still change within a human
+  lifetime.</b> Vegetation responds in years, soil carbon in decades to centuries, and the mineral soil itself
+  in millennia. That intermediate timescale is what makes soil carbon both a serious climate lever and a very
+  slow one to pull back.</p>
+</div>
+
+<div class="card">
+  <h3>Topography, and the rock underneath</h3>
+  <ul>
+    <li><b>Topography lifts air and makes it rain</b> on one side and not the other. It steers the jet
+    stream, anchors the storm tracks, and creates rain shadows &mdash; the mechanism you met in
+    <a href="circulation.html#s5">part 4</a>. On the timescale of this course it is <em>fixed</em>, which is
+    exactly what makes it useful: it is the one boundary condition that does not answer back.</li>
+    <li><b>Bedrock decides where ice can grow</b>, and whether it is stable. Ice grounded below sea level on a
+    bed that deepens inland retreats unstably &mdash; the fact behind the missing seven metres on
+    <a href="the-cryosphere.html#s2">the previous page</a>.</li>
+    <li><b>Rock weathering consumes CO<sub>2</sub></b> and is the ultimate long-term thermostat, operating
+    over 10<sup>5</sup>&ndash;10<sup>6</sup>&nbsp;years. It is the reason the Earth has stayed habitable for
+    four billion years, and it is completely irrelevant to the next four hundred.
+    <a href="../lecture-4-global-cycles-water-and-carbon/land-rock-methane.html">Lecture 4,
+    part&nbsp;4</a>.</li>
+  </ul>
+  <p class="q"><b>Question.</b> If weathering is a thermostat that has kept Earth habitable for four billion
+  years, why is it no use to us?
+  <span style="color:var(--text-muted)">Timescale, not mechanism. The feedback is real and it works: warmer
+  and wetter conditions speed up silicate weathering, which draws CO<sub>2</sub> down, which cools. But the
+  response time is of order half a million years, because that is how fast rock dissolves. Against a
+  perturbation delivered over two centuries it is not a thermostat, it is a geological footnote. This is the
+  clearest case in the course of a genuine negative feedback that is <em>irrelevant because of its clock</em>
+  &mdash; and it is why the &tau; column on
+  <a href="components-and-timescales.html#s3">page 2</a> matters as much as the sign
+  column.</span></p>
+</div>
+
+<div class="card">
+  <h3>What to carry forward</h3>
+  <ul>
+    <li>The land surface is a set of <b>properties</b>, not a temperature: albedo, roughness,
+    evapotranspiration, water storage, soil carbon, topography.</li>
+    <li><b>Albedo</b> is the biggest lever, and forest hides snow &mdash; which is why afforestation warms at
+    high latitude and cools in the tropics.</li>
+    <li>The land splits precipitation into evaporation and runoff according to <b>whichever of water and
+    energy is scarcer</b>, and Budyko's curve does it with no free parameters.</li>
+    <li><b>Soil</b> stores more carbon than the atmosphere and all plants together, and it buffers the water
+    that keeps summers cool.</li>
+    <li><b>Topography</b> is the one boundary condition that does not respond &mdash; and weathering is a real
+    thermostat with a useless clock.</li>
+  </ul>
+  <div class="xref"><b>Next:</b> <a href="the-biosphere.html">The biosphere &rarr;</a> &mdash; the component
+  that is seven orders of magnitude lighter than the ocean and still runs the carbon cycle, and the one that
+  decides what most of the surface properties above are actually set to.</div>
+</div>
+
+<p class="foot">After Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <i>Introduction to
+Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.5, Table&nbsp;1.3 and Fig.&nbsp;1.23
+(climate.be/textbook). The water-partitioning relation is Budyko M.I. (1974), <i>Climate and Life</i>,
+Academic Press. <b>Both figures on this page are computed</b>: the albedo mixer is an area-weighted mean of
+the representative values shown beside each control, and the Budyko curve is the closed-form expression
+printed above with &lambda;&nbsp;=&nbsp;2.45&nbsp;MJ&nbsp;kg<sup>&minus;1</sup>. Albedo ranges are the
+published values of Table&nbsp;1.3; soil carbon stocks are from IPCC AR6 WG1 (2021) and the Global Carbon
+Project. The Budyko preset values are approximate regional figures for orientation, not catchment
+measurements. The MODIS albedo map and the land-cover maps used in the lecture are <b>not reproduced
+here</b> &mdash; they are observational fields and the lecturer shows the originals. Every figure on the
+eight Lecture&nbsp;1 pages is classified in the
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
+&nbsp;&middot;&nbsp; Next: <a href="the-biosphere.html">the biosphere &rarr;</a></p>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function put(g,t,a,txt){var e=el(t,a);if(txt!==undefined)e.textContent=txt;g.appendChild(e);return e;}
+  function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+  /* ═══ Demo 1 · landscape albedo ════════════════════════════════ */
+  var SURF=[
+    {n:'Coniferous forest', a0:0.10, a1:0.20, col:'var(--bio)'},
+    {n:'Tundra / grassland',a0:0.18, a1:0.75, col:'var(--ped)'},
+    {n:'Open water',        a0:0.07, a1:0.60, col:'var(--ocn)'}
+  ];
+  var snowOn=0;
+  function drawAl(){
+    var g=$('alG'); if(!g) return; clear(g);
+    var f=[+$('a_for').value,+$('a_tun').value,+$('a_wat').value];
+    var tot=f[0]+f[1]+f[2]; if(tot<=0){f=[1,0,0];tot=1;}
+    var w=f.map(function(v){return v/tot;});
+    var ins=+$('a_ins').value;
+    var a0=0,a1=0;
+    SURF.forEach(function(s,i){a0+=w[i]*s.a0; a1+=w[i]*s.a1;});
+    var aNow=snowOn?a1:a0;
+    var L=64,R=690,T=34,BW=34;
+    put(g,'text',{x:L,y:T-12,'font-size':11.5,fill:'var(--text-muted)'},'composition of the landscape');
+    var xc=L;
+    SURF.forEach(function(s,i){
+      var wp=(R-L)*w[i];
+      if(wp>0.5){
+        put(g,'rect',{x:xc,y:T,width:wp,height:BW,fill:s.col,opacity:0.85});
+        if(wp>60) put(g,'text',{x:xc+wp/2,y:T+22,'text-anchor':'middle','font-size':12,
+          fill:'var(--surface-1)','font-weight':600},Math.round(w[i]*100)+' %');
+      }
+      xc+=wp;
+    });
+    SURF.forEach(function(s,i){
+      put(g,'rect',{x:L+i*210,y:T+50,width:12,height:12,rx:3,fill:s.col});
+      put(g,'text',{x:L+i*210+19,y:T+61,'font-size':11.5,fill:'var(--text-secondary)'},
+        s.n+'  α = '+(snowOn?s.a1:s.a0).toFixed(2));
+    });
+    var AT=T+100, AB=AT+120, AL=L, AR=R;
+    var ax=function(a){return AL+(AR-AL)*a/0.9;};
+    for(var a=0;a<=0.9001;a+=0.1){
+      put(g,'line',{x1:ax(a),x2:ax(a),y1:AT,y2:AB,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:ax(a),y:AB+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},a.toFixed(1));
+    }
+    put(g,'text',{x:(AL+AR)/2,y:AB+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'albedo');
+    [[0.30,'planetary mean'],[0.07,'ocean'],[0.85,'fresh snow']].forEach(function(m){
+      put(g,'line',{x1:ax(m[0]),x2:ax(m[0]),y1:AT,y2:AT+14,stroke:'var(--text-muted)','stroke-width':1.4});
+      put(g,'text',{x:ax(m[0]),y:AT-6,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},m[1]);
+    });
+    put(g,'rect',{x:AL,y:AT+30,width:Math.max(2,ax(a0)-AL),height:22,rx:4,
+      fill:'var(--bio)',opacity:snowOn?0.35:0.9});
+    put(g,'text',{x:ax(a0)+8,y:AT+46,'font-size':12,fill:'var(--bio)','font-weight':600},
+      'snow-free  α = '+a0.toFixed(3));
+    put(g,'rect',{x:AL,y:AT+62,width:Math.max(2,ax(a1)-AL),height:22,rx:4,
+      fill:'var(--cry)',opacity:snowOn?0.9:0.35});
+    put(g,'text',{x:ax(a1)+8,y:AT+78,'font-size':12,fill:'var(--cry)','font-weight':600},
+      'with snow  α = '+a1.toFixed(3));
+    if(Math.abs(a1-a0)>0.01){
+      put(g,'line',{x1:ax(a0),x2:ax(a1),y1:AT+96,y2:AT+96,stroke:'var(--hot)','stroke-width':2});
+      put(g,'text',{x:(ax(a0)+ax(a1))/2,y:AT+112,'text-anchor':'middle','font-size':11.5,
+        fill:'var(--hot)','font-weight':600},
+        'Δα = '+(a1-a0).toFixed(3)+'  →  '+((a1-a0)*ins).toFixed(0)+' W m⁻² less absorbed');
+    }
+    put(g,'text',{x:AL,y:AB+62,'font-size':11,fill:'var(--warn)','font-style':'italic'},
+      'COMPUTED — area-weighted mean of the representative albedo values shown above. Not a radiative-transfer model.');
+
+    $('kA0').textContent=a0.toFixed(3);
+    $('kA1').textContent=a1.toFixed(3);
+    $('kAbs').innerHTML=((1-aNow)*ins).toFixed(0)+' W m<sup>&minus;2</sup>';
+    $('kSw').textContent='Δα '+(a1-a0).toFixed(3);
+    $('alRo').innerHTML='This landscape reflects <span class="big">'+(aNow*100).toFixed(1)+
+      ' %</span> of the sunlight reaching it '+(snowOn?'with snow lying':'when snow-free')+
+      ', so it absorbs <b>'+((1-aNow)*ins).toFixed(0)+' W m<sup>&minus;2</sup></b> of the '+ins+
+      ' arriving. Putting snow on the ground changes the albedo by <b>'+(a1-a0).toFixed(3)+
+      '</b>, worth <b>'+((a1-a0)*ins).toFixed(0)+' W m<sup>&minus;2</sup></b> — for comparison, doubling '+
+      'CO<sub>2</sub> is 3.7 W m<sup>&minus;2</sup> globally. Seasonal albedo changes at the surface are '+
+      '<em>locally</em> far larger than any greenhouse forcing; what makes CO<sub>2</sub> decisive is that '+
+      'it acts everywhere, all the time, and does not reverse in spring.';
+  }
+  ['a_for','a_tun','a_wat','a_ins'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('v_for').textContent=$('a_for').value+' %';
+      $('v_tun').textContent=$('a_tun').value+' %';
+      $('v_wat').textContent=$('a_wat').value+' %';
+      $('v_ins').innerHTML=$('a_ins').value+' W m<sup>&minus;2</sup>';
+      drawAl();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#segSnow button'),function(b){
+    b.addEventListener('click',function(){
+      snowOn=+b.getAttribute('data-s');
+      Array.prototype.forEach.call(document.querySelectorAll('#segSnow button'),function(o){
+        o.setAttribute('aria-pressed',o===b?'true':'false');
+      });
+      drawAl();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.ghost[data-l]'),function(b){
+    b.addEventListener('click',function(){
+      var p=b.getAttribute('data-l').split(',');
+      $('a_for').value=p[0]; $('a_tun').value=p[1]; $('a_wat').value=p[2];
+      $('v_for').textContent=p[0]+' %'; $('v_tun').textContent=p[1]+' %';
+      $('v_wat').textContent=p[2]+' %';
+      drawAl();
+    });
+  });
+
+  /* ═══ Demo 2 · Budyko ══════════════════════════════════════════ */
+  var LAMBDA=2.45e6;           /* J per kg */
+  var SPY=3.15576e7;           /* s per year */
+  function budyko(phi){
+    if(phi<=0) return 0;
+    return Math.sqrt(phi*Math.tanh(1/phi)*(1-Math.exp(-phi)));
+  }
+  function drawBu(){
+    var g=$('buG'); if(!g) return; clear(g);
+    var P=+$('b_P').value, Rn=+$('b_Rn').value;
+    /* Rn in W/m2 -> mm/yr of evaporative equivalent */
+    var Epot = Rn*SPY/LAMBDA;                 /* kg m-2 yr-1 == mm/yr */
+    var phi = Epot/P;
+    var eIdx = budyko(phi);
+    var E = eIdx*P, R = P-E;
+
+    var L=70,RR=660,T=30,B=280,W=RR-L,H=B-T;
+    var xmax=5;
+    var x=function(p){return L+W*Math.min(p,xmax)/xmax;};
+    var y=function(v){return B-H*Math.min(v,1.25)/1.25;};
+    for(var gx=0;gx<=xmax;gx++){
+      put(g,'line',{x1:x(gx),x2:x(gx),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:x(gx),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},gx);
+    }
+    for(var gy=0;gy<=1.25;gy+=0.25){
+      put(g,'line',{x1:L,x2:RR,y1:y(gy),y2:y(gy),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:y(gy)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},gy.toFixed(2));
+    }
+    put(g,'text',{x:(L+RR)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'dryness index Φ = Rₙ / (λP)   —   dry to the right');
+    put(g,'text',{x:L-8,y:T-10,'text-anchor':'end','font-size':11.5,
+      fill:'var(--text-muted)'},'E/P');
+    /* limits */
+    put(g,'line',{x1:x(0),y1:y(0),x2:x(1.25),y2:y(1.25),stroke:'var(--warn)',
+      'stroke-width':1.8,'stroke-dasharray':'6 4'});
+    put(g,'text',{x:x(1.28),y:y(1.19),'font-size':11.5,fill:'var(--warn)','font-weight':600},
+      'energy limit  E/P = Φ');
+    put(g,'line',{x1:L,y1:y(1),x2:RR,y2:y(1),stroke:'var(--ocn)',
+      'stroke-width':1.8,'stroke-dasharray':'6 4'});
+    put(g,'text',{x:RR-4,y:y(1)-8,'text-anchor':'end','font-size':11.5,
+      fill:'var(--ocn)','font-weight':600},'water limit  E/P = 1');
+    /* curve */
+    var d='';
+    for(var i=1;i<=400;i++){
+      var p=xmax*i/400;
+      d+=(i>1?'L':'M')+x(p).toFixed(1)+' '+y(budyko(p)).toFixed(1);
+    }
+    put(g,'path',{d:d,fill:'none',stroke:'var(--bio)','stroke-width':3});
+    put(g,'text',{x:x(3.4),y:y(0.86),'font-size':12,fill:'var(--bio)','font-weight':600},
+      'Budyko curve');
+    /* regions */
+    put(g,'text',{x:x(0.35),y:T+18,'font-size':11.5,fill:'var(--text-muted)'},'energy-limited');
+    put(g,'text',{x:x(0.35),y:T+33,'font-size':11,fill:'var(--text-muted)'},'water to spare → runoff');
+    put(g,'text',{x:x(3.1),y:T+18,'font-size':11.5,fill:'var(--text-muted)'},'water-limited');
+    put(g,'text',{x:x(3.1),y:T+33,'font-size':11,fill:'var(--text-muted)'},'energy to spare → dry');
+    put(g,'line',{x1:x(1),x2:x(1),y1:T,y2:B,stroke:'var(--text-muted)','stroke-width':1.2,
+      'stroke-dasharray':'3 4'});
+    /* marker */
+    var mx=x(phi), my=y(eIdx);
+    put(g,'line',{x1:mx,x2:mx,y1:my,y2:B,stroke:'var(--hot)','stroke-width':1,'stroke-dasharray':'3 3'});
+    put(g,'line',{x1:L,x2:mx,y1:my,y2:my,stroke:'var(--hot)','stroke-width':1,'stroke-dasharray':'3 3'});
+    put(g,'circle',{cx:mx,cy:my,r:6.5,fill:'var(--hot)',stroke:'var(--surface-1)','stroke-width':2});
+    if(phi>xmax){
+      put(g,'text',{x:x(xmax)-6,y:my-12,'text-anchor':'end','font-size':11.5,
+        fill:'var(--hot)','font-weight':600},'Φ = '+phi.toFixed(1)+' — off the scale, far right');
+    }
+    /* stacked P bar on the right */
+    var BX=700,BY=T,BH=B-T,BWd=54;
+    put(g,'text',{x:BX+BWd/2,y:T-10,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'P split');
+    var hE=BH*eIdx, hR=BH*(1-eIdx);
+    put(g,'rect',{x:BX,y:BY,width:BWd,height:Math.max(1,hR),fill:'var(--ocn)',opacity:0.75});
+    put(g,'rect',{x:BX,y:BY+hR,width:BWd,height:Math.max(1,hE),fill:'var(--bio)',opacity:0.75});
+    put(g,'text',{x:BX+BWd+8,y:BY+hR/2+4,'font-size':11.5,fill:'var(--ocn)','font-weight':600},
+      'runoff');
+    put(g,'text',{x:BX+BWd+8,y:BY+hR/2+19,'font-size':11,fill:'var(--text-muted)'},
+      Math.round(R)+' mm');
+    put(g,'text',{x:BX+BWd+8,y:BY+hR+hE/2+4,'font-size':11.5,fill:'var(--bio)','font-weight':600},
+      'evaporation');
+    put(g,'text',{x:BX+BWd+8,y:BY+hR+hE/2+19,'font-size':11,fill:'var(--text-muted)'},
+      Math.round(E)+' mm');
+    put(g,'text',{x:L,y:B+62,'font-size':11,fill:'var(--warn)','font-style':'italic'},
+      'COMPUTED — the Budyko (1974) relation as printed above; no fitted parameters.');
+    put(g,'text',{x:L,y:B+79,'font-size':11,fill:'var(--text-muted)'},
+      'Long-term, large-catchment steady state: storage is assumed unchanging, so this says nothing about any single year.');
+
+    var reg = phi<0.8 ? 'Energy-limited' : (phi>1.3 ? 'Water-limited' : 'Near the balance');
+    $('kPhi').textContent=phi.toFixed(2);
+    $('kE').textContent=Math.round(E);
+    $('kR').textContent=Math.round(R);
+    $('kReg').textContent=reg;
+    var tail;
+    if(phi<0.8){
+      tail='There is more water than the sunshine can evaporate, so the surplus &mdash; <b>'+Math.round(R)+
+           ' mm</b>, '+Math.round(100*(1-eIdx))+' % of the rainfall &mdash; runs off into rivers. '+
+           'Evaporation here is limited by <b>energy</b>, and adding more rain would simply add more runoff.';
+    } else if(phi>1.3){
+      tail='There is far more energy than water, so almost everything that falls evaporates and only <b>'+
+           Math.round(R)+' mm</b> is left to run off. Evaporation is limited by <b>water</b>, and adding '+
+           'energy changes nothing at all &mdash; which is why deserts do not get drier when they get hotter, '+
+           'they were already at the ceiling.';
+    } else {
+      tail='Water and energy supplies are comparable, so the surface sits near the corner of the curve. This '+
+           'is the <b>most sensitive</b> place to be: a small shift in either rainfall or radiation moves the '+
+           'runoff substantially, which is why semi-arid regions have such variable rivers.';
+    }
+    $('buRo').innerHTML='With <b>'+P+' mm</b> of rain and <b>'+Rn+' W m<sup>&minus;2</sup></b> of net '+
+      'radiation &mdash; enough energy to evaporate '+Math.round(Epot)+' mm &mdash; the dryness index is '+
+      '<span class="big">Φ = '+phi.toFixed(2)+'</span>. '+tail;
+  }
+  ['b_P','b_Rn'].forEach(function(id){
+    $(id).addEventListener('input',function(){
+      $('v_bP').textContent=$('b_P').value+' mm';
+      $('v_bRn').innerHTML=$('b_Rn').value+' W m<sup>&minus;2</sup>';
+      drawBu();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.ghost[data-b]'),function(b){
+    b.addEventListener('click',function(){
+      var p=b.getAttribute('data-b').split(',');
+      $('b_P').value=p[0]; $('b_Rn').value=p[1];
+      $('v_bP').textContent=p[0]+' mm';
+      $('v_bRn').innerHTML=p[1]+' W m<sup>&minus;2</sup>';
+      drawBu();
+    });
+  });
+
+  drawAl(); drawBu();
+})();
+</script>
+
+</div>
+<script src="../assets/reveal-answers.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('themeBtn');
+  if(!btn) return;
+  btn.onclick=function(){
+    var d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent = d?'Dark':'Light';
+  };
+})();
+</script>
+</body>
+</html>

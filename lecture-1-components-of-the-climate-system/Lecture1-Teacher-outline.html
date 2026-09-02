@@ -159,7 +159,7 @@ stay excluded.</p>
   it will not fit unless you are ruthless. <b>Blocks 1, 2 and 5 are the examinable core</b> and must not be
   rushed &mdash; the definition of climate, the timescale argument, and the circulation. <b>Block 7 (the
   cryosphere) is the one to compress</b> if you are behind; it is largely inventory and the public page
-  carries it well for self-study. Do not sacrifice the closing discussion in Block 8 &mdash; it is the only
+  carries it well for self-study. Do not sacrifice the breakout discussion in Block 9 &mdash; it is the only
   point where the ecology half of the course meets the physics half in the same room.</p>
   <p class="note"><b>Before you walk in, check three numbers.</b> The slides quote CO<sub>2</sub> and
   CH<sub>4</sub> for the current year and the latest global temperature ranking, and all three go stale every
@@ -340,7 +340,7 @@ not a schedule.</p>
     <div class="step">
       <p class="lbl">1 · Name the five, then immediately weigh them</p>
       <ul>
-        <li>Atmosphere, hydrosphere, cryosphere, biosphere, pedosphere. Write them on the board in a
+        <li>Atmosphere, hydrosphere, cryosphere, biosphere, land surface. Write them on the board in a
         pentagon and draw arrows between them as you go &mdash; you will refer back to it all afternoon.</li>
         <li>Do the mass comparison out loud: the ocean outweighs the atmosphere by <b>270&times;</b>, and
         water holds four times more heat per kilogram. The biosphere is seven orders of magnitude lighter
@@ -872,20 +872,37 @@ not a schedule.</p>
 <div class="blk">
   <div class="hd">
     <span class="n">Block 8</span>
-    <h3>The land surface and the biosphere &mdash; where the two halves of the course meet</h3>
-    <span class="t">14:50 · 30 min</span>
-    <span class="t" style="color:var(--nr)">do not cut this</span>
+    <h3>The land surface &mdash; the boundary conditions the atmosphere actually sees</h3>
+    <span class="t">14:50 · 22 min</span>
   </div>
   <div class="bd">
 
     <div class="step">
+      <p class="lbl">0 · Settle the name first, in thirty seconds</p>
+      <ul>
+        <li><b>The deck contradicts itself and the students will notice.</b> Slide&nbsp;16 lists four
+        components and omits the land surface; slide&nbsp;117 lists five and calls the fifth one
+        <em>pedosphere</em>. Goosse calls it the <b>land surface</b>, and never uses the word pedosphere at
+        all. Say which one you are using and why, once, and move on.</li>
+        <li>The distinction is worth thirty seconds because it is substantive, not cosmetic: <b>pedosphere</b>
+        is strictly the soil mantle; <b>lithosphere</b> or <b>geosphere</b> is the solid Earth including the
+        rock; <b>land surface</b> is the functional set of boundary conditions &mdash; albedo, roughness,
+        water storage, topography &mdash; which is what a climate model actually needs. The deck's own
+        &ldquo;pedosphere&rdquo; slides show a <em>topography</em> map and an <em>albedo</em> map, neither of
+        which is soil.</li>
+        <li>If you are updating the deck, this is the fix: make slide&nbsp;16 agree with slide&nbsp;117 and
+        relabel the fifth component <b>land surface</b>.</li>
+      </ul>
+    </div>
+
+    <div class="step">
       <p class="lbl">1 · Six levers, and where each one returns</p>
       <ul>
-        <li>Albedo, roughness, evapotranspiration, water storage, carbon, snow masking. Read the list and
+        <li>Albedo, roughness, evapotranspiration, water storage, soil carbon, topography. Read the list and
         <b>name the later lecture for each one</b> &mdash; that is the whole purpose of the slide.</li>
         <li><b>Note what is missing from the list: temperature.</b> The surface does not impose a
         temperature; it has properties, and the temperature is what comes out of the energy balance. That
-        distinction is Lecture&nbsp;3 in one sentence, and it is why a vegetation change is a climate change
+        distinction is Lecture&nbsp;3 in one sentence, and it is why a land-cover change is a climate change
         rather than a response to one.</li>
         <li>Albedo table: fresh snow <b>0.75&ndash;0.90</b>, coniferous forest <b>0.05&ndash;0.15</b>, ocean
         <b>0.05&ndash;0.10</b>, planetary mean <b>0.30</b>. Point out that a conifer forest is almost as dark
@@ -894,7 +911,7 @@ not a schedule.</p>
     </div>
 
     <div class="step">
-      <p class="lbl">2 · The experiment that makes the point</p>
+      <p class="lbl">2 · The albedo experiment that makes the point</p>
       <ul>
         <li>Run the albedo mixer with the snow on. <b>All tundra</b> gives ~0.75; <b>all forest</b> gives
         ~0.20. The trees stick up through the snow and hide it.</li>
@@ -909,7 +926,7 @@ not a schedule.</p>
         seasons, one phenomenon.</li>
       </ul>
       <div class="show"><span class="k">Show</span><div>
-        <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/land-and-biosphere.html#s2">Build
+        <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-land-surface.html#s2">Build
         a landscape and read its albedo</a>. The albedo clip from the deck
         (<a href="https://www.youtube.com/watch?v=d1U7X1k3d0Y">youtu.be/d1U7X1k3d0Y</a>) covers the same
         ground more slowly.
@@ -917,14 +934,95 @@ not a schedule.</p>
     </div>
 
     <div class="step">
+      <p class="lbl">3 · Where the rain goes — Budyko in five minutes</p>
+      <ul>
+        <li>Frame it as the same logic twice: <b>evaporation cannot exceed the water that arrives, and it
+        cannot exceed the energy available to vaporise it.</b> The lower ceiling wins. That ratio is the
+        dryness index <span class="eqn">&Phi; = R<sub>n</sub>/(&lambda;P)</span>.</li>
+        <li>Run the presets in this order: <b>Sahara</b> (&Phi;&nbsp;&asymp;&nbsp;52, everything evaporates,
+        no runoff) then <b>Amazon</b> (&Phi;&nbsp;&asymp;&nbsp;0.64, half the rain runs off). Ask why one
+        makes the largest river on Earth. The answer students miss: <em>the fraction is ordinary, the
+        quantity is not</em>.</li>
+        <li>Then <b>Telemark</b>: &Phi;&nbsp;=&nbsp;0.57, 382&nbsp;mm evaporated, <b>408&nbsp;mm runoff</b> on
+        790&nbsp;mm of rain. A runoff coefficient of 0.52, which is why Norway has the hydropower it
+        does. Good local hook.</li>
+        <li><b>The sentence that makes it a components lecture:</b> the same curve that predicts river flow
+        predicts how the surface splits its <em>energy</em> between latent and sensible heat, because every
+        millimetre evaporated is 2.45&nbsp;MJ that did not warm the air. Water and energy at the land surface
+        are the same problem written twice.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-land-surface.html#s3">Split
+        the precipitation</a>. Budyko's curve has <b>no fitted parameters</b> &mdash; worth saying aloud;
+        students assume anything that fits the world must have been tuned to it.
+      </div></div>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Deforest a tropical catchment. Which way does runoff move, and is that good?</b>
+        <span class="ans">Up, at first &mdash; shallower roots and a smoother, brighter surface evaporate
+        less, so more rain leaves sideways. Whether that is good depends on timescale: locally it means more
+        water and more flooding and erosion; regionally and over years it can mean <em>less rainfall</em>,
+        because much of Amazon precipitation is recycled from the forest itself. That is a positive feedback
+        and it is PC&nbsp;Lab&nbsp;3.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ BLOCK 9 ══════════════════ -->
+<div class="blk">
+  <div class="hd">
+    <span class="n">Block 9</span>
+    <h3>The biosphere &mdash; where the two halves of the course meet</h3>
+    <span class="t">15:12 · 25 min</span>
+    <span class="t" style="color:var(--nr)">do not cut this</span>
+  </div>
+  <div class="bd">
+
+    <div class="step">
+      <p class="lbl">1 · Open on the mass paradox</p>
+      <ul>
+        <li>Put three numbers on the board: ocean <b>1.4&times;10<sup>21</sup>&nbsp;kg</b>, atmosphere
+        <b>5.1&times;10<sup>18</sup></b>, biosphere <b>~2&times;10<sup>15</sup>&nbsp;kg&nbsp;C</b>. Then:
+        <b>marine biota are three petagrams and run a global cycle.</b></li>
+        <li>The point: <b>a component's importance is set by its flux and by what it controls, not by what it
+        weighs.</b> Land vegetation exchanges about a seventh of the atmosphere's entire carbon content with
+        it every year &mdash; which is why the Keeling curve has teeth.</li>
+        <li>This is the block where the ecologists in the room have something the physicists do not. Say so.
+        The first eight lectures of this course were ecological case studies; this is the page that connects
+        them to the physics.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <p class="lbl">2 · What limits growth, and where</p>
+      <ul>
+        <li>Same logic as Budyko, one block earlier: <b>two ceilings, and the lower one binds.</b> Say the
+        connection out loud &mdash; plants evaporate water in order to acquire carbon, so the constraint on
+        one really is the constraint on the other.</li>
+        <li>Run the Miami model. The pairing to use: <b>Sahara</b> (49, water-limited) against <b>Arctic
+        tundra</b> (524, temperature-limited). Both unproductive, <em>opposite sensitivity to warming</em>.
+        That is why high latitudes are greening and drylands are not, and it is the single most useful thing
+        a two-parameter model will ever tell you.</li>
+        <li><b>Then break your own model, deliberately.</b> Press <b>Savannah</b> and raise the temperature:
+        the prediction barely moves, because the water ceiling in the Miami model does not fall as it gets
+        hotter. In reality warming raises evaporative demand and the same 700&nbsp;mm supports less. Knowing
+        where a model is wrong is worth more than knowing what it outputs &mdash; and it justifies the
+        water-balance approach they just saw in Block&nbsp;8.</li>
+      </ul>
+      <div class="show"><span class="k">Show</span><div>
+        <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-biosphere.html#s2">What
+        grows here, and what is stopping it</a>. The filled marker is the binding ceiling &mdash; point at it.
+      </div></div>
+    </div>
+
+    <div class="step">
       <p class="lbl">3 · Breakout discussion — run it properly, five minutes in pairs</p>
       <ul>
         <li>Put the three slide questions up together and <b>give them five minutes in pairs before taking
-        answers</b>. This is a mixed-background room and this is the moment the biologists have something the
-        physicists do not.</li>
+        answers</b>.</li>
         <li>(a) Are vegetation/climate zones more dependent on latitude or longitude? (b) Are there
         exceptions? (c) Which two climate parameters define the zones?</li>
-        <li>Then run the K&ouml;ppen classifier live on whichever place the room names. The presets cover
+        <li>Then run the K&ouml;ppen classifier live on whichever place the room names. Presets cover
         B&oslash;, Bergen, Cherrapunji, Cairo, Manaus and Longyearbyen; B&oslash; comes out <b>Dfb</b>.</li>
         <li><b>The intended payoff:</b> the classifier is given nothing but twelve temperatures and twelve
         precipitation totals and it reproduces the world's biomes. That <em>is</em> the evidence that
@@ -934,24 +1032,40 @@ not a schedule.</p>
         westerlies); Atacama and Namib (coastal upwelling &mdash; point back to Block&nbsp;6); mountains
         (2&nbsp;km of altitude doing what 4000&nbsp;km of latitude does); continental interiors (distance
         from the sea).</li>
+        <li>If the room is quick, the follow-up on the page is worth asking: <b>the classifier and the
+        productivity model take the same two inputs &mdash; what does each add?</b> Categorical and seasonal
+        versus continuous and annual; neither is complete.</li>
       </ul>
       <div class="show"><span class="k">Show</span><div>
-        <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/land-and-biosphere.html#s3">Classify
+        <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-biosphere.html#s3">Classify
         a climate</a>. Show the K&ouml;ppen&ndash;Geiger world map (Peel et&nbsp;al. 2007) from the deck
         afterwards, not before &mdash; it is not on the public page, by design.
       </div></div>
     </div>
 
     <div class="step">
-      <p class="lbl">4 · Feedbacks, and both signs</p>
+      <p class="lbl">4 · Carbon and feedbacks, and both signs</p>
       <ul>
-        <li>Run the list from the slides: snow masking (+), CO<sub>2</sub> fertilisation (&minus;), soil
-        respiration (+), vegetation&ndash;precipitation (+), evaporative cooling (&minus;), fire (both).</li>
+        <li>Two numbers to hold together: living land vegetation <b>~450&nbsp;Pg&nbsp;C</b> against an
+        atmosphere of <b>~890</b>, and soil beneath it holding <b>three to five times more than the plants
+        growing on it</b>. <b>Most of the land's carbon is dead, in the ground, and slow.</b> That is why
+        land-use change is such a large budget term: the trees go quickly and the soil keeps going for
+        decades.</li>
+        <li>Run the feedback list: snow masking (+), CO<sub>2</sub> fertilisation (&minus;), soil respiration
+        (+), vegetation&ndash;precipitation (+), evaporative cooling (&minus;), fire (both).</li>
         <li><b>Both signs are present, and that is the honest summary.</b> The biosphere is not a thermostat
-        and not an amplifier. Where a positive feedback dominates strongly enough the response stops being
-        proportional and becomes a threshold &mdash; which is PC&nbsp;Labs&nbsp;1 and&nbsp;3, both of which
-        they will run this week.</li>
+        and not an amplifier. Where a positive feedback dominates strongly enough the response becomes a
+        <em>threshold</em> &mdash; which is PC&nbsp;Labs&nbsp;1 and&nbsp;3, both of which they run this
+        week.</li>
       </ul>
+      <div class="ask"><span class="k">Ask</span><br>
+        <b>Which of those six are actually observed, and which are mostly model results?</b>
+        <span class="ans">Observed: CO<sub>2</sub> fertilisation (the land sink has grown roughly in step
+        with emissions; satellites show widespread greening), treeline advance, and fire. Partly observed:
+        soil respiration &mdash; well measured at plot scale, genuinely uncertain in its global integral.
+        Mostly model: large-scale vegetation&ndash;precipitation coupling, because you cannot run the
+        experiment. Sorting claims into those three boxes is the same habit the provenance appendix trains
+        for figures.</span></div>
     </div>
 
   </div>
@@ -962,7 +1076,7 @@ not a schedule.</p>
   <div class="hd">
     <span class="n">Close</span>
     <h3>Seven sentences, and the question you left open</h3>
-    <span class="t">15:20 · 10 min</span>
+    <span class="t">15:37 · 10 min</span>
   </div>
   <div class="bd">
     <div class="step">
@@ -1008,7 +1122,7 @@ not a schedule.</p>
   <p class="note"><b>What never gets cut:</b> the thirty-year argument (Block&nbsp;1.2), the &tau;&nbsp;=&nbsp;C/&lambda;
   demonstration (Block&nbsp;2.2), the humid-air question (Block&nbsp;3.2), the hydrostatic derivation
   (Block&nbsp;3.3), the stability regimes (Block&nbsp;4.2), the Sahara question (Block&nbsp;5.4), Ekman
-  transport and upwelling (Block&nbsp;6.2), and the breakout discussion (Block&nbsp;8.3).</p>
+  transport and upwelling (Block&nbsp;6.2), and the breakout discussion (Block&nbsp;9.3).</p>
 </div>
 
 <h2 class="sec">Numbers to have on the board</h2>
@@ -1092,9 +1206,12 @@ not a schedule.</p>
     <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-cryosphere.html"><div class="rn">Block 7</div>
       <div class="rt">The cryosphere</div>
       <div class="rd">Inventory &middot; sea-level equivalent &middot; latent-heat ledger &middot; permafrost</div></a>
-    <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/land-and-biosphere.html"><div class="rn">Block 8</div>
-      <div class="rt">Land surface and biosphere</div>
-      <div class="rd">Six levers &middot; albedo mixer &middot; K&ouml;ppen classifier &middot; feedbacks &middot; lecture summary</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-land-surface.html"><div class="rn">Block 8</div>
+      <div class="rt">The land surface</div>
+      <div class="rd">Six levers &middot; albedo mixer &middot; Budyko water partition &middot; soils and topography</div></a>
+    <a href="https://peterhor.github.io/EE501_2026/lecture-1-components-of-the-climate-system/the-biosphere.html"><div class="rn">Block 9</div>
+      <div class="rt">The biosphere</div>
+      <div class="rd">Miami productivity model &middot; K&ouml;ppen classifier &middot; carbon &middot; feedbacks &middot; lecture summary</div></a>
     <a href="https://peterhor.github.io/EE501_2026/lecture-7-climate-change-past-and-present/provenance.html"><div class="rn">Reference</div>
       <div class="rt">Provenance appendix</div>
       <div class="rd">What is computed, what is schematic, what is not reproduced &mdash; now covers Lecture 1</div></a>

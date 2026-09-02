@@ -128,7 +128,7 @@
 
 <p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
 <a href="what-is-climate.html">&larr; From weather to climate</a> &nbsp;&middot;&nbsp;
-Components of the climate system &middot; 2 of 7</p>
+Components of the climate system &middot; 2 of 8</p>
 
 <header>
   <div>
@@ -181,12 +181,20 @@ Components of the climate system &middot; 2 of 7</p>
         <td class="num">~2 &times; 10<sup>15</sup> kg C</td>
         <td><b>Chemistry.</b> Tiny in mass, decisive for CO<sub>2</sub>, and it changes the surface it grows
         on.</td></tr>
-      <tr><td class="nm" style="color:var(--ped)">Pedosphere<br>and land surface</td>
+      <tr><td class="nm" style="color:var(--ped)">Land surface</td>
         <td>Soils, the weathering rock beneath them, and the topography that organises everything above.</td>
         <td class="num">~2 &times; 10<sup>19</sup> kg</td>
         <td><b>Boundary conditions.</b> Albedo, roughness, water storage, and the carbon in soil.</td></tr>
     </tbody>
   </table>
+  <p class="note"><b>A warning about names, because the sources disagree.</b> This course follows Goosse et
+  al. and calls the fifth component the <b>land surface</b>. You will meet two other words for territory that
+  overlaps it, and they are not synonyms. The <b>pedosphere</b> is strictly the <em>soil mantle</em> &mdash; a
+  part of the land surface, and the part that stores carbon and water. The <b>lithosphere</b> or
+  <b>geosphere</b> is the solid Earth beneath, including the rock that weathers and the topography that
+  steers the wind. Some textbooks use one of those as the component name instead; when they do, check which
+  meaning they intend, because &ldquo;pedosphere&rdquo; used to mean topography is simply wrong.</p>
+
   <p class="note"><b>Look at the mass column before anything else.</b> The ocean outweighs the atmosphere by
   a factor of about 270, and per kilogram water holds four times more heat than air. The biosphere is
   <em>seven orders of magnitude</em> lighter than the ocean and still runs the carbon cycle. Mass is not
@@ -375,7 +383,7 @@ Components of the climate system &middot; 2 of 7</p>
   any cell to see what crosses that particular interface, in which direction, and how quickly. The diagonal
   is what each component does to itself.</p>
 
-  <svg viewBox="0 0 880 400" role="img" aria-label="A five by five matrix of the interactions between atmosphere, hydrosphere, cryosphere, biosphere and pedosphere; selecting a cell describes the exchange across that interface"><g id="mG"></g></svg>
+  <svg viewBox="0 0 880 400" role="img" aria-label="A five by five matrix of the interactions between atmosphere, hydrosphere, cryosphere, biosphere and land surface; selecting a cell describes the exchange across that interface"><g id="mG"></g></svg>
 
   <div class="readout" id="mRo"></div>
 
@@ -428,7 +436,7 @@ Components of the climate system &middot; 2 of 7</p>
 <div class="card">
   <h3>What to carry into the next five pages</h3>
   <ul>
-    <li>Five components: <b>atmosphere, hydrosphere, cryosphere, biosphere, pedosphere</b>.</li>
+    <li>Five components: <b>atmosphere, hydrosphere, cryosphere, biosphere, land surface</b>.</li>
     <li>Each one has its own clock, and the clock is mostly set by <b>&tau; = C/&lambda;</b> &mdash; except
     for the ones limited by transport or by mass turnover instead.</li>
     <li>The atmosphere is fast, light and always nearly in equilibrium; the ocean is slow, heavy and never
@@ -449,7 +457,7 @@ c<sub>p</sub>&nbsp;=&nbsp;1004&nbsp;J&nbsp;kg<sup>&minus;1</sup>&nbsp;K<sup>&min
 &rho;c<sub>p</sub>&nbsp;=&nbsp;4.10&times;10<sup>6</sup>&nbsp;J&nbsp;m<sup>&minus;3</sup>&nbsp;K<sup>&minus;1</sup>;
 moist soil 2.0&times;10<sup>6</sup>; ice 1.93&times;10<sup>6</sup>. The interaction matrix is a
 <b>schematic</b> &mdash; a diagram of which couplings exist, carrying no measured quantity. Masses in
-Section&nbsp;1 are standard textbook values. Every figure on the seven Lecture&nbsp;1 pages is classified in
+Section&nbsp;1 are standard textbook values. Every figure on the eight Lecture&nbsp;1 pages is classified in
 the <a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
 &nbsp;&middot;&nbsp; Next: <a href="the-atmosphere.html">the atmosphere &rarr;</a></p>
 
@@ -584,8 +592,8 @@ the <a href="../lecture-7-climate-change-past-and-present/provenance.html">prove
   });
 
   /* ═══ Demo 2 · interaction matrix ══════════════════════════════ */
-  var NAMES=['Atmosphere','Hydrosphere','Cryosphere','Biosphere','Pedosphere'];
-  var SHORT=['Atm','Hyd','Cry','Bio','Ped'];
+  var NAMES=['Atmosphere','Hydrosphere','Cryosphere','Biosphere','Land surface'];
+  var SHORT=['Atm','Hyd','Cry','Bio','Lnd'];
   var CC=['var(--atm)','var(--ocn)','var(--cry)','var(--bio)','var(--ped)'];
   /* M[from][to] */
   var M=[
@@ -594,35 +602,35 @@ the <a href="../lecture-7-climate-change-past-and-present/provenance.html">prove
       {s:3,t:'Atmosphere → Hydrosphere',w:'Wind stress drives the surface currents. Heat and freshwater fluxes (precipitation minus evaporation) set the density of the surface water, and therefore where it sinks.',k:'days to years'},
       {s:3,t:'Atmosphere → Cryosphere',w:'Air temperature governs melt and freeze; snowfall builds ice sheets and glaciers; wind drives the sea ice around and piles it into ridges.',k:'days to millennia'},
       {s:3,t:'Atmosphere → Biosphere',w:'Temperature, precipitation, radiation and CO₂ concentration set what can grow where. This is the arrow the ecology half of this course is about.',k:'days to centuries'},
-      {s:2,t:'Atmosphere → Pedosphere',w:'Precipitation and evaporation set soil moisture; temperature drives weathering and the decomposition of soil carbon; wind erodes and deposits dust.',k:'days to millennia'}
+      {s:2,t:'Atmosphere → Land surface',w:'Precipitation and evaporation set soil moisture; temperature drives weathering and the decomposition of soil carbon; wind erodes and deposits dust.',k:'days to millennia'}
     ],
     [ /* Hyd → */
       {s:3,t:'Hydrosphere → Atmosphere',w:'Sea surface temperature sets the heat and moisture supply to the air above. Around 86 % of all evaporation happens over the ocean. The ocean also holds ~50× more carbon than the atmosphere and controls its CO₂ on centennial timescales.',k:'days to centuries'},
       {s:2,t:'Internal ocean dynamics',w:'Wind-driven gyres, the overturning circulation, mixing and the seasonal cycle of the mixed layer. The ocean moves about 20–25 % of the total poleward heat transport.',k:'years to millennia'},
       {s:3,t:'Hydrosphere → Cryosphere',w:'Ocean heat melts sea ice from below and melts the floating shelves that buttress the Antarctic ice sheet. Salinity sets the freezing point.',k:'years to centuries'},
       {s:2,t:'Hydrosphere → Biosphere',w:'Nutrient supply by upwelling controls marine productivity; water availability controls terrestrial productivity; ocean chemistry (pH) controls calcifiers.',k:'days to centuries'},
-      {s:1,t:'Hydrosphere → Pedosphere',w:'Runoff, erosion, sediment transport and the delivery of weathering products to the sea.',k:'years to 10⁶ yr'}
+      {s:1,t:'Hydrosphere → Land surface',w:'Runoff, erosion, sediment transport and the delivery of weathering products to the sea.',k:'years to 10⁶ yr'}
     ],
     [ /* Cry → */
       {s:3,t:'Cryosphere → Atmosphere',w:'Albedo: fresh snow reflects 0.75–0.90 of the sunlight, open ocean 0.06. Sea ice also insulates the ocean from the air, cutting winter heat loss by up to two orders of magnitude.',k:'days to years'},
       {s:3,t:'Cryosphere → Hydrosphere',w:'Freezing rejects brine and makes dense water — one of the two places deep water forms. Melting does the opposite, freshening the surface and capping the overturning.',k:'years to millennia'},
       {s:2,t:'Internal cryosphere dynamics',w:'Ice flow, calving, ridging and export. Ice sheets take millennia to adjust their shape; sea ice reorganises in days.',k:'days to millennia'},
       {s:1,t:'Cryosphere → Biosphere',w:'Growing-season length, snow as an insulating blanket over soil and over the animals in it, sea ice as habitat and as a platform.',k:'seasonal to centuries'},
-      {s:2,t:'Cryosphere → Pedosphere',w:'Permafrost: frozen ground that stores roughly twice the carbon currently in the atmosphere. Glacial erosion reshapes the land it flows over.',k:'years to 10⁵ yr'}
+      {s:2,t:'Cryosphere → Land surface',w:'Permafrost: frozen ground that stores roughly twice the carbon currently in the atmosphere. Glacial erosion reshapes the land it flows over.',k:'years to 10⁵ yr'}
     ],
     [ /* Bio → */
       {s:3,t:'Biosphere → Atmosphere',w:'Photosynthesis and respiration set the seasonal CO₂ cycle and take up about a quarter of human emissions. Transpiration returns water to the air. Vegetation also fixes albedo and surface roughness.',k:'days to centuries'},
       {s:2,t:'Biosphere → Hydrosphere',w:'The biological pump: sinking organic matter carries carbon to depth and keeps atmospheric CO₂ far lower than it would otherwise be. Root systems govern how much water reaches rivers.',k:'years to centuries'},
       {s:1,t:'Biosphere → Cryosphere',w:'Mostly indirect, via albedo and via CO₂. Directly: forest canopies mask snow, and dark biological growth on ice lowers its albedo.',k:'seasonal to centuries'},
       {s:2,t:'Internal biosphere dynamics',w:'Competition, succession, migration and disturbance. Individual leaves respond in minutes, treelines in centuries.',k:'days to centuries'},
-      {s:2,t:'Biosphere → Pedosphere',w:'Soil formation. Litter and roots build the organic matter that makes soil a carbon store, and vegetation cover is what stops the soil washing away.',k:'years to millennia'}
+      {s:2,t:'Biosphere → Land surface',w:'Soil formation. Litter and roots build the organic matter that makes soil a carbon store, and vegetation cover is what stops the soil washing away.',k:'years to millennia'}
     ],
     [ /* Ped → */
-      {s:2,t:'Pedosphere → Atmosphere',w:'Albedo and roughness of the bare surface, soil moisture controlling evaporation, dust, and the release of soil carbon as CO₂ and methane. Topography deflects and lifts the flow, making mountains and rain shadows.',k:'days to millennia'},
-      {s:1,t:'Pedosphere → Hydrosphere',w:'Where the water goes: infiltration, runoff and the routing of rivers. Also the supply of dissolved nutrients and iron to the ocean.',k:'days to 10⁶ yr'},
-      {s:1,t:'Pedosphere → Cryosphere',w:'Bedrock topography decides where an ice sheet can grow and, crucially, whether its grounding line is stable — a bed sloping inland is not.',k:'10³ to 10⁶ yr'},
-      {s:3,t:'Pedosphere → Biosphere',w:'Soil depth, texture, nutrients and water-holding capacity set the ceiling on what can grow. Two places with the same climate and different soil have different vegetation.',k:'years to millennia'},
-      {s:2,t:'Internal pedosphere dynamics',w:'Weathering, erosion, deposition and tectonics — the slowest processes in the system, and the ones that ultimately regulate CO₂ over millions of years.',k:'10³ to 10⁷ yr'}
+      {s:2,t:'Land surface → Atmosphere',w:'Albedo and roughness of the bare surface, soil moisture controlling evaporation, dust, and the release of soil carbon as CO₂ and methane. Topography deflects and lifts the flow, making mountains and rain shadows.',k:'days to millennia'},
+      {s:1,t:'Land surface → Hydrosphere',w:'Where the water goes: infiltration, runoff and the routing of rivers. Also the supply of dissolved nutrients and iron to the ocean.',k:'days to 10⁶ yr'},
+      {s:1,t:'Land surface → Cryosphere',w:'Bedrock topography decides where an ice sheet can grow and, crucially, whether its grounding line is stable — a bed sloping inland is not.',k:'10³ to 10⁶ yr'},
+      {s:3,t:'Land surface → Biosphere',w:'Soil depth, texture, nutrients and water-holding capacity set the ceiling on what can grow. Two places with the same climate and different soil have different vegetation.',k:'years to millennia'},
+      {s:2,t:'Internal land-surface dynamics',w:'Weathering, erosion, deposition and tectonics — the slowest processes in the system, and the ones that ultimately regulate CO₂ over millions of years.',k:'10³ to 10⁷ yr'}
     ]
   ];
   var sel=[0,1];

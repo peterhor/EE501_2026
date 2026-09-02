@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Land surface and biosphere — albedo, climate zones and the living boundary</title>
+<title>The biosphere — productivity, climate zones, carbon and feedbacks</title>
 <style>
   :root{
     color-scheme: light;
@@ -50,6 +50,10 @@
     font-size:16px;text-align:center;color:var(--text-primary);overflow-x:auto}
   .eq .u{color:var(--text-muted);font-size:13px;display:block;margin-top:6px}
   .eq b{font-weight:600}
+  .eq + .defs{margin-top:2px}
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 20px;margin:10px 0 14px}
+  .def{font-size:13.5px;color:var(--text-secondary);line-height:1.45}
+  .def b{color:var(--text-primary);font-weight:600;margin-right:6px}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--text-secondary)}
   .chip{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -123,189 +127,165 @@
 <div class="wrap">
 
 <p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
-<a href="the-cryosphere.html">&larr; The cryosphere</a> &nbsp;&middot;&nbsp;
-Components of the climate system &middot; 7 of 7</p>
+<a href="the-land-surface.html">&larr; The land surface</a> &nbsp;&middot;&nbsp;
+Components of the climate system &middot; 8 of 8</p>
 
 <header>
   <div>
-    <h1>The land surface and the biosphere</h1>
-    <p class="sub">The atmosphere does not touch the Earth. It touches leaves, soil, snow and rock &mdash;
-    and what it touches decides how much sunlight is absorbed, how much water is returned, how rough the
-    flow is and where the carbon goes. This last page closes the loop: the biosphere is not only a passenger
-    of climate, it is one of the boundary conditions.</p>
+    <h1>The biosphere</h1>
+    <p class="sub">Seven orders of magnitude lighter than the ocean, and it runs the carbon cycle. The
+    biosphere is the component with the worst ratio of mass to influence in the entire system &mdash; and
+    the one this course exists to connect the physics to. It is not a passenger. It sets most of the land
+    surface properties from the previous page, and it decides where a large fraction of the carbon goes.</p>
   </div>
   <button class="toggle" id="themeBtn">Dark</button>
 </header>
 
 <div class="stepnav">
-  <a href="#s1">1 &middot; Six levers</a>
-  <a href="#s2">2 &middot; Albedo</a>
+  <a href="#s1">1 &middot; Mass and influence</a>
+  <a href="#s2">2 &middot; What limits growth</a>
   <a href="#s3">3 &middot; Climate zones</a>
-  <a href="#s4">4 &middot; Carbon and feedbacks</a>
-  <a href="#s5">5 &middot; The whole lecture</a>
+  <a href="#s4">4 &middot; Carbon</a>
+  <a href="#s5">5 &middot; Feedbacks</a>
+  <a href="#s6">6 &middot; The whole lecture</a>
 </div>
 
 <!-- ═══════════ 1 ═══════════ -->
-<h2 class="sec" id="s1">1 &middot; What the surface actually controls</h2>
+<h2 class="sec" id="s1">1 &middot; Tiny in mass, decisive in function</h2>
 
 <div class="card">
-  <h3>Six properties, all of them set by what is growing</h3>
-  <p class="cap">Goosse et al. (2010), &sect;1.6. Every item on this list appears again in a later lecture as
-  a term in an equation.</p>
+  <h3>Stock is not flux</h3>
+  <p class="cap">Compare the mass column with what each component actually does. This is the clearest case in
+  the system where the small number is the misleading one.</p>
   <table>
-    <thead><tr><th>Property</th><th>What it controls</th><th>Where it returns in the course</th></tr></thead>
+    <thead><tr><th>Component</th><th class="num">Mass</th><th>What it does with it</th></tr></thead>
     <tbody>
-      <tr><td class="nm">Albedo</td><td>The fraction of sunlight reflected rather than absorbed &mdash;
-        the biggest single lever, and the one vegetation changes most.</td>
-        <td><a href="../lecture-3-climate-at-a-local-scale/surface-properties.html">L3.4</a>,
-        <a href="../lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">L6.4</a>,
-        <a href="../pc-lab-1-daisyworld/">Lab 1</a></td></tr>
-      <tr><td class="nm">Roughness length</td><td>How efficiently the surface exchanges momentum, heat and
-        moisture with the air. A forest is aerodynamically a hundred times rougher than grass.</td>
-        <td><a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">L3.2</a></td></tr>
-      <tr><td class="nm">Evapotranspiration</td><td>How much of the absorbed energy leaves as latent rather
-        than sensible heat &mdash; the Bowen ratio. Roots reach water that bare soil cannot.</td>
-        <td><a href="../lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">L3.2</a>,
-        <a href="../lecture-4-global-cycles-water-and-carbon/water-balance.html">L4.1</a></td></tr>
-      <tr><td class="nm">Water storage</td><td>Soil moisture: the buffer between rainfall and evaporation,
-        and the memory that turns a dry spring into a hot summer.</td>
-        <td><a href="../lecture-4-global-cycles-water-and-carbon/water-balance.html">L4.1</a>,
-        <a href="../lecture-5-modelling-the-climate-system/components.html">L5.4</a></td></tr>
-      <tr><td class="nm">Carbon</td><td>Biomass and soil organic matter, and the fluxes in and out of them.
-        Land takes up roughly a quarter of human emissions.</td>
-        <td><a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">L4.2</a>,
-        <a href="../lecture-6-response-of-the-climate-system-to-perturbations/biogeochemical-feedbacks.html">L6.6</a></td></tr>
-      <tr><td class="nm">Snow masking</td><td>Whether snow on the ground is visible from above. A tall
-        canopy hides it; tundra does not. This one property flips the sign of the boreal albedo
-        feedback.</td>
-        <td>Section 2 below, and <a href="../pc-lab-3-abrupt-vegetation-change/">Lab 3</a></td></tr>
+      <tr><td class="nm" style="color:var(--ocn)">Hydrosphere</td><td class="num">1.4 &times; 10<sup>21</sup> kg</td>
+        <td>Stores heat and carbon for centuries.</td></tr>
+      <tr><td class="nm" style="color:var(--atm)">Atmosphere</td><td class="num">5.1 &times; 10<sup>18</sup> kg</td>
+        <td>Moves heat and water across a hemisphere in days.</td></tr>
+      <tr class="on"><td class="nm" style="color:var(--bio)">Biosphere</td><td class="num">~2 &times; 10<sup>15</sup> kg C</td>
+        <td><b>Exchanges about a seventh of the atmosphere's entire carbon content with it every single
+        year</b>, and sets the albedo, roughness and evapotranspiration of the land it grows on.</td></tr>
+      <tr class="on"><td class="nm" style="color:var(--bio)">&mdash; of which marine biota</td><td class="num">~3 Pg C</td>
+        <td>Three petagrams, turning over in <b>days</b>, running the biological pump that keeps atmospheric
+        CO<sub>2</sub> roughly 200&nbsp;ppm lower than it would otherwise be.</td></tr>
     </tbody>
   </table>
-  <p class="note"><b>Notice what is missing from that list: temperature.</b> The surface does not have a
-  temperature that it imposes on the atmosphere. It has <em>properties</em>, and the temperature is what comes
-  out when those properties are fed into an energy balance. That distinction is the whole of
-  <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3</a>, and it is why a change in
-  vegetation is a change in climate rather than a response to one.</p>
+  <p class="note"><b>Marine life is three petagrams and runs a global cycle.</b> Land vegetation holds about
+  half as much carbon as the atmosphere and exchanges roughly a seventh of the atmosphere's content with it
+  annually &mdash; which is why the Keeling curve has visible teeth. A component's importance is set by its
+  <em>flux</em> and by what it controls, not by what it weighs.</p>
+  <div class="xref"><b>Where the biosphere already appeared in this lecture.</b> It is the reason the
+  <a href="the-land-surface.html#s2">boreal albedo</a> question has no single answer; it supplies the
+  transpiration that sets the <a href="the-land-surface.html#s3">water partition</a>; and it is one of the
+  five rows in the <a href="components-and-timescales.html#s4">interaction matrix</a>. This page asks what
+  governs it, rather than what it does to everything else.</div>
 </div>
 
 <!-- ═══════════ 2 ═══════════ -->
-<h2 class="sec" id="s2">2 &middot; Albedo, and the trap in the boreal forest</h2>
+<h2 class="sec" id="s2">2 &middot; What limits growth, and where</h2>
 
 <div class="card">
-  <h3>The numbers</h3>
-  <p class="cap">Typical shortwave albedo of natural surfaces &mdash; after Goosse et al. (2010),
-  Table&nbsp;1.3. Real published ranges; the value for any particular surface depends on sun angle,
-  wetness and season.</p>
-  <table>
-    <thead><tr><th>Surface</th><th class="num">Albedo &alpha;</th><th>Note</th></tr></thead>
-    <tbody>
-      <tr><td class="nm">Fresh snow</td><td class="num">0.75 &ndash; 0.90</td>
-        <td>The brightest natural surface on Earth. Ages quickly &mdash; old snow falls to 0.4&ndash;0.6.</td></tr>
-      <tr><td class="nm">Sea ice</td><td class="num">0.30 &ndash; 0.70</td>
-        <td>Bare ice at the low end, snow-covered at the high; melt ponds drop it sharply.</td></tr>
-      <tr><td class="nm">Desert sand</td><td class="num">0.20 &ndash; 0.45</td>
-        <td>Which is why the Sahara shows up so clearly from space.</td></tr>
-      <tr><td class="nm">Grassland, crops</td><td class="num">0.16 &ndash; 0.26</td><td>&nbsp;</td></tr>
-      <tr><td class="nm">Deciduous forest</td><td class="num">0.15 &ndash; 0.20</td>
-        <td>Changes seasonally as the leaves come and go.</td></tr>
-      <tr><td class="nm">Coniferous forest</td><td class="num">0.05 &ndash; 0.15</td>
-        <td><b>Almost as dark as the open ocean</b>, and it stays dark all winter.</td></tr>
-      <tr><td class="nm">Ocean (high sun)</td><td class="num">0.05 &ndash; 0.10</td>
-        <td>Rises steeply at low sun angles &mdash; over 0.5 near the poles in low light.</td></tr>
-      <tr><td class="nm">Planetary mean</td><td class="num">0.30</td>
-        <td>The number in every energy-balance calculation in
-        <a href="../lecture-2-earths-energy-budget/stefan-boltzmann.html">Lecture 2</a>. Clouds contribute
-        most of it.</td></tr>
-    </tbody>
-  </table>
+  <h3>Two ceilings again &mdash; and the lower one wins</h3>
+  <p>The land surface page split precipitation by asking which was scarcer, water or energy. Productivity
+  obeys the same logic, and this is not a coincidence: plants evaporate water in order to acquire carbon, so
+  the constraint on one is the constraint on the other.</p>
+  <p>The <b>Miami model</b> (Lieth, 1975) is the simplest useful statement of it. It predicts net primary
+  production from two numbers &mdash; mean annual temperature and annual precipitation &mdash; by computing a
+  ceiling from each and taking the smaller:</p>
+  <div class="eq">
+    NPP<sub>T</sub> = 3000 / (1 + e<sup>1.315 &minus; 0.119&thinsp;T</sup>)
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    NPP<sub>P</sub> = 3000 (1 &minus; e<sup>&minus;0.000664&thinsp;P</sup>)
+    <span class="u">T in &deg;C, P in mm yr<sup>&minus;1</sup>, NPP in g dry matter m<sup>&minus;2</sup>
+    yr<sup>&minus;1</sup></span>
+  </div>
+  <div class="defs">
+    <div class="def"><b>NPP</b> net primary production &mdash; what the vegetation builds and keeps, after
+    its own respiration</div>
+    <div class="def"><b>NPP<sub>T</sub></b> the ceiling temperature alone would allow</div>
+    <div class="def"><b>NPP<sub>P</sub></b> the ceiling water alone would allow</div>
+    <div class="def"><b>T</b> mean annual temperature, &deg;C</div>
+    <div class="def"><b>P</b> annual precipitation, mm yr<sup>&minus;1</sup></div>
+    <div class="def"><b>3000</b> the empirical global maximum, g m<sup>&minus;2</sup> yr<sup>&minus;1</sup></div>
+  </div>
+  <div class="eq">
+    <b>NPP = min( NPP<sub>T</sub> , NPP<sub>P</sub> )</b>
+    <span class="u">Liebig's law of the minimum: growth is set by the scarcest requirement, not by the
+    average of them</span>
+  </div>
+  <p class="note"><b>It is an empirical fit, and it is deliberately crude.</b> Two predictors, three
+  parameters, no soil, no species, no CO<sub>2</sub>, no nutrients, no seasonality. It nonetheless reproduces
+  the broad global pattern of productivity, which tells you something worth knowing: <em>at the largest
+  scale, climate really is the first-order control on the biosphere</em>. Everything else is a correction to
+  that &mdash; an important correction, and still a correction.</p>
 </div>
 
 <div class="card demo">
-  <h3>Build a landscape and read its albedo</h3>
-  <p class="cap">Mix surface types to make up a region, with or without snow lying on the ground, and see the
-  area-weighted albedo and what it does to the absorbed sunlight. The snow toggle is the interesting part:
-  snow only counts if it can be seen from above.</p>
+  <h3>What grows here, and what is stopping it</h3>
+  <p class="cap">The same two numbers that classify a climate in Section&nbsp;3 also predict how much grows
+  in it. Watch the limiting factor switch as you move around the world.</p>
 
   <div class="ctrls">
     <div class="ctrl">
-      <label for="a_for"><span>Coniferous forest</span> <b id="v_for">40 %</b></label>
-      <input type="range" id="a_for" min="0" max="100" step="1" value="40">
-      <div class="hint">&alpha; = 0.10 bare, 0.20 with snow in the canopy.</div>
+      <label for="n_T"><span>Mean annual temperature</span> <b id="v_nT">6.0 &deg;C</b></label>
+      <input type="range" id="n_T" min="-20" max="30" step="0.5" value="6">
     </div>
     <div class="ctrl">
-      <label for="a_tun"><span>Tundra or grassland</span> <b id="v_tun">40 %</b></label>
-      <input type="range" id="a_tun" min="0" max="100" step="1" value="40">
-      <div class="hint">&alpha; = 0.18 bare, 0.75 under snow.</div>
-    </div>
-    <div class="ctrl">
-      <label for="a_wat"><span>Open water</span> <b id="v_wat">20 %</b></label>
-      <input type="range" id="a_wat" min="0" max="100" step="1" value="20">
-      <div class="hint">&alpha; = 0.07 open, 0.60 frozen and snow-covered.</div>
-    </div>
-    <div class="ctrl">
-      <label for="a_ins"><span>Insolation at the surface</span> <b id="v_ins">180 W m<sup>&minus;2</sup></b></label>
-      <input type="range" id="a_ins" min="40" max="320" step="5" value="180">
-      <div class="hint">Annual mean; higher in the tropics, far lower in polar winter.</div>
+      <label for="n_P"><span>Annual precipitation</span> <b id="v_nP">790 mm</b></label>
+      <input type="range" id="n_P" min="5" max="4000" step="5" value="790">
     </div>
   </div>
 
   <div class="rowbtns" style="margin-top:12px">
-    <span class="lbl">Season</span>
-    <div class="seg" id="segSnow">
-      <button data-s="0" aria-pressed="true">Snow-free</button>
-      <button data-s="1" aria-pressed="false">Snow on the ground</button>
-    </div>
-    <span class="lbl" style="margin-left:12px">Try</span>
-    <button class="ghost" data-l="0,90,10">All tundra</button>
-    <button class="ghost" data-l="90,0,10">All forest</button>
-    <button class="ghost" data-l="40,40,20">A mixed boreal landscape</button>
+    <span class="lbl">Try</span>
+    <button class="ghost" data-n="6,790">B&oslash;, Telemark</button>
+    <button class="ghost" data-n="27,2200">Amazon</button>
+    <button class="ghost" data-n="22,25">Sahara</button>
+    <button class="ghost" data-n="-2,400">Arctic tundra</button>
+    <button class="ghost" data-n="-1,500">Boreal Siberia</button>
+    <button class="ghost" data-n="25,700">Savannah</button>
   </div>
 
-  <svg viewBox="0 0 880 330" role="img" aria-label="Stacked bar of surface fractions with the area-weighted albedo in snow-free and snow-covered conditions, and the difference in absorbed solar radiation"><g id="alG"></g></svg>
+  <svg viewBox="0 0 880 380" role="img" aria-label="The two Miami-model productivity ceilings plotted against temperature and precipitation, with the current climate marked and the limiting factor identified"><g id="npG"></g></svg>
 
   <div class="kpis">
-    <div class="kpi"><div class="k">Albedo, snow-free</div><div class="v" id="kA0">&mdash;</div><div class="s">area-weighted mean</div></div>
-    <div class="kpi"><div class="k">Albedo, with snow</div><div class="v" id="kA1">&mdash;</div><div class="s">same landscape, snow lying</div></div>
-    <div class="kpi"><div class="k">Absorbed, current season</div><div class="v" id="kAbs">&mdash;</div><div class="s">(1 &minus; &alpha;) &times; insolation</div></div>
-    <div class="kpi"><div class="k">Seasonal albedo swing</div><div class="v" id="kSw">&mdash;</div><div class="s">and the W m<sup>&minus;2</sup> it is worth</div></div>
+    <div class="kpi"><div class="k">Temperature ceiling</div><div class="v" id="kNT">&mdash;</div><div class="s">g m<sup>&minus;2</sup> yr<sup>&minus;1</sup></div></div>
+    <div class="kpi"><div class="k">Water ceiling</div><div class="v" id="kNP">&mdash;</div><div class="s">g m<sup>&minus;2</sup> yr<sup>&minus;1</sup></div></div>
+    <div class="kpi"><div class="k">Predicted NPP</div><div class="v" id="kNPP">&mdash;</div><div class="s">the lower of the two</div></div>
+    <div class="kpi"><div class="k">Limited by</div><div class="v" id="kLim">&mdash;</div><div class="s">the binding constraint</div></div>
   </div>
 
-  <div class="readout" id="alRo"></div>
+  <div class="readout" id="npRo"></div>
 
-  <p class="note"><b>Now do the experiment that matters.</b> Press <b>all tundra</b>, then <b>all forest</b>,
-  with the snow on. Replacing tundra with forest at the same latitude changes the winter albedo from about
-  0.75 to about 0.20 &mdash; the trees stick up through the snow and hide it. That single change absorbs tens
-  of watts per square metre more sunlight, which is a <b>warming</b> effect, and it is large enough to compete
-  with the cooling effect of the carbon those same trees take up.</p>
+  <p class="q"><b>Question.</b> Press <b>Sahara</b> and then <b>Arctic tundra</b>. Both are unproductive. Does it
+  follow that warming will affect them the same way?
+  <span style="color:var(--text-muted)">No, and the model tells you why in one glance. The Sahara is
+  <b>water-limited</b> &mdash; its temperature ceiling is enormous and irrelevant, so warming alone changes
+  nothing about its productivity and only a change in rainfall would. The tundra is <b>temperature-limited</b>
+  &mdash; it has water it cannot use, so warming lifts the binding constraint directly and productivity rises
+  fast. Same low NPP, opposite sensitivity. This is exactly why high latitudes are greening while drylands
+  are not, and it is the single most useful thing this two-parameter model will tell you.</span></p>
 
-  <p class="q"><b>Question.</b> Planting boreal forest therefore has two opposing climate effects. Which wins,
-  and what does that imply about tree-planting as climate policy?
-  <span style="color:var(--text-muted)">In the <b>high-latitude boreal zone</b> the albedo effect frequently
-  wins: the forest is dark all winter under a low but non-zero sun, and the carbon uptake per hectare is
-  modest because growth is slow. Several studies find boreal afforestation to be net warming. In the
-  <b>tropics</b> the reverse is emphatically true: the albedo change is small, the carbon uptake is large, and
-  there is a third effect &mdash; intense evapotranspiration cooling the surface and forming cloud &mdash;
-  that also cools. The policy conclusion is not &ldquo;trees are bad&rdquo;; it is that <b>where</b> you plant
-  determines the sign of the answer, and a carbon-only accounting is the wrong accounting. The same
-  vegetation&ndash;albedo mechanism, run forward until it becomes an abrupt transition, is
-  <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a>.</span></p>
+  <p class="q"><b>Question.</b> Press <b>Savannah</b> (25&nbsp;&deg;C, 700&nbsp;mm). Now raise the temperature
+  and watch what happens to the prediction. Why is the model's answer misleading here?
+  <span style="color:var(--text-muted)">The prediction barely moves, because the site is water-limited and
+  the temperature ceiling is not binding. But in reality warming <em>increases evaporative demand</em>, so
+  the same 700&nbsp;mm supports less growth than it did &mdash; the water ceiling should fall as temperature
+  rises, and in the Miami model it does not, because the two predictors are treated as independent. That is
+  the model's biggest structural flaw, and it is why serious productivity models use a water <em>balance</em>
+  (the Budyko logic from <a href="the-land-surface.html#s3">the previous page</a>) rather than raw
+  precipitation. Knowing where a model is wrong is worth more than knowing what it
+  outputs.</span></p>
 
-  <p class="q"><b>Question.</b> Drag the insolation down to 40&nbsp;W&nbsp;m<sup>&minus;2</sup> &mdash; a polar
-  winter. The albedo difference is unchanged but the watts almost vanish. What does that tell you about when
-  the ice&ndash;albedo feedback operates?
-  <span style="color:var(--text-muted)">Albedo can only act on light that is arriving. In the polar night it
-  does nothing at all, however white the surface is, which is why the ice&ndash;albedo feedback is a
-  <em>summer</em> feedback and why the Arctic amplification observed in <em>winter</em> must be explained by
-  something else &mdash; principally the loss of sea ice as an insulating lid, letting ocean heat escape to
-  the atmosphere. Two different mechanisms, two different seasons, one phenomenon.
-  <a href="../lecture-8-climate-change-the-future/temperature-patterns.html">Lecture 8, part 3</a>.</span></p>
-
-  <div class="warnbox"><b>Computed</b> from an area-weighted mean of representative albedo values, listed
-  beside each slider and drawn from the published ranges in the table above. The fractions are normalised to
-  sum to 100&nbsp;%. This is a <b>bookkeeping calculation</b>, not a model: it has no sun-angle dependence, no
-  distinction between direct and diffuse radiation, no canopy radiative transfer, and no feedback of the
-  temperature change back onto the snow. Each of those would change the numbers; none of them changes the
-  sign of the forest-versus-tundra comparison, which is robust and observed.</div>
+  <div class="warnbox"><b>Computed</b> from the Miami model exactly as printed above (Lieth, H., 1975,
+  <i>Modeling the primary productivity of the world</i>, in Lieth &amp; Whittaker, eds., <i>Primary
+  Productivity of the Biosphere</i>, Springer). It is an <b>empirical regression on two predictors</b>, not a
+  mechanistic model: no soil, no nutrients, no species composition, no CO<sub>2</sub> fertilisation, no
+  seasonality, and &mdash; as the second question above draws out &mdash; no coupling between the temperature
+  and water terms. Outputs are grams of <em>dry matter</em>; multiply by roughly 0.45 for grams of carbon.
+  Use it for the pattern and the limiting factor, never for a site-specific number.</div>
 </div>
 
 <!-- ═══════════ 3 ═══════════ -->
@@ -314,10 +294,10 @@ Components of the climate system &middot; 7 of 7</p>
 <div class="card">
   <h3>Two variables predict most of it</h3>
   <p>Look at any map of world vegetation and the pattern is dominated by bands running <b>east&ndash;west</b>,
-  not north&ndash;south. That is because the first-order control is <b>temperature</b>, which is set by
-  latitude through insolation. The second-order control is <b>precipitation</b>, which is set by the
-  circulation from <a href="circulation.html">page 4</a> &mdash; and precipitation is what breaks the bands
-  up, because it varies strongly with longitude.</p>
+  not north&ndash;south. That is because the first-order control is <b>temperature</b>, set by latitude
+  through insolation. The second-order control is <b>precipitation</b>, set by the circulation from
+  <a href="circulation.html">part 4</a> &mdash; and precipitation is what breaks the bands up, because it
+  varies strongly with longitude.</p>
   <p>The <b>K&ouml;ppen&ndash;Geiger classification</b> formalises exactly this: it is a decision tree
   operating on twelve monthly temperatures and twelve monthly precipitation totals, and nothing else. No
   vegetation data go into it, and yet it reproduces the world's biomes remarkably well &mdash; which is itself
@@ -378,6 +358,16 @@ Components of the climate system &middot; 7 of 7</p>
   because they are far from any ocean. <b>The two parameters are temperature and precipitation</b>, which is
   not a coincidence &mdash; they are the two things the classifier is given, and it works.</span></p>
 
+  <p class="q"><b>Question.</b> The classifier and the productivity model take the <em>same two inputs</em>
+  and give different outputs. What does each one add that the other does not?
+  <span style="color:var(--text-muted)">The classifier is <b>categorical and seasonal</b>: it uses twelve
+  months, so it can tell a Mediterranean winter-wet climate from a monsoon summer-wet one with identical
+  annual totals &mdash; and those two support completely different vegetation. The Miami model is
+  <b>continuous and annual</b>: it throws the seasonality away but gives a number, and it names the limiting
+  factor. Neither is complete. Between them they capture the two things a first-order description of the
+  biosphere needs: <em>what kind of place is this</em>, and <em>how much can grow here and
+  why not more</em>.</span></p>
+
   <div class="warnbox"><b>Computed, from published criteria.</b> The classifier implements the
   K&ouml;ppen&ndash;Geiger decision tree as set out by Peel, Finlayson and McMahon (2007), including the
   seasonal precipitation threshold and the summer/winter half-year definitions. The <b>monthly climatology it
@@ -389,10 +379,10 @@ Components of the climate system &middot; 7 of 7</p>
 </div>
 
 <!-- ═══════════ 4 ═══════════ -->
-<h2 class="sec" id="s4">4 &middot; The biosphere as an active component</h2>
+<h2 class="sec" id="s4">4 &middot; Where the carbon sits</h2>
 
 <div class="card">
-  <h3>Where the carbon sits</h3>
+  <h3>The reservoirs, and their clocks</h3>
   <p class="cap">Approximate present-day stocks, in petagrams of carbon (1 Pg = 10<sup>15</sup> g = 1 billion
   tonnes). Real values, from the Global Carbon Project and IPCC AR6 WG1 (2021).</p>
   <table>
@@ -410,75 +400,73 @@ Components of the climate system &middot; 7 of 7</p>
         <td>Days. Tiny stock, enormous flux &mdash; the biological pump.</td></tr>
     </tbody>
   </table>
-  <p class="note"><b>Marine life is three petagrams and runs a global cycle.</b> Stock and flux are different
-  quantities, and the biosphere is the clearest case in the system where the small number is the misleading
-  one. Land vegetation holds half as much carbon as the atmosphere and exchanges about a seventh of the
-  atmosphere's entire content with it every year &mdash; which is why the Keeling curve has visible teeth.</p>
-  <div class="xref">Those teeth, the annual growth rate and the closure of the global budget are
-  <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture 4, part&nbsp;2</a>.</div>
+  <p class="note"><b>Two numbers to hold together.</b> Land vegetation is 450&nbsp;Pg against an atmosphere of
+  890 &mdash; so the entire living land biosphere is worth about half the air's carbon. And the soil beneath
+  it holds three to five times more than the plants growing on it. <b>Most of the land's carbon is dead, in
+  the ground, and slow.</b> That is why land-use change is such a large term in the carbon budget: cutting a
+  forest releases the trees quickly and then keeps releasing the soil for decades.</p>
+  <div class="xref">The annual growth rate, the airborne fraction and the closure of the global budget are
+  <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture 4, part&nbsp;2</a>; the
+  ocean side of it is <a href="../lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">part&nbsp;3</a>.</div>
 </div>
 
+<!-- ═══════════ 5 ═══════════ -->
+<h2 class="sec" id="s5">5 &middot; The feedbacks the biosphere runs</h2>
+
 <div class="card">
-  <h3>The feedbacks vegetation runs</h3>
+  <h3>Both signs are present, and that is the honest summary</h3>
   <p class="cap">Each of these is a two-way coupling in the interaction matrix on
   <a href="components-and-timescales.html#s4">page 2</a>. The sign is given here; the physics is
   Lecture&nbsp;6.</p>
   <table>
     <thead><tr><th>Mechanism</th><th class="num">Sign</th><th>How it works</th></tr></thead>
     <tbody>
-      <tr><td class="nm">Snow masking by tall canopy</td><td class="num">positive</td>
-        <td>Warmer &rarr; treeline advances &rarr; darker winter surface &rarr; warmer. The boreal feedback
-        of Section 2.</td></tr>
-      <tr><td class="nm">CO<sub>2</sub> fertilisation</td><td class="num">negative</td>
+      <tr><td class="nm">Snow masking by tall canopy</td><td class="num" style="color:var(--hot)">positive</td>
+        <td>Warmer &rarr; treeline advances &rarr; darker winter surface &rarr; warmer. The boreal albedo
+        trap from <a href="the-land-surface.html#s2">the previous page</a>.</td></tr>
+      <tr><td class="nm">CO<sub>2</sub> fertilisation</td><td class="num" style="color:var(--ocn)">negative</td>
         <td>More CO<sub>2</sub> &rarr; faster growth &rarr; more uptake &rarr; less CO<sub>2</sub>.
         Saturates, and is limited by nitrogen and water.</td></tr>
-      <tr><td class="nm">Soil respiration</td><td class="num">positive</td>
+      <tr><td class="nm">Soil respiration</td><td class="num" style="color:var(--hot)">positive</td>
         <td>Warmer &rarr; faster decomposition &rarr; more CO<sub>2</sub> released &rarr; warmer.</td></tr>
-      <tr><td class="nm">Vegetation&ndash;precipitation coupling</td><td class="num">positive</td>
+      <tr><td class="nm">Vegetation&ndash;precipitation coupling</td><td class="num" style="color:var(--hot)">positive</td>
         <td>More vegetation &rarr; more evapotranspiration and lower albedo &rarr; more rainfall &rarr; more
         vegetation. The Sahara mechanism.</td></tr>
-      <tr><td class="nm">Evaporative cooling</td><td class="num">negative</td>
+      <tr><td class="nm">Evaporative cooling</td><td class="num" style="color:var(--ocn)">negative</td>
         <td>Warmer and wetter &rarr; more transpiration &rarr; more latent heat flux &rarr; cooler
         surface.</td></tr>
       <tr><td class="nm">Fire and disturbance</td><td class="num">both</td>
         <td>Releases carbon (positive) and resets albedo (either sign, depending on what regrows).</td></tr>
     </tbody>
   </table>
-  <p class="note"><b>Both signs are present, which is the honest summary.</b> The biosphere is not a
-  thermostat and it is not an amplifier; it is a set of competing mechanisms whose net effect depends on
-  region, on timescale and on how far the system has already moved. Where a positive feedback happens to
-  dominate strongly enough, the response stops being proportional to the forcing and becomes a threshold
-  &mdash; which is what
+  <p class="note"><b>The biosphere is not a thermostat and it is not an amplifier</b> &mdash; it is a set of
+  competing mechanisms whose net effect depends on region, on timescale and on how far the system has already
+  moved. Where a positive feedback happens to dominate strongly enough, the response stops being proportional
+  to the forcing and becomes a <b>threshold</b>. That is what
   <a href="../pc-lab-1-daisyworld/">PC&nbsp;Lab&nbsp;1</a> and
-  <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a> are both about.</p>
+  <a href="../pc-lab-3-abrupt-vegetation-change/">PC&nbsp;Lab&nbsp;3</a> are both about, and you will run both
+  this week.</p>
+  <p class="q"><b>Question.</b> Of the six rows above, which are already visible in observations, and which
+  are still mostly model results?
+  <span style="color:var(--text-muted)"><b>Observed:</b> CO<sub>2</sub> fertilisation, in the sense that the
+  land sink has grown roughly in step with emissions and satellites show widespread greening; treeline
+  advance and Arctic shrubification; and fire, unambiguously. <b>Partly observed:</b> soil respiration
+  &mdash; the temperature sensitivity is well measured in the laboratory and at plot scale, but its global
+  integral is genuinely uncertain. <b>Mostly model:</b> the vegetation&ndash;precipitation coupling at large
+  scale, because you cannot run the experiment. Being able to say which category a claim falls into is a
+  large part of reading this literature, and it is the same habit the
+  <a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a> is training
+  for figures.</span></p>
 </div>
 
-<div class="card">
-  <h3>And the pedosphere underneath</h3>
-  <p>Soil and topography are the slowest boundary condition of all, and the easiest to forget:</p>
-  <ul>
-    <li><b>Topography</b> lifts air and makes it rain on one side and not the other; it steers the jet
-    stream; and it decides where ice sheets can grow. On the timescale of this course it is fixed, which is
-    exactly what makes it a useful constraint.</li>
-    <li><b>Soil depth, texture and nutrients</b> set the ceiling on what can grow. Two places with identical
-    climate and different soil carry different vegetation &mdash; which is why the K&ouml;ppen classifier
-    above, good as it is, is not perfect.</li>
-    <li><b>Rock weathering</b> consumes CO<sub>2</sub> and is the ultimate long-term thermostat, operating
-    over 10<sup>5</sup>&ndash;10<sup>6</sup> years. It is the reason Earth has stayed habitable for four
-    billion years and is completely irrelevant to the next four hundred.
-    <a href="../lecture-4-global-cycles-water-and-carbon/land-rock-methane.html">Lecture 4,
-    part&nbsp;4</a>.</li>
-  </ul>
-</div>
-
-<!-- ═══════════ 5 ═══════════ -->
-<h2 class="sec" id="s5">5 &middot; The whole lecture in one place</h2>
+<!-- ═══════════ 6 ═══════════ -->
+<h2 class="sec" id="s6">6 &middot; The whole lecture in one place</h2>
 
 <div class="card">
   <h3>What to take away from Lecture 1</h3>
   <ul>
-    <li>The climate system has <b>five components</b> &mdash; atmosphere, hydrosphere, cryosphere, biosphere,
-    pedosphere &mdash; and climate is a description of the whole thing, not just the air.</li>
+    <li>The climate system has <b>five components</b> &mdash; atmosphere, hydrosphere, cryosphere, land
+    surface, biosphere &mdash; and climate is a description of the whole thing, not just the air.</li>
     <li><b>Each component has its own timescale</b>, from days for the atmosphere to millennia for the deep
     ocean and the ice sheets, and mostly it is set by heat capacity.</li>
     <li>Every component <b>interacts with every other</b>, usually through the atmosphere, and the couplings
@@ -504,17 +492,21 @@ Components of the climate system &middot; 7 of 7</p>
 </div>
 
 <p class="foot">After Goosse H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <i>Introduction to
-Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.6, Table&nbsp;1.3 and Figs.&nbsp;1.23&ndash;1.24
-(climate.be/textbook); the climate classification follows Peel M.C., Finlayson B.L. and McMahon T.A. (2007),
-<i>Updated world map of the K&ouml;ppen&ndash;Geiger climate classification</i>, Hydrol. Earth Syst. Sci. 11,
-1633&ndash;1644. <b>Both figures on this page are computed</b>: the albedo mixer is an area-weighted mean of
-the representative values shown beside each control, and the classifier applies the published
-K&ouml;ppen&ndash;Geiger criteria to a synthetic monthly climatology generated from four parameters. The
-preset climatologies are <b>approximate rounded normals</b> for classification practice, not a data source.
-Albedo ranges are the published values of Table&nbsp;1.3; carbon stocks are from IPCC AR6 WG1 (2021) and the
-Global Carbon Project. The MODIS albedo map, the land-cover maps and the K&ouml;ppen&ndash;Geiger world map
-used in the lecture are <b>not reproduced here</b> &mdash; they are observational fields and the lecturer
-shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classified in the
+Climate Dynamics and Climate Modelling</i>, Chapter&nbsp;1, &sect;1.5 and Fig.&nbsp;1.24
+(climate.be/textbook). Goosse treats the land surface and the terrestrial biosphere together in a single
+section; this course separates them, because the marine biosphere is not a land surface at all and because
+the biosphere warrants its own treatment in a course on climate and ecology. The productivity model is
+Lieth&nbsp;H. (1975), <i>Modeling the primary productivity of the world</i>, in Lieth &amp; Whittaker (eds.),
+<i>Primary Productivity of the Biosphere</i>, Springer; the climate classification follows Peel&nbsp;M.C.,
+Finlayson&nbsp;B.L. and McMahon&nbsp;T.A. (2007), <i>Updated world map of the K&ouml;ppen&ndash;Geiger climate
+classification</i>, Hydrol. Earth Syst. Sci. 11, 1633&ndash;1644. <b>Both figures on this page are
+computed</b>: the productivity curves are the Miami model exactly as printed, and the classifier applies the
+published K&ouml;ppen&ndash;Geiger criteria to a synthetic monthly climatology generated from four parameters.
+The preset climatologies are <b>approximate rounded normals</b> for classification practice, not a data
+source. Carbon stocks are from IPCC AR6 WG1 (2021) and the Global Carbon Project. The land-cover maps and the
+K&ouml;ppen&ndash;Geiger world map used in the lecture are <b>not reproduced here</b> &mdash; they are
+observational fields and the lecturer shows the originals. Every figure on the eight Lecture&nbsp;1 pages is
+classified in the
 <a href="../lecture-7-climate-change-past-and-present/provenance.html">provenance appendix</a>.
 &nbsp;&middot;&nbsp; End of Lecture&nbsp;1 &mdash; continue to
 <a href="../lecture-2-earths-energy-budget/thermal-emitters.html">the Earth's energy budget &rarr;</a></p>
@@ -527,113 +519,110 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
   function put(g,t,a,txt){var e=el(t,a);if(txt!==undefined)e.textContent=txt;g.appendChild(e);return e;}
   function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
 
-  /* ═══ Demo 1 · landscape albedo ════════════════════════════════ */
-  var SURF=[
-    {n:'Coniferous forest', a0:0.10, a1:0.20, col:'var(--bio)'},
-    {n:'Tundra / grassland',a0:0.18, a1:0.75, col:'var(--ped)'},
-    {n:'Open water',        a0:0.07, a1:0.60, col:'var(--ocn)'}
-  ];
-  var snowOn=0;
-  function drawAl(){
-    var g=$('alG'); if(!g) return; clear(g);
-    var f=[+$('a_for').value,+$('a_tun').value,+$('a_wat').value];
-    var tot=f[0]+f[1]+f[2]; if(tot<=0){f=[1,0,0];tot=1;}
-    var w=f.map(function(v){return v/tot;});
-    var ins=+$('a_ins').value;
-    var a0=0,a1=0;
-    SURF.forEach(function(s,i){a0+=w[i]*s.a0; a1+=w[i]*s.a1;});
-    var aNow=snowOn?a1:a0;
-    /* stacked bar of composition */
-    var L=64,R=690,T=34,BW=34;
-    put(g,'text',{x:L,y:T-12,'font-size':11.5,fill:'var(--text-muted)'},'composition of the landscape');
-    var xc=L;
-    SURF.forEach(function(s,i){
-      var wp=(R-L)*w[i];
-      if(wp>0.5){
-        put(g,'rect',{x:xc,y:T,width:wp,height:BW,fill:s.col,opacity:0.85});
-        if(wp>60) put(g,'text',{x:xc+wp/2,y:T+22,'text-anchor':'middle','font-size':12,
-          fill:'var(--surface-1)','font-weight':600},Math.round(w[i]*100)+' %');
-      }
-      xc+=wp;
-    });
-    SURF.forEach(function(s,i){
-      put(g,'rect',{x:L+i*210,y:T+50,width:12,height:12,rx:3,fill:s.col});
-      put(g,'text',{x:L+i*210+19,y:T+61,'font-size':11.5,fill:'var(--text-secondary)'},
-        s.n+'  α = '+(snowOn?s.a1:s.a0).toFixed(2));
-    });
-    /* albedo scale */
-    var AT=T+100, AB=AT+120, AL=L, AR=R;
-    var ax=function(a){return AL+(AR-AL)*a/0.9;};
-    for(var a=0;a<=0.9001;a+=0.1){
-      put(g,'line',{x1:ax(a),x2:ax(a),y1:AT,y2:AB,stroke:'var(--grid)','stroke-width':1});
-      put(g,'text',{x:ax(a),y:AB+18,'text-anchor':'middle','font-size':11,
-        fill:'var(--text-muted)'},a.toFixed(1));
-    }
-    put(g,'text',{x:(AL+AR)/2,y:AB+38,'text-anchor':'middle','font-size':11.5,
-      fill:'var(--text-muted)'},'albedo');
-    /* reference marks */
-    [[0.30,'planetary mean'],[0.07,'ocean'],[0.85,'fresh snow']].forEach(function(m){
-      put(g,'line',{x1:ax(m[0]),x2:ax(m[0]),y1:AT,y2:AT+14,stroke:'var(--text-muted)','stroke-width':1.4});
-      put(g,'text',{x:ax(m[0]),y:AT-6,'text-anchor':'middle','font-size':11,
-        fill:'var(--text-muted)'},m[1]);
-    });
-    /* the two bars */
-    put(g,'rect',{x:AL,y:AT+30,width:Math.max(2,ax(a0)-AL),height:22,rx:4,
-      fill:'var(--bio)',opacity:snowOn?0.35:0.9});
-    put(g,'text',{x:ax(a0)+8,y:AT+46,'font-size':12,fill:'var(--bio)','font-weight':600},
-      'snow-free  α = '+a0.toFixed(3));
-    put(g,'rect',{x:AL,y:AT+62,width:Math.max(2,ax(a1)-AL),height:22,rx:4,
-      fill:'var(--cry)',opacity:snowOn?0.9:0.35});
-    put(g,'text',{x:ax(a1)+8,y:AT+78,'font-size':12,fill:'var(--cry)','font-weight':600},
-      'with snow  α = '+a1.toFixed(3));
-    /* arrow between them */
-    if(Math.abs(a1-a0)>0.01){
-      put(g,'line',{x1:ax(a0),x2:ax(a1),y1:AT+96,y2:AT+96,stroke:'var(--hot)','stroke-width':2});
-      put(g,'text',{x:(ax(a0)+ax(a1))/2,y:AT+112,'text-anchor':'middle','font-size':11.5,
-        fill:'var(--hot)','font-weight':600},
-        'Δα = '+(a1-a0).toFixed(3)+'  →  '+((a1-a0)*ins).toFixed(0)+' W m⁻² less absorbed');
-    }
-    put(g,'text',{x:AL,y:AB+62,'font-size':11,fill:'var(--warn)','font-style':'italic'},
-      'COMPUTED — area-weighted mean of the representative albedo values shown above. Not a radiative-transfer model.');
+  /* ═══ Demo 1 · Miami model ═════════════════════════════════════ */
+  function nppT(T){ return 3000/(1+Math.exp(1.315-0.119*T)); }
+  function nppP(P){ return 3000*(1-Math.exp(-0.000664*P)); }
 
-    $('kA0').textContent=a0.toFixed(3);
-    $('kA1').textContent=a1.toFixed(3);
-    $('kAbs').innerHTML=((1-aNow)*ins).toFixed(0)+' W m<sup>&minus;2</sup>';
-    $('kSw').textContent='Δα '+(a1-a0).toFixed(3);
-    $('alRo').innerHTML='This landscape reflects <span class="big">'+(aNow*100).toFixed(1)+
-      ' %</span> of the sunlight reaching it '+(snowOn?'with snow lying':'when snow-free')+
-      ', so it absorbs <b>'+((1-aNow)*ins).toFixed(0)+' W m<sup>&minus;2</sup></b> of the '+ins+
-      ' arriving. Putting snow on the ground changes the albedo by <b>'+(a1-a0).toFixed(3)+
-      '</b>, worth <b>'+((a1-a0)*ins).toFixed(0)+' W m<sup>&minus;2</sup></b> — for comparison, doubling '+
-      'CO<sub>2</sub> is 3.7 W m<sup>&minus;2</sup> globally. Seasonal albedo changes at the surface are '+
-      '<em>locally</em> far larger than any greenhouse forcing; what makes CO<sub>2</sub> decisive is that '+
-      'it acts everywhere, all the time, and does not reverse in spring.';
+  function drawNP(){
+    var g=$('npG'); if(!g) return; clear(g);
+    var T=+$('n_T').value, P=+$('n_P').value;
+    var yT=nppT(T), yP=nppP(P), npp=Math.min(yT,yP);
+    var limT = yT<yP;
+
+    /* two panels sharing a y axis */
+    var TOP=34, BOT=290, H=BOT-TOP, ymax=3000;
+    var yv=function(v){return BOT-H*v/ymax;};
+    /* left: temperature */
+    var L1=64,R1=420,W1=R1-L1;
+    var x1=function(t){return L1+W1*(t+20)/50;};
+    /* right: precipitation */
+    var L2=500,R2=812,W2=R2-L2;
+    var x2=function(p){return L2+W2*p/4000;};
+
+    for(var v=0;v<=3000;v+=500){
+      put(g,'line',{x1:L1,x2:R1,y1:yv(v),y2:yv(v),stroke:'var(--grid)','stroke-width':1});
+      put(g,'line',{x1:L2,x2:R2,y1:yv(v),y2:yv(v),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L1-8,y:yv(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+    }
+    put(g,'text',{x:L1-8,y:TOP-10,'text-anchor':'end','font-size':11,
+      fill:'var(--text-muted)'},'g m⁻² yr⁻¹');
+    for(var t=-20;t<=30;t+=10){
+      put(g,'text',{x:x1(t),y:BOT+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},t+'°');
+    }
+    for(var p=0;p<=4000;p+=1000){
+      put(g,'text',{x:x2(p),y:BOT+18,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},p);
+    }
+    put(g,'text',{x:(L1+R1)/2,y:BOT+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'mean annual temperature (°C)');
+    put(g,'text',{x:(L2+R2)/2,y:BOT+38,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'annual precipitation (mm)');
+    put(g,'text',{x:L1,y:TOP-10,'font-size':12,fill:'var(--hot)','font-weight':600},
+      'temperature ceiling');
+    put(g,'text',{x:L2,y:TOP-10,'font-size':12,fill:'var(--ocn)','font-weight':600},
+      'water ceiling');
+
+    var d1='';
+    for(var i=0;i<=200;i++){var tt=-20+50*i/200; d1+=(i?'L':'M')+x1(tt).toFixed(1)+' '+yv(nppT(tt)).toFixed(1);}
+    put(g,'path',{d:d1,fill:'none',stroke:'var(--hot)','stroke-width':2.8});
+    var d2='';
+    for(var j=0;j<=200;j++){var pp=4000*j/200; d2+=(j?'L':'M')+x2(pp).toFixed(1)+' '+yv(nppP(pp)).toFixed(1);}
+    put(g,'path',{d:d2,fill:'none',stroke:'var(--ocn)','stroke-width':2.8});
+
+    /* the binding level, drawn across both panels */
+    put(g,'line',{x1:L1,x2:R2,y1:yv(npp),y2:yv(npp),stroke:'var(--bio)','stroke-width':2,
+      'stroke-dasharray':'7 4'});
+    put(g,'text',{x:R2,y:yv(npp)-8,'text-anchor':'end','font-size':12,fill:'var(--bio)',
+      'font-weight':600},'NPP = '+Math.round(npp)+' g m⁻² yr⁻¹');
+
+    /* markers */
+    put(g,'line',{x1:x1(T),x2:x1(T),y1:yv(yT),y2:BOT,stroke:'var(--line)','stroke-dasharray':'3 3'});
+    put(g,'circle',{cx:x1(T),cy:yv(yT),r:6,fill:limT?'var(--hot)':'var(--surface-1)',
+      stroke:'var(--hot)','stroke-width':2.4});
+    put(g,'line',{x1:x2(P),x2:x2(P),y1:yv(yP),y2:BOT,stroke:'var(--line)','stroke-dasharray':'3 3'});
+    put(g,'circle',{cx:x2(P),cy:yv(yP),r:6,fill:limT?'var(--surface-1)':'var(--ocn)',
+      stroke:'var(--ocn)','stroke-width':2.4});
+    put(g,'text',{x:x1(T),y:yv(yT)-12,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--hot)','font-weight':600},Math.round(yT));
+    put(g,'text',{x:x2(P),y:yv(yP)-12,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--ocn)','font-weight':600},Math.round(yP));
+
+    put(g,'text',{x:L1,y:BOT+62,'font-size':11,fill:'var(--warn)','font-style':'italic'},
+      'COMPUTED — the Miami model (Lieth 1975) exactly as printed above. An empirical two-predictor fit, not a mechanistic model.');
+    put(g,'text',{x:L1,y:BOT+79,'font-size':11,fill:'var(--text-muted)'},
+      'The filled marker is the binding ceiling. Grams of dry matter — multiply by about 0.45 for grams of carbon.');
+
+    $('kNT').textContent=Math.round(yT);
+    $('kNP').textContent=Math.round(yP);
+    $('kNPP').textContent=Math.round(npp);
+    $('kLim').textContent=limT?'temperature':'water';
+    var head='At <b>'+T.toFixed(1)+' °C</b> and <b>'+P+' mm</b>, the temperature ceiling is <b>'+
+      Math.round(yT)+'</b> and the water ceiling is <b>'+Math.round(yP)+
+      '</b> g m<sup>&minus;2</sup> yr<sup>&minus;1</sup>. The lower one binds, so predicted productivity is '+
+      '<span class="big">'+Math.round(npp)+'</span> g m<sup>&minus;2</sup> yr<sup>&minus;1</sup> — ';
+    var tail = limT
+      ? '<b>temperature-limited</b>. There is water this vegetation cannot use, so warming lifts the binding '+
+        'constraint directly and productivity would rise. This is the high-latitude case, and it is why the '+
+        'Arctic is greening.'
+      : '<b>water-limited</b>. There is energy this vegetation cannot use, so warming on its own changes '+
+        'little and only a change in the water supply would matter. This is the dryland case.';
+    $('npRo').innerHTML=head+tail;
   }
-  ['a_for','a_tun','a_wat','a_ins'].forEach(function(id){
+  ['n_T','n_P'].forEach(function(id){
     $(id).addEventListener('input',function(){
-      $('v_for').textContent=$('a_for').value+' %';
-      $('v_tun').textContent=$('a_tun').value+' %';
-      $('v_wat').textContent=$('a_wat').value+' %';
-      $('v_ins').innerHTML=$('a_ins').value+' W m<sup>&minus;2</sup>';
-      drawAl();
+      $('v_nT').textContent=(+$('n_T').value).toFixed(1)+' °C';
+      $('v_nP').textContent=$('n_P').value+' mm';
+      drawNP();
     });
   });
-  Array.prototype.forEach.call(document.querySelectorAll('#segSnow button'),function(b){
+  Array.prototype.forEach.call(document.querySelectorAll('.ghost[data-n]'),function(b){
     b.addEventListener('click',function(){
-      snowOn=+b.getAttribute('data-s');
-      Array.prototype.forEach.call(document.querySelectorAll('#segSnow button'),function(o){
-        o.setAttribute('aria-pressed',o===b?'true':'false');
-      });
-      drawAl();
-    });
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('.ghost[data-l]'),function(b){
-    b.addEventListener('click',function(){
-      var p=b.getAttribute('data-l').split(',');
-      $('a_for').value=p[0]; $('a_tun').value=p[1]; $('a_wat').value=p[2];
-      $('v_for').textContent=p[0]+' %'; $('v_tun').textContent=p[1]+' %';
-      $('v_wat').textContent=p[2]+' %';
-      drawAl();
+      var p=b.getAttribute('data-n').split(',');
+      $('n_T').value=p[0]; $('n_P').value=p[1];
+      $('v_nT').textContent=(+p[0]).toFixed(1)+' °C';
+      $('v_nP').textContent=p[1]+' mm';
+      drawNP();
     });
   });
 
@@ -642,18 +631,14 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
   function climatology(mat,rng,map,sea){
     var T=[],P=[];
     for(var m=0;m<12;m++){
-      /* warmest month July (index 6), coldest January — northern hemisphere */
       T.push(mat - (rng/2)*Math.cos(2*Math.PI*(m-6)/12));
-      /* seasonality: sea>0 concentrates rain in summer, sea<0 in winter */
       var s=sea/100;
-      var shape=1 + s*Math.cos(2*Math.PI*(m-6)/12);
-      P.push(Math.max(0,shape));
+      P.push(Math.max(0, 1 + s*Math.cos(2*Math.PI*(m-6)/12)));
     }
     var sum=P.reduce(function(a,b){return a+b;},0);
     P=P.map(function(v){return v/sum*map;});
     return {T:T,P:P};
   }
-  /* Köppen–Geiger, Peel et al. (2007). Northern hemisphere: summer = Apr–Sep. */
   function koppen(T,P){
     var MAT=T.reduce(function(a,b){return a+b;},0)/12;
     var MAP=P.reduce(function(a,b){return a+b;},0);
@@ -672,8 +657,7 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
     if(Pwin>=0.7*MAP) Pth=2*MAT;
     else if(Psum>=0.7*MAP) Pth=2*MAT+28;
     else Pth=2*MAT+14;
-
-    var code, name;
+    var code,name;
     if(MAP < 10*Pth){
       code='B'+(MAP<5*Pth?'W':'S')+(MAT>=18?'h':'k');
       name=(MAP<5*Pth?'Desert':'Steppe')+', '+(MAT>=18?'hot':'cold');
@@ -682,30 +666,23 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
       else if(Pdry>=100-MAP/25){ code='Am'; name='Tropical monsoon'; }
       else { code='Aw'; name='Tropical savannah'; }
     } else if(Thot>10 && Tcold>0){
-      var s2;
-      if(Psdry<40 && Psdry<Pwwet/3) s2='s';
-      else if(Pwdry<Pswet/10) s2='w';
-      else s2='f';
-      var t2 = (Thot>=22)?'a':((Tmon10>=4)?'b':((Tmon10>=1)?'c':'c'));
+      var s2 = (Psdry<40 && Psdry<Pwwet/3) ? 's' : ((Pwdry<Pswet/10) ? 'w' : 'f');
+      var t2 = (Thot>=22)?'a':((Tmon10>=4)?'b':'c');
       code='C'+s2+t2;
       name='Temperate'+(s2==='s'?', dry summer':(s2==='w'?', dry winter':', no dry season'))+
            (t2==='a'?' · hot summer':(t2==='b'?' · warm summer':' · cold summer'));
     } else if(Thot>10 && Tcold<=0){
-      var s3;
-      if(Psdry<40 && Psdry<Pwwet/3) s3='s';
-      else if(Pwdry<Pswet/10) s3='w';
-      else s3='f';
+      var s3 = (Psdry<40 && Psdry<Pwwet/3) ? 's' : ((Pwdry<Pswet/10) ? 'w' : 'f');
       var t3;
       if(Tcold<-38) t3='d'; else if(Thot>=22) t3='a'; else if(Tmon10>=4) t3='b'; else t3='c';
       code='D'+s3+t3;
       name='Continental'+(s3==='s'?', dry summer':(s3==='w'?', dry winter':', no dry season'))+
            (t3==='a'?' · hot summer':(t3==='b'?' · warm summer':(t3==='c'?' · cold summer':' · very cold winter')));
     } else {
-      if(Thot>0){ code='ET'; name='Tundra'; }
-      else { code='EF'; name='Ice cap'; }
+      if(Thot>0){ code='ET'; name='Tundra'; } else { code='EF'; name='Ice cap'; }
     }
-    return {code:code,name:name,MAT:MAT,MAP:MAP,Thot:Thot,Tcold:Tcold,Pth:Pth,
-            Pdry:Pdry,Tmon10:Tmon10,arid:10*Pth};
+    return {code:code,name:name,MAT:MAT,MAP:MAP,Thot:Thot,Tcold:Tcold,
+            Tmon10:Tmon10,arid:10*Pth};
   }
 
   function drawK(){
@@ -722,23 +699,18 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
     for(var m=0;m<12;m++)
       put(g,'text',{x:x(m),y:B+18,'text-anchor':'middle','font-size':11,
         fill:'var(--text-muted)'},MN[m][0]);
-    /* precipitation axis, on the left */
     var pStep=Math.pow(10,Math.floor(Math.log10(pmax)));
     if(pmax/pStep>5) pStep*=2; else if(pmax/pStep<2) pStep/=2;
     for(var pv=0;pv<=pmax;pv+=pStep){
       put(g,'text',{x:L-8,y:yp(pv)+4,'text-anchor':'end','font-size':10.5,
         fill:'var(--ocn)'},Math.round(pv));
     }
-    put(g,'text',{x:L-8,y:T-10,'text-anchor':'end','font-size':10.5,
-      fill:'var(--ocn)'},'mm/mo');
-    /* precipitation bars */
+    put(g,'text',{x:L-8,y:T-10,'text-anchor':'end','font-size':10.5,fill:'var(--ocn)'},'mm/mo');
     var bw=W/12*0.62;
     for(var m2=0;m2<12;m2++){
-      var h=B-yp(c.P[m2]);
-      put(g,'rect',{x:x(m2)-bw/2,y:yp(c.P[m2]),width:bw,height:Math.max(1,h),rx:2,
-        fill:'var(--ocn)',opacity:0.42});
+      put(g,'rect',{x:x(m2)-bw/2,y:yp(c.P[m2]),width:bw,
+        height:Math.max(1,B-yp(c.P[m2])),rx:2,fill:'var(--ocn)',opacity:0.42});
     }
-    /* 0 °C and 10 °C reference lines */
     [[0,'0 °C'],[10,'10 °C'],[18,'18 °C'],[22,'22 °C']].forEach(function(t){
       if(t[0]>=tlo&&t[0]<=thi){
         put(g,'line',{x1:L,x2:R,y1:yt(t[0]),y2:yt(t[0]),stroke:'var(--grid)',
@@ -746,34 +718,24 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
         put(g,'text',{x:R+6,y:yt(t[0])+4,'font-size':10.5,fill:'var(--text-muted)'},t[1]);
       }
     });
-    /* temperature curve */
     var d='';
     for(var m3=0;m3<12;m3++) d+=(m3?'L':'M')+x(m3).toFixed(1)+' '+yt(c.T[m3]).toFixed(1);
     put(g,'path',{d:d,fill:'none',stroke:'var(--hot)','stroke-width':2.8});
-    for(var m4=0;m4<12;m4++)
-      put(g,'circle',{cx:x(m4),cy:yt(c.T[m4]),r:3,fill:'var(--hot)'});
+    for(var m4=0;m4<12;m4++) put(g,'circle',{cx:x(m4),cy:yt(c.T[m4]),r:3,fill:'var(--hot)'});
     put(g,'text',{x:L,y:T-10,'font-size':11.5,fill:'var(--hot)','font-weight':600},'temperature');
     put(g,'text',{x:L+90,y:T-10,'font-size':11.5,fill:'var(--ocn)','font-weight':600},
       'precipitation, peak '+Math.round(Math.max.apply(null,c.P))+' mm/month');
-    put(g,'text',{x:L-8,y:T-10,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'');
-    /* result panel */
     put(g,'rect',{x:R+56,y:T,width:196,height:200,rx:10,fill:'var(--surface-2)',
       stroke:'var(--line-soft)'});
     put(g,'text',{x:R+72,y:T+40,'font-size':38,fill:'var(--bio)','font-weight':700},r.code);
     put(g,'text',{x:R+72,y:T+64,'font-size':12,fill:'var(--text-primary)'},r.name.split('·')[0]);
     if(r.name.indexOf('·')>=0)
-      put(g,'text',{x:R+72,y:T+80,'font-size':12,fill:'var(--text-primary)'},
-        r.name.split('·')[1]);
-    put(g,'text',{x:R+72,y:T+108,'font-size':11.5,fill:'var(--text-muted)'},
-      'MAT '+r.MAT.toFixed(1)+' °C');
-    put(g,'text',{x:R+72,y:T+126,'font-size':11.5,fill:'var(--text-muted)'},
-      'MAP '+Math.round(r.MAP)+' mm');
-    put(g,'text',{x:R+72,y:T+144,'font-size':11.5,fill:'var(--text-muted)'},
-      'coldest '+r.Tcold.toFixed(1)+' °C');
-    put(g,'text',{x:R+72,y:T+162,'font-size':11.5,fill:'var(--text-muted)'},
-      'warmest '+r.Thot.toFixed(1)+' °C');
-    put(g,'text',{x:R+72,y:T+180,'font-size':11.5,fill:'var(--text-muted)'},
-      'arid limit '+Math.round(r.arid)+' mm');
+      put(g,'text',{x:R+72,y:T+80,'font-size':12,fill:'var(--text-primary)'},r.name.split('·')[1]);
+    put(g,'text',{x:R+72,y:T+108,'font-size':11.5,fill:'var(--text-muted)'},'MAT '+r.MAT.toFixed(1)+' °C');
+    put(g,'text',{x:R+72,y:T+126,'font-size':11.5,fill:'var(--text-muted)'},'MAP '+Math.round(r.MAP)+' mm');
+    put(g,'text',{x:R+72,y:T+144,'font-size':11.5,fill:'var(--text-muted)'},'coldest '+r.Tcold.toFixed(1)+' °C');
+    put(g,'text',{x:R+72,y:T+162,'font-size':11.5,fill:'var(--text-muted)'},'warmest '+r.Thot.toFixed(1)+' °C');
+    put(g,'text',{x:R+72,y:T+180,'font-size':11.5,fill:'var(--text-muted)'},'arid limit '+Math.round(r.arid)+' mm');
     put(g,'text',{x:L,y:B+42,'font-size':11,fill:'var(--warn)','font-style':'italic'},
       'COMPUTED — the published Köppen–Geiger decision tree applied to a synthetic monthly climatology.');
     put(g,'text',{x:L,y:B+60,'font-size':11,fill:'var(--text-muted)'},
@@ -816,7 +778,7 @@ shows the originals. Every figure on the seven Lecture&nbsp;1 pages is classifie
     });
   });
 
-  drawAl(); drawK();
+  drawNP(); drawK();
 })();
 </script>
 
