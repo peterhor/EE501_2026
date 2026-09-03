@@ -145,7 +145,9 @@
   }
   table.schedule tbody tr:last-child td { border-bottom: none; }
   table.schedule tr.lab td { font-weight: 600; color: var(--accent); }
-  footer.credit { margin-top: 2.5rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
+  footer.credit { margin-top: 2.5rem; text-align: center; color: var(--muted); font-size: 0.8rem; line-height: 1.5; }
+  footer.credit p { margin: 0.45rem auto; max-width: 62ch; }
+  footer.credit a { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -649,7 +651,14 @@
     </table>
   </div>
 
-  <footer class="credit">EE501 · Course materials originally developed by Hans Renssen, former course coordinator.</footer>
+  <footer class="credit">
+    <p>EE501 &middot; Course materials originally developed by Hans Renssen, former course coordinator.</p>
+    <p>The interactive pages, animations and figures on this site were developed with the assistance of
+    Claude (Anthropic), using <a href="https://www.anthropic.com/claude-code" target="_blank" rel="noopener">Claude Code</a>.
+    Scientific content, values and sources were selected and verified by the course teacher, who is
+    responsible for any remaining errors. The literature behind the material is listed in the
+    <a href="references.html">reference library</a>.</p>
+  </footer>
 </main>
 <script>
   (function () {
