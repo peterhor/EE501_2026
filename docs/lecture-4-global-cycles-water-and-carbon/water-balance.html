@@ -381,8 +381,8 @@ values at a particular latitude. &nbsp;&middot;&nbsp; Next:
     put(g,'line',{x1:0,x2:880,y1:SEA,y2:SEA,stroke:'var(--text-primary)','stroke-width':2,opacity:.55});
     put(g,'line',{x1:470,x2:470,y1:SEA-4,y2:520,stroke:'var(--text-primary)','stroke-width':2,opacity:.35});
     put(g,'text',{x:14,y:24,'font-size':11.5,fill:'var(--text-muted)','letter-spacing':'.07em'},'ATMOSPHERE');
-    put(g,'text',{x:14,y:SEA+26,'font-size':11.5,fill:'var(--text-muted)','letter-spacing':'.07em'},'OCEAN');
-    put(g,'text',{x:486,y:SEA+26,'font-size':11.5,fill:'var(--text-muted)','letter-spacing':'.07em'},'LAND');
+    put(g,'text',{x:20,y:512,'font-size':11.5,fill:'var(--text-muted)','letter-spacing':'.07em'},'OCEAN');
+    put(g,'text',{x:486,y:512,'font-size':11.5,fill:'var(--text-muted)','letter-spacing':'.07em'},'LAND');
 
     /* vertical arrow: dir 'up' from surface into atmosphere, 'down' the reverse */
     function vArrow(x,val,dir,color,label,key){
@@ -395,10 +395,12 @@ values at a particular latitude. &nbsp;&middot;&nbsp; Next:
               ' L '+(x+head/2+w/2)+' '+be+' L '+(x+w/2)+' '+be+
               ' L '+(x+w/2)+' '+tail+' Z';
       put(g,'path',{d:d,fill:color,opacity:op(key)});
-      put(g,'text',{x:x,y:dir==='up'?yT-32:SEA-46,'text-anchor':'middle','font-size':19,
+      const tx = dir==='up' ? x : x - w/2 - head/2 - 12;
+      const anch = dir==='up' ? 'middle' : 'end';
+      put(g,'text',{x:tx,y:dir==='up'?yT-32:170,'text-anchor':anch,'font-size':19,
         fill:'var(--text-primary)','font-weight':600,opacity:tOp(key),
         'font-variant-numeric':'tabular-nums'}, String(val));
-      put(g,'text',{x:x,y:dir==='up'?yT-14:SEA-28,'text-anchor':'middle','font-size':11.5,
+      put(g,'text',{x:tx,y:dir==='up'?yT-14:190,'text-anchor':anch,'font-size':11.5,
         fill:'var(--text-muted)',opacity:tOp(key)}, label);
     }
 
@@ -421,10 +423,10 @@ values at a particular latitude. &nbsp;&middot;&nbsp; Next:
     })();
 
     /* atmosphere reservoir chip */
-    put(g,'rect',{x:648,y:14,width:218,height:52,rx:9,fill:'var(--surface-1)',
+    put(g,'rect',{x:156,y:14,width:186,height:52,rx:9,fill:'var(--surface-1)',
       stroke:'var(--line)','stroke-width':1});
-    put(g,'text',{x:660,y:34,'font-size':12.5,fill:'var(--text-secondary)'},'Water vapour in the air');
-    put(g,'text',{x:660,y:56,'font-size':17,fill:'var(--text-primary)','font-weight':600,
+    put(g,'text',{x:167,y:34,'font-size':12.5,fill:'var(--text-secondary)'},'Water vapour in the air');
+    put(g,'text',{x:167,y:56,'font-size':17,fill:'var(--text-primary)','font-weight':600,
       'font-variant-numeric':'tabular-nums'},'12.7');
 
     /* return flows, right to left, below the surface */
@@ -450,10 +452,10 @@ values at a particular latitude. &nbsp;&middot;&nbsp; Next:
         'font-variant-numeric':'tabular-nums'},vol);
     };
     chip(20,  318,200,'Ocean','1 335 040');
-    chip(492, 318,168,'Glaciers &amp; ice','26 350');
+    chip(492, 318,168,'Glaciers & ice','26 350');
     chip(672, 318,190,'Groundwater','15 300');
     chip(492, 372,168,'Soil moisture','122');
-    chip(672, 372,190,'Lakes &amp; rivers','178');
+    chip(672, 372,190,'Lakes & rivers','178');
 
     put(g,'text',{x:20,y:534,'font-size':11.5,fill:'var(--text-muted)'},
       'reservoirs 10³ km³  ·  fluxes 10³ km³ yr⁻¹');
