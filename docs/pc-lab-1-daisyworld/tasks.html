@@ -69,113 +69,136 @@
   section.prep li { margin-bottom: 0.65rem; font-size: 0.92rem; line-height: 1.55; }
   section.prep li:last-child { margin-bottom: 0; }
   section.prep code { background: var(--bg); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; }
+  p.figs { margin: 0.85rem 0 0; padding-top: 0.7rem; border-top: 1px solid var(--card-border); font-size: 0.85rem; line-height: 1.5; color: var(--muted); }
+  p.figs b { color: var(--fg); }
 </style>
 </head>
 <body>
 <main>
   <a class="back" href="../">&larr; EE501 course</a>
   <h1>PC Lab 1 — Daisyworld</h1>
-  <p class="subtitle">Tasks and report questions for every exercise. Work through them using the interactive lab, then write up your answers for the report.</p>
+  <p class="subtitle">Tasks and report questions for every exercise. Work through them in order using the interactive lab, then write up your answers for the report.</p>
   <a class="open-lab" href="./">Open the interactive lab &rarr;</a>
 
   <section class="ex prep">
     <h2>Preparation &amp; submission</h2>
     <ul>
-      <li>This lab is <strong>part 1 of 3</strong> of your report. Include a copy of every figure/plot the exercises ask you to make — each with a figure title, labeled x- and y-axes with units, and a legend where useful. Keep them in a <code>/Daisyworld/figures</code> folder, named by exercise number (e.g. <code>Fig1_1</code>).</li>
-      <li>Submit as a single PDF through the Canvas assignment named <strong>Daisyworld</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB1-Daisyworld" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
+      <li>Work the exercises <strong>in order</strong> — several ask you to compare against a curve you produced earlier, and the lab draws your earlier reference runs behind the current one.</li>
+      <li>Each exercise lists the <strong>figures to hand in</strong> under its questions. Use the lab's <strong>Save figure for the report (PNG)</strong> button: the exported image already carries a title, labelled axes with units, a legend and the parameter values of the run that produced it. Keep the files in a <code>/Daisyworld/figures</code> folder, named by exercise number (e.g. <code>Fig1_1</code>).</li>
+      <li>Every prediction you draw stays on the revealed figure. Your sketches are part of what you hand in, so they must be your own work.</li>
+      <li>This lab is <strong>part 1 of 3</strong> of your report. Submit as a single PDF through the Canvas assignment named <strong>Daisyworld</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB1-Daisyworld" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
+    </ul>
+  </section>
+
+  <section class="ex prep" style="border-left-color:#6b7cff">
+    <h2>Reference parameter values</h2>
+    <ul>
+      <li>White-daisy albedo <code>A_w = 0.75</code>, black-daisy albedo <code>A_b = 0.25</code>, bare-ground albedo <code>A_g = 0.50</code>, death rate <code>&#947; = 0.30</code>, solar constant <code>S = 1000 W m&#8315;&#178;</code>. Selecting an exercise in the lab restores whatever settings that exercise needs, so you never have to reset by hand.</li>
+      <li>The main plot follows the <strong>brightening path</strong>: one model step per +0.025 in L, with the daisy populations carried over from the previous step, exactly as the spreadsheet does. The populations therefore lag behind their equilibrium — the <strong>Equilibrium at fixed L</strong> tab shows how far, and the gap is itself worth a comment in E9.</li>
     </ul>
   </section>
 
   <section class="ex intro">
     <h2><span class="tag">Intro</span>A world of daisies</h2>
-    <p class="prompt">A cloudless grey planet, seeded with light and dark daisies, orbits a slowly brightening sun. Dark daisies warm their surroundings; light daisies cool them. Work through the exercises below and answer each question in your report.</p>
+    <p class="prompt">A cloudless grey planet, seeded with light and dark daisies, orbits a slowly brightening sun. Each exercise runs in three steps: <strong>predict</strong> what will happen and draw the curve you expect, <strong>collect</strong> your own data points from the model, then <strong>reveal</strong> the model curve and compare.</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E1</span>Growth rate vs. temperature</h2>
-    <p class="prompt">Daisies grow fastest at a preferred temperature and not at all when it is too cold or too hot. The Growth-curve tab plots the parabolic growth rate β against local temperature Tₗ (eq. 3 of the paper). The dots mark the current local temperatures of each daisy type.</p>
+    <p class="prompt">Daisies grow at a rate &#946; set by the local temperature T&#8343; of their own patch, through eq. (3) of Watson &amp; Lovelock (1983). Open the Growth-curve tab and predict the shape of &#946;(T&#8343;) before revealing it.</p>
     <ol class="qs">
       <li>What does the curve tell you about the relation between daisy growth and temperature?</li>
-      <li>What is the optimal temperature for growth?</li>
-      <li>What are the lower and upper temperature limits for growth?</li>
+      <li>What is the optimal temperature for growth? Show how you obtain it from eq. (3).</li>
+      <li>What are the lower and upper temperature limits for growth? Show the algebra — do not just read them off the plot.</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig1_1 — growth rate &#946; against local temperature T&#8343;</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E2</span>A brightening sun</h2>
-    <p class="prompt">In the model the sun slowly brightens: luminosity L rises by 0.025 every time step. The Dynamics-vs-time tab shows this forcing as luminosity against time.</p>
+    <p class="prompt">The sun in this model does not stay fixed. Open the Luminosity-vs-time tab and predict how L behaves over the run before revealing it.</p>
     <ol class="qs">
       <li>What does this steady increase in luminosity represent physically?</li>
+      <li>At which luminosity L does the absorbed solar energy match present-day Earth, whose solar constant is 1361 W m&#8315;&#178;?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig2_1 — solar luminosity L against time step t</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E3</span>A bare planet</h2>
-    <p class="prompt">Switch off both daisy populations to get a lifeless planet whose temperature is set purely by luminosity and the fixed bare-ground albedo. Sample Te at several luminosities and build the Te-vs-L curve yourself.</p>
+    <p class="prompt">Both daisy populations are switched off, leaving a lifeless planet whose temperature depends only on luminosity and the fixed bare-ground albedo A_g. Predict the shape of Te(L), then sample Te across the luminosity range and build the curve from your own points.</p>
     <ol class="qs">
-      <li>For which luminosity values would the planet be habitable for daisies (use your viable temperature range from E1)?</li>
+      <li>Over which range of luminosity would the planet be habitable for daisies? Use the viable temperature range you derived in E1.</li>
       <li>What is the global average temperature Te at L = 1.0?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig3_1 — Te against L for the bare planet</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E4</span>Black daisies only</h2>
-    <p class="prompt">Now allow only black (dark, low-albedo) daisies. Sample the planet across luminosity and compare your Te-vs-L points with the bare planet of E3. Watch the black-daisy area too.</p>
+    <p class="prompt">Only black daisies are allowed to grow. Predict how Te will compare with the bare planet of E3, then sample both Te and the black-daisy area a_b across luminosity. Your E3 curve is drawn behind for comparison once you reveal.</p>
     <ol class="qs">
       <li>How have the temperature conditions changed, e.g. at L = 1.0?</li>
       <li>What caused the difference compared with the bare planet (E3)?</li>
       <li>At which luminosity does the black-daisy area peak, and what is that peak area?</li>
       <li>Compare Te with the local black-daisy temperature Tb — why do they differ?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig4_1 — Te against L, black daisies only, with the bare planet for comparison · Fig4_2 — black-daisy area a_b against L</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E5</span>White daisies only</h2>
-    <p class="prompt">Reset and allow only white (bright, high-albedo) daisies. Sample temperature and the white-daisy area across luminosity.</p>
+    <p class="prompt">Only white daisies are allowed to grow. Predict how Te will compare with the bare planet, then sample Te and the white-daisy area a_w across luminosity.</p>
     <ol class="qs">
       <li>Compared with E3 and E4, what happens to the temperature?</li>
       <li>How does the area covered by daisies change with luminosity?</li>
       <li>How do you explain the differences with the bare planet (E3) and the black-daisy world (E4)?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig5_1 — Te against L, white daisies only, with the bare planet for comparison · Fig5_2 — white-daisy area a_w against L</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E6</span>Both daisies together</h2>
-    <p class="prompt">Let both species compete. Sample Te across the full luminosity range and see how the global temperature responds. Local temperatures Tw and Tb appear when you reveal.</p>
+    <p class="prompt">Both species now compete for the same bare ground. Predict how Te behaves across the whole luminosity range, then sample it. The bare planet of E3 is drawn behind for comparison once you reveal.</p>
     <ol class="qs">
       <li>What happens to the global temperature when both black and white daisies are present?</li>
       <li>Which conditions are most favourable for black daisies?</li>
       <li>How do Tb and Tw differ from Te, and why?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig6_1 — Te, Tw and Tb against L with both species, bare planet for comparison · Fig6_2 — areas a_w and a_b against L</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E7</span>Stronger albedo contrast</h2>
-    <p class="prompt">Increase the contrast between the daisies — start from white albedo 0.85, black albedo 0.15 — and repeat the two-species run of E6. Then experiment with the albedo sliders.</p>
+    <p class="prompt">The two albedos now start further apart: A_w = 0.85 and A_b = 0.15, against the reference 0.75 / 0.25. Repeat the two-species run of E6, then experiment with the albedo sliders. Your E6 reference run is drawn behind for comparison.</p>
     <ol class="qs">
       <li>What has changed for the temperatures Te, Tw and Tb?</li>
       <li>What has changed for the areas of black and white daisies?</li>
       <li>How do you explain the difference with E6?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig7_1 — Te, Tw and Tb against L with A_w = 0.85, A_b = 0.15 · Fig7_2 — areas a_w and a_b against L, with the E6 run for comparison</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E8</span>A lower death rate</h2>
-    <p class="prompt">Return the albedos to reference values and lower the death rate γ from 0.3 to 0.2. Sample the daisy areas across luminosity and compare with the reference two-species run (E6).</p>
+    <p class="prompt">The albedos are back at their reference values and the death rate is lowered from &#947; = 0.3 to &#947; = 0.2. Sample the daisy areas across luminosity and compare with your reference two-species run from E6, drawn behind.</p>
     <ol class="qs">
       <li>What has changed in the daisy areas?</li>
       <li>How do you explain the difference?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig8_1 — areas a_w and a_b against L with &#947; = 0.2, with the E6 run for comparison</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E9</span>Daisyworld &amp; global change</h2>
-    <p class="prompt">Step back and interpret the model. The sun really does brighten with age — about 10% every 1.1 billion years — while Earth has stayed habitable for billions of years.</p>
+    <p class="prompt">A synthesis view: the reference two-species run of E6 with the bare planet of E3 drawn behind it. Our own Sun really does brighten with age — by roughly 10% of its present output every 1.1 billion years — while the Earth has stayed habitable for billions of years.</p>
     <ol class="qs">
-      <li>If our Sun brightens ~10% per 1.1 Gyr, roughly how much time does one model step (ΔL = 0.025) represent?</li>
+      <li>Take the Sun's brightening as ~10% of its present luminosity per 1.1 Gyr, and one model step as &#916;L = 0.025. Roughly how much time does one model step represent?</li>
       <li>What is the relevance of the Daisyworld model for studies of present-day global change?</li>
     </ol>
+    <p class="figs"><b>Figures:</b> Fig9_1 — the reference two-species run with the bare planet for comparison</p>
   </section>
+
 </main>
 </body>
 </html>
