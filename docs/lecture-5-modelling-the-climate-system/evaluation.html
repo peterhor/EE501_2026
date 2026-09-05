@@ -683,8 +683,9 @@ multiplicative adjustment of the long-term trend.
     }
     /* reference period */
     put(g,'rect',{x:X(YR0),y:T,width:X(YR1)-X(YR0),height:B-T,fill:'var(--emic)',opacity:0.12});
-    put(g,'text',{x:(X(YR0)+X(YR1))/2,y:T+16,'text-anchor':'middle','font-size':11,
-      fill:'var(--emic)','font-weight':600},'reference');
+    /* At the top of the band this label sat underneath the first legend line. */
+    put(g,'text',{x:(X(YR0)+X(YR1))/2,y:B-8,'text-anchor':'middle','font-size':11,
+      fill:'var(--emic)','font-weight':600},'reference period');
     put(g,'line',{x1:X(YOBS),y1:T,x2:X(YOBS),y2:B,stroke:'var(--text-muted)',
       'stroke-width':1.2,'stroke-dasharray':'4 4'});
     put(g,'text',{x:X(YOBS)+6,y:B-8,'font-size':11,fill:'var(--text-muted)'},'observations end');

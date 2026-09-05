@@ -494,7 +494,7 @@ orders of magnitude, not benchmarks.
       {n:'AOGCM',        x:3.5, c:6.7, col:'var(--gcm)', d:'3-D, ~100 km'},
       {n:'ESM',          x:2.7, c:7.9, col:'var(--gcm)', d:'+ carbon, chemistry, vegetation'},
       {n:'RCM',          x:2.0, c:8.9, col:'var(--rcm)', d:'~12 km, one region only', left:true},
-      {n:'Cloud-resolving', x:0.5, c:9.5, col:'var(--rcm)', d:'~1 km, a few years'}
+      {n:'Cloud-resolving', x:0.5, c:9.5, col:'var(--rcm)', d:'~1 km, a few years', up:true}
     ];
     /* trend line */
     let d='';
@@ -504,14 +504,19 @@ orders of magnitude, not benchmarks.
     M.forEach(m=>{
       put(g,'circle',{cx:X(m.x),cy:Y(m.c),r:7,fill:m.col});
       const right = m.left || m.x>5;
-      put(g,'text',{x:X(m.x)+(right?-14:14),y:Y(m.c)-2,'text-anchor':right?'end':'start',
+      /* `up` lifts a label clear of the marker below it; without it the
+         cloud-resolving description sits on top of the RCM name. */
+      const dy = m.up ? -18 : 0;
+      put(g,'text',{x:X(m.x)+(right?-14:14),y:Y(m.c)-2+dy,'text-anchor':right?'end':'start',
         'font-size':13.5,fill:'var(--text-primary)','font-weight':600},m.n);
-      put(g,'text',{x:X(m.x)+(right?-14:14),y:Y(m.c)+14,'text-anchor':right?'end':'start',
+      put(g,'text',{x:X(m.x)+(right?-14:14),y:Y(m.c)+14+dy,'text-anchor':right?'end':'start',
         'font-size':11.5,fill:'var(--text-muted)'},m.d);
     });
-    put(g,'text',{x:X(8.6),y:Y(8.6),'font-size':12,fill:'var(--text-muted)','text-anchor':'start'},
+    /* Right-anchored on the axis: anchored `start` at X(8.6) the second line
+       ran past the right edge of the viewBox and was clipped. */
+    put(g,'text',{x:R,y:Y(8.6),'font-size':12,fill:'var(--text-muted)','text-anchor':'end'},
       'nothing lives up here —');
-    put(g,'text',{x:X(8.6),y:Y(8.6)+16,'font-size':12,fill:'var(--text-muted)','text-anchor':'start'},
+    put(g,'text',{x:R,y:Y(8.6)+16,'font-size':12,fill:'var(--text-muted)','text-anchor':'end'},
       'full physics for a million years');
     put(g,'text',{x:X(1.4),y:Y(1.7),'font-size':12,fill:'var(--text-muted)','text-anchor':'start'},
       'and nothing sits down here: little physics');
