@@ -7,8 +7,11 @@
 */uploads
 */screenshots
 Goosse2010_textbook/*
+/Goosse2010_textbook
 figures/*
+/figures
 animations/*
+/animations
 
 # Report/solution figures, not used by the interactive labs themselves.
 */figures
@@ -19,13 +22,13 @@ animations/*
 *FASIT*
 *reportHR*
 
-# Answer-key variants of the interactive labs stay out. The eight lecture
-# running orders are the exception and are deliberately tracked (see README):
-# they live in the lecture folders, never under docs/, so they are in the
-# repository but not on the published site.
+# Answer-key variants of the interactive labs stay out, and so do the eight
+# lecture running orders and their hub: those moved to the private companion
+# repository (peterhor/EE501_2026_private) and are symlinked back in here, so
+# these patterns must match a symlink as well as a real file or directory.
 *Teacher*.html
 *Teacher*.dc.html
-!lecture-*/Lecture?-Teacher-outline.html
+/teacher
 
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
@@ -55,5 +58,5 @@ TODO.md
 # copyrighted source decks, so these stay out of the repository too).
 lecture-*/Lecture*-2026.pptx
 lecture-*/*- 2026.pptx
-lecture-*/slide-source/
+lecture-*/slide-source
 lecture-3-climate-at-a-local-scale/Lecture 3 - Climate at a Local Scale.pptx

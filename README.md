@@ -87,7 +87,7 @@ Current published lecture coverage:
 7. Lecture 7: published interactive material present, including `docs/lecture-7-climate-change-past-and-present/provenance.html`
 8. Lecture 8: published interactive material present, seven pages linked from the landing page
 
-All eight lectures now have a teacher outline in their source folder and an entry in `teacher/index.html`.
+All eight lectures now have a teacher outline and an entry in `teacher/index.html`, both kept in the private companion repository and symlinked into place.
 
 ## Labs
 
@@ -121,7 +121,7 @@ Several classes of files are intentionally excluded through `.gitignore` and are
 
 This keeps the public site in `docs/` while allowing the lecture mother folders to contain working and instructor-facing material locally.
 
-The teacher outlines and `teacher/index.html` are the deliberate exception: they are tracked in the repository, but they live outside `docs/` and so are never served as part of the course site. See below.
+The teacher outlines and `teacher/index.html` used to be a tracked exception here. They are not any more: they live in the private companion repository and are symlinked back into this working copy. See below.
 
 ### Teacher outline hub
 
@@ -129,16 +129,15 @@ Each lecture keeps its own running order inside its own mother folder, at `lectu
 
 The outlines are the authority. The hub summarizes them and links to them, so where the two disagree the outline is right.
 
-There are two separate boundaries here, and they do not sit in the same place:
+The outlines and the hub are no longer in this repository. They live in the private companion repository `peterhor/EE501_2026_private`, which mirrors this folder layout, and its `link.sh` symlinks them back to their usual paths here. So they still open where they always did, and the hub's relative links to them still resolve, but nothing about them reaches the public repository.
 
-1. `docs/` is the published site. The hub and the outlines sit outside it, so they are not on the GitHub Pages site and are not linked from the landing page
-2. The repository itself is public. The outlines are tracked in it, so anyone browsing the repository on GitHub can read them, reveal answers included
+Write them accordingly: they are private now, and reveal answers and delivery notes can go in them freely. Note that versions committed before this move remain readable in this repository's public history.
 
-Write the outlines on that second assumption. What is still kept out of the repository entirely: the source decks, the lab answer keys and report templates, the preparation screenshots and uploads, and the Goosse textbook material.
+The private repository holds two things: the outlines and the hub, and `lecture-*/slide-source/`. Everything else that stays out of here — the source decks, the lab answer keys and report templates, the screenshots and uploads, the Goosse textbook material, `figures/` and `animations/` — is bulk static media, moved between machines by OneDrive or a USB drive rather than by git.
 
-The outlines are un-ignored by a single negation. `.gitignore` keeps `*Teacher*.html` as the catch-all for lab answer keys, followed by `!lecture-*/Lecture?-Teacher-outline.html` to let the running orders through. Keep an outline filename in that shape and it stays tracked; give a new answer key a `Teacher` name and it stays out.
+`.gitignore` keeps `*Teacher*.html` as the catch-all for outlines and lab answer keys, plus `/teacher` for the hub. Both patterns are written without a trailing slash on purpose: a pattern like `teacher/` matches a real directory but *not* a symlink standing in for one, and these paths are symlinks. The same applies to `lecture-*/slide-source`, `/figures`, `/animations`, and `/Goosse2010_textbook`.
 
-Before pushing, `git status --short --untracked-files=all` should show outlines and the hub, and never a deck, an answer key, or anything under `uploads`.
+Before pushing, `git status --short --untracked-files=all` should show no outline, no hub, no deck, no answer key, nothing under `uploads`, and none of the symlinks.
 
 ## Workflow
 
