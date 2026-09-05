@@ -167,20 +167,52 @@ Components of the climate system &middot; 1 of 8</p>
     snow cover, growing-season length. Which ones are &ldquo;relevant&rdquo; depends on the question you are
     asking, which is a scientific choice and not a given.</li>
   </ul>
-  <p class="note"><b>Weather is a state; climate is a distribution.</b> Weather is what the atmosphere is
-  doing at one moment, and it is predictable for about a week. Climate is the shape of the distribution that
-  the weather is drawn from, and it is predictable in a completely different sense &mdash; you cannot say
-  whether 3 March 2087 will be wet, and you can say something useful about how many wet days that March will
-  have. Lecture&nbsp;8 makes that distinction formal under the heading
+  <p class="note"><b>Weather is a state; climate is a distribution.</b> That sentence is the whole of the
+  first hour, so it is worth being slow about both words. A <b>state</b> is one reading &mdash; what the
+  atmosphere is doing at one moment. A <b>distribution</b> is the complete set of readings a place gives you
+  <em>and how often it gives each one</em>: the full range of weather, together with the frequency of every
+  part of that range. A distribution has a <b>middle</b>, which is the mean, and a <b>width</b>, which is the
+  variability. The definition above asks for both, which is why dropping the second word breaks it.</p>
+  <p class="note">The figure below is a distribution with nothing hidden: eighty summers at one site, each
+  one drawn as its own block. That shape &mdash; not the single number at its centre &mdash; is the climate
+  of the place.</p>
+  <p class="note">The two also differ in what can be predicted. Weather is predictable for about a week.
+  Climate is predictable in a completely different sense: you cannot say whether 3 March 2087 will be wet,
+  and you can say something useful about how many wet days that March will have. Lecture&nbsp;8 makes that
+  distinction formal under the heading
   <a href="../lecture-8-climate-change-the-future/projections-predictions.html">projections versus
   predictions</a>.</p>
+  <div class="warnbox"><b>One word, two jobs &mdash; and only one of them is meant here.</b> Ordinary
+  scientific writing also uses &ldquo;distribution&rdquo; for how something is spread out across a
+  <em>map</em>: the distribution of land and sea, of sea ice, of rainfall through the year. That is a
+  different idea, and on these pages it is called an <em>arrangement</em> or a <em>pattern</em> instead. When
+  you read &ldquo;distribution&rdquo; here, it always means the statistical sense above &mdash; a range of
+  values and how often each occurs.</div>
+</div>
+
+<div class="card">
+  <h3>What a distribution looks like</h3>
+  <p class="cap">Eighty summers at one synthetic mid-latitude site, no trend imposed. Each block is one
+  summer, stacked into half-degree bins.</p>
+
+  <svg viewBox="0 0 880 320" role="img" aria-label="Histogram of eighty synthetic summer mean temperatures, each summer drawn as one block, with the mean marked, the plus and minus one standard deviation band shaded, and the single hottest summer highlighted"><g id="dG"></g></svg>
+
+  <p class="note">Every block is a summer somebody lived through. The <b>middle</b> of the pile is the mean
+  the definition asks for; the <b>width</b> of the pile is the variability it also asks for. Neither one on
+  its own is the climate &mdash; the whole pile is. Report only the middle and you have thrown away exactly
+  the information a crop, a building or a drainage system is designed against.</p>
+  <p class="note">Note what the hottest summer is: the far right-hand block of an unchanging pile. It is
+  a record, and it is not evidence of anything having moved. In a stable climate somebody's lifetime record
+  is broken all the time &mdash; that is what having a width <em>means</em>.</p>
+
   <p class="q"><b>Question.</b> A colleague says &ldquo;the climate has changed &mdash; last summer was the
   hottest I remember.&rdquo; What, precisely, is wrong with that as evidence?
-  <span style="color:var(--text-muted)">One summer is one draw from the distribution. A single hot summer is
-  entirely compatible with an unchanged climate, because the distribution has width; that is what
-  <em>variability</em> means. Evidence for a changed climate has to be a statement about the distribution
-  &mdash; a shifted mean, a changed variance, a changed frequency of exceeding a threshold &mdash; and that
-  requires many draws. The demonstration below quantifies exactly how many.</span></p>
+  <span style="color:var(--text-muted)">Last summer is one block. The pile above already contains a hottest
+  block without anything having changed, so a single hot summer is entirely compatible with an unchanged
+  climate &mdash; that is what the width is. Evidence for a changed climate has to be a statement about the
+  whole pile: that its middle has moved, that its width has changed, or that it now spills past a given
+  threshold more often than it used to. That takes many summers, not one. The demonstration below quantifies
+  exactly how many.</span></p>
 </div>
 
 <div class="card">
@@ -474,6 +506,85 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
   function rng(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
   function gauss(r){var u=Math.max(1e-12,r()),v=r();
     return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+  /* ═══ Figure · what a distribution is ═════════════════════════ */
+  function drawDist(){
+    var g=$('dG'); if(!g) return; clear(g);
+    var L=74, R=838, T=44, B=246;
+    var lo=15.0, hi=21.0, BW=0.5, NB=Math.round((hi-lo)/BW);
+    var x=function(t){return L+(R-L)*(t-lo)/(hi-lo);};
+    var r=rng(142), N=80, mu=18.0, sd=0.95, v=[], i, b;
+
+    for(i=0;i<N;i++) v.push(mu+sd*gauss(r));
+    /* recentre and rescale the draw so the printed mean and width are the true ones */
+    var m0=0; for(i=0;i<N;i++) m0+=v[i]; m0/=N;
+    var s0=0; for(i=0;i<N;i++) s0+=(v[i]-m0)*(v[i]-m0); s0=Math.sqrt(s0/(N-1));
+    for(i=0;i<N;i++) v[i]=mu+(v[i]-m0)*sd/s0;
+
+    var bins=[]; for(b=0;b<NB;b++) bins.push([]);
+    for(i=0;i<N;i++){
+      b=Math.floor((v[i]-lo)/BW);
+      if(b<0)b=0; if(b>NB-1)b=NB-1;
+      bins[b].push(i);
+    }
+    var mx=0; for(b=0;b<NB;b++) if(bins[b].length>mx) mx=bins[b].length;
+    var hot=0; for(i=1;i<N;i++) if(v[i]>v[hot]) hot=i;
+    /* the hottest summer sits on top of its own pile, where it can be pointed at */
+    var hb=Math.floor((v[hot]-lo)/BW); if(hb>NB-1) hb=NB-1;
+    bins[hb].splice(bins[hb].indexOf(hot),1); bins[hb].push(hot);
+
+    var bw=(R-L)/NB, blk=Math.min(16,(B-T)/(mx+1));
+
+    /* the ±1σ band, behind everything */
+    put(g,'rect',{x:x(mu-sd),y:T-6,width:x(mu+sd)-x(mu-sd),height:B-T+6,
+      fill:'var(--acc)','fill-opacity':0.07});
+    put(g,'text',{x:(x(mu-sd)+x(mu+sd))/2,y:T-14,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--acc)','font-weight':600},'about two summers in three land in here — the width');
+
+    /* the blocks */
+    for(b=0;b<NB;b++){
+      for(i=0;i<bins[b].length;i++){
+        var isHot = bins[b][i]===hot;
+        put(g,'rect',{x:L+b*bw+1.5,y:B-(i+1)*blk+1.2,width:bw-3,height:blk-2.4,rx:2.5,
+          fill: isHot?'var(--hot)':'var(--atm)','fill-opacity': isHot?1:0.72});
+      }
+    }
+
+    /* baseline and temperature axis */
+    put(g,'line',{x1:L,x2:R,y1:B,y2:B,stroke:'var(--line)','stroke-width':1.4});
+    for(var t=15;t<=21;t++){
+      put(g,'line',{x1:x(t),x2:x(t),y1:B,y2:B+5,stroke:'var(--line)','stroke-width':1});
+      put(g,'text',{x:x(t),y:B+20,'text-anchor':'middle','font-size':11,
+        fill:'var(--text-muted)'},t);
+    }
+    put(g,'text',{x:(L+R)/2,y:B+42,'text-anchor':'middle','font-size':12,
+      fill:'var(--text-secondary)'},'mean temperature of one summer, °C');
+    put(g,'text',{x:L-10,y:B+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'0');
+    put(g,'text',{x:L-10,y:B-5*blk+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'5');
+    put(g,'text',{x:L-10,y:B-10*blk+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},'10');
+    put(g,'text',{x:16,y:(T+B)/2,'text-anchor':'middle','font-size':12,fill:'var(--text-secondary)',
+      transform:'rotate(-90 16 '+((T+B)/2)+')'},'number of summers');
+
+    /* the mean */
+    put(g,'line',{x1:x(mu),x2:x(mu),y1:T-6,y2:B+9,stroke:'var(--text-primary)','stroke-width':1.6,
+      'stroke-dasharray':'5 4'});
+    put(g,'text',{x:x(mu)+7,y:T+8,'font-size':11.5,fill:'var(--text-primary)','font-weight':600},
+      'mean 18.0 °C — the middle');
+
+    /* the hottest summer, called out into the clear space above the right-hand tail */
+    var hx=L+hb*bw+bw/2, hy=B-bins[hb].length*blk-5, ly=T+58;
+    put(g,'line',{x1:hx,x2:hx,y1:hy,y2:ly,stroke:'var(--hot)','stroke-width':1.4});
+    put(g,'circle',{cx:hx,cy:hy,r:2.6,fill:'var(--hot)'});
+    put(g,'text',{x:R,y:T+22,'text-anchor':'end','font-size':11.5,fill:'var(--hot)','font-weight':600},
+      'the hottest summer in eighty years');
+    put(g,'text',{x:R,y:T+38,'text-anchor':'end','font-size':11.5,fill:'var(--hot)'},
+      'one block, in a pile that never moved');
+
+    /* one block = one summer */
+    put(g,'rect',{x:L,y:B+56,width:22,height:11,rx:2.5,fill:'var(--atm)','fill-opacity':0.72});
+    put(g,'text',{x:L+30,y:B+65,'font-size':12,fill:'var(--text-secondary)'},
+      '= one summer. Eighty of them, and the shape they make is the climate.');
+  }
 
   /* ═══ Demo 1 · weather → climate ═══════════════════════════════ */
   var NY=80, DPY=365, TBASE=6.0;
@@ -838,7 +949,7 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
     });
   });
 
-  upd1(); drawRef();
+  drawDist(); upd1(); drawRef();
 })();
 </script>
 
