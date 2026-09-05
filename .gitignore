@@ -30,6 +30,11 @@ animations/*
 *Teacher*.dc.html
 /teacher
 
+# Instructor maintenance record, also in the private repository and symlinked
+# back. It sat outside docs/ so it was never on the published site, but a
+# public repository still published it to anyone browsing GitHub.
+/build-reports
+
 # Lightweight ".dc.html" preview variants and their runtime — these need
 # support.js/doc-page.js to render and duplicate the self-contained
 # "(Student)" bundles used for the public site. Kept out to avoid confusion.
@@ -60,3 +65,4 @@ lecture-*/Lecture*-2026.pptx
 lecture-*/*- 2026.pptx
 lecture-*/slide-source
 lecture-3-climate-at-a-local-scale/Lecture 3 - Climate at a Local Scale.pptx
+CLAUDE.md
