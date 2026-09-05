@@ -202,10 +202,59 @@ Components of the climate system &middot; 1 of 8</p>
 
 <div class="card demo">
   <h3>Average some weather</h3>
-  <p class="cap">Thirty years is a convention, not a law of nature. Below, daily weather is generated from a
-  seasonal cycle plus correlated noise plus a warming trend, and then averaged over a window of your
-  choosing. Two errors fight each other as the window grows, and where they cross is the honest answer to
-  &ldquo;how long should a normal be?&rdquo;</p>
+  <p class="cap">Eighty years of daily weather at one synthetic mid-latitude site, drawn twice.
+  <b>Panel&nbsp;1 is the weather</b> &mdash; the whole record, on the scale you actually experience.
+  <b>Panel&nbsp;2 is the same record</b> reduced to annual means and magnified about fifteen times
+  vertically: the shaded strip in panel&nbsp;1, blown up. The climate is in there the whole time; it is
+  simply thinner than the weather. <b>Panel&nbsp;3 is the arithmetic</b> of how well a window of N years
+  can pin it down &mdash; the two errors it plots are the two coloured gaps measured on panel&nbsp;2.</p>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="c_win"><span>Averaging window N</span> <b id="v_win">30 years</b></label>
+      <input type="range" id="c_win" min="1" max="60" step="1" value="30">
+      <div class="hint">WMO climate normals use 30.</div>
+    </div>
+    <div class="ctrl">
+      <label for="c_sig"><span>Year-to-year weather noise &sigma;<sub>ann</sub></span> <b id="v_sig">0.60 K</b></label>
+      <input type="range" id="c_sig" min="0.1" max="0.9" step="0.05" value="0.6">
+      <div class="hint">Standard deviation of the annual mean. Larger inland and at high latitude.</div>
+    </div>
+    <div class="ctrl">
+      <label for="c_tr"><span>Warming trend</span> <b id="v_tr">0.20 K / decade</b></label>
+      <input type="range" id="c_tr" min="0" max="0.4" step="0.01" value="0.2">
+      <div class="hint">Set it to zero and the trade-off disappears &mdash; longer is then always better.</div>
+    </div>
+  </div>
+
+  <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Try</span>
+    <button class="ghost" data-i="30,0.6,0.2" aria-pressed="true">The normal we use, the climate we have</button>
+    <button class="ghost" data-i="30,0.6,0.07" aria-pressed="false">The climate 30 years was chosen for</button>
+    <button class="ghost" data-i="30,0.6,0" aria-pressed="false">A stationary climate</button>
+    <button class="ghost" data-i="30,0.45,0.2" aria-pressed="false">A quiet coastal site</button>
+    <button class="ghost" data-i="30,0.9,0.2" aria-pressed="false">A noisy inland site</button>
+    <button class="ghost" data-i="10,0.6,0.2" aria-pressed="false">Only ten years</button>
+  </div>
+
+  <div class="legend">
+    <span class="chip"><span class="dot" style="background:var(--text-muted)"></span>the weather &mdash; daily in panel&nbsp;1, annual means in panel&nbsp;2</span>
+    <span class="chip"><span class="dot" style="background:var(--text-primary)"></span>the climate &mdash; what we are trying to estimate</span>
+    <span class="chip"><span class="dot" style="background:var(--hot)"></span>the N-year normal &mdash; our estimate of it</span>
+    <span class="chip"><span class="dot" style="background:var(--atm)"></span><span>sampling error &sigma;<sub>N</sub></span></span>
+    <span class="chip"><span class="dot" style="background:var(--warn)"></span><span>staleness b<sub>N</sub></span></span>
+  </div>
+
+  <svg viewBox="0 0 880 500" role="img" aria-label="Panel 1: eighty years of synthetic daily temperature with the underlying climate drawn through it. Panel 2: the same record as annual means, magnified about fifteen times vertically, with the N-year running mean, the sampling-error bracket and the staleness gap marked at the right-hand end"><g id="wG"></g></svg>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Sampling error</div><div class="v" id="kSam">&mdash;</div><div class="s">blue bracket, panel 2</div></div>
+    <div class="kpi"><div class="k">Staleness at the end</div><div class="v" id="kBia">&mdash;</div><div class="s">orange gap, panel 2</div></div>
+    <div class="kpi"><div class="k">Total error</div><div class="v" id="kTot">&mdash;</div><div class="s">the two added in quadrature</div></div>
+    <div class="kpi"><div class="k">Best window here</div><div class="v" id="kOpt">&mdash;</div><div class="s">minimum of the red curve</div></div>
+  </div>
+
+  <div class="readout" id="wRo"></div>
 
   <div class="eq">
     <b>sampling error</b> &nbsp;&sigma;<sub>N</sub> = &sigma;<sub>ann</sub> / &radic;N
@@ -216,59 +265,27 @@ Components of the climate system &middot; 1 of 8</p>
     N<sub>best</sub> = (2&sigma;<sub>ann</sub>&sup2; / trend&sup2;)<sup>1/3</sup>, with trend in K per year</span>
   </div>
   <div class="defs">
-    <div class="def"><b>&sigma;<sub>N</sub></b> standard error of an N-year mean, K</div>
+    <div class="def"><b>&sigma;<sub>N</sub></b> standard error of an N-year mean, K &mdash; half the height of the blue bracket</div>
     <div class="def"><b>&sigma;<sub>ann</sub></b> year-to-year standard deviation of annual means about the underlying climate, K</div>
     <div class="def"><b>N</b> length of the averaging window, years</div>
     <div class="def"><b>b<sub>N</sub></b> staleness bias &mdash; how far the window's mid-point sits behind today, K</div>
     <div class="def"><b>trend</b> underlying warming rate, K yr<sup>&minus;1</sup></div>
   </div>
 
-  <div class="ctrls">
-    <div class="ctrl">
-      <label for="c_win"><span>Averaging window N</span> <b id="v_win">30 years</b></label>
-      <input type="range" id="c_win" min="1" max="60" step="1" value="30">
-      <div class="hint">WMO climate normals use 30.</div>
-    </div>
-    <div class="ctrl">
-      <label for="c_sig"><span>Year-to-year weather noise &sigma;<sub>ann</sub></span> <b id="v_sig">0.60 K</b></label>
-      <input type="range" id="c_sig" min="0.1" max="1.5" step="0.05" value="0.6">
-      <div class="hint">Standard deviation of the annual mean. Larger inland and at high latitude.</div>
-    </div>
-    <div class="ctrl">
-      <label for="c_tr"><span>Warming trend</span> <b id="v_tr">0.20 K / decade</b></label>
-      <input type="range" id="c_tr" min="0" max="0.6" step="0.01" value="0.2">
-      <div class="hint">Set it to zero and the trade-off disappears &mdash; longer is then always better.</div>
-    </div>
-  </div>
+  <svg viewBox="0 0 880 250" role="img" aria-label="Panel 3: sampling error, staleness and total error plotted against the length of the averaging window, with the current window marked"><g id="eG"></g></svg>
 
-  <div class="rowbtns" style="margin-top:12px">
-    <span class="lbl">Try</span>
-    <button class="ghost" data-i="30,0.6,0.2">The normal we use, the climate we have</button>
-    <button class="ghost" data-i="30,0.6,0.07">The climate 30 years was chosen for</button>
-    <button class="ghost" data-i="30,0.6,0">A stationary climate</button>
-    <button class="ghost" data-i="5,0.6,0.2">Only five years</button>
-  </div>
+  <p class="note"><b>How panel 3 is made from panel 2.</b> Move the window slider and watch the two coloured
+  marks at the right-hand end of panel&nbsp;2. The <span style="color:var(--atm)"><b>blue bracket</b></span>
+  is how far the red line can miss by from weather noise alone; it shrinks as 1/&radic;N, fast at first and
+  then barely at all. The <span style="color:var(--warn)"><b>orange gap</b></span> is how far below today's
+  climate the window's mid-point already sits; it grows in a straight line and never stops. Panel&nbsp;3 is
+  nothing but those two lengths, re-plotted against every N from 1 to 60. Their sum in quadrature therefore
+  has a minimum, at N&nbsp;=&nbsp;(2&sigma;&sup2;/trend&sup2;)<sup>1/3</sup>, and where that minimum sits
+  depends entirely on how fast the climate is moving.</p>
 
-  <svg viewBox="0 0 880 320" role="img" aria-label="A synthetic daily temperature series with the annual means and the running N-year mean drawn over it"><g id="wG"></g></svg>
-
-  <div class="kpis">
-    <div class="kpi"><div class="k">Sampling error</div><div class="v" id="kSam">&mdash;</div><div class="s">&sigma;<sub>ann</sub>/&radic;N</div></div>
-    <div class="kpi"><div class="k">Staleness at the end</div><div class="v" id="kBia">&mdash;</div><div class="s">midpoint of window to now</div></div>
-    <div class="kpi"><div class="k">Total error</div><div class="v" id="kTot">&mdash;</div><div class="s">the two added in quadrature</div></div>
-    <div class="kpi"><div class="k">Best window here</div><div class="v" id="kOpt">&mdash;</div><div class="s">minimum of the total</div></div>
-  </div>
-
-  <div class="readout" id="wRo"></div>
-
-  <svg viewBox="0 0 880 250" role="img" aria-label="Sampling error, staleness and total error plotted against the length of the averaging window"><g id="eG"></g></svg>
-
-  <p class="note"><b>Read the second figure, not the first.</b> Sampling error falls as 1/&radic;N &mdash; fast
-  at the start, then barely at all. Staleness grows linearly and never stops. Their sum therefore has a
-  minimum, at N&nbsp;=&nbsp;(2&sigma;&sup2;/trend&sup2;)<sup>1/3</sup>, and where that minimum sits depends
-  entirely on how fast the climate is moving.</p>
   <p class="note"><b>And the answer is uncomfortable.</b> Press <b>the climate 30&nbsp;years was chosen
   for</b> &mdash; a trend of about 0.07&nbsp;K per decade, roughly the early-twentieth-century rate &mdash;
-  and the optimum lands near 25&nbsp;years. Thirty is a perfectly sensible number for that world. Now press
+  and the optimum lands just under 25&nbsp;years. Thirty is a perfectly sensible number for that world. Now press
   <b>the normal we use, the climate we have</b>: at 0.2&nbsp;K per decade the optimum collapses to about
   12&nbsp;years, because staleness now grows three times faster while the sampling error is unchanged. By its
   own criterion the standard 30-year normal is roughly twice as long as it should be, and it is kept because
@@ -287,8 +304,9 @@ Components of the climate system &middot; 1 of 8</p>
   particular period</em>, and it has an expiry date.</span></p>
 
   <p class="q"><b>Question.</b> Norway's normals are computed for the whole country from the same period, yet
-  &sigma;<sub>ann</sub> is roughly twice as large at Karasjok as at Bergen. What does that do to the meaning
-  of a 30-year normal at the two sites?
+  &sigma;<sub>ann</sub> is roughly twice as large at Karasjok as at Bergen. Press <b>a quiet coastal
+  site</b> and then <b>a noisy inland site</b> &mdash; the same two clicks &mdash; and watch the blue bracket.
+  What does that do to the meaning of a 30-year normal at the two sites?
   <span style="color:var(--text-muted)">The <em>same</em> 30 years buys twice the precision at Bergen. A
   30-year normal at Karasjok has a sampling error of order 0.2&nbsp;K, at Bergen of order 0.1&nbsp;K, so a
   difference between two consecutive normals that is significant on the coast may be pure noise inland.
@@ -301,7 +319,7 @@ Components of the climate system &middot; 1 of 8</p>
   <b>synthetic</b> &mdash; a seasonal cycle, an autocorrelated weather term and a linear trend, generated in
   your browser from a fixed seed. It is not a station record and no observations are loaded. What
   <em>is</em> real is the arithmetic: &sigma;<sub>N</sub> = &sigma;<sub>ann</sub>/&radic;N and the linear
-  staleness term are exact, and they are the entire content of the figure below the series.</div>
+  staleness term are exact, and they are the entire content of panel&nbsp;3.</div>
 </div>
 
 <!-- ═══════════ 3 ═══════════ -->
@@ -458,99 +476,185 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
     return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 
   /* ═══ Demo 1 · weather → climate ═══════════════════════════════ */
-  var NY=80, DPY=365;
+  var NY=80, DPY=365, TBASE=6.0;
   var daily=null, annual=null;
 
   function build(sig,trend){
-    var r=rng(20260907), d=new Array(NY*DPY), ann=new Array(NY);
-    /* annual-mean weather noise with lag-1 correlation 0.25, scaled to sigma */
+    var r=rng(20260907), d=new Array(NY*DPY), ann=new Array(NY), i, k, y;
+    /* annual-mean weather noise with lag-1 correlation 0.25, scaled to sigma_ann */
     var phiA=0.25, ea=0, an=new Array(NY);
-    for(var y=0;y<NY;y++){ ea=phiA*ea+Math.sqrt(1-phiA*phiA)*gauss(r); an[y]=sig*ea; }
+    for(y=0;y<NY;y++){ ea=phiA*ea+Math.sqrt(1-phiA*phiA)*gauss(r); an[y]=sig*ea; }
     /* daily weather with lag-1 correlation 0.55 on top */
-    var phiD=0.55, ed=0, sd=3.4;
-    for(var i=0;i<NY*DPY;i++){
+    var phiD=0.55, ed=0, sd=3.4, wx=new Array(NY*DPY);
+    for(i=0;i<NY*DPY;i++){ ed=phiD*ed+Math.sqrt(1-phiD*phiD)*gauss(r); wx[i]=sd*ed; }
+    /* remove each year's own mean daily anomaly, so an annual mean is exactly
+       climate + sigma_ann noise and the sigma_ann/sqrt(N) arithmetic is exact */
+    for(y=0;y<NY;y++){
+      var s=0;
+      for(k=0;k<DPY;k++) s+=wx[y*DPY+k];
+      s/=DPY;
+      for(k=0;k<DPY;k++) wx[y*DPY+k]-=s;
+    }
+    for(i=0;i<NY*DPY;i++){
       var yy=Math.floor(i/DPY), doy=i-yy*DPY;
-      ed=phiD*ed+Math.sqrt(1-phiD*phiD)*gauss(r);
-      var seas=-9.0*Math.cos(2*Math.PI*(doy-15)/DPY);
-      d[i]=6.0+seas+an[yy]+trend*yy/10+sd*ed;
+      d[i]=TBASE+trend*yy/10+an[yy]-9.0*Math.cos(2*Math.PI*(doy-15)/DPY)+wx[i];
     }
-    for(var y2=0;y2<NY;y2++){
-      var s=0; for(var k=0;k<DPY;k++) s+=d[y2*DPY+k];
-      ann[y2]=s/DPY;
-    }
+    for(y=0;y<NY;y++) ann[y]=TBASE+trend*y/10+an[y];
     daily=d; annual=ann;
+  }
+
+  /* a vertical double-headed arrow, used for the staleness gap */
+  function vArrow(g,xa,y1,y2,col){
+    var d=Math.abs(y1-y2);
+    if(d<1.2) return;
+    put(g,'line',{x1:xa,x2:xa,y1:y1,y2:y2,stroke:col,'stroke-width':2.4});
+    if(d<15){  /* too short for arrowheads — flat caps instead */
+      put(g,'line',{x1:xa-6,x2:xa+6,y1:y1,y2:y1,stroke:col,'stroke-width':2.4});
+      put(g,'line',{x1:xa-6,x2:xa+6,y1:y2,y2:y2,stroke:col,'stroke-width':2.4});
+      return;
+    }
+    var s=y2>y1?1:-1;
+    put(g,'path',{d:'M'+(xa-4.5)+' '+(y1+6*s)+'L'+xa+' '+y1+'L'+(xa+4.5)+' '+(y1+6*s),
+      fill:'none',stroke:col,'stroke-width':2.4});
+    put(g,'path',{d:'M'+(xa-4.5)+' '+(y2-6*s)+'L'+xa+' '+y2+'L'+(xa+4.5)+' '+(y2-6*s),
+      fill:'none',stroke:col,'stroke-width':2.4});
   }
 
   function drawWeather(N,sig,trend){
     var g=$('wG'); if(!g) return; clear(g);
-    var L=58,R=866,T=18,B=270,W=R-L,H=B-T;
-    var lo=-16, hi=26;
+    var L=58, RX=712, MX=726;
+    var AT=32, AB=152, BT=212, BB=456, W=RX-L;
     var x=function(y){return L+W*y/NY;};
-    var yv=function(t){return B-H*(t-lo)/(hi-lo);};
-    /* grid */
-    for(var t=-15;t<=25;t+=5){
-      put(g,'line',{x1:L,x2:R,y1:yv(t),y2:yv(t),stroke:'var(--grid)','stroke-width':1});
-      put(g,'text',{x:L-8,y:yv(t)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},t+'°');
+    var aLo=-20, aHi=32, aH=AB-AT;
+    var ya=function(t){return AB-aH*(t-aLo)/(aHi-aLo);};
+    var bLo=-2.5, bHi=Math.max(3.7, trend*NY/10+2.0), bH=BB-BT;
+    var yb=function(v){return BB-bH*(v-bLo)/(bHi-bLo);};
+    var cl=function(v,a,b){return v<a?a:(v>b?b:v);};
+    var now=trend*NY/10, bN=0.5*trend*N/10, mid=now-bN, sN=sig/Math.sqrt(N);
+    var i,y,t,v;
+
+    /* ── panel 1 · the weather ───────────────────────────────── */
+    put(g,'text',{x:L,y:AT-11,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+      '1 · The weather — daily mean temperature at a mid-latitude continental site, °C');
+    for(t=-20;t<=30;t+=10){
+      put(g,'line',{x1:L,x2:RX,y1:ya(t),y2:ya(t),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:ya(t)+4,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},t);
     }
-    for(var yr=0;yr<=NY;yr+=10){
-      put(g,'text',{x:x(yr),y:B+18,'text-anchor':'middle','font-size':11,
-        fill:'var(--text-muted)'},'yr '+yr);
-    }
+    /* the strip of this panel that panel 2 magnifies */
+    var bandT=ya(TBASE+bHi), bandB=ya(TBASE+bLo);
+    put(g,'rect',{x:L,y:bandT,width:W,height:bandB-bandT,fill:'var(--acc)',opacity:0.15});
+    put(g,'rect',{x:L,y:bandT,width:W,height:bandB-bandT,fill:'none',
+      stroke:'var(--acc)','stroke-width':1,opacity:0.55});
     /* daily series, thinned to one point every 3 days for legibility */
-    var dpath='';
-    for(var i=0;i<NY*DPY;i+=3){
-      var v=daily[i]; if(v<lo)v=lo; if(v>hi)v=hi;
-      dpath+=(i?'L':'M')+x(i/DPY).toFixed(2)+' '+yv(v).toFixed(2);
+    var dp='';
+    for(i=0;i<NY*DPY;i+=3) dp+=(i?'L':'M')+x(i/DPY).toFixed(2)+' '+ya(cl(daily[i],aLo,aHi)).toFixed(2);
+    put(g,'path',{d:dp,fill:'none',stroke:'var(--text-muted)','stroke-width':0.5,opacity:0.5});
+    /* the underlying climate, on the weather's own scale */
+    put(g,'path',{d:'M'+x(0)+' '+ya(TBASE)+'L'+x(NY)+' '+ya(TBASE+now),
+      fill:'none',stroke:'var(--text-primary)','stroke-width':2});
+    put(g,'text',{x:MX,y:AT+16,'font-size':10.5,fill:'var(--text-muted)'},'daily weather');
+    put(g,'text',{x:MX,y:AT+30,'font-size':10.5,fill:'var(--text-muted)'},'spans about 45 K');
+    put(g,'text',{x:MX,y:AT+54,'font-size':10.5,fill:'var(--text-primary)','font-weight':600},'the climate');
+    put(g,'text',{x:MX,y:AT+68,'font-size':10.5,fill:'var(--text-primary)'},
+      (now>=0?'+':'')+now.toFixed(1)+' K in 80 years');
+    put(g,'text',{x:MX,y:AT+92,'font-size':10,fill:'var(--acc)'},'shaded strip');
+    put(g,'text',{x:MX,y:AT+105,'font-size':10,fill:'var(--acc)'},'= panel 2 below');
+
+    /* ── the zoom connector ──────────────────────────────────── */
+    var zoom=Math.round((bH/(bHi-bLo))/(aH/(aHi-aLo)));
+    put(g,'rect',{x:L,y:AB+10,width:W,height:BT-AB-30,rx:6,fill:'var(--acc)',opacity:0.07});
+    put(g,'line',{x1:L,x2:L,y1:bandB,y2:BT,stroke:'var(--acc)','stroke-width':1,
+      'stroke-dasharray':'3 4',opacity:0.75});
+    put(g,'line',{x1:RX,x2:RX,y1:bandB,y2:BT,stroke:'var(--acc)','stroke-width':1,
+      'stroke-dasharray':'3 4',opacity:0.75});
+    put(g,'text',{x:(L+RX)/2,y:AB+31,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--acc)','font-weight':600},
+      'the same eighty years — annual means only, vertical scale magnified ×'+zoom);
+
+    /* ── panel 2 · the climate ───────────────────────────────── */
+    put(g,'text',{x:L,y:BT-9,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+      '2 · The climate — annual means, as anomalies from the climate of year 0, K');
+    for(v=Math.ceil(bLo);v<=bHi+1e-9;v+=1){
+      var zero=Math.abs(v)<1e-9;
+      put(g,'line',{x1:L,x2:RX,y1:yb(v),y2:yb(v),
+        stroke:zero?'var(--text-muted)':'var(--grid)','stroke-width':zero?1.4:1});
+      put(g,'text',{x:L-8,y:yb(v)+4,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},(v>0?'+':'')+v);
     }
-    put(g,'path',{d:dpath,fill:'none',stroke:'var(--text-muted)','stroke-width':0.5,opacity:0.42});
+    for(y=0;y<=NY;y+=10)
+      put(g,'text',{x:x(y),y:BB+17,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--text-muted)'},'yr '+y);
+    /* the window itself */
+    put(g,'rect',{x:x(NY-N),y:BT,width:W*N/NY,height:bH,fill:'var(--hot)',opacity:0.07});
+    put(g,'text',{x:Math.min(x(NY-N/2),RX-34),y:BT+14,'text-anchor':'middle','font-size':10.5,
+      fill:'var(--hot)','font-weight':600},'last '+N+' yr');
     /* annual means */
-    var apath='';
-    for(var y3=0;y3<NY;y3++) apath+=(y3?'L':'M')+x(y3+0.5).toFixed(2)+' '+yv(annual[y3]).toFixed(2);
-    put(g,'path',{d:apath,fill:'none',stroke:'var(--atm)','stroke-width':1.7,opacity:0.95});
-    /* running N-year mean */
-    var mpath='';
-    for(var y4=N-1;y4<NY;y4++){
-      var s=0; for(var k2=0;k2<N;k2++) s+=annual[y4-k2];
-      mpath+=(mpath?'L':'M')+x(y4+0.5).toFixed(2)+' '+yv(s/N).toFixed(2);
+    var ap='';
+    for(y=0;y<NY;y++) ap+=(y?'L':'M')+x(y+0.5).toFixed(2)+' '+yb(cl(annual[y]-TBASE,bLo,bHi)).toFixed(2);
+    put(g,'path',{d:ap,fill:'none',stroke:'var(--text-muted)','stroke-width':1,opacity:0.55});
+    for(y=0;y<NY;y++)
+      put(g,'circle',{cx:x(y+0.5),cy:yb(cl(annual[y]-TBASE,bLo,bHi)),r:1.7,
+        fill:'var(--text-muted)',opacity:0.8});
+    /* the underlying climate */
+    put(g,'path',{d:'M'+x(0)+' '+yb(0)+'L'+x(NY)+' '+yb(now),fill:'none',
+      stroke:'var(--text-primary)','stroke-width':2.2});
+    /* the running N-year mean */
+    var mp='';
+    for(y=N-1;y<NY;y++){
+      var s=0; for(var k=0;k<N;k++) s+=annual[y-k];
+      mp+=(mp?'L':'M')+x(y+0.5).toFixed(2)+' '+yb(cl(s/N-TBASE,bLo,bHi)).toFixed(2);
     }
-    put(g,'path',{d:mpath,fill:'none',stroke:'var(--hot)','stroke-width':3});
-    /* window bracket at the end */
-    var xs=x(NY-N), xe=x(NY);
-    put(g,'rect',{x:xs,y:T,width:Math.max(1,xe-xs),height:H,fill:'var(--acc)',opacity:0.09});
-    put(g,'text',{x:(xs+xe)/2,y:T+14,'text-anchor':'middle','font-size':11.5,
-      fill:'var(--acc)','font-weight':600},'last '+N+' yr');
-    /* legend + honesty label inside the SVG */
-    put(g,'text',{x:L,y:T+14,'font-size':11.5,fill:'var(--text-muted)'},
-      'daily weather');
-    put(g,'text',{x:L+90,y:T+14,'font-size':11.5,fill:'var(--atm)','font-weight':600},
-      'annual mean');
-    put(g,'text',{x:L+188,y:T+14,'font-size':11.5,fill:'var(--hot)','font-weight':600},
-      N+'-year running mean');
-    put(g,'text',{x:R,y:B+34,'text-anchor':'end','font-size':11,fill:'var(--warn)',
-      'font-style':'italic'},
-      'SYNTHETIC SERIES — generated in the browser, not observations');
-    put(g,'text',{x:L,y:B+34,'font-size':11,fill:'var(--text-muted)'},
-      '°C, a mid-latitude continental site');
+    put(g,'path',{d:mp,fill:'none',stroke:'var(--hot)','stroke-width':3});
+    /* the two errors, measured at today */
+    put(g,'line',{x1:RX-104,x2:RX+2,y1:yb(now),y2:yb(now),stroke:'var(--text-primary)',
+      'stroke-width':1.3,'stroke-dasharray':'2 3'});
+    put(g,'line',{x1:RX-104,x2:RX+2,y1:yb(mid),y2:yb(mid),stroke:'var(--warn)',
+      'stroke-width':1.3,'stroke-dasharray':'2 3'});
+    vArrow(g,RX-14,yb(now),yb(mid),'var(--warn)');
+    put(g,'line',{x1:RX-56,x2:RX-56,y1:yb(mid-sN),y2:yb(mid+sN),stroke:'var(--atm)','stroke-width':2.4});
+    put(g,'line',{x1:RX-63,x2:RX-49,y1:yb(mid+sN),y2:yb(mid+sN),stroke:'var(--atm)','stroke-width':2.4});
+    put(g,'line',{x1:RX-63,x2:RX-49,y1:yb(mid-sN),y2:yb(mid-sN),stroke:'var(--atm)','stroke-width':2.4});
+    /* margin key, colour for colour with panel 3 */
+    var ly=BT+30;
+    function key(col,txt,bold){
+      put(g,'rect',{x:MX,y:ly-8,width:9,height:9,rx:2,fill:col});
+      put(g,'text',{x:MX+14,y:ly,'font-size':10.5,fill:col,'font-weight':bold?600:400},txt);
+      ly+=17;
+    }
+    key('var(--text-muted)','annual means');
+    key('var(--text-primary)','the climate',1);
+    key('var(--hot)',N+'-yr normal',1);
+    ly+=10;
+    put(g,'text',{x:MX,y:ly,'font-size':10,fill:'var(--text-muted)'},'at year 80:');
+    ly+=16;
+    key('var(--warn)','staleness '+bN.toFixed(2)+' K',1);
+    key('var(--atm)','sampling ±'+sN.toFixed(2)+' K',1);
+    put(g,'text',{x:L,y:492,'font-size':10.5,fill:'var(--warn)','font-style':'italic'},
+      'SYNTHETIC SERIES — generated in your browser from a fixed seed, not observations');
   }
 
-  function drawErr(sig,trend){
-    var g=$('eG'); if(!g) return; clear(g);
-    var L=58,R=760,T=22,B=200,W=R-L,H=B-T;
-    var hi=0.9;
+  function drawErr(sig,trend,N){
+    var g=$('eG'); if(!g) return 1; clear(g);
+    var L=58,R=712,T=26,B=196,W=R-L,H=B-T;
+    var fSam=function(n){return sig/Math.sqrt(n);};
+    var fBia=function(n){return 0.5*trend*n/10;};
+    var fTot=function(n){return Math.sqrt(fSam(n)*fSam(n)+fBia(n)*fBia(n));};
+    var hi=Math.max(0.9,Math.min(2.0,Math.max(fSam(1),fBia(60))*1.05));
+    var step=hi<=1.0?0.2:0.5;
     var x=function(n){return L+W*(n-1)/59;};
     var yv=function(e){return B-H*Math.min(e,hi)/hi;};
-    for(var e=0;e<=0.8;e+=0.2){
+    put(g,'text',{x:L,y:T-11,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+      '3 · The two errors of panel 2, measured for every window length — error in K');
+    for(var e=0;e<=hi+1e-9;e+=step){
       put(g,'line',{x1:L,x2:R,y1:yv(e),y2:yv(e),stroke:'var(--grid)','stroke-width':1});
-      put(g,'text',{x:L-8,y:yv(e)+4,'text-anchor':'end','font-size':11,
+      put(g,'text',{x:L-8,y:yv(e)+4,'text-anchor':'end','font-size':10.5,
         fill:'var(--text-muted)'},e.toFixed(1));
     }
-    for(var n=10;n<=60;n+=10){
-      put(g,'text',{x:x(n),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},n);
-    }
+    for(var n=10;n<=60;n+=10)
+      put(g,'text',{x:x(n),y:B+18,'text-anchor':'middle','font-size':10.5,fill:'var(--text-muted)'},n);
     put(g,'text',{x:(L+R)/2,y:B+36,'text-anchor':'middle','font-size':11.5,
       fill:'var(--text-muted)'},'length of averaging window N (years)');
-    put(g,'text',{x:L-8,y:T-6,'text-anchor':'end','font-size':11.5,
-      fill:'var(--text-muted)'},'K');
     function curve(fn,col,w,dash){
       var d='';
       for(var n2=1;n2<=60;n2++) d+=(n2>1?'L':'M')+x(n2).toFixed(1)+' '+yv(fn(n2)).toFixed(1);
@@ -558,9 +662,6 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
       if(dash)a['stroke-dasharray']=dash;
       put(g,'path',a);
     }
-    var fSam=function(n){return sig/Math.sqrt(n);};
-    var fBia=function(n){return 0.5*trend*n/10;};
-    var fTot=function(n){return Math.sqrt(fSam(n)*fSam(n)+fBia(n)*fBia(n));};
     curve(fSam,'var(--atm)',2,'5 4');
     curve(fBia,'var(--warn)',2,'5 4');
     curve(fTot,'var(--hot)',2.8);
@@ -571,16 +672,34 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
       put(g,'line',{x1:x(best),x2:x(best),y1:T,y2:B,stroke:'var(--line)','stroke-dasharray':'3 4'});
       put(g,'circle',{cx:x(best),cy:yv(bv),r:5,fill:'var(--hot)',
         stroke:'var(--surface-1)','stroke-width':1.6});
+      put(g,'text',{x:x(best),y:T-1,'text-anchor':'middle','font-size':10.5,
+        fill:'var(--hot)','font-weight':600},'best '+best+' yr');
     }
-    put(g,'line',{x1:R+22,x2:R+44,y1:T+8,y2:T+8,stroke:'var(--atm)','stroke-width':2,'stroke-dasharray':'5 4'});
-    put(g,'text',{x:R+50,y:T+12,'font-size':11.5,fill:'var(--atm)','font-weight':600},'sampling');
-    put(g,'line',{x1:R+22,x2:R+44,y1:T+30,y2:T+30,stroke:'var(--warn)','stroke-width':2,'stroke-dasharray':'5 4'});
-    put(g,'text',{x:R+50,y:T+34,'font-size':11.5,fill:'var(--warn)','font-weight':600},'staleness');
-    put(g,'line',{x1:R+22,x2:R+44,y1:T+52,y2:T+52,stroke:'var(--hot)','stroke-width':2.8});
-    put(g,'text',{x:R+50,y:T+56,'font-size':11.5,fill:'var(--hot)','font-weight':600},'total');
-    put(g,'text',{x:R+22,y:T+80,'font-size':11,fill:'var(--text-muted)'},'exact');
-    put(g,'text',{x:R+22,y:T+95,'font-size':11,fill:'var(--text-muted)'},'expressions,');
-    put(g,'text',{x:R+22,y:T+110,'font-size':11,fill:'var(--text-muted)'},'not fitted');
+    /* you are here — the window currently drawn on panel 2 */
+    put(g,'line',{x1:x(N),x2:x(N),y1:T,y2:B+4,stroke:'var(--text-primary)','stroke-width':1.4});
+    put(g,'circle',{cx:x(N),cy:yv(fSam(N)),r:4,fill:'var(--atm)',stroke:'var(--surface-1)','stroke-width':1.5});
+    put(g,'circle',{cx:x(N),cy:yv(fBia(N)),r:4,fill:'var(--warn)',stroke:'var(--surface-1)','stroke-width':1.5});
+    put(g,'circle',{cx:x(N),cy:yv(fTot(N)),r:4,fill:'var(--hot)',stroke:'var(--surface-1)','stroke-width':1.5});
+    var nlab='N = '+N, nright=x(N)>L+W*0.72;
+    put(g,'rect',{x:nright?x(N)-8-nlab.length*6.4:x(N)+2,y:T+3,
+      width:nlab.length*6.4+6,height:15,rx:3,fill:'var(--surface-1)',opacity:0.92});
+    put(g,'text',{x:nright?x(N)-6:x(N)+6,y:T+14,'text-anchor':nright?'end':'start',
+      'font-size':11,fill:'var(--text-primary)','font-weight':600},nlab);
+    /* key */
+    var kx=R+22, ky=T+10;
+    function ent(col,w,dash,txt){
+      var a={x1:kx,x2:kx+22,y1:ky,y2:ky,stroke:col,'stroke-width':w};
+      if(dash)a['stroke-dasharray']=dash;
+      put(g,'line',a);
+      put(g,'text',{x:kx+28,y:ky+4,'font-size':11,fill:col,'font-weight':600},txt);
+      ky+=22;
+    }
+    ent('var(--atm)',2,'5 4','sampling');
+    ent('var(--warn)',2,'5 4','staleness');
+    ent('var(--hot)',2.8,null,'total');
+    put(g,'text',{x:kx,y:ky+8,'font-size':10.5,fill:'var(--text-muted)'},'exact');
+    put(g,'text',{x:kx,y:ky+22,'font-size':10.5,fill:'var(--text-muted)'},'expressions,');
+    put(g,'text',{x:kx,y:ky+36,'font-size':10.5,fill:'var(--text-muted)'},'not fitted');
     return best;
   }
 
@@ -591,7 +710,7 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
     $('v_tr').textContent=tr.toFixed(2)+' K / decade';
     build(sig,tr);
     drawWeather(N,sig,tr);
-    var best=drawErr(sig,tr);
+    var best=drawErr(sig,tr,N);
     var sam=sig/Math.sqrt(N), bia=0.5*tr*N/10, tot=Math.sqrt(sam*sam+bia*bia);
     $('kSam').textContent=sam.toFixed(2)+' K';
     $('kBia').textContent=bia.toFixed(2)+' K';
@@ -599,21 +718,28 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
     $('kOpt').textContent=(best>=60?'≥ 60 yr':best+' yr');
     var msg;
     if(tr===0){
-      msg='With <b>no trend</b> there is nothing to go stale, so the total error is just the sampling error '+
-          'and it keeps falling. The best window is the longest one you can get.';
+      msg='With <b>no trend</b> the black climate line in panel 2 is flat, so there is no orange gap for '+
+          'the window to fall behind — the total error is just the sampling error and it keeps falling. '+
+          'The best window is the longest one you can get.';
     } else if(N<best-4){
-      msg='At N = <b>'+N+'</b> the average is still dominated by <b>weather noise</b> — sampling error '+
-          sam.toFixed(2)+' K against staleness '+bia.toFixed(2)+' K. Lengthening the window would help.';
+      msg='At N = <b>'+N+'</b> the blue bracket is still taller than the orange gap — the average is '+
+          'dominated by <b>weather noise</b>, '+sam.toFixed(2)+' K against a staleness of '+
+          bia.toFixed(2)+' K. Lengthening the window would help.';
     } else if(N>best+6){
-      msg='At N = <b>'+N+'</b> the window now reaches back far enough that <b>staleness dominates</b> '+
-          '— '+bia.toFixed(2)+' K against a sampling error of only '+sam.toFixed(2)+' K. The normal is '+
-          'describing a climate that has already gone.';
+      msg='At N = <b>'+N+'</b> the orange gap has overtaken the blue bracket — <b>staleness dominates</b>, '+
+          bia.toFixed(2)+' K against a sampling error of only '+sam.toFixed(2)+' K. The red line is '+
+          'tracking a climate that has already gone.';
     } else {
-      msg='At N = <b>'+N+'</b> the two errors are roughly balanced — sampling '+sam.toFixed(2)+
-          ' K, staleness '+bia.toFixed(2)+' K. This is close to the best available compromise.';
+      msg='At N = <b>'+N+'</b> the blue bracket and the orange gap are about the same size — sampling '+
+          sam.toFixed(2)+' K, staleness '+bia.toFixed(2)+' K. This is close to the best available compromise.';
     }
     $('wRo').innerHTML='<span class="big">'+tot.toFixed(2)+' K</span> total error in the '+N+
       '-year normal, as an estimate of the climate <em>right now</em>. '+msg;
+    Array.prototype.forEach.call(document.querySelectorAll('.rowbtns .ghost[data-i]'),function(b){
+      var p=b.getAttribute('data-i').split(',');
+      var same=(+p[0]===N && Math.abs(+p[1]-sig)<1e-9 && Math.abs(+p[2]-tr)<1e-9);
+      b.setAttribute('aria-pressed', same?'true':'false');
+    });
   }
 
   ['c_win','c_sig','c_tr'].forEach(function(id){$(id).addEventListener('input',upd1);});
@@ -648,24 +774,31 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
     for(var i=0;i<NG;i++){var yr=Y0+i; if(yr>=R[0]&&yr<=R[1]){base+=glob[i];n++;}}
     base/=n;
     var L=58,RR=790,T=22,B=272,W=RR-L,H=B-T;
-    var lo=-0.9, hi=1.9;
+    /* The axis window is a fixed 2.4 K tall and slides with the baseline, so the
+       curve is always fully on the figure and always exactly the same shape —
+       which is the point of the demonstration. Only the labels move. */
+    var vmin=1e9,vmax=-1e9;
+    for(var q=0;q<NG;q++){var vq=glob[q]-base; if(vq<vmin)vmin=vq; if(vq>vmax)vmax=vq;}
+    var ctr=(vmin+vmax)/2, lo=ctr-1.2, hi=ctr+1.2;
     var x=function(yr){return L+W*(yr-Y0)/(Y1-Y0);};
     var yv=function(v){return B-H*(v-lo)/(hi-lo);};
-    for(var t=-0.5;t<=1.5001;t+=0.5){
+    var t0=Math.ceil(lo/0.5)*0.5;
+    for(var t=t0;t<=hi+1e-9;t+=0.5){
       var zero=Math.abs(t)<1e-9;
       put(g,'line',{x1:L,x2:RR,y1:yv(t),y2:yv(t),
         stroke:zero?'var(--text-muted)':'var(--grid)','stroke-width':zero?1.6:1});
       put(g,'text',{x:L-8,y:yv(t)+4,'text-anchor':'end','font-size':11,
         fill:zero?'var(--text-primary)':'var(--text-muted)'},(t>0?'+':'')+t.toFixed(1));
     }
+    /* name the zero line, so it is obvious which line the baseline defines */
     for(var yr2=1850;yr2<=2025;yr2+=25){
       put(g,'text',{x:x(yr2),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},yr2);
     }
     put(g,'text',{x:L-8,y:T-6,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},'K');
     /* reference-period band */
     put(g,'rect',{x:x(R[0]),y:T,width:x(R[1])-x(R[0]),height:H,fill:'var(--acc)',opacity:0.12});
-    put(g,'text',{x:(x(R[0])+x(R[1]))/2,y:T+15,'text-anchor':'middle','font-size':11.5,
-      fill:'var(--acc)','font-weight':600},'baseline');
+    put(g,'text',{x:x(R[0])+7,y:B-9,'font-size':11.5,
+      fill:'var(--acc)','font-weight':600},'baseline '+R[2]);
     var d='';
     for(var i2=0;i2<NG;i2++){
       var v=glob[i2]-base;
@@ -676,14 +809,23 @@ Every figure on the eight Lecture&nbsp;1 pages is classified in the
     var last=glob[NG-1]-base;
     put(g,'circle',{cx:x(Y1),cy:yv(last),r:5,fill:'var(--hot)',
       stroke:'var(--surface-1)','stroke-width':1.6});
-    put(g,'text',{x:x(Y1)-8,y:yv(last)-10,'text-anchor':'end','font-size':13,
+    /* name the zero line, on whichever side of the panel the baseline band is not */
+    var zlab='zero = mean of '+R[2], zw=zlab.length*6.1;
+    var zleft=(x(R[0])+x(R[1]))/2 > (L+RR)/2;
+    put(g,'rect',{x:zleft?L+2:RR-8-zw,y:yv(0)+3,width:zw+6,height:15,
+      rx:3,fill:'var(--surface-1)',opacity:0.9});
+    put(g,'text',{x:zleft?L+6:RR-4,y:yv(0)+14,'text-anchor':zleft?'start':'end','font-size':11,
+      fill:'var(--text-primary)','font-weight':600},zlab);
+    var hiUp=yv(last)-T>34;   /* room above the marker? otherwise hang it below */
+    put(g,'text',{x:x(Y1)-8,y:yv(last)+(hiUp?-10:20),'text-anchor':'end','font-size':13,
       fill:'var(--hot)','font-weight':600},'final year '+(last>0?'+':'')+last.toFixed(2)+' K');
     put(g,'text',{x:L,y:B+36,'font-size':11,fill:'var(--warn)','font-style':'italic'},
       'SCHEMATIC SHAPE — synthetic curve, do not read values from it; published numbers are in the table below');
     $('rRo').innerHTML='Anomalies on this figure are stated relative to <b>'+R[2]+'</b>. '+
       'The final year of the series reads <span class="big">'+(last>0?'+':'')+last.toFixed(2)+' K</span> '+
       'against that baseline. Switch the baseline and the same year reads a different number — the curve '+
-      'is identical, only the zero line has moved by '+base.toFixed(2)+' K.';
+      'is identical, only the axis has slid by '+base.toFixed(2)+' K so that the zero line now sits on the '+
+      'mean of '+R[2]+'.';
   }
 
   Array.prototype.forEach.call(document.querySelectorAll('#segRef button'),function(b){
