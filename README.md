@@ -6,6 +6,10 @@ Live site:
 
 **[https://peterhor.github.io/EE501_2026/](https://peterhor.github.io/EE501_2026/)**
 
+Author and maintainer: [Peter Horvath](https://www.usn.no/kontakt-oss/ansatte/peter-horvath-1),
+Associate Professor, University of South-Eastern Norway
+([ORCID 0000-0002-6017-5385](https://orcid.org/0000-0002-6017-5385)).
+
 The published site is a static GitHub Pages site served from `docs/`. It includes:
 
 1. The main landing page with schedule and Canvas link
@@ -13,7 +17,13 @@ The published site is a static GitHub Pages site served from `docs/`. It include
 3. Interactive lecture material for Lectures 1-8
 4. Shared reference material such as the equation summary
 
-Course materials were originally developed by Hans Renssen, the former course coordinator.
+The course was originally developed by Hans Renssen, the former course coordinator, whose Excel
+workbooks are the basis of the three PC lab models. The interactive material in this repository —
+the lecture pages, the browser versions of the lab models, and the reference library — was built
+for the 2026 edition and is original work.
+
+The lecture decks are not published here. They stay in the private companion repository and are
+distributed to students through Canvas.
 
 ## Repository model
 
