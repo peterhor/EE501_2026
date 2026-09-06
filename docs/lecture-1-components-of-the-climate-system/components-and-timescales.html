@@ -261,14 +261,12 @@ Components of the climate system &middot; 2 of 8</p>
   <h3>Five clocks on one axis</h3>
   <p class="cap">Every component gets the same shove &mdash; a step change in the energy reaching it &mdash;
   and the same feedback &lambda;. The only difference between the curves is C. Note that the time axis is
-  <b>logarithmic</b>, and spans from one day to ten thousand years.</p>
+  <b>logarithmic</b>, and spans from one day to ten thousand years. The vertical axis is <b>fixed</b> at
+  0&ndash;7&nbsp;K and never rescales, so lowering &lambda; genuinely lifts the curves and any two settings can
+  be laid side by side. &Delta;F is held at 3.7&nbsp;W&nbsp;m<sup>&minus;2</sup> &mdash; a doubling of
+  CO<sub>2</sub> &mdash; which is what lets the axis stand still.</p>
 
   <div class="ctrls">
-    <div class="ctrl">
-      <label for="c_dF"><span>Step forcing &Delta;F</span> <b id="v_dF">3.7 W m<sup>&minus;2</sup></b></label>
-      <input type="range" id="c_dF" min="0.5" max="8" step="0.1" value="3.7">
-      <div class="hint">3.7 W m<sup>&minus;2</sup> is a doubling of CO<sub>2</sub>.</div>
-    </div>
     <div class="ctrl">
       <label for="c_lam"><span>Feedback parameter &lambda;</span> <b id="v_lam">1.30</b></label>
       <input type="range" id="c_lam" min="0.6" max="3.2" step="0.05" value="1.3">
@@ -282,7 +280,7 @@ Components of the climate system &middot; 2 of 8</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 880 380" role="img" aria-label="Warming response of five climate system components to the same step forcing, on a logarithmic time axis from one day to ten thousand years"><g id="tG"></g></svg>
+  <svg viewBox="0 0 880 380" role="img" aria-label="Warming response of five climate system components to the same step forcing, in kelvin on a fixed 0 to 7 kelvin scale, on a logarithmic time axis from one day to ten thousand years"><g id="tG"></g></svg>
 
   <div class="readout" id="tRo"></div>
 
@@ -507,12 +505,18 @@ the <a href="../lecture-7-climate-change-past-and-present/provenance.html">prove
     return (s/YR/1000).toFixed(1)+' kyr';
   }
 
+  /* The vertical axis is fixed in kelvin and never rescales, so λ visibly lowers the
+     plateau as well as shortening τ — both halves of τ = C/λ in one picture. Holding it
+     still is only possible because ΔF is a constant here: with ΔF free over 0.5–8 the
+     plateau ΔF/λ would span 85×, and no fixed axis survives that. Hence DF below is not
+     a control. AX_TOP must stay ≥ DF/λ_min = 3.7/0.6 = 6.17 K, so 7 K with 1 K steps. */
+  var DF=3.7, AX_TOP=7;
   function drawClocks(){
     var g=$('tG'); if(!g) return; clear(g);
-    var dF=+$('c_dF').value, lam=+$('c_lam').value;
-    var L=62,R=700,T=24,B=320,W=R-L,H=B-T;
+    var dF=DF, lam=+$('c_lam').value;
+    var L=68,R=700,T=24,B=320,W=R-L,H=B-T;
     var t0=Math.log10(86400), t1=Math.log10(YR*1e4);           /* 1 day … 10 kyr */
-    var Teq=dF/lam, hi=Math.ceil(Teq*1.15*10)/10;
+    var Teq=dF/lam, hi=AX_TOP;                                 /* kelvin, fixed */
     var x=function(s){return L+W*(Math.log10(s)-t0)/(t1-t0);};
     var yv=function(v){return B-H*v/hi;};
     /* grid: decades of time */
@@ -522,17 +526,17 @@ the <a href="../lecture-7-climate-change-past-and-present/provenance.html">prove
       put(g,'line',{x1:x(t[0]),x2:x(t[0]),y1:T,y2:B,stroke:'var(--grid)','stroke-width':1});
       put(g,'text',{x:x(t[0]),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},t[1]);
     });
-    for(var k=0;k<=4;k++){
-      var v=hi*k/4;
-      put(g,'line',{x1:L,x2:R,y1:yv(v),y2:yv(v),stroke:'var(--grid)','stroke-width':1});
-      put(g,'text',{x:L-8,y:yv(v)+4,'text-anchor':'end','font-size':11,
-        fill:'var(--text-muted)'},v.toFixed(1));
+    for(var k=0;k<=AX_TOP;k++){
+      put(g,'line',{x1:L,x2:R,y1:yv(k),y2:yv(k),stroke:'var(--grid)','stroke-width':1});
+      put(g,'text',{x:L-8,y:yv(k)+4,'text-anchor':'end','font-size':11,
+        fill:'var(--text-muted)'},k);
     }
     put(g,'line',{x1:L,x2:R,y1:yv(Teq),y2:yv(Teq),stroke:'var(--text-muted)',
       'stroke-width':1.4,'stroke-dasharray':'6 4'});
     put(g,'text',{x:R-4,y:yv(Teq)-7,'text-anchor':'end','font-size':11.5,
       fill:'var(--text-muted)'},'equilibrium ΔF/λ = '+Teq.toFixed(2)+' K');
-    put(g,'text',{x:L-8,y:T-6,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},'K');
+    put(g,'text',{x:16,y:(T+B)/2,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)',transform:'rotate(-90 16 '+((T+B)/2)+')'},'warming ΔT (K)');
     put(g,'text',{x:(L+R)/2,y:B+38,'text-anchor':'middle','font-size':11.5,
       fill:'var(--text-muted)'},'time since the forcing was applied (logarithmic)');
 
@@ -574,7 +578,7 @@ the <a href="../lecture-7-climate-change-past-and-present/provenance.html">prove
     });
 
     var ca=caps[0].C/lam, cm=caps[3].C/lam, co=caps[4].C/lam;
-    $('tRo').innerHTML='With &Delta;F = <b>'+dF.toFixed(1)+' W m<sup>&minus;2</sup></b> and &lambda; = <b>'+
+    $('tRo').innerHTML='With &Delta;F held at <b>'+dF.toFixed(1)+' W m<sup>&minus;2</sup></b> and &lambda; = <b>'+
       lam.toFixed(2)+' W m<sup>&minus;2</sup> K<sup>&minus;1</sup></b>, every component ends at the same '+
       '<span class="big">'+Teq.toFixed(2)+' K</span> — the equilibrium does not care what anything weighs. '+
       'But the atmosphere gets there in <b>'+fmtT(ca)+'</b>, the ocean mixed layer in <b>'+fmtT(cm)+
@@ -582,9 +586,8 @@ the <a href="../lecture-7-climate-change-past-and-present/provenance.html">prove
       Math.round(co/ca).toLocaleString()+' between the fastest and the slowest clock in the same system.';
   }
 
-  ['c_dF','c_lam','c_mld'].forEach(function(id){
+  ['c_lam','c_mld'].forEach(function(id){
     $(id).addEventListener('input',function(){
-      $('v_dF').innerHTML=(+$('c_dF').value).toFixed(1)+' W m<sup>&minus;2</sup>';
       $('v_lam').textContent=(+$('c_lam').value).toFixed(2);
       $('v_mld').textContent=$('c_mld').value+' m';
       drawClocks();
