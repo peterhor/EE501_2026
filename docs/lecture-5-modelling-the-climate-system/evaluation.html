@@ -159,7 +159,7 @@ Modelling the climate system &middot; 5 of 5</p>
     </tbody>
   </table>
   <div class="warnbox"><b>Calibration is legitimate, and it is also the easiest thing in modelling to abuse.</b>
-  It is legitimate because some parameters genuinely have no measured value &mdash; the entrainment rate of a
+  It is legitimate because some parameters have no measured value &mdash; the entrainment rate of a
   cumulus plume is not a quantity anyone has ever observed. It is abused when it is used to compensate for a
   deficiency elsewhere: a model that gets the global mean temperature right because two large errors were tuned
   to cancel will get the <em>response</em> to a perturbation wrong, and no amount of agreement with the present
@@ -170,7 +170,7 @@ Modelling the climate system &middot; 5 of 5</p>
   as evidence that the model is good?
   <span style="color:var(--text-muted)">Only if the temperature was not itself part of what was tuned &mdash;
   and it usually is, indirectly, because the radiation balance is adjusted through cloud parameters that
-  strongly control temperature. The honest presentation states the tuning targets explicitly and then evaluates
+  strongly control temperature. The transparent presentation states the tuning targets explicitly and then evaluates
   against something else: the seasonal cycle, the response to a volcanic eruption, the last glacial maximum,
   variability at interannual timescales. Those are not tuned, so agreement there means something.</span></p>
 </div>
@@ -252,7 +252,7 @@ Modelling the climate system &middot; 5 of 5</p>
   between the multi-model mean and the reanalysis, and the mean of the individual models&rsquo; absolute errors.
   Why show both, and which one is bigger?
   <span style="color:var(--text-muted)">The second is always bigger &mdash; it is the &ldquo;typical
-  member&rdquo; figure above, and it is the honest measure of how good one model is. The first is the
+  member&rdquo; figure above, and it is the fair measure of how good one model is. The first is the
   &ldquo;multi-model mean&rdquo; figure, and it is what you get if you use the ensemble as a single best
   estimate. Showing only the first flatters the models; showing only the second hides the fact that the
   ensemble mean really is more skilful. The gap between the two maps <em>is</em> the amount of error that
@@ -283,7 +283,7 @@ Modelling the climate system &middot; 5 of 5</p>
       <tr><td class="nm">Scenario runs</td><td>SSP1-2.6 &hellip; SSP5-8.5 to 2100 and beyond</td>
         <td>Projection. Note that this is the <em>only</em> row that cannot be validated.</td></tr>
       <tr><td class="nm">Palaeo (PMIP)</td><td>Last glacial maximum, mid-Holocene, last millennium</td>
-        <td>Behaviour in a climate genuinely different from today &mdash; the strongest available test of a
+        <td>Behaviour in a climate very different from today &mdash; the strongest available test of a
         model that will be used out of sample.</td></tr>
     </tbody>
   </table>
@@ -735,7 +735,7 @@ multiplicative adjustment of the long-term trend.
         '<b>That last number is luck, not skill.</b> Being too warm and warming too slowly are errors of '+
         'opposite sign, and by 2100 they have partly cancelled. Three separate faults are hiding inside one '+
         'plausible-looking answer. Work through the corrections in order and watch the cancellation come '+
-        'apart before the model gets genuinely better.';
+        'apart before the model gets better.';
     } else if(bmode==='delta'){
       s='<b>The constant offset</b> is the whole of the delta method: subtract the reference-period difference '+
         'of '+sgn(r.dOff)+' K, and the model now sits on top of the observations where you fitted it. '+
@@ -743,7 +743,7 @@ multiplicative adjustment of the long-term trend.
         sgn(p2100-t2100)+' K</b>.<br><br>'+
         '<b>Compare that with the raw output, and be careful about what you conclude.</b> The correction is '+
         'unambiguously right &mdash; the offset is a real fault and removing it is the correct thing to do '+
-        '&mdash; and yet the headline number for 2100 may well have got worse, because the offset was partly '+
+        '&mdash; and yet the top-line number for 2100 may well have got worse, because the offset was partly '+
         'cancelling the other two faults. That is what compensating errors do, and it is exactly the trap the '+
         'calibration warning at the top of this page describes: <b>you fix faults one at a time for their own '+
         'reasons, not until the answer looks right.</b>';
@@ -751,7 +751,7 @@ multiplicative adjustment of the long-term trend.
       s='<b>Adding the drift correction.</b> The drift is measured in the model&rsquo;s own control run &mdash; '+
         'where the forcing is constant, so any trend has to be an artefact &mdash; and removed before the '+
         'offset is estimated. Residual error at 2100: <b>'+sgn(p2100-t2100)+' K</b>. Two bookkeeping faults '+
-        'are now gone, and what is left is a genuine physical failure: this model responds to forcing '+
+        'are now gone, and what is left is a real physical failure: this model responds to forcing '+
         ((+$('tr').value)<100?'too weakly':'too strongly')+', and no amount of shifting the curve up or down '+
         'will repair that.';
     } else {

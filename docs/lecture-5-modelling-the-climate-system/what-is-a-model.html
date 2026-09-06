@@ -385,7 +385,7 @@
   <p class="note"><b>The right-hand column is where model differences come from.</b> Those parameters are not
   measured constants. Several have no direct observational counterpart at all, because the quantity they
   describe only exists once you have agreed to average over a grid box. Choosing their values is
-  <em>calibration</em>, and <a href="evaluation.html">page&nbsp;5</a> is about how to do that honestly.</p>
+  <em>calibration</em>, and <a href="evaluation.html">page&nbsp;5</a> is about how to do that defensibly.</p>
   <p class="q"><b>Question.</b> Two modelling groups solve the same seven equations, at the same resolution,
   with the same forcing, and get warming rates that differ by 40 %. Where does the difference come from?
   <span style="color:var(--text-muted)">Overwhelmingly from the cloud and convection parameterisations, through
@@ -636,7 +636,7 @@ which changes the numbers but not the exponent.
           : 'is reproduced at its full '+Math.round(MT.coast).toLocaleString()+' km. ')+
        (dx>21 ? 'The fjord is the clearest case: the model does not so much lose it as inflate it, '+
                 'keeping it as a sound one grid box wide &mdash; '+dx+' km across instead of 85.'
-              : 'At this spacing the fjord is genuinely resolved: about '+Math.round(85/dx)+
+              : 'At this spacing the fjord is properly resolved: about '+Math.round(85/dx)+
                 ' grid boxes span it.');
     $('ro').innerHTML=s;
 
