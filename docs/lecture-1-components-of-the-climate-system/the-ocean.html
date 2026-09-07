@@ -82,6 +82,7 @@
   @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
   .kpi{background:var(--surface-2);border-radius:10px;padding:11px 13px}
   .kpi .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+  .kpi .k .sym{text-transform:none}
   .kpi .v{font-size:20px;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--text-primary)}
   .kpi .s{font-size:12px;color:var(--text-muted)}
   .demo{border-color:var(--acc)}
@@ -237,9 +238,11 @@ Components of the climate system &middot; 5 of 8</p>
 
 <div class="card demo">
   <h3>Turn the wind on</h3>
-  <p class="cap">Northern hemisphere, looking down. The wind blows towards the top of the figure. The blue
-  vectors are the current at successive depths; the thick red vector is the total transport, integrated
-  through the whole layer.</p>
+  <p class="cap">Northern hemisphere. <b>Left:</b> plan view, looking down, with the wind blowing towards
+  the top of the figure. The blue vectors are the current at successive depths, drawn from a common origin and
+  scaled to the bar beneath them; the thick red vector is the total transport, integrated through the whole
+  layer. <b>Right:</b> the same vectors again, but hung off a depth axis that always runs 0&ndash;150 m, so you
+  can see how far down the spiral actually reaches.</p>
 
   <div class="ctrls">
     <div class="ctrl">
@@ -259,10 +262,10 @@ Components of the climate system &middot; 5 of 8</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 880 400" role="img" aria-label="Plan view of the Ekman spiral: current vectors at successive depths rotating clockwise and shrinking, with the wind vector and the net transport vector"><g id="ekG"></g></svg>
+  <svg viewBox="0 0 980 400" role="img" aria-label="Two panels. Left: plan view of the Ekman spiral, current vectors at successive depths rotating clockwise and shrinking, with the wind vector and the net transport vector. Right: the same spiral drawn against a fixed 0 to 150 metre depth axis, so the depth it reaches can be compared as the eddy viscosity changes."><g id="ekG"></g></svg>
 
   <div class="kpis">
-    <div class="kpi"><div class="k">Wind stress &tau;</div><div class="v" id="kTau">&mdash;</div><div class="s">N m<sup>&minus;2</sup>, from &rho;<sub>a</sub>C<sub>D</sub>U&sup2;</div></div>
+    <div class="kpi"><div class="k">Wind stress <span class="sym">&tau;</span></div><div class="v" id="kTau">&mdash;</div><div class="s">N m<sup>&minus;2</sup>, from &rho;<sub>a</sub>C<sub>D</sub>U&sup2;</div></div>
     <div class="kpi"><div class="k">Ekman depth D<sub>E</sub></div><div class="v" id="kDe">&mdash;</div><div class="s">where the current has reversed</div></div>
     <div class="kpi"><div class="k">Surface current</div><div class="v" id="kV0">&mdash;</div><div class="s">45&deg; right of the wind</div></div>
     <div class="kpi"><div class="k">Transport M</div><div class="v" id="kM">&mdash;</div><div class="s">m&sup2; s<sup>&minus;1</sup>, 90&deg; right</div></div>
@@ -289,8 +292,10 @@ Components of the climate system &middot; 5 of 8</p>
   is what produces equatorial upwelling.</span></p>
 
   <div class="warnbox"><b>Computed.</b> The classical Ekman solution for constant eddy viscosity in an
-  infinitely deep ocean: u(z)&nbsp;=&nbsp;V<sub>0</sub>e<sup>z/d</sup>cos(&pi;/4&nbsp;+&nbsp;z/d),
-  v(z)&nbsp;=&nbsp;V<sub>0</sub>e<sup>z/d</sup>sin(&pi;/4&nbsp;+&nbsp;z/d) with d&nbsp;=&nbsp;&radic;(2A<sub>z</sub>/f),
+  infinitely deep ocean, with x along the wind and y 90&deg; to its left:
+  u(z)&nbsp;=&nbsp;V<sub>0</sub>e<sup>z/d</sup>cos(z/d&nbsp;&minus;&nbsp;&pi;/4),
+  v(z)&nbsp;=&nbsp;V<sub>0</sub>e<sup>z/d</sup>sin(z/d&nbsp;&minus;&nbsp;&pi;/4) &mdash; z is negative downwards, so the
+  vector turns further <em>clockwise</em> as you go down &mdash; with d&nbsp;=&nbsp;&radic;(2A<sub>z</sub>/f),
   D<sub>E</sub>&nbsp;=&nbsp;&pi;d and V<sub>0</sub>&nbsp;=&nbsp;&tau;/(&rho;<sub>w</sub>&radic;(A<sub>z</sub>f)).
   Stress from &tau;&nbsp;=&nbsp;&rho;<sub>a</sub>C<sub>D</sub>U&sup2; with
   &rho;<sub>a</sub>&nbsp;=&nbsp;1.225&nbsp;kg&nbsp;m<sup>&minus;3</sup>,
@@ -418,9 +423,9 @@ Components of the climate system &middot; 5 of 8</p>
   <svg viewBox="0 0 880 452" role="img" aria-label="Temperature-salinity diagram with density contours computed from the equation of state, the freezing line, labelled water masses, two selected parcels and their mixture"><g id="tsG"></g></svg>
 
   <div class="kpis">
-    <div class="kpi"><div class="k">&sigma;<sub>t</sub> of A</div><div class="v" id="kDA">&mdash;</div><div class="s">&rho; &minus; 1000, kg m<sup>&minus;3</sup></div></div>
-    <div class="kpi"><div class="k">&sigma;<sub>t</sub> of B</div><div class="v" id="kDB">&mdash;</div><div class="s">&rho; &minus; 1000, kg m<sup>&minus;3</sup></div></div>
-    <div class="kpi"><div class="k">&sigma;<sub>t</sub> of the 50:50 mixture</div><div class="v" id="kDM">&mdash;</div><div class="s">at the midpoint of T and S</div></div>
+    <div class="kpi"><div class="k"><span class="sym">&sigma;<sub>t</sub></span> of A</div><div class="v" id="kDA">&mdash;</div><div class="s">&rho; &minus; 1000, kg m<sup>&minus;3</sup></div></div>
+    <div class="kpi"><div class="k"><span class="sym">&sigma;<sub>t</sub></span> of B</div><div class="v" id="kDB">&mdash;</div><div class="s">&rho; &minus; 1000, kg m<sup>&minus;3</sup></div></div>
+    <div class="kpi"><div class="k"><span class="sym">&sigma;<sub>t</sub></span> of the 50:50 mixture</div><div class="v" id="kDM">&mdash;</div><div class="s">at the midpoint of T and S</div></div>
     <div class="kpi"><div class="k">Cabbeling gain</div><div class="v" id="kCab">&mdash;</div><div class="s">mixture minus the average</div></div>
   </div>
 
@@ -622,46 +627,99 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
     var dd=Math.sqrt(2*Az/f), DE=Math.PI*dd;
     var V0=tau/(RW*Math.sqrt(Az*f));
     var M=tau/(RW*f);
-    /* geometry: wind blows toward +y (up the page) */
-    var CX=470, CY=210, SC=150/Math.max(V0,1e-6);
-    put(g,'rect',{x:CX-210,y:CY-180,width:420,height:360,rx:10,fill:'var(--surface-2)',
+    /* geometry: wind blows toward +y (up the page). S is the pixel length of the
+       surface vector; every blue vector is drawn as a fraction of it, so the
+       figure is normalised by V0 and a scale bar carries the absolute speed. */
+    var CX=328, CY=290, S=224;
+    put(g,'rect',{x:238,y:24,width:400,height:352,rx:10,fill:'var(--surface-2)',
       stroke:'var(--line-soft)'});
-    put(g,'text',{x:CX,y:CY-162,'text-anchor':'middle','font-size':11.5,
-      fill:'var(--text-muted)'},'plan view, looking down · vectors from a common origin');
+    put(g,'text',{x:438,y:44,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'plan view, looking down · from a common origin');
     /* wind */
-    put(g,'line',{x1:CX,y1:CY,x2:CX,y2:CY-150,stroke:'var(--bio)','stroke-width':3.4,
+    put(g,'line',{x1:CX,y1:CY,x2:CX,y2:CY-200,stroke:'var(--bio)','stroke-width':3.4,
       'marker-end':'url(#ec)'});
-    put(g,'text',{x:CX+8,y:CY-138,'font-size':12.5,fill:'var(--bio)','font-weight':600},
+    put(g,'text',{x:CX+9,y:CY-150,'font-size':12.5,fill:'var(--bio)','font-weight':600},
       'wind, '+U.toFixed(1)+' m/s');
     /* spiral vectors */
     var nv=14;
     for(var i=0;i<nv;i++){
-      var z=-DE*i/(nv-1)*1.0;
-      var mag=V0*Math.exp(z/dd);
-      var ang=Math.PI/4 + z/dd;                 /* clockwise from the wind direction */
+      var z=-DE*i/(nv-1);                       /* z is negative, downwards */
+      var mag=Math.exp(z/dd);                   /* speed as a fraction of V0 */
+      var ang=Math.PI/4 - z/dd;                 /* clockwise from the wind; grows with depth */
       /* wind is +y; the current is rotated clockwise by ang from the wind */
       var vx= mag*Math.sin(ang), vy= mag*Math.cos(ang);
       var op=0.30+0.65*(1-i/(nv-1));
-      put(g,'line',{x1:CX,y1:CY,x2:CX+vx*SC,y2:CY-vy*SC,stroke:'var(--ocn)',
+      put(g,'line',{x1:CX,y1:CY,x2:CX+vx*S,y2:CY-vy*S,stroke:'var(--ocn)',
         'stroke-width':i===0?3:1.8,'marker-end':'url(#ea)',opacity:op});
       if(i===0){
-        put(g,'text',{x:CX+vx*SC+8,y:CY-vy*SC-4,'font-size':12,fill:'var(--ocn)','font-weight':600},
+        put(g,'text',{x:CX+vx*S+8,y:CY-vy*S-4,'font-size':12,fill:'var(--ocn)','font-weight':600},
           'surface, 45° right');
       }
     }
     /* trace through the tips */
     var tr='';
-    for(var s=0;s<=200;s++){
-      var z2=-DE*s/200, m2=V0*Math.exp(z2/dd), a2=Math.PI/4+z2/dd;
-      tr+=(s?'L':'M')+(CX+m2*Math.sin(a2)*SC).toFixed(1)+' '+(CY-m2*Math.cos(a2)*SC).toFixed(1);
+    for(var s=0;s<=240;s++){
+      var z2=-DE*s/240, m2=Math.exp(z2/dd), a2=Math.PI/4-z2/dd;
+      tr+=(s?'L':'M')+(CX+m2*Math.sin(a2)*S).toFixed(1)+' '+(CY-m2*Math.cos(a2)*S).toFixed(1);
     }
     put(g,'path',{d:tr,fill:'none',stroke:'var(--ocn)','stroke-width':1.2,
       'stroke-dasharray':'3 3',opacity:0.8});
     /* transport: 90° right of the wind, i.e. +x */
-    put(g,'line',{x1:CX,y1:CY,x2:CX+165,y2:CY,stroke:'var(--hot)','stroke-width':4,
+    put(g,'line',{x1:CX,y1:CY,x2:CX+248,y2:CY,stroke:'var(--hot)','stroke-width':4,
       'marker-end':'url(#eb)'});
-    put(g,'text',{x:CX+165,y:CY-12,'text-anchor':'end','font-size':12.5,fill:'var(--hot)',
+    put(g,'text',{x:CX+248,y:CY+20,'text-anchor':'end','font-size':12.5,fill:'var(--hot)',
       'font-weight':600},'net transport, 90° right');
+    /* scale bar: the figure is normalised, so this carries the absolute speed */
+    put(g,'line',{x1:CX,y1:CY+46,x2:CX+S/2,y2:CY+46,stroke:'var(--text-muted)','stroke-width':1.6});
+    put(g,'line',{x1:CX,y1:CY+41,x2:CX,y2:CY+51,stroke:'var(--text-muted)','stroke-width':1.6});
+    put(g,'line',{x1:CX+S/2,y1:CY+41,x2:CX+S/2,y2:CY+51,stroke:'var(--text-muted)','stroke-width':1.6});
+    put(g,'text',{x:CX+S/2+8,y:CY+50,'font-size':11.5,fill:'var(--text-muted)'},
+      (V0*50).toFixed(1)+' cm/s');
+    /* ── right panel: the same spiral against a FIXED depth axis ──
+       This is where A_z shows itself. The plan view above is normalised by V0
+       and so has a shape that does not depend on A_z at all; what A_z sets is
+       the depth over which the spiral happens, which only a fixed axis reveals. */
+    var PX=708, PY0=104, PY1=356, ZMAX=150, S2=140, FS=0.30;
+    function py(z){ return PY0 + Math.min(-z,ZMAX)/ZMAX*(PY1-PY0); }
+    put(g,'rect',{x:654,y:24,width:302,height:352,rx:10,fill:'var(--surface-2)',
+      stroke:'var(--line-soft)'});
+    put(g,'text',{x:805,y:44,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'the same spiral on a fixed 0–150 m axis');
+    put(g,'text',{x:805,y:60,'text-anchor':'middle','font-size':11.5,
+      fill:'var(--text-muted)'},'each arrow is that depth\u2019s plan-view vector');
+    put(g,'line',{x1:PX,y1:PY0,x2:PX,y2:PY1,stroke:'var(--line-soft)','stroke-width':1.6});
+    for(var t=0;t<=150;t+=25){
+      var yt=PY0+t/ZMAX*(PY1-PY0);
+      put(g,'line',{x1:PX-6,x2:PX,y1:yt,y2:yt,stroke:'var(--line-soft)','stroke-width':1.4});
+      put(g,'text',{x:PX-11,y:yt+4,'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},t+' m');
+    }
+    /* the locus of the vector tips, down to D_E or the bottom of the axis */
+    var tp='', zend=Math.max(-ZMAX,-DE);
+    for(var q=0;q<=240;q++){
+      var z3=zend*q/240, m3=Math.exp(z3/dd), a3=Math.PI/4-z3/dd;
+      tp+=(q?'L':'M')+(PX+m3*Math.sin(a3)*S2).toFixed(1)+' '+
+          (py(z3)-m3*Math.cos(a3)*S2*FS).toFixed(1);
+    }
+    put(g,'path',{d:tp,fill:'none',stroke:'var(--ocn)','stroke-width':1.2,
+      'stroke-dasharray':'3 3',opacity:0.85});
+    /* an arrow every 10 m, until the current is essentially dead */
+    for(var zz=0;zz<=ZMAX;zz+=10){
+      var z4=-zz, m4=Math.exp(z4/dd);
+      if(zz>0 && m4<0.02) break;
+      var a4=Math.PI/4-z4/dd, yb=py(z4);
+      put(g,'line',{x1:PX,y1:yb,x2:PX+m4*Math.sin(a4)*S2,y2:yb-m4*Math.cos(a4)*S2*FS,
+        stroke:'var(--ocn)','stroke-width':zz===0?2.6:1.4,'marker-end':'url(#ea)',
+        opacity:0.35+0.6*m4});
+    }
+    /* where the spiral has died */
+    var yE=py(-Math.min(DE,ZMAX));
+    put(g,'line',{x1:PX-6,y1:yE,x2:946,y2:yE,stroke:'var(--warn)','stroke-width':1.3,
+      'stroke-dasharray':'5 4',opacity:0.9});
+    put(g,'text',{x:946,y:yE-6,'text-anchor':'end','font-size':11,fill:'var(--warn)',
+      'font-weight':600},
+      DE<=ZMAX ? ('Ekman depth, '+DE.toFixed(0)+' m')
+               : ('Ekman depth '+DE.toFixed(0)+' m, off the axis'));
     /* left-hand notes */
     put(g,'text',{x:26,y:56,'font-size':13,fill:'var(--text-primary)','font-weight':600},
       'Depth of each vector');
@@ -682,7 +740,7 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
     put(g,'text',{x:26,y:288,'font-size':11.5,fill:'var(--text-muted)'},'surface, at 4 % of its speed.');
     put(g,'text',{x:26,y:326,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'COMPUTED —');
     put(g,'text',{x:26,y:342,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'the classical Ekman');
-    put(g,'text',{x:26,y:358,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'solution, drawn to scale');
+    put(g,'text',{x:26,y:358,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'solution, to the scale bar');
 
     $('kTau').textContent=tau.toFixed(3);
     $('kDe').textContent=DE.toFixed(0)+' m';
