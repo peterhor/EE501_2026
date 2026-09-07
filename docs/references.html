@@ -1,366 +1,597 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<script src="assets/release.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EE501 - Reference Library</title>
+<title>EE501 &mdash; Reference Library</title>
 <style>
-  :root {
-    color-scheme: light dark;
-    --bg: #f6f2e8;
-    --fg: #1c1b17;
-    --muted: #656155;
-    --surface: #fffdf8;
-    --surface-2: #f1ebde;
-    --line: #ddd4c3;
-    --accent: #9f4c1f;
-    --accent-soft: #efe0d4;
-    --warn: #7a1f24;
-    --warn-soft: #f2dddd;
-    --ok: #215f48;
-    --ok-soft: #dcece5;
-    --link: #1e5e66;
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#efeee9;
+    --line:#dcdbd4; --line-soft:#e8e7e1;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
+    --acc:#1baf7a; --warn:#d98324;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #141516;
-      --fg: #ece7da;
-      --muted: #aaa393;
-      --surface: #1c1e20;
-      --surface-2: #25292c;
-      --line: #33373b;
-      --accent: #db8759;
-      --accent-soft: #34231c;
-      --warn: #ef9a9a;
-      --warn-soft: #372225;
-      --ok: #7dd4ad;
-      --ok-soft: #1d3129;
-      --link: #83cfd8;
-    }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#232322;
+    --line:#3a3a37; --line-soft:#2c2c2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
+    --acc:#199e70; --warn:#e09a44;
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font: 16px/1.6 Georgia, "Times New Roman", serif;
-    background: var(--bg);
-    color: var(--fg);
-  }
-  a { color: var(--link); }
-  a:hover { color: var(--accent); }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 34px 22px 80px; }
-  .crumb {
-    margin: 0 0 18px;
-    font: 600 13px/1.4 "Segoe UI", sans-serif;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-  }
-  .crumb a { color: inherit; }
-  header.hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
-    gap: 18px;
-    margin-bottom: 18px;
-  }
-  @media (max-width: 860px) {
-    header.hero { grid-template-columns: 1fr; }
-  }
-  .hero-card, .panel, .ref {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-  }
-  .hero-card { padding: 28px 28px 24px; }
-  .hero-kpis {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 18px;
-  }
-  @media (max-width: 640px) {
-    .hero-kpis { grid-template-columns: 1fr; }
-  }
-  .kpi {
-    background: var(--surface-2);
-    border-radius: 14px;
-    padding: 14px 16px;
-  }
-  .kpi .n {
-    display: block;
-    font: 700 11px/1.2 "Segoe UI", sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-  }
-  .kpi .v {
-    display: block;
-    margin-top: 4px;
-    font: 600 29px/1.1 "Segoe UI", sans-serif;
-    color: var(--fg);
-  }
-  .kpi .d {
-    display: block;
-    margin-top: 4px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .panel { padding: 22px 22px 18px; }
-  .tag {
-    display: inline-block;
-    border-radius: 999px;
-    padding: 5px 10px;
-    font: 700 11px/1.1 "Segoe UI", sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 10px;
-  }
-  .tag.ok { background: var(--ok-soft); color: var(--ok); }
-  .tag.warn { background: var(--warn-soft); color: var(--warn); }
-  h1 {
-    margin: 0 0 10px;
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    font-weight: 500;
-  }
-  h2 {
-    margin: 30px 0 12px;
-    font: 700 13px/1.2 "Segoe UI", sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
-  h3 {
-    margin: 0 0 4px;
-    font: 600 20px/1.25 "Segoe UI", sans-serif;
-    color: var(--fg);
-  }
-  p { margin: 0 0 12px; }
-  .small { font-size: 14px; color: var(--muted); }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 14px;
-  }
-  .ref { padding: 18px 18px 16px; }
-  .ref p { margin-bottom: 10px; }
-  .meta {
-    font: 600 12px/1.5 "Segoe UI", sans-serif;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-  }
-  .doi {
-    font: 600 13px/1.5 "Segoe UI", sans-serif;
-  }
-  .list {
-    margin: 0;
-    padding-left: 18px;
-  }
-  .list li { margin-bottom: 8px; }
-  .callout {
-    border-left: 4px solid var(--accent);
-    background: var(--accent-soft);
-    padding: 14px 16px;
-    border-radius: 0 12px 12px 0;
-    margin: 16px 0 0;
-  }
-  .flag {
-    border-left-color: var(--warn);
-    background: var(--warn-soft);
-  }
-  .foot {
-    margin-top: 34px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-    font-size: 12.5px;
-    color: var(--muted);
-  }
-  code {
-    background: var(--surface-2);
-    padding: 1px 5px;
-    border-radius: 5px;
-    font-size: 13px;
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:22px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;margin:0 0 8px}
+  .sub{color:var(--text-secondary);font-size:15.5px;max-width:66ch;margin:0}
+  .toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--surface-1);color:var(--text-secondary);
+    border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .toggle:hover{color:var(--text-primary)}
+  .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
+  .crumb a{color:var(--text-muted)}
+  a{color:var(--acc)}
+
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:0 0 14px}
+  .kv .k{background:var(--surface-2);border-radius:12px;padding:13px 15px}
+  .kv .k .n{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)}
+  .kv .k .v{font-size:24px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+    margin-top:3px}
+  .kv .k .d{font-size:12.5px;color:var(--text-muted);margin-top:3px;line-height:1.45}
+
+  .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  .card h3{font-size:17px;margin:0 0 8px;letter-spacing:-.01em}
+  .card p{font-size:14px;color:var(--text-secondary);margin:0 0 10px}
+  .card p:last-child{margin-bottom:0}
+  .card b{color:var(--text-primary)}
+
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;font-size:13px}
+  .jump a{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface-1);
+    color:var(--text-secondary);text-decoration:none}
+  .jump a:hover{color:var(--text-primary);border-color:var(--text-muted)}
+
+  h2.sec{font-size:15px;margin:34px 0 4px;color:var(--text-primary);font-weight:600}
+  p.secsub{font-size:13.5px;color:var(--text-muted);margin:0 0 14px;max-width:78ch}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+  .ref{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;padding:17px 19px;
+    display:flex;flex-direction:column;gap:8px}
+  .ref .nm{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--text-primary)}
+  .ref .ct{font-size:13.5px;color:var(--text-secondary);line-height:1.55}
+  .ref .why{font-size:13px;color:var(--text-muted);line-height:1.5}
+  .ref .id{font-size:12.5px;color:var(--text-secondary);word-break:break-word}
+  .ref .use{font-size:12.5px;color:var(--text-muted);line-height:1.6;
+    border-top:1px solid var(--line-soft);padding-top:8px;margin-top:auto}
+  .ref .use b{color:var(--text-muted);font-weight:600;text-transform:uppercase;
+    letter-spacing:.06em;font-size:10.5px;display:block;margin-bottom:2px}
+
+  code{background:var(--surface-2);padding:1px 5px;border-radius:5px;font-size:12.5px}
+  .foot{font-size:12.5px;color:var(--text-muted);border-top:1px solid var(--line-soft);
+    padding-top:14px;margin-top:30px}
+  .foot a{color:var(--text-muted)}
+  @media print{
+    body{background:#fff;color:#000}
+    .wrap{max-width:none;padding:0}
+    .toggle,.jump{display:none}
+    .ref{break-inside:avoid;border:1px solid #bbb}
+    a{color:#000}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="crumb"><a href="./">&larr; EE501 course</a></p>
 
-  <header class="hero">
-    <div class="hero-card">
-      <h1>Reference Library</h1>
-      <p>This page collates the scientific literature cited across the published EE501 materials. The grey note at the foot of each teaching page remains the local source note; this page gathers the fuller reference trail and DOI links where verified.</p>
-      <div class="hero-kpis">
-        <div class="kpi"><span class="n">Published pages audited</span><span class="v">46</span><span class="d">HTML teaching pages with source-note footers in docs/</span></div>
-        <div class="kpi"><span class="n">Pages with substantive sources</span><span class="v">46</span><span class="d">No audited page was missing scientific grounding</span></div>
-        <div class="kpi"><span class="n">Verified DOI entries</span><span class="v">14</span><span class="d">Checked directly against Crossref in this audit pass</span></div>
-      </div>
-    </div>
+<p class="crumb"><a href="./">&larr; EE501 course</a> &nbsp;&middot;&nbsp; every source cited on the published pages</p>
 
-    <div class="panel">
-      <span class="tag ok">Audit result</span>
-      <h3>What this audit established</h3>
-      <p>Most course pages already have a usable source note in the footer. The main gap was discoverability: the literature and DOI trail were spread page by page rather than exposed as a course-level bibliography.</p>
-      <p class="small">Pages based mainly on first-principles calculations, constants, or textbook equations are still grounded in the local footer notes; this page concentrates on the literature that students may want to open directly.</p>
-      <div class="callout">Where a DOI below is present, it was checked directly against Crossref from this workspace. Only verified items are exposed on this student-facing page.</div>
-    </div>
-  </header>
-
-  <h2>Course-wide Foundations</h2>
-  <div class="grid">
-    <article class="ref">
-      <h3>Goosse (2015) &mdash; course textbook</h3>
-      <p>Goosse, H. (2015), <em>Climate System Dynamics and Modelling.</em> Cambridge University Press, Cambridge.
-      The set text for EE501 and the main structural source for Lectures 1-8.</p>
-      <p class="meta">ISBN 978-1-107-08389-9 (hardback), 978-1-107-44583-3 (paperback).</p>
-      <p class="doi">Access: <a href="https://www.cambridge.org/goosse" target="_blank" rel="noopener">publisher resources</a></p>
-    </article>
-    <article class="ref">
-      <h3>Goosse et al. (2010) &mdash; free online edition</h3>
-      <p>Goosse, H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to Climate
-      Dynamics and Climate Modelling.</em> The earlier open-access edition of the same text. The figure,
-      equation and section numbers quoted in the grey source note at the foot of each teaching page refer to
-      <b>this</b> edition, because it is the version the pages were built from.</p>
-      <p class="meta">Used across nearly all audited teaching pages.</p>
-      <p class="doi">Access: <a href="https://www.elic.ucl.ac.be/textbook/index.html" target="_blank" rel="noopener">textbook site</a></p>
-    </article>
-    <article class="ref">
-      <h3>Oke (1987)</h3>
-      <p><em>Boundary Layer Climates</em>, 2nd edition. Core source for Lecture 3 surface-property, soil-temperature, and turbulent-flux demonstrations.</p>
-      <p class="meta">Used on <a href="lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3 energy balance</a>, <a href="lecture-3-climate-at-a-local-scale/soil-temperature.html">soil temperature</a>, <a href="lecture-3-climate-at-a-local-scale/surface-properties.html">surface properties</a>, and <a href="lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">turbulent fluxes</a>.</p>
-      <p class="doi">Identifier pending: textbook/edition reference, no DOI verified in this pass.</p>
-    </article>
-    <article class="ref">
-      <h3>IPCC assessment chapters</h3>
-      <p>AR5 WG1 (2013-2014) and AR6 WG1 (2021) are used repeatedly for assessed values, forcing tables, modern energy budgets, and climate-change context.</p>
-      <p class="meta">Representative pages: <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a>, <a href="lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">forcing agents</a>, and <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
-      <p class="doi">Access: stable report URLs are preferable here to forcing chapter-level DOI guesses.</p>
-    </article>
+<header>
+  <div>
+    <h1>Reference Library</h1>
+    <p class="sub">The scientific literature behind the published EE501 material, gathered in one place. The grey note at the foot of each teaching page is still the local source note; this page is the fuller trail, with a link you can follow for every entry.</p>
   </div>
+  <button class="toggle" id="themeBtn">Dark</button>
+</header>
 
-  <h2>Verified DOI Library</h2>
-  <div class="grid">
-    <article class="ref">
-      <h3>Wild et al. energy budget</h3>
-      <p>Wild, M. et al. (2012), <em>The global energy balance from a surface perspective.</em></p>
-      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a> and related Lecture 2 budget pages.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1007/s00382-012-1569-8" target="_blank" rel="noopener">10.1007/s00382-012-1569-8</a></p>
-    </article>
-    <article class="ref">
-      <h3>Trenberth, Fasullo and Kiehl</h3>
-      <p>Trenberth, K. E., J. T. Fasullo and J. Kiehl (2009), <em>Earth's Global Energy Budget.</em></p>
-      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a> and <a href="lecture-2-earths-energy-budget/greenhouse-effect.html">greenhouse effect</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1175/2008BAMS2634.1" target="_blank" rel="noopener">10.1175/2008BAMS2634.1</a></p>
-    </article>
-    <article class="ref">
-      <h3>von Schuckmann et al.</h3>
-      <p>von Schuckmann, K. et al. (2020), <em>Heat stored in the Earth system: where does the energy go?</em></p>
-      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/global-budget.html">global budget</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.5194/essd-12-2013-2020" target="_blank" rel="noopener">10.5194/essd-12-2013-2020</a></p>
-    </article>
-    <article class="ref">
-      <h3>Peel, Finlayson and McMahon</h3>
-      <p>Peel, M. C., B. L. Finlayson and T. A. McMahon (2007), <em>Updated world map of the K&ouml;ppen-Geiger climate classification.</em></p>
-      <p class="meta">Used on <a href="lecture-1-components-of-the-climate-system/the-biosphere.html">the biosphere</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.5194/hess-11-1633-2007" target="_blank" rel="noopener">10.5194/hess-11-1633-2007</a></p>
-    </article>
-    <article class="ref">
-      <h3>Budyko (1974)</h3>
-      <p>Budyko, M. I. (1974), <em>Climate and Life.</em> Academic Press, New York.</p>
-      <p class="meta">Used on <a href="lecture-1-components-of-the-climate-system/the-land-surface.html">the land surface</a> &mdash; the water-partitioning curve, E/P as a function of the dryness index.</p>
-      <p class="doi">Book, no DOI. The relation is reproduced in most hydrology texts; see also Roderick &amp; Farquhar (2011), doi:10.1029/2010WR009826, for a modern treatment of the scatter around it.</p>
-    </article>
-    <article class="ref">
-      <h3>Lieth (1975) &mdash; the Miami model</h3>
-      <p>Lieth, H. (1975), <em>Modeling the primary productivity of the world.</em> In: Lieth, H. and R. H. Whittaker (eds.), <em>Primary Productivity of the Biosphere</em>, Ecological Studies 14, Springer, pp. 237&ndash;263.</p>
-      <p class="meta">Used on <a href="lecture-1-components-of-the-climate-system/the-biosphere.html">the biosphere</a> &mdash; the temperature and precipitation ceilings on NPP.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1007/978-3-642-80913-2_12" target="_blank" rel="noopener">10.1007/978-3-642-80913-2_12</a></p>
-    </article>
-    <article class="ref">
-      <h3>Soden and Held</h3>
-      <p>Soden, B. J. and I. M. Held (2006), <em>An Assessment of Climate Feedbacks in Coupled Ocean-Atmosphere Models.</em></p>
-      <p class="meta">Used on <a href="lecture-6-response-of-the-climate-system-to-perturbations/feedback-parameter.html">feedback parameter</a> and <a href="lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">physical feedbacks</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1175/JCLI3799.1" target="_blank" rel="noopener">10.1175/JCLI3799.1</a></p>
-    </article>
-    <article class="ref">
-      <h3>Friedlingstein et al. C4MIP</h3>
-      <p>Friedlingstein, P. et al. (2006), <em>Climate-Carbon Cycle Feedback Analysis: Results from the C4MIP Model Intercomparison.</em></p>
-      <p class="meta">Used on <a href="lecture-6-response-of-the-climate-system-to-perturbations/biogeochemical-feedbacks.html">biogeochemical feedbacks</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1175/JCLI3800.1" target="_blank" rel="noopener">10.1175/JCLI3800.1</a></p>
-    </article>
-    <article class="ref">
-      <h3>Berger daily insolation</h3>
-      <p>Berger, A. L. (1978), <em>Long-Term Variations of Daily Insolation and Quaternary Climatic Changes.</em></p>
-      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">orbital forcing</a> and <a href="lecture-7-climate-change-past-and-present/holocene-2000-years.html">Holocene and last 2000 years</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1175/1520-0469(1978)035&lt;2362:LTVODI&gt;2.0.CO;2" target="_blank" rel="noopener">10.1175/1520-0469(1978)035&lt;2362:LTVODI&gt;2.0.CO;2</a></p>
-    </article>
-    <article class="ref">
-      <h3>Lisiecki and Raymo</h3>
-      <p>Lisiecki, L. E. and M. E. Raymo (2005), <em>A Pliocene-Pleistocene stack of 57 globally distributed benthic d18O records.</em></p>
-      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">orbital forcing</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1029/2004PA001071" target="_blank" rel="noopener">10.1029/2004PA001071</a></p>
-    </article>
-    <article class="ref">
-      <h3>Jouzel et al. EPICA</h3>
-      <p>Jouzel, J. et al. (2007), <em>Orbital and Millennial Antarctic Climate Variability over the Past 800,000 Years.</em></p>
-      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">orbital forcing</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1126/science.1141038" target="_blank" rel="noopener">10.1126/science.1141038</a></p>
-    </article>
-    <article class="ref">
-      <h3>Shakun et al.</h3>
-      <p>Shakun, J. D. et al. (2012), <em>Global warming preceded by increasing carbon dioxide concentrations during the last deglaciation.</em></p>
-      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/abrupt-change.html">abrupt change</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1038/nature10915" target="_blank" rel="noopener">10.1038/nature10915</a></p>
-    </article>
-    <article class="ref">
-      <h3>North Greenland Ice Core Project Members</h3>
-      <p>North Greenland Ice Core Project Members (2004), <em>High-resolution record of Northern Hemisphere climate extending into the last interglacial period.</em></p>
-      <p class="meta">Used on <a href="lecture-7-climate-change-past-and-present/abrupt-change.html">abrupt change</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1038/nature02805" target="_blank" rel="noopener">10.1038/nature02805</a></p>
-    </article>
-    <article class="ref">
-      <h3>Joos et al. impulse response</h3>
-      <p>Joos, F. et al. (2013), <em>Carbon dioxide and climate impulse response functions for the computation of greenhouse gas metrics: a multi-model analysis.</em></p>
-      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/carbon-budgets.html">carbon budgets</a>, <a href="lecture-8-climate-change-the-future/long-view.html">the long view</a>, and <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.5194/acp-13-2793-2013" target="_blank" rel="noopener">10.5194/acp-13-2793-2013</a></p>
-    </article>
-    <article class="ref">
-      <h3>van Vuuren et al. RCP overview</h3>
-      <p>van Vuuren, D. P. et al. (2011), <em>The representative concentration pathways: an overview.</em></p>
-      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1007/s10584-011-0148-z" target="_blank" rel="noopener">10.1007/s10584-011-0148-z</a></p>
-    </article>
-    <article class="ref">
-      <h3>Riahi et al. SSP overview</h3>
-      <p>Riahi, K. et al. (2017), <em>The Shared Socioeconomic Pathways and their energy, land use, and greenhouse gas emissions implications: An overview.</em></p>
-      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1016/j.gloenvcha.2016.05.009" target="_blank" rel="noopener">10.1016/j.gloenvcha.2016.05.009</a></p>
-    </article>
-    <article class="ref">
-      <h3>O'Neill et al. SSP narratives</h3>
-      <p>O'Neill, B. C. et al. (2017), <em>The roads ahead: Narratives for shared socioeconomic pathways describing world futures in the 21st century.</em></p>
-      <p class="meta">Used on <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1016/j.gloenvcha.2015.01.004" target="_blank" rel="noopener">10.1016/j.gloenvcha.2015.01.004</a></p>
-    </article>
-    <article class="ref">
-      <h3>Fasullo and Trenberth</h3>
-      <p>Fasullo, J. T. and K. E. Trenberth (2008), <em>The Annual Cycle of the Energy Budget. Part II: Meridional Structures and Poleward Transports.</em></p>
-      <p class="meta">Used on <a href="lecture-2-earths-energy-budget/geography.html">geography of the budget</a>.</p>
-      <p class="doi">DOI: <a href="https://doi.org/10.1175/2007JCLI1936.1" target="_blank" rel="noopener">10.1175/2007JCLI1936.1</a></p>
-    </article>
-  </div>
-
-  <h2>Audit Notes</h2>
-  <div class="panel">
-    <ul class="list">
-      <li>All 46 audited teaching pages with source-note footers had a defensible scientific basis. The dominant issue was that DOI-level references were not available in one place.</li>
-      <li>The most complete paper-backed sourcing is already present in Lecture 2 budget pages, Lecture 4 carbon-cycle pages, Lectures 7-8 paleoclimate and future-scenarios pages, and the provenance appendix.</li>
-      <li>The main follow-up work is bibliographic completion, not scientific rescue: books, chapter-derived demos, and abbreviated legacy citations should be expanded carefully rather than filled from memory.</li>
-    </ul>
-    <div class="callout">This page is intentionally conservative. If a DOI or full citation was not verified from this workspace, it is left out rather than inferred.</div>
-  </div>
-
-  <p class="foot">Compiled from the published course pages in docs/, the Goosse textbook, and DOI checks that were verified directly against Crossref during this audit. This page does not replace the page-level grey source note; it supplements it with a course-level bibliography.</p>
+<div class="kv">
+  <div class="k"><div class="n">Teaching pages with a source note</div><div class="v">47</div><div class="d">Every published page under a lecture folder except the two full-screen explorers, which carry their notes on the page that links them.</div></div>
+  <div class="k"><div class="n">Records in this library</div><div class="v">69</div><div class="d">5 texts, 8 assessments and data products, 56 journal articles.</div></div>
+  <div class="k"><div class="n">Identifiers verified</div><div class="v">61</div><div class="d">DOIs resolved directly against Crossref; report and dataset links checked to return a live page.</div></div>
 </div>
+
+<div class="card">
+  <h3>How to read this page</h3>
+  <p>Every DOI below was resolved against Crossref from this workspace, and every report or dataset link was checked to return a live page. Nothing here is filled in from memory: where an identifier could not be confirmed, the source is listed under <a href="#pending">still to confirm</a> rather than given a plausible-looking DOI.</p>
+  <p>&ldquo;Cited on&rdquo; lists the published pages that actually name the source, so you can go the other way &mdash; from a paper to the demonstration built on it. Pages resting on first-principles calculation rather than on a paper say so in their own footer, and are not padded with citations here.</p>
+</div>
+
+<div class="jump">
+  <a href="#texts">Course texts</a>
+  <a href="#reports">Assessments and data</a>
+  <a href="#papers">The literature, A&ndash;Z</a>
+  <a href="#pending">Still to confirm</a>
+  <a href="equations/">Equation summary &rarr;</a>
+</div>
+
+<h2 class="sec" id="texts">Course texts</h2>
+<p class="secsub">Two different books by the same author sit behind this course, and they are numbered differently. The 2010 open edition is the one the page-level source notes and equation numbers follow; the 2015 Cambridge book is the set text.</p>
+<div class="grid">
+      <article class="ref">
+        <div class="nm">Goosse et al. (2010) &mdash; the edition this site follows</div>
+        <div class="ct">Goosse, H., P.Y. Barriat, W. Lefebvre, M.F. Loutre and V. Zunz (2010), <em>Introduction to Climate Dynamics and Climate Modelling.</em> Open online edition.</div>
+        <div class="why">The figure, equation and section numbers quoted in the grey source note at the foot of each teaching page, and the numbering in Parts I&ndash;V of the <a href="equations/">equation summary</a>, refer to <b>this</b> edition.</div>
+        <div class="id"><a href="https://www.elic.ucl.ac.be/textbook/index.html" target="_blank" rel="noopener">textbook site &nearr;</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Goosse (2015) &mdash; the printed course text</div>
+        <div class="ct">Goosse, H. (2015), <em>Climate System Dynamics and Modelling.</em> Cambridge University Press, Cambridge.</div>
+        <div class="why">The set text for EE501. A later, retitled, single-author book &mdash; not the same work as the 2010 online edition, and numbered differently. One entry on the equation summary (the detection and attribution regression, Fig. 5.43) comes from this edition and is labelled as such.</div>
+        <div class="id">ISBN 978-1-107-08389-9 (hardback), 978-1-107-44583-3 (paperback) &middot; <a href="https://www.cambridge.org/goosse" target="_blank" rel="noopener">publisher resources &nearr;</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Oke (1987)</div>
+        <div class="ct">Oke, T. R. (1987), <em>Boundary Layer Climates</em>, 2nd edition. Methuen, London; reprinted by Routledge, London and New York.</div>
+        <div class="why">Core source for the Lecture 3 surface-property, soil-temperature and turbulent-flux demonstrations.</div>
+        <div class="id">ISBN 0-415-04319-0 &middot; LCCN 87-5608</div>
+        <div class="use"><b>Cited on</b><a href="lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3 &middot; energy balance</a>, <a href="lecture-3-climate-at-a-local-scale/soil-temperature.html">soil temperature</a>, <a href="lecture-3-climate-at-a-local-scale/surface-properties.html">surface properties</a>, <a href="lecture-3-climate-at-a-local-scale/turbulent-fluxes.html">turbulent fluxes</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Bonan (2016)</div>
+        <div class="ct">Bonan, G. B. (2016), <em>Ecological Climatology: Concepts and Applications</em>, 3rd edition. Cambridge University Press, New York.</div>
+        <div class="why">A course reference for the land-surface and biosphere material. Held for the course but not yet cited from a specific page; the pages that would draw on it carry their own source notes.</div>
+        <div class="id">ISBN 978-1-107-04377-0 (hardback), 978-1-107-61905-0 (paperback) &middot; DOI: <a href="https://doi.org/10.1017/CBO9781107339200" target="_blank" rel="noopener">10.1017/CBO9781107339200</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Budyko (1974)</div>
+        <div class="ct">Budyko, M. I. (1974), <em>Climate and Life.</em> Academic Press, New York.</div>
+        <div class="why">The water-partitioning curve &mdash; E/P as a function of the dryness index. Book, no DOI; the relation is reproduced in most hydrology texts. For a modern treatment of the scatter around it see Roderick &amp; Farquhar (2011), <a href="https://doi.org/10.1029/2010WR009826" target="_blank" rel="noopener">doi:10.1029/2010WR009826</a>.</div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-land-surface.html">Lecture 1 &middot; the land surface</a></div>
+      </article>
+</div>
+
+<h2 class="sec" id="reports">Assessments, budgets and data products</h2>
+<p class="secsub">Assessed values and observational products. For these a stable report or project link is more use to you than a chapter DOI, so that is what is given.</p>
+<div class="grid">
+      <article class="ref">
+        <div class="nm">IPCC AR6 WG1 (2021)</div>
+        <div class="ct">IPCC (2021), <em>Climate Change 2021: The Physical Science Basis.</em> Contribution of Working Group I to the Sixth Assessment Report. Cambridge University Press.</div>
+        <div class="why">The current assessment. Source of the equilibrium climate sensitivity and TCRE ranges, the remaining carbon budgets, the sea-level ranges and the extreme-event frequency multipliers used in Lectures 6&ndash;8 and in Parts VI&ndash;VII of the equation summary. Chapters cited on the pages include Ch.&nbsp;3 (Eyring et&nbsp;al.), Ch.&nbsp;4, Ch.&nbsp;5, Ch.&nbsp;7, Ch.&nbsp;9 and Ch.&nbsp;11.</div>
+        <div class="id"><a href="https://www.ipcc.ch/report/ar6/wg1/" target="_blank" rel="noopener">full report &nearr;</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">IPCC AR5 WG1 (2013)</div>
+        <div class="ct">IPCC (2013), <em>Climate Change 2013: The Physical Science Basis.</em> Contribution of Working Group I to the Fifth Assessment Report. Cambridge University Press.</div>
+        <div class="why">Used for assessed values, forcing tables and the modern energy budget across Lectures 2, 4, 6, 7 and 8. Chapters cited by name on the pages: Hartmann et&nbsp;al. (Ch.&nbsp;2), Myhre et&nbsp;al. (Ch.&nbsp;8), Ciais et&nbsp;al. (Ch.&nbsp;6), Flato et&nbsp;al. (Ch.&nbsp;9), Kirtman et&nbsp;al. (Ch.&nbsp;11), Collins et&nbsp;al. (Ch.&nbsp;12), Church et&nbsp;al. (Ch.&nbsp;13), Christensen et&nbsp;al. (Ch.&nbsp;14) and Masson-Delmotte et&nbsp;al. (Ch.&nbsp;5).</div>
+        <div class="id"><a href="https://www.ipcc.ch/report/ar5/wg1/" target="_blank" rel="noopener">full report &nearr;</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">IPCC AR4 WG1 (2007)</div>
+        <div class="ct">IPCC (2007), <em>Climate Change 2007: The Physical Science Basis.</em> Contribution of Working Group I to the Fourth Assessment Report. Cambridge University Press.</div>
+        <div class="why">The assessment the Goosse et&nbsp;al. (2010) textbook itself quotes &mdash; Forster et&nbsp;al. (Ch.&nbsp;2) for the radiative-forcing formulae and reference concentrations, Denman et&nbsp;al. (Ch.&nbsp;7) for the carbon cycle, Randall et&nbsp;al. (Ch.&nbsp;8) for climate sensitivity. Cited here because the textbook numbers come from it.</div>
+        <div class="id"><a href="https://www.ipcc.ch/report/ar4/wg1/" target="_blank" rel="noopener">full report &nearr;</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Global Carbon Budget 2024</div>
+        <div class="ct">Friedlingstein, P. et al. (2025), <em>Global Carbon Budget 2024.</em> Earth System Science Data 17, 965&ndash;1039.</div>
+        <div class="why">The five-term carbon budget and its imbalance.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/essd-17-965-2025" target="_blank" rel="noopener">10.5194/essd-17-965-2025</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture 4 &middot; the carbon budget</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Berkeley Earth land/ocean temperature record</div>
+        <div class="ct">Rohde, R. A. and Z. Hausfather (2020), <em>The Berkeley Earth Land/Ocean Temperature Record.</em> Earth System Science Data 12, 3469&ndash;3479.</div>
+        <div class="why">The observed global-mean surface temperature record.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/essd-12-3469-2020" target="_blank" rel="noopener">10.5194/essd-12-3469-2020</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/what-is-climate.html">Lecture 1 &middot; what is climate</a>, <a href="lecture-7-climate-change-past-and-present/provenance.html">Lecture 7 &middot; provenance</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">HadISST</div>
+        <div class="ct">Rayner, N. A. et al. (2003), <em>Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century.</em> Journal of Geophysical Research: Atmospheres 108, 4407.</div>
+        <div class="why">The sea-surface temperature analysis behind the geography of the budget.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2002JD002670" target="_blank" rel="noopener">10.1029/2002JD002670</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-2-earths-energy-budget/geography.html">Lecture 2 &middot; geography of the budget</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Takahashi air&ndash;sea CO<sub>2</sub> climatology</div>
+        <div class="ct">Takahashi, T. et al. (2009), <em>Climatological mean and decadal change in surface ocean pCO<sub>2</sub>, and net sea&ndash;air CO<sub>2</sub> flux over the global oceans.</em> Deep Sea Research Part II 56, 554&ndash;577.</div>
+        <div class="why">The equatorial-source, mid-latitude-sink pattern of the air&ndash;sea CO<sub>2</sub> flux.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/j.dsr2.2008.12.009" target="_blank" rel="noopener">10.1016/j.dsr2.2008.12.009</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Lecture 4 &middot; ocean carbon</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Global Fire Emissions Database (GFED4.1s)</div>
+        <div class="ct">Randerson, J. T., G. R. van der Werf, L. Giglio, G. J. Collatz and P. S. Kasibhatla (2018), <em>Global Fire Emissions Database, Version 4.1 (GFED4s).</em> ORNL DAAC, Oak Ridge, Tennessee.</div>
+        <div class="why">Regional fire-emission totals. A dataset release, archived at ORNL DAAC rather than in the journal literature, so it has no Crossref DOI to verify here.</div>
+        <div class="id"><a href="https://www.globalfiredata.org/" target="_blank" rel="noopener">project site &nearr;</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/land-rock-methane.html">Lecture 4 &middot; land, rock and methane</a></div>
+      </article>
+</div>
+
+<h2 class="sec" id="papers">The literature, A&ndash;Z</h2>
+<p class="secsub">56 articles, by first author. Each one is named somewhere in the published material; the &ldquo;cited on&rdquo; line says where.</p>
+<div class="grid">
+      <article class="ref">
+        <div class="ct">Allen, M. R. and W. J. Ingram (2002), <em>Constraints on future changes in climate and the hydrologic cycle.</em> Nature 419, 224&ndash;232.</div>
+        <div class="why">The fast-adjustment term in the energetic constraint on global precipitation.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/nature01092" target="_blank" rel="noopener">10.1038/nature01092</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/water-cycle.html">Lecture 8 &middot; the water cycle</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Annan, J. D. and J. C. Hargreaves (2013), <em>A new global reconstruction of temperature changes at the Last Glacial Maximum.</em> Climate of the Past 9, 367&ndash;376.</div>
+        <div class="why">The assessed LGM global cooling.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/cp-9-367-2013" target="_blank" rel="noopener">10.5194/cp-9-367-2013</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Archer, D. and V. Brovkin (2008), <em>The millennial atmospheric lifetime of anthropogenic CO<sub>2</sub>.</em> Climatic Change 90, 283&ndash;297.</div>
+        <div class="why">Why a fraction of a CO<sub>2</sub> pulse outlives every ocean and biosphere sink.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1007/s10584-008-9413-1" target="_blank" rel="noopener">10.1007/s10584-008-9413-1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/long-view.html">Lecture 8 &middot; the long view</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Berger, A. L. (1978), <em>Long-Term Variations of Daily Insolation and Quaternary Climatic Changes.</em> Journal of the Atmospheric Sciences 35, 2362&ndash;2367.</div>
+        <div class="why">The daily-insolation solution behind the orbital-forcing demonstrations.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/1520-0469(1978)035<2362:LTVODI>2.0.CO;2" target="_blank" rel="noopener">10.1175/1520-0469(1978)035&lt;2362:LTVODI&gt;2.0.CO;2</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a>, <a href="lecture-7-climate-change-past-and-present/holocene-2000-years.html">Holocene and last 2000 years</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Bjerknes, J. (1969), <em>Atmospheric teleconnections from the equatorial Pacific.</em> Monthly Weather Review 97, 163&ndash;172.</div>
+        <div class="why">The coupled feedback that makes ENSO a mode rather than a forced response.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/1520-0493(1969)097<0163:ATFTEP>2.3.CO;2" target="_blank" rel="noopener">10.1175/1520-0493(1969)097&lt;0163:ATFTEP&gt;2.3.CO;2</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a>, <a href="lecture-7-climate-change-past-and-present/modes-of-variability.html">Lecture 7 &middot; modes of variability</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Bolton, D. (1980), <em>The Computation of Equivalent Potential Temperature.</em> Monthly Weather Review 108, 1046&ndash;1053.</div>
+        <div class="why">The saturation vapour pressure approximation used in the live calculations.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2" target="_blank" rel="noopener">10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-5-modelling-the-climate-system/atmospheric-equations/">Lecture 5 &middot; governing equations</a>, <a href="lecture-8-climate-change-the-future/temperature-patterns.html">Lecture 8 &middot; temperature patterns</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Bony, S. et al. (2006), <em>How Well Do We Understand and Evaluate Climate Change Feedback Processes?</em> Journal of Climate 19, 3445&ndash;3482.</div>
+        <div class="why">The feedback decomposition and where its spread comes from.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI3819.1" target="_blank" rel="noopener">10.1175/JCLI3819.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">Lecture 6 &middot; physical feedbacks</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Byrne, M. P. and P. A. O'Gorman (2013), <em>Land&ndash;Ocean Warming Contrast over a Wide Range of Climates: Convective Quasi-Equilibrium Theory and Idealized Simulations.</em> Journal of Climate 26, 4000&ndash;4016.</div>
+        <div class="why">The fixed-relative-humidity form of the land&ndash;sea contrast.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI-D-12-00262.1" target="_blank" rel="noopener">10.1175/JCLI-D-12-00262.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/temperature-patterns.html">Lecture 8 &middot; temperature patterns</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Crespin, E., H. Goosse, T. Fichefet, A. Mairesse and M. Sallaz-Damaz (2013), <em>Arctic climate over the past millennium: Annual and seasonal responses to external forcings.</em> The Holocene 23, 321&ndash;329.</div>
+        <div class="why">Separating forced from internal variability over the last millennium.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1177/0959683612463095" target="_blank" rel="noopener">10.1177/0959683612463095</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/holocene-2000-years.html">Lecture 7 &middot; Holocene and last 2000 years</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Dickson, A. G. and F. J. Millero (1987), <em>A comparison of the equilibrium constants for the dissociation of carbonic acid in seawater media.</em> Deep Sea Research Part A 34, 1733&ndash;1743.</div>
+        <div class="why">The carbonate-system dissociation constants used in the ocean-carbon calculation.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/0198-0149(87)90021-5" target="_blank" rel="noopener">10.1016/0198-0149(87)90021-5</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Lecture 4 &middot; ocean carbon</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Fasullo, J. T. and K. E. Trenberth (2008), <em>The Annual Cycle of the Energy Budget. Part II: Meridional Structures and Poleward Transports.</em> Journal of Climate 21, 2313&ndash;2325.</div>
+        <div class="why">The inferred meridional heat transport.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/2007JCLI1936.1" target="_blank" rel="noopener">10.1175/2007JCLI1936.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-2-earths-energy-budget/geography.html">Lecture 2 &middot; geography of the budget</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Friedlingstein, P. et al. (2006), <em>Climate&ndash;Carbon Cycle Feedback Analysis: Results from the C<sup>4</sup>MIP Model Intercomparison.</em> Journal of Climate 19, 3337&ndash;3353.</div>
+        <div class="why">The carbon-cycle feedback parameters.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI3800.1" target="_blank" rel="noopener">10.1175/JCLI3800.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-6-response-of-the-climate-system-to-perturbations/biogeochemical-feedbacks.html">Lecture 6 &middot; biogeochemical feedbacks</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Ganopolski, A. and R. Calov (2011), <em>The role of orbital forcing, carbon dioxide and regolith in 100 kyr glacial cycles.</em> Climate of the Past 7, 1415&ndash;1425.</div>
+        <div class="why">Why the 100-kyr cycle is not in the forcing.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/cp-7-1415-2011" target="_blank" rel="noopener">10.5194/cp-7-1415-2011</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Gao, C., A. Robock and C. Ammann (2008), <em>Volcanic forcing of climate over the past 1500 years: An improved ice core-based index for climate models.</em> Journal of Geophysical Research: Atmospheres 113, D23111.</div>
+        <div class="why">The volcanic forcing series behind the eruption dates on the forcing-agents page.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2008JD010239" target="_blank" rel="noopener">10.1029/2008JD010239</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">Lecture 6 &middot; forcing agents</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Geoffroy, O., D. Saint-Martin, D. J. L. Olivi&eacute;, A. Voldoire, G. Bellon and S. Tyt&eacute;ca (2013), <em>Transient Climate Response in a Two-Layer Energy-Balance Model. Part I.</em> Journal of Climate 26, 1841&ndash;1857.</div>
+        <div class="why">The two-layer model, and the parameter set used for it on the Lecture 8 pages.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI-D-12-00195.1" target="_blank" rel="noopener">10.1175/JCLI-D-12-00195.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/scenarios.html">Lecture 8 &middot; scenarios</a>, <a href="lecture-8-climate-change-the-future/carbon-budgets.html">carbon budgets</a>, <a href="lecture-8-climate-change-the-future/long-view.html">the long view</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Hausfather, Z. and G. P. Peters (2020), <em>Emissions &ndash; the &lsquo;business as usual&rsquo; story is misleading.</em> Nature 577, 618&ndash;620.</div>
+        <div class="why">Why RCP8.5 / SSP5-8.5 is not a baseline.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/d41586-020-00177-3" target="_blank" rel="noopener">10.1038/d41586-020-00177-3</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/scenarios.html">Lecture 8 &middot; scenarios</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Hawkins, E. and R. Sutton (2009), <em>The Potential to Narrow Uncertainty in Regional Climate Predictions.</em> Bulletin of the American Meteorological Society 90, 1095&ndash;1107.</div>
+        <div class="why">The three-way split of projection uncertainty into scenario, model and internal variability.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/2009BAMS2607.1" target="_blank" rel="noopener">10.1175/2009BAMS2607.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/projections-predictions.html">Lecture 8 &middot; projections and predictions</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Hawkins, E. and R. Sutton (2012), <em>Time of emergence of climate signals.</em> Geophysical Research Letters 39, L01702.</div>
+        <div class="why">Time of emergence, and the internal-variability standard deviations quoted with it.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2011GL050087" target="_blank" rel="noopener">10.1029/2011GL050087</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture 7 &middot; forced and internal variability</a>, <a href="lecture-8-climate-change-the-future/water-cycle.html">Lecture 8 &middot; the water cycle</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Held, I. M. and B. J. Soden (2006), <em>Robust Responses of the Hydrological Cycle to Global Warming.</em> Journal of Climate 19, 5686&ndash;5699.</div>
+        <div class="why">Why precipitation rises at 1&ndash;3 %/K while moisture rises at 7, and the circulation must weaken.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI3990.1" target="_blank" rel="noopener">10.1175/JCLI3990.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/water-cycle.html">Lecture 8 &middot; the water cycle</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Imbrie, J. and J. Z. Imbrie (1980), <em>Modeling the Climatic Response to Orbital Variations.</em> Science 207, 943&ndash;953.</div>
+        <div class="why">The asymmetric ice-volume response &mdash; ice melts faster than it grows.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1126/science.207.4434.943" target="_blank" rel="noopener">10.1126/science.207.4434.943</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Jones, G. S., P. A. Stott and N. Christidis (2013), <em>Attribution of observed historical near-surface temperature variations to anthropogenic and natural causes using CMIP5 simulations.</em> Journal of Geophysical Research: Atmospheres 118, 4001&ndash;4024.</div>
+        <div class="why">The scaling coefficients in the detection and attribution regression.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1002/jgrd.50239" target="_blank" rel="noopener">10.1002/jgrd.50239</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/attribution.html">Lecture 7 &middot; attribution</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Joos, F. et al. (2013), <em>Carbon dioxide and climate impulse response functions for the computation of greenhouse gas metrics: a multi-model analysis.</em> Atmospheric Chemistry and Physics 13, 2793&ndash;2825.</div>
+        <div class="why">The four-term impulse response function and its coefficients.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/acp-13-2793-2013" target="_blank" rel="noopener">10.5194/acp-13-2793-2013</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/carbon-budgets.html">Lecture 8 &middot; carbon budgets</a>, <a href="lecture-8-climate-change-the-future/long-view.html">the long view</a>, <a href="lecture-8-climate-change-the-future/scenarios.html">scenarios</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Joshi, M. M., J. M. Gregory, M. J. Webb, D. M. H. Sexton and T. C. Johns (2008), <em>Mechanisms for the land/sea warming contrast exhibited by simulations of climate change.</em> Climate Dynamics 30, 455&ndash;465.</div>
+        <div class="why">The moist-static-energy argument for why land warms faster than ocean.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1007/s00382-007-0306-1" target="_blank" rel="noopener">10.1007/s00382-007-0306-1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/temperature-patterns.html">Lecture 8 &middot; temperature patterns</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Jouzel, J. et al. (2007), <em>Orbital and Millennial Antarctic Climate Variability over the Past 800,000 Years.</em> Science 317, 793&ndash;796.</div>
+        <div class="why">The EPICA Dome C temperature record.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1126/science.1141038" target="_blank" rel="noopener">10.1126/science.1141038</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Kuhlbrodt, T., A. Griesel, M. Montoya, A. Levermann, M. Hofmann and S. Rahmstorf (2007), <em>On the driving processes of the Atlantic meridional overturning circulation.</em> Reviews of Geophysics 45, RG2001.</div>
+        <div class="why">What actually drives the overturning, and why it is not simply density.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2004RG000166" target="_blank" rel="noopener">10.1029/2004RG000166</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Lieth, H. (1975), <em>Modeling the primary productivity of the world.</em> In: Lieth, H. and R. H. Whittaker (eds.), <em>Primary Productivity of the Biosphere</em>, Ecological Studies 14, Springer, pp. 237&ndash;263.</div>
+        <div class="why">The Miami model &mdash; the temperature and precipitation ceilings on NPP.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1007/978-3-642-80913-2_12" target="_blank" rel="noopener">10.1007/978-3-642-80913-2_12</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-biosphere.html">Lecture 1 &middot; the biosphere</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Lisiecki, L. E. and M. E. Raymo (2005), <em>A Pliocene&ndash;Pleistocene stack of 57 globally distributed benthic &delta;<sup>18</sup>O records.</em> Paleoceanography 20, PA1003.</div>
+        <div class="why">The LR04 benthic stack.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2004PA001071" target="_blank" rel="noopener">10.1029/2004PA001071</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Liu, Z., Y. Wang, R. Gallimore, M. Notaro and I. C. Prentice (2006), <em>On the cause of abrupt vegetation collapse in North Africa during the Holocene: Climate variability vs. vegetation feedback.</em> Geophysical Research Letters 33, L22709.</div>
+        <div class="why">The two-variable rainfall&ndash;vegetation model that PC Lab 3 runs.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2006GL028062" target="_blank" rel="noopener">10.1029/2006GL028062</a></div>
+        <div class="use"><b>Cited on</b><a href="pc-lab-3-abrupt-vegetation-change/">PC Lab 3 &middot; abrupt vegetation change</a>, <a href="pc-lab-3-abrupt-vegetation-change/tasks.html">tasks</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Lorenz, E. N. (1963), <em>Deterministic Nonperiodic Flow.</em> Journal of the Atmospheric Sciences 20, 130&ndash;141.</div>
+        <div class="why">Why a projection is not a prediction.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/1520-0469(1963)020<0130:DNF>2.0.CO;2" target="_blank" rel="noopener">10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/forced-and-internal.html">Lecture 7 &middot; forced and internal variability</a>, <a href="lecture-8-climate-change-the-future/projections-predictions.html">Lecture 8 &middot; projections and predictions</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Armstrong McKay, D. I. et al. (2022), <em>Exceeding 1.5&deg;C global warming could trigger multiple climate tipping points.</em> Science 377, eabn7950.</div>
+        <div class="why">The assessed tipping elements and their thresholds.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1126/science.abn7950" target="_blank" rel="noopener">10.1126/science.abn7950</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/long-view.html">Lecture 8 &middot; the long view</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Mehrbach, C., C. H. Culberson, J. E. Hawley and R. M. Pytkowicz (1973), <em>Measurement of the apparent dissociation constants of carbonic acid in seawater at atmospheric pressure.</em> Limnology and Oceanography 18, 897&ndash;907.</div>
+        <div class="why">The original constants, as refitted by Dickson &amp; Millero (1987).</div>
+        <div class="id">DOI: <a href="https://doi.org/10.4319/lo.1973.18.6.0897" target="_blank" rel="noopener">10.4319/lo.1973.18.6.0897</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Lecture 4 &middot; ocean carbon</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Millero, F. J. (1995), <em>Thermodynamics of the carbon dioxide system in the oceans.</em> Geochimica et Cosmochimica Acta 59, 661&ndash;677.</div>
+        <div class="why">The solubility and equilibrium relations for the carbonate system.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/0016-7037(94)00354-O" target="_blank" rel="noopener">10.1016/0016-7037(94)00354-O</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Lecture 4 &middot; ocean carbon</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Millero, F. J. and A. Poisson (1981), <em>International one-atmosphere equation of state of seawater.</em> Deep Sea Research Part A 28, 625&ndash;629.</div>
+        <div class="why">The seawater density used in the ocean stratification demonstration.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/0198-0149(81)90122-9" target="_blank" rel="noopener">10.1016/0198-0149(81)90122-9</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Mucci, A. (1983), <em>The solubility of calcite and aragonite in seawater at various salinities, temperatures, and one atmosphere total pressure.</em> American Journal of Science 283, 780&ndash;799.</div>
+        <div class="why">The calcite and aragonite saturation horizons.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.2475/ajs.283.7.780" target="_blank" rel="noopener">10.2475/ajs.283.7.780</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/ocean-carbon.html">Lecture 4 &middot; ocean carbon</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Myhre, G., E. J. Highwood, K. P. Shine and F. Stordal (1998), <em>New estimates of radiative forcing due to well mixed greenhouse gases.</em> Geophysical Research Letters 25, 2715&ndash;2718.</div>
+        <div class="why">The simplified radiative-forcing expressions behind the IPCC forcing tables.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/98GL01908" target="_blank" rel="noopener">10.1029/98GL01908</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-6-response-of-the-climate-system-to-perturbations/forcing-agents.html">Lecture 6 &middot; forcing agents</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">North Greenland Ice Core Project Members (2004), <em>High-resolution record of Northern Hemisphere climate extending into the last interglacial period.</em> Nature 431, 147&ndash;151.</div>
+        <div class="why">The NGRIP record and the Dansgaard&ndash;Oeschger events in it.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/nature02805" target="_blank" rel="noopener">10.1038/nature02805</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7 &middot; abrupt change</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Noerdlinger, P. D. and K. R. Brower (2007), <em>The melting of floating ice raises the ocean level.</em> Geophysical Journal International 170, 145&ndash;150.</div>
+        <div class="why">The small but non-zero sea-level effect of melting sea ice.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1111/j.1365-246X.2007.03472.x" target="_blank" rel="noopener">10.1111/j.1365-246X.2007.03472.x</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-cryosphere.html">Lecture 1 &middot; the cryosphere</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">O'Neill, B. C. et al. (2017), <em>The roads ahead: Narratives for shared socioeconomic pathways describing world futures in the 21st century.</em> Global Environmental Change 42, 169&ndash;180.</div>
+        <div class="why">The SSP narratives.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/j.gloenvcha.2015.01.004" target="_blank" rel="noopener">10.1016/j.gloenvcha.2015.01.004</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/scenarios.html">Lecture 8 &middot; scenarios</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Parrenin, F. et al. (2013), <em>Synchronous Change of Atmospheric CO<sub>2</sub> and Antarctic Temperature During the Last Deglacial Warming.</em> Science 339, 1060&ndash;1063.</div>
+        <div class="why">The CO<sub>2</sub>&ndash;temperature phasing across the last deglaciation.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1126/science.1226368" target="_blank" rel="noopener">10.1126/science.1226368</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7 &middot; abrupt change</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Peel, M. C., B. L. Finlayson and T. A. McMahon (2007), <em>Updated world map of the K&ouml;ppen&ndash;Geiger climate classification.</em> Hydrology and Earth System Sciences 11, 1633&ndash;1644.</div>
+        <div class="why">The climate classification used on the biosphere page.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/hess-11-1633-2007" target="_blank" rel="noopener">10.5194/hess-11-1633-2007</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-biosphere.html">Lecture 1 &middot; the biosphere</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Pithan, F. and T. Mauritsen (2014), <em>Arctic amplification dominated by temperature feedbacks in contemporary climate models.</em> Nature Geoscience 7, 181&ndash;184.</div>
+        <div class="why">Why Arctic amplification is mostly the Planck and lapse-rate terms, not albedo.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/ngeo2071" target="_blank" rel="noopener">10.1038/ngeo2071</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/temperature-patterns.html">Lecture 8 &middot; temperature patterns</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Rahmstorf, S. (2002), <em>Ocean circulation and climate during the past 120,000 years.</em> Nature 419, 207&ndash;214.</div>
+        <div class="why">Overturning states, hysteresis and abrupt change.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/nature01090" target="_blank" rel="noopener">10.1038/nature01090</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Riahi, K. et al. (2017), <em>The Shared Socioeconomic Pathways and their energy, land use, and greenhouse gas emissions implications: An overview.</em> Global Environmental Change 42, 153&ndash;168.</div>
+        <div class="why">The SSP emissions pathways.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/j.gloenvcha.2016.05.009" target="_blank" rel="noopener">10.1016/j.gloenvcha.2016.05.009</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/scenarios.html">Lecture 8 &middot; scenarios</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Schoof, C. (2007), <em>Ice sheet grounding line dynamics: Steady states, stability, and hysteresis.</em> Journal of Geophysical Research: Earth Surface 112, F03S28.</div>
+        <div class="why">The grounding-line flux law and the marine ice sheet instability.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2006JF000664" target="_blank" rel="noopener">10.1029/2006JF000664</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/long-view.html">Lecture 8 &middot; the long view</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Seneviratne, S. I. et al. (2010), <em>Investigating soil moisture&ndash;climate interactions in a changing climate: A review.</em> Earth-Science Reviews 99, 125&ndash;161.</div>
+        <div class="why">Soil moisture as a control on the surface energy partition.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1016/j.earscirev.2010.02.004" target="_blank" rel="noopener">10.1016/j.earscirev.2010.02.004</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-4-global-cycles-water-and-carbon/water-balance.html">Lecture 4 &middot; the water balance</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Shakun, J. D. et al. (2012), <em>Global warming preceded by increasing carbon dioxide concentrations during the last deglaciation.</em> Nature 484, 49&ndash;54.</div>
+        <div class="why">The global temperature stack for the last deglaciation.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/nature10915" target="_blank" rel="noopener">10.1038/nature10915</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7 &middot; abrupt change</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Soden, B. J. and I. M. Held (2006), <em>An Assessment of Climate Feedbacks in Coupled Ocean&ndash;Atmosphere Models.</em> Journal of Climate 19, 3354&ndash;3360.</div>
+        <div class="why">The individual feedback parameters quoted in Part V of the equation summary.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI3799.1" target="_blank" rel="noopener">10.1175/JCLI3799.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-6-response-of-the-climate-system-to-perturbations/feedback-parameter.html">Lecture 6 &middot; the feedback parameter</a>, <a href="lecture-6-response-of-the-climate-system-to-perturbations/physical-feedbacks.html">physical feedbacks</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Stocker, T. F. and S. J. Johnsen (2003), <em>A minimum thermodynamic model for the bipolar seesaw.</em> Paleoceanography 18, 1087.</div>
+        <div class="why">The one-equation model behind the inter-hemispheric phasing.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1029/2003PA000920" target="_blank" rel="noopener">10.1029/2003PA000920</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7 &middot; abrupt change</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Stommel, H. (1961), <em>Thermohaline Convection with Two Stable Regimes of Flow.</em> Tellus 13, 224&ndash;230.</div>
+        <div class="why">The two-box overturning model and its saddle-node bifurcation.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1111/j.2153-3490.1961.tb00079.x" target="_blank" rel="noopener">10.1111/j.2153-3490.1961.tb00079.x</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a>, <a href="lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7 &middot; abrupt change</a>, <a href="lecture-8-climate-change-the-future/long-view.html">Lecture 8 &middot; the long view</a>, <a href="equations/">equation summary</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Trenberth, K. E., J. T. Fasullo and J. Kiehl (2009), <em>Earth&rsquo;s Global Energy Budget.</em> Bulletin of the American Meteorological Society 90, 311&ndash;324.</div>
+        <div class="why">The energy-budget diagram reproduced as Fig. 2.19 in the textbook.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/2008BAMS2634.1" target="_blank" rel="noopener">10.1175/2008BAMS2634.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-2-earths-energy-budget/global-budget.html">Lecture 2 &middot; the complete budget</a>, <a href="lecture-2-earths-energy-budget/greenhouse-effect.html">the greenhouse effect</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">van Vuuren, D. P. et al. (2011), <em>The representative concentration pathways: an overview.</em> Climatic Change 109, 5&ndash;31.</div>
+        <div class="why">The RCPs, and how they differ from the SSPs that replaced them.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1007/s10584-011-0148-z" target="_blank" rel="noopener">10.1007/s10584-011-0148-z</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/scenarios.html">Lecture 8 &middot; scenarios</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">von Schuckmann, K. et al. (2020), <em>Heat stored in the Earth system: where does the energy go?</em> Earth System Science Data 12, 2013&ndash;2041.</div>
+        <div class="why">Where the energy imbalance actually goes.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.5194/essd-12-2013-2020" target="_blank" rel="noopener">10.5194/essd-12-2013-2020</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-2-earths-energy-budget/global-budget.html">Lecture 2 &middot; the complete budget</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Watson, A. J. and J. E. Lovelock (1983), <em>Biological homeostasis of the global environment: the parable of Daisyworld.</em> Tellus B 35, 284&ndash;289.</div>
+        <div class="why">The model PC Lab 1 runs.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1111/j.1600-0889.1983.tb00031.x" target="_blank" rel="noopener">10.1111/j.1600-0889.1983.tb00031.x</a></div>
+        <div class="use"><b>Cited on</b><a href="pc-lab-1-daisyworld/">PC Lab 1 &middot; Daisyworld</a>, <a href="pc-lab-1-daisyworld/tasks.html">tasks</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Wild, M. et al. (2013), <em>The global energy balance from a surface perspective.</em> Climate Dynamics 40, 3107&ndash;3134.</div>
+        <div class="why">The surface-perspective budget values used on the Lecture 2 pages.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1007/s00382-012-1569-8" target="_blank" rel="noopener">10.1007/s00382-012-1569-8</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-2-earths-energy-budget/global-budget.html">Lecture 2 &middot; the complete budget</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Zachos, J. C., G. R. Dickens and R. E. Zeebe (2008), <em>An early Cenozoic perspective on greenhouse warming and carbon-cycle dynamics.</em> Nature 451, 279&ndash;283.</div>
+        <div class="why">Cenozoic cooling and the PETM.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1038/nature06588" target="_blank" rel="noopener">10.1038/nature06588</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-7-climate-change-past-and-present/orbital-forcing.html">Lecture 7 &middot; orbital forcing</a></div>
+      </article>
+      <article class="ref">
+        <div class="ct">Zickfeld, K. et al. (2013), <em>Long-Term Climate Change Commitment and Reversibility: An EMIC Intercomparison.</em> Journal of Climate 26, 5782&ndash;5809.</div>
+        <div class="why">What does and does not reverse when emissions stop.</div>
+        <div class="id">DOI: <a href="https://doi.org/10.1175/JCLI-D-12-00584.1" target="_blank" rel="noopener">10.1175/JCLI-D-12-00584.1</a></div>
+        <div class="use"><b>Cited on</b><a href="lecture-8-climate-change-the-future/long-view.html">Lecture 8 &middot; the long view</a></div>
+      </article>
+</div>
+
+<h2 class="sec" id="pending">Still to confirm</h2>
+<p class="secsub">Named on the pages, but without an identifier that could be verified from here. They are listed rather than quietly dropped, so the gap is visible.</p>
+<div class="grid">
+      <article class="ref">
+        <div class="nm">Ruddiman (2001, 2005)</div>
+        <div class="ct"><em>Earth&rsquo;s Climate: Past and Future</em> and <em>Plows, Plagues and Petroleum.</em> Books; edition and printing not checked against a copy here.</div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/components-and-timescales.html">Lecture 1 &middot; components and timescales</a>, <a href="lecture-7-climate-change-past-and-present/abrupt-change.html">Lecture 7 &middot; abrupt change</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">McGuffie &amp; Henderson-Sellers (1997)</div>
+        <div class="ct"><em>A Climate Modelling Primer.</em> Book; edition not checked against a copy here.</div>
+        <div class="use"><b>Cited on</b><a href="lecture-5-modelling-the-climate-system/what-is-a-model.html">Lecture 5 &middot; what is a model</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Ekman (1905)</div>
+        <div class="ct">The original Ekman-spiral paper, published in <em>Arkiv f&ouml;r Matematik, Astronomi och Fysik</em>. Pre-DOI; no verified identifier.</div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">Sonntag (1990)</div>
+        <div class="ct">Saturation vapour pressure formulation, <em>Zeitschrift f&uuml;r Meteorologie</em>. No Crossref record found from here.</div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-atmosphere.html">Lecture 1 &middot; the atmosphere</a></div>
+      </article>
+      <article class="ref">
+        <div class="nm">UNESCO (1983); Abramowitz &amp; Stegun (1964)</div>
+        <div class="ct">Standard tables and formulae &mdash; the seawater equation of state and the error function &mdash; used inside calculations rather than as scientific claims.</div>
+        <div class="use"><b>Cited on</b><a href="lecture-1-components-of-the-climate-system/the-ocean.html">Lecture 1 &middot; the ocean</a>, <a href="lecture-8-climate-change-the-future/extremes.html">Lecture 8 &middot; extremes</a></div>
+      </article>
+</div>
+
+<p class="foot">Compiled from the source notes on the published pages under <code>docs/</code>, the Goosse textbook, and DOI checks run directly against Crossref. It supplements the page-level source note; it does not replace it. The equations themselves, with their symbols and their textbook numbers, are on the <a href="equations/">equation summary</a>.</p>
+
+</div>
+<script>
+(function(){
+  const btn=document.getElementById('themeBtn');
+  btn.onclick=()=>{
+    const d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    btn.textContent=d?'Dark':'Light';
+  };
+})();
+</script>
 </body>
 </html>

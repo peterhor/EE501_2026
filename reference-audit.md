@@ -2,6 +2,38 @@
 
 This file is for instructor follow-up. It is intentionally outside `docs/` so it does not appear on the published student-facing site.
 
+## Status after the 2026-09-08 sweep
+
+`docs/references.html` was rebuilt from a verified record set and now holds **69 records** (5 texts,
+8 assessments/data products, 56 journal articles) plus a visible "still to confirm" list. **61 DOIs were
+resolved directly against the Crossref REST API** in that pass, and every report/dataset URL was checked
+to return HTTP 200. Every "cited on" claim was checked against the page it names.
+
+Closed by that sweep:
+
+- **Oke (1987) "Identifier pending"** — replaced with ISBN 0-415-04319-0 and the LCCN, from the confirmed
+  book record below.
+- **Which Goosse edition** — both are now listed separately and the difference is stated on the page: the
+  2010 open edition is what the page-level source notes and the equation numbering follow; the 2015
+  Cambridge book is the set text. The one place they diverge is the detection-and-attribution regression
+  on the equation summary (§5.4, Fig. 5.43), which exists only in the 2015 book — the 2010 Chapter 5 ends
+  at §5.5.3 / Fig. 5.32. Both pages now say so. **Worth confirming Fig. 5.43 against your printed copy.**
+- **Bonan (2016) not cited anywhere** — now carries a record with its ISBNs and the Cambridge DOI, and the
+  entry says plainly that no page cites it yet.
+- **Abbreviated classic citations** — Rahmstorf (2002), Kuhlbrodt et al. (2007) and the Takahashi
+  climatology are now full records with verified DOIs. Ruddiman (2001, 2005) stays open (books).
+- **Report-style sources** — IPCC AR4/AR5/AR6 WG1 and the Global Carbon Budget now have report-level
+  entries with stable URLs, with the chapter names listed inside the entry rather than guessed at
+  chapter DOIs. Berkeley Earth is cited via Rohde & Hausfather (2020).
+- **The KPI counts** were stale (46 pages / 14 DOIs) and are now recomputed (47 pages / 61 DOIs).
+
+Still open:
+
+- Ruddiman (2001, 2005) and McGuffie & Henderson-Sellers (1997): edition/printing not checked against a
+  copy.
+- Ekman (1905) and Sonntag (1990): pre-DOI or absent from Crossref; no verified identifier.
+- GFED4.1s has a DataCite DOI, not a Crossref one, so it is linked to the project site instead.
+
 ## Flagged items for manual completion
 
 ### Books and textbook-derived demonstrations
