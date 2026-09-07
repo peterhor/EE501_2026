@@ -630,6 +630,7 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
     /* geometry: wind blows toward +y (up the page). S is the pixel length of the
        surface vector; every blue vector is drawn as a fraction of it, so the
        figure is normalised by V0 and a scale bar carries the absolute speed. */
+    var ZMAX=150, DZ=10, DEAD=0.02;   /* both panels sample the same fixed depth window */
     var CX=328, CY=290, S=224;
     put(g,'rect',{x:238,y:24,width:400,height:352,rx:10,fill:'var(--surface-2)',
       stroke:'var(--line-soft)'});
@@ -640,18 +641,26 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
       'marker-end':'url(#ec)'});
     put(g,'text',{x:CX+9,y:CY-150,'font-size':12.5,fill:'var(--bio)','font-weight':600},
       'wind, '+U.toFixed(1)+' m/s');
-    /* spiral vectors */
-    var nv=14;
-    for(var i=0;i<nv;i++){
-      var z=-DE*i/(nv-1);                       /* z is negative, downwards */
+    /* Spiral vectors, sampled every DZ metres over a FIXED 0–ZMAX window.
+       Sampling at fixed real depths rather than at fractions of D_E is what makes
+       this panel respond to the sliders: normalised by V0 the classical spiral has
+       one universal shape, but how much of it you cross in the top 150 m is set
+       entirely by A_z and by latitude. */
+    var op=function(zm){ return 0.32+0.63*(1-Math.min(zm,ZMAX)/ZMAX); };
+    for(var zz=0; zz<=ZMAX; zz+=DZ){
+      var z=-zz;                                /* z is negative, downwards */
       var mag=Math.exp(z/dd);                   /* speed as a fraction of V0 */
+      if(zz>0 && mag<DEAD) break;               /* the current has effectively stopped */
       var ang=Math.PI/4 - z/dd;                 /* clockwise from the wind; grows with depth */
       /* wind is +y; the current is rotated clockwise by ang from the wind */
       var vx= mag*Math.sin(ang), vy= mag*Math.cos(ang);
-      var op=0.30+0.65*(1-i/(nv-1));
-      put(g,'line',{x1:CX,y1:CY,x2:CX+vx*S,y2:CY-vy*S,stroke:'var(--ocn)',
-        'stroke-width':i===0?3:1.8,'marker-end':'url(#ea)',opacity:op});
-      if(i===0){
+      var tipx=CX+vx*S, tipy=CY-vy*S, stub=mag*S<18;
+      var at={x1:CX,y1:CY,x2:tipx,y2:tipy,stroke:'var(--ocn)',
+        'stroke-width':zz===0?3:1.8,opacity:op(zz)};
+      if(!stub) at['marker-end']='url(#ea)';
+      put(g,'line',at);
+      if(stub) put(g,'circle',{cx:tipx,cy:tipy,r:2.6,fill:'var(--ocn)',opacity:op(zz)});
+      if(zz===0){
         put(g,'text',{x:CX+vx*S+8,y:CY-vy*S-4,'font-size':12,fill:'var(--ocn)','font-weight':600},
           'surface, 45° right');
       }
@@ -675,11 +684,11 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
     put(g,'line',{x1:CX+S/2,y1:CY+41,x2:CX+S/2,y2:CY+51,stroke:'var(--text-muted)','stroke-width':1.6});
     put(g,'text',{x:CX+S/2+8,y:CY+50,'font-size':11.5,fill:'var(--text-muted)'},
       (V0*50).toFixed(1)+' cm/s');
-    /* ── right panel: the same spiral against a FIXED depth axis ──
-       This is where A_z shows itself. The plan view above is normalised by V0
-       and so has a shape that does not depend on A_z at all; what A_z sets is
-       the depth over which the spiral happens, which only a fixed axis reveals. */
-    var PX=708, PY0=104, PY1=356, ZMAX=150, S2=140, FS=0.30;
+    /* ── right panel: the same arrows, hung off a fixed depth axis ──
+       The plan view shows how far round the spiral the top 150 m carries you;
+       this one shows where in the water column that happens. Same samples, same
+       depth window, same opacity key — only the frame differs. */
+    var PX=708, PY0=104, PY1=356, S2=140, FS=0.30;
     function py(z){ return PY0 + Math.min(-z,ZMAX)/ZMAX*(PY1-PY0); }
     put(g,'rect',{x:654,y:24,width:302,height:352,rx:10,fill:'var(--surface-2)',
       stroke:'var(--line-soft)'});
@@ -688,7 +697,7 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
     put(g,'text',{x:805,y:60,'text-anchor':'middle','font-size':11.5,
       fill:'var(--text-muted)'},'each arrow is that depth\u2019s plan-view vector');
     put(g,'line',{x1:PX,y1:PY0,x2:PX,y2:PY1,stroke:'var(--line-soft)','stroke-width':1.6});
-    for(var t=0;t<=150;t+=25){
+    for(var t=0;t<=ZMAX;t+=ZMAX/6){
       var yt=PY0+t/ZMAX*(PY1-PY0);
       put(g,'line',{x1:PX-6,x2:PX,y1:yt,y2:yt,stroke:'var(--line-soft)','stroke-width':1.4});
       put(g,'text',{x:PX-11,y:yt+4,'text-anchor':'end','font-size':10.5,
@@ -704,13 +713,16 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
     put(g,'path',{d:tp,fill:'none',stroke:'var(--ocn)','stroke-width':1.2,
       'stroke-dasharray':'3 3',opacity:0.85});
     /* an arrow every 10 m, until the current is essentially dead */
-    for(var zz=0;zz<=ZMAX;zz+=10){
-      var z4=-zz, m4=Math.exp(z4/dd);
-      if(zz>0 && m4<0.02) break;
+    for(var zr=0;zr<=ZMAX;zr+=DZ){
+      var z4=-zr, m4=Math.exp(z4/dd);
+      if(zr>0 && m4<DEAD) break;
       var a4=Math.PI/4-z4/dd, yb=py(z4);
-      put(g,'line',{x1:PX,y1:yb,x2:PX+m4*Math.sin(a4)*S2,y2:yb-m4*Math.cos(a4)*S2*FS,
-        stroke:'var(--ocn)','stroke-width':zz===0?2.6:1.4,'marker-end':'url(#ea)',
-        opacity:0.35+0.6*m4});
+      var tx=PX+m4*Math.sin(a4)*S2, ty=yb-m4*Math.cos(a4)*S2*FS, st=m4*S2<18;
+      var a5={x1:PX,y1:yb,x2:tx,y2:ty,stroke:'var(--ocn)',
+        'stroke-width':zr===0?2.6:1.4,opacity:op(zr)};
+      if(!st) a5['marker-end']='url(#ea)';
+      put(g,'line',a5);
+      if(st) put(g,'circle',{cx:tx,cy:ty,r:2.2,fill:'var(--ocn)',opacity:op(zr)});
     }
     /* where the spiral has died */
     var yE=py(-Math.min(DE,ZMAX));
@@ -722,25 +734,25 @@ observational estimates. Every figure on the eight Lecture&nbsp;1 pages is class
                : ('Ekman depth '+DE.toFixed(0)+' m, off the axis'));
     /* left-hand notes */
     put(g,'text',{x:26,y:56,'font-size':13,fill:'var(--text-primary)','font-weight':600},
-      'Depth of each vector');
-    for(var k=0;k<5;k++){
-      var zk=-DE*k/4;
+      'One arrow every '+DZ+' m');
+    for(var k=0;k<=5;k++){
+      var zk=k*ZMAX/5;
       put(g,'line',{x1:26,x2:44,y1:78+k*20,y2:78+k*20,stroke:'var(--ocn)','stroke-width':2,
-        opacity:0.30+0.65*(1-k/4)});
+        opacity:op(zk)});
       put(g,'text',{x:50,y:82+k*20,'font-size':11.5,fill:'var(--text-muted)'},
-        (-zk).toFixed(0)+' m');
+        zk.toFixed(0)+' m');
     }
-    put(g,'text',{x:26,y:200,'font-size':11.5,fill:'var(--text-muted)'},'Each vector is turned');
-    put(g,'text',{x:26,y:216,'font-size':11.5,fill:'var(--text-muted)'},'further clockwise and is');
-    put(g,'text',{x:26,y:232,'font-size':11.5,fill:'var(--text-muted)'},'weaker than the one above.');
-    put(g,'text',{x:26,y:256,'font-size':11.5,fill:'var(--text-muted)'},'At D');
-    put(g,'text',{x:47,y:259,'font-size':9,fill:'var(--text-muted)'},'E');
-    put(g,'text',{x:54,y:256,'font-size':11.5,fill:'var(--text-muted)'},' the current points');
-    put(g,'text',{x:26,y:272,'font-size':11.5,fill:'var(--text-muted)'},'the opposite way to the');
-    put(g,'text',{x:26,y:288,'font-size':11.5,fill:'var(--text-muted)'},'surface, at 4 % of its speed.');
-    put(g,'text',{x:26,y:326,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'COMPUTED —');
-    put(g,'text',{x:26,y:342,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'the classical Ekman');
-    put(g,'text',{x:26,y:358,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'solution, to the scale bar');
+    put(g,'text',{x:26,y:212,'font-size':11.5,fill:'var(--text-muted)'},'Each arrow is the current');
+    put(g,'text',{x:26,y:228,'font-size':11.5,fill:'var(--text-muted)'},'at a fixed depth, turned');
+    put(g,'text',{x:26,y:244,'font-size':11.5,fill:'var(--text-muted)'},'further clockwise and');
+    put(g,'text',{x:26,y:260,'font-size':11.5,fill:'var(--text-muted)'},'weaker than the one above.');
+    put(g,'text',{x:26,y:284,'font-size':11.5,fill:'var(--text-muted)'},'How many of them fit');
+    put(g,'text',{x:26,y:300,'font-size':11.5,fill:'var(--text-muted)'},'before the current dies is');
+    put(g,'text',{x:26,y:316,'font-size':11.5,fill:'var(--text-muted)'},'what the eddy viscosity');
+    put(g,'text',{x:26,y:332,'font-size':11.5,fill:'var(--text-muted)'},'and the latitude decide.');
+    put(g,'text',{x:26,y:356,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'COMPUTED —');
+    put(g,'text',{x:26,y:372,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'the classical Ekman');
+    put(g,'text',{x:26,y:388,'font-size':11.5,fill:'var(--warn)','font-style':'italic'},'solution, to the scale bar');
 
     $('kTau').textContent=tau.toFixed(3);
     $('kDe').textContent=DE.toFixed(0)+' m';
