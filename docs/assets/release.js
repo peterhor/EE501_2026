@@ -65,7 +65,7 @@
     'lecture-8': { name: 'Lecture 8 — Climate Change: the Future',
                    opensAt: '2026-09-17T08:15+02:00', answersAt: '2026-09-17T12:00+02:00' },
     'lab-1':     { name: 'PC Lab 1 — Daisyworld',
-                   opensAt: '2026-09-09T12:15+02:00', answersAt: '2026-09-09T12:15+02:00' },
+                   opensAt: '2026-09-09T08:00+02:00', answersAt: '2026-09-09T08:00+02:00' },
     'lab-2':     { name: 'PC Lab 2 — Energy Balance Model',
                    opensAt: '2026-09-14T12:15+02:00', answersAt: '2026-09-14T12:15+02:00' },
     'lab-3':     { name: 'PC Lab 3 — Abrupt Vegetation Change',
