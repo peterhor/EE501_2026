@@ -84,9 +84,10 @@
   <section class="ex prep">
     <h2>Preparation &amp; submission</h2>
     <ul>
+      <li>Every exercise asks for two things, and lists both: <strong>questions to answer in your report</strong>, and a single <strong>figure to hand in</strong>. The prediction you draw at the start of an exercise is <strong>not marked</strong> — it is there to make you commit to an expectation before you see the answer, and it stays on your figure so you can see where you were right.</li>
       <li>Work the exercises <strong>in order</strong> — several ask you to compare against a curve you produced earlier, and the lab draws your earlier reference runs behind the current one.</li>
       <li>Each exercise lists the <strong>figures to hand in</strong> under its questions. The lab draws the data, but <strong>every word on the figure is yours</strong>: the <strong>Prepare figure for the report</strong> button asks you for the figure title, both axis labels with their units, and a caption, and exports only what you typed. Nothing is filled in for you, and these are marked — a caption that does not state the parameter values behind the run (A_w, A_b, A_g, &#947;, and which species were switched on) is an incomplete figure. Keep the files in a <code>/Daisyworld/figures</code> folder, named by exercise number (e.g. <code>Fig1_1</code>).</li>
-      <li>You can also export <strong>your own recorded points</strong> as CSV. The model curve itself is not downloadable — the figures you hand in must rest on data you sampled yourself, so sample properly: at least 12 points, spread across the whole luminosity range, and more closely wherever the curve turns.</li>
+      <li>You can also export <strong>your own recorded points</strong> as CSV. The model curve itself is not downloadable — the figures you hand in must rest on data you sampled yourself, so sample properly: at least 5 points, spread across the whole luminosity range, and more closely wherever the curve turns.</li>
       <li>Every prediction you draw stays on the revealed figure. Your sketches are part of what you hand in, so they must be your own work.</li>
       <li>This lab is <strong>part 1 of 3</strong> of your report. Submit as a single PDF through the Canvas assignment named <strong>Daisyworld</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB1-Daisyworld" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
     </ul>
@@ -107,7 +108,7 @@
 
   <section class="ex">
     <h2><span class="tag">E1</span>Growth rate vs. temperature</h2>
-    <p class="prompt">Daisies grow at a rate &#946; set by the local temperature T&#8343; of their own patch, through eq. (3) of Watson &amp; Lovelock (1983). Open the Growth-curve tab and predict the shape of &#946;(T&#8343;) before revealing it.</p>
+    <p class="prompt">Daisies grow at a rate &#946; set by the local temperature T&#8343; of their own patch. Eq. (3) of Watson &amp; Lovelock (1983) gives that rate as <b>&#946; = 1 &#8722; 0.003265 (22.5 &#8722; T&#8343;)&#178;</b>, with &#946; held at zero wherever the formula would go negative, since a growth rate cannot be less than nothing. Predict the shape of &#946;(T&#8343;) from the equation before revealing the curve.</p>
     <ol class="qs">
       <li>What does the curve tell you about the relation between daisy growth and temperature?</li>
       <li>What is the optimal temperature for growth? Show how you obtain it from eq. (3).</li>
@@ -121,7 +122,7 @@
     <p class="prompt">The sun in this model does not stay fixed. Open the Luminosity-vs-time tab and predict how L behaves over the run before revealing it.</p>
     <ol class="qs">
       <li>What does this steady increase in luminosity represent physically?</li>
-      <li>At which luminosity L does the absorbed solar energy match present-day Earth, whose solar constant is 1361 W m&#8315;&#178;?</li>
+      <li>At which luminosity L does the absorbed solar energy match present-day Earth, whose solar constant is 1361 W m&#8315;&#178;? Note that L here is Watson &amp; Lovelock's dimensionless multiplier on S, not the solar luminosity L&#9737; of Lecture 2.</li>
     </ol>
     <p class="figs"><b>Figure:</b> Fig2_1 — solar luminosity L against time step t</p>
   </section>
@@ -131,7 +132,7 @@
     <p class="prompt">Both daisy populations are switched off, leaving a lifeless planet whose temperature depends only on luminosity and the fixed bare-ground albedo A_g. Predict the shape of Te(L), then sample Te across the luminosity range and build the curve from your own points.</p>
     <ol class="qs">
       <li>Over which range of luminosity would the planet be habitable for daisies? Use the viable temperature range you derived in E1.</li>
-      <li>What is the global average temperature Te at L = 1.0?</li>
+      <li>Work out Te at L = 1.0 by hand from Te = (S&#183;L&#183;(1&#8722;A)/&#963;)^&#188; &#8722; 273, showing your substitution, then check it against the point you recorded at L = 1.0. The live equation panel is paused for this exercise so the arithmetic is yours.</li>
     </ol>
     <p class="figs"><b>Figure:</b> Fig3_1 — Te against L for the bare planet</p>
   </section>
@@ -195,7 +196,7 @@
     <h2><span class="tag">E9</span>Daisyworld &amp; global change</h2>
     <p class="prompt">A synthesis view: the reference two-species run of E6 with the bare planet of E3 drawn behind it. Our own Sun really does brighten with age — by roughly 10% of its present output every 1.1 billion years — while the Earth has stayed habitable for billions of years.</p>
     <ol class="qs">
-      <li>Take the Sun's brightening as ~10% of its present luminosity per 1.1 Gyr, and one model step as &#916;L = 0.025. Roughly how much time does one model step represent?</li>
+      <li>The Sun brightens by about 10 per cent of its present output every 1.1 billion years. One model step raises L by 0.025 &mdash; that is, by 2.5 per cent of the reference sun. Roughly how much time does one model step represent? Show your working.</li>
       <li>What is the relevance of the Daisyworld model for studies of present-day global change?</li>
     </ol>
     <p class="figs"><b>Figure:</b> Fig9_1 — the reference two-species run with the bare planet for comparison</p>
