@@ -712,7 +712,11 @@ orders of magnitude, not benchmarks.
       {n:'mid',       a:0.32, s:0.95, y:1},
       {n:'tropical',  a:0.26, s:1.35, y:2}
     ];
-    const W=200, H=52, X0=150, Y0=44;
+    /* Three bands of W with two gaps of 70 span 740, centred in the 880-wide
+       viewBox at X0=70; at the old X0=150 the tropical band ran off the right
+       edge and was clipped. Y0=76 leaves the incoming-flux labels (Y0-36) clear
+       of the caption baseline at y=20, which they used to sit on top of. */
+    const W=200, H=52, X0=70, Y0=76;
     bands.forEach((b,i)=>{
       const x=X0+i*(W+70);
       put(g,'rect',{x:x,y:Y0,width:W,height:H,rx:9,fill:'var(--surface-2)',
@@ -749,7 +753,7 @@ orders of magnitude, not benchmarks.
     });
     put(g,'text',{x:20,y:20,'font-size':12.5,fill:'var(--text-secondary)'},
       'Each band balances its own radiation — badly. Transport between bands does the rest.');
-    put(g,'text',{x:150,y:224,'font-size':11.5,fill:'var(--text-muted)'},
+    put(g,'text',{x:X0,y:216,'font-size':11.5,fill:'var(--text-muted)'},
       'surplus in the tropics  →  deficit at the poles: the transport term D carries about 5.9 PW across 35° latitude');
   })();
 
