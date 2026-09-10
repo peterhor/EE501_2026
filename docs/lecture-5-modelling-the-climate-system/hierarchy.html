@@ -2,6 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<script src="../assets/release.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The model hierarchy — EBM, EMIC, GCM</title>
 <style>
@@ -315,7 +316,7 @@ Modelling the climate system &middot; 2 of 5</p>
     <div class="def"><b>T&#772;</b> global-mean temperature, &deg;C</div>
   </div>
 
-  <svg viewBox="0 0 880 240" role="img" aria-label="A one-dimensional latitudinal energy balance model with radiative terms in each band and diffusive transport between them">
+  <svg viewBox="0 0 880 400" role="img" aria-label="A globe divided into latitude bands, each absorbing solar radiation and emitting terrestrial radiation, with heat transported polewards across the band boundaries">
     <g id="oneD"></g>
   </svg>
 
@@ -435,7 +436,7 @@ Modelling the climate system &middot; 2 of 5</p>
   <p class="note">The equations a GCM solves for its atmosphere are set out on
   <a href="atmospheric-equations/">page&nbsp;3</a> &mdash; seven of them, built up one at a time.
   <a href="components.html">Page&nbsp;4</a> then adds the ocean, the sea ice and the land surface, shows how
-  they are coupled, and deals with the awkward fact that a GCM grid box is not a place anyone lives.
+  they are coupled, and deals with the problem that a GCM grid box is not a place anyone lives.
   <a href="evaluation.html">Page&nbsp;5</a> asks whether the result is any good.</p>
 </div>
 
@@ -706,39 +707,116 @@ orders of magnitude, not benchmarks.
   /* ═══ 3 · the 1-D EBM schematic ═════════════════════════════════ */
   (function(){
     const g=$('oneD');
-    const bands=[
-      {n:'polar',     a:0.62, s:0.50, y:0},
-      {n:'mid',       a:0.32, s:0.95, y:1},
-      {n:'tropical',  a:0.26, s:1.35, y:2}
-    ];
-    const W=200, H=52, X0=150, Y0=44;
-    bands.forEach((b,i)=>{
-      const x=X0+i*(W+70);
-      put(g,'rect',{x:x,y:Y0,width:W,height:H,rx:9,fill:'var(--surface-2)',
-        stroke:'var(--line)','stroke-width':1.1});
-      put(g,'text',{x:x+W/2,y:Y0+22,'text-anchor':'middle','font-size':13.5,
-        fill:'var(--text-primary)','font-weight':600},b.n+' band');
-      put(g,'text',{x:x+W/2,y:Y0+40,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
-        'α = '+b.a+' · S/S̄ = '+b.s);
-      /* incoming */
-      put(g,'line',{x1:x+W/2,y1:Y0-30,x2:x+W/2,y2:Y0-6,stroke:'var(--warn)','stroke-width':2.4,
-        'marker-end':'url(#a1)'});
-      put(g,'text',{x:x+W/2,y:Y0-36,'text-anchor':'middle','font-size':11.5,fill:'var(--warn)'},
-        '(Sᵢ/4)(1−αᵢ)');
-      /* outgoing */
-      put(g,'line',{x1:x+W/2,y1:Y0+H+6,x2:x+W/2,y2:Y0+H+32,stroke:'var(--gcm)','stroke-width':2.4,
-        'marker-end':'url(#a2)'});
-      put(g,'text',{x:x+W/2,y:Y0+H+50,'text-anchor':'middle','font-size':11.5,fill:'var(--gcm)'},
-        'A + B Tᵢ');
-      /* transport */
-      if(i<bands.length-1){
-        const xa=x+W+8, xb=x+W+62;
-        put(g,'line',{x1:xb,y1:Y0+H/2,x2:xa,y2:Y0+H/2,stroke:'var(--rcm)','stroke-width':2.6,
-          'marker-end':'url(#a3)'});
-        put(g,'text',{x:(xa+xb)/2,y:Y0+H/2-12,'text-anchor':'middle','font-size':11.5,
-          fill:'var(--rcm)','font-weight':600},'D');
+    /* The model's grid is the planet sliced into latitude bands, so the
+       schematic is drawn on the sphere rather than as a row of boxes: an
+       orthographic globe tilted so the north pole leans towards the viewer,
+       which is what makes the bands read as bands and shows why the insolation
+       a band receives falls off towards the pole. */
+    const cx=235, cy=215, R=150, TILT=24*Math.PI/180;
+    const ST=Math.sin(TILT), CT=Math.cos(TILT), D2R=Math.PI/180;
+    const EDGES=[-90,-60,-30,0,30,60,90];
+    const BANDS=[{n:'polar',    lo:60, hi:90, a:0.62, s:0.50},
+                 {n:'mid',      lo:30, hi:60, a:0.32, s:0.95},
+                 {n:'tropical', lo:0,  hi:30, a:0.26, s:1.35}];
+
+    /* Orthographic projection of a point on the tilted globe. */
+    const P=(phi,lam)=>{
+      const cp=Math.cos(phi*D2R), sp=Math.sin(phi*D2R);
+      const X=R*cp*Math.sin(lam*D2R), Y=R*sp, Z=R*cp*Math.cos(lam*D2R);
+      return [cx+X, cy-(Y*CT-Z*ST)];
+    };
+    /* Depth, so a meridian can be cut where it passes behind the globe. */
+    const depth=(phi,lam)=>Math.sin(phi*D2R)*ST+Math.cos(phi*D2R)*Math.cos(lam*D2R)*CT;
+    /* How far round a parallel runs before it crosses the limb. The clamp
+       returns 180 for parallels near enough the pole never to cross it. */
+    const limbLon=phi=>Math.acos(Math.max(-1,Math.min(1,-Math.tan(phi*D2R)*ST/CT)))/D2R;
+    const parallel=(phi,n)=>{
+      const L=limbLon(phi), p=[];
+      for(let i=0;i<=n;i++) p.push(P(phi,-L+2*L*i/n));
+      return p;
+    };
+    const ang=q=>Math.atan2(q[1]-cy,q[0]-cx);
+    /* The shorter of the two ways round the limb between two points on it. */
+    const limbArc=(a,b,n)=>{
+      let d=b-a; while(d>Math.PI)d-=2*Math.PI; while(d<-Math.PI)d+=2*Math.PI;
+      const p=[];
+      for(let i=0;i<=n;i++){const t=a+d*i/n; p.push([cx+R*Math.cos(t),cy+R*Math.sin(t)]);}
+      return p;
+    };
+    const path=p=>'M'+p.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L');
+    const last=a=>a[a.length-1];
+    /* A band is the strip between two parallels, closed along the limb. A polar
+       cap has only one parallel, closed over the top or bottom of the disc. */
+    const bandArea=(p1,p2)=>{
+      if(p1<=-90||p2>=90){
+        const A=parallel(p1<=-90?p2:p1,64);
+        return path(A.concat(limbArc(ang(last(A)),ang(A[0]),40)))+'Z';
       }
+      const A=parallel(p1,64), B=parallel(p2,64);
+      return path(A.concat(limbArc(ang(last(A)),ang(last(B)),20),
+                           B.slice().reverse(),
+                           limbArc(ang(B[0]),ang(A[0]),20)))+'Z';
+    };
+    const txt=(x,y,t,o)=>put(g,'text',Object.assign({x:x,y:y,'font-size':11.5,
+      fill:'var(--text-muted)'},o||{}),t);
+
+    /* ── the globe ── */
+    put(g,'circle',{cx:cx,cy:cy,r:R,fill:'var(--surface-2)'});
+    for(let i=0;i<EDGES.length-1;i++){
+      const lo=EDGES[i];
+      /* Band i of the equation is the mid-latitude one, tinted so the arrows
+         below have a named band to arrive at. */
+      const mid=lo===30;
+      put(g,'path',{d:bandArea(lo,EDGES[i+1]),
+        fill:mid?'var(--emic)':'var(--text-primary)',
+        'fill-opacity':mid?0.17:(lo>=0?0.05:0.02),
+        stroke:'var(--line)','stroke-width':1});
+    }
+    [-70,-35,0,35,70].forEach(l0=>{
+      const p=[];
+      for(let f=-90;f<=90;f+=2) if(depth(f,l0)>0) p.push(P(f,l0));
+      if(p.length>1) put(g,'path',{d:path(p),fill:'none',stroke:'var(--line)',
+        'stroke-width':0.8,opacity:0.5});
     });
+    put(g,'circle',{cx:cx,cy:cy,r:R,fill:'none',stroke:'var(--line)','stroke-width':1.4});
+
+    /* Band tags sit at the front of each band, where it is widest on screen. */
+    BANDS.forEach(b=>{
+      const y=P((b.lo+b.hi)/2,0)[1];
+      txt(cx,y+4,b.n,{'text-anchor':'middle','font-size':12,
+        fill:'var(--text-secondary)','font-weight':600});
+    });
+
+    /* ── the three fluxes, drawn where they act ── */
+    const surf=(phi,lam)=>{
+      const p=P(phi,lam);
+      /* The outward normal, projected: the direction the radiative arrows run. */
+      const cp=Math.cos(phi*D2R), sp=Math.sin(phi*D2R);
+      const nx=cp*Math.sin(lam*D2R), ny=sp*CT-cp*Math.cos(lam*D2R)*ST;
+      const L=Math.hypot(nx,ny);
+      return {p:p, n:[nx/L,-ny/L]};
+    };
+    const ray=(phi,lam,len,inward,col,mk)=>{
+      const s=surf(phi,lam), far=[s.p[0]+s.n[0]*len, s.p[1]+s.n[1]*len];
+      const a=inward?far:s.p, b=inward?s.p:far;
+      put(g,'line',{x1:a[0].toFixed(1),y1:a[1].toFixed(1),
+        x2:b[0].toFixed(1),y2:b[1].toFixed(1),stroke:col,'stroke-width':2.4,
+        'marker-end':'url(#'+mk+')'});
+    };
+    /* Kept well inside the silhouette: at longitudes near the limb the normal
+       is almost tangent on screen and the arrow reads as grazing the edge
+       rather than as striking the band. */
+    ray(52,48,75,false,'var(--gcm)','a2');   /* emitted, leaving the mid band  */
+    ray(30,58,72,true, 'var(--warn)','a1');  /* absorbed, arriving at the same */
+    /* Transport runs along the surface, poleward across each band boundary;
+       the gap between the two keeps them from reading as one long arrow. */
+    [[12,42],[50,80]].forEach(seg=>{
+      const p=[];
+      for(let f=seg[0];f<=seg[1];f+=2) p.push(P(f,-55));
+      put(g,'path',{d:path(p),fill:'none',stroke:'var(--rcm)','stroke-width':2.4,
+        'marker-end':'url(#a3)'});
+    });
+
     const defs=put(g,'defs',{});
     [['a1','var(--warn)'],['a2','var(--gcm)'],['a3','var(--rcm)']].forEach(m=>{
       const mk=el('marker',{id:m[0],viewBox:'0 0 10 10',refX:8,refY:5,
@@ -746,10 +824,41 @@ orders of magnitude, not benchmarks.
       mk.appendChild(el('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:m[1]}));
       defs.appendChild(mk);
     });
-    put(g,'text',{x:20,y:20,'font-size':12.5,fill:'var(--text-secondary)'},
-      'Each band balances its own radiation — badly. Transport between bands does the rest.');
-    put(g,'text',{x:150,y:224,'font-size':11.5,fill:'var(--text-muted)'},
-      'surplus in the tropics  →  deficit at the poles: the transport term D carries about 5.9 PW across 35° latitude');
+
+    /* ── key: each term of the equation, in the colour it is drawn in ── */
+    const KX=460, TX=508;
+    [['var(--warn)','(Sᵢ/4)(1−αᵢ)','absorbed solar radiation'],
+     ['var(--gcm)', 'A + B Tᵢ',     'emitted terrestrial radiation'],
+     ['var(--rcm)', 'D (T̄ − Tᵢ)',  'horizontal transport between bands']
+    ].forEach((r,i)=>{
+      const y=110+i*58;
+      put(g,'line',{x1:KX,y1:y-4,x2:KX+34,y2:y-4,stroke:r[0],'stroke-width':2.4,
+        'marker-end':'url(#'+['a1','a2','a3'][i]+')'});
+      txt(TX,y,r[1],{'font-size':13,fill:r[0],'font-weight':600});
+      txt(TX,y+16,r[2],{'font-size':11.5,fill:'var(--text-secondary)'});
+    });
+
+    /* ── what makes the bands differ: the two numbers per band ── */
+    const TY=300, C1=508, C2=678, C3=800;
+    txt(C1,TY-16,'band',{'font-size':11,fill:'var(--text-muted)'});
+    txt(C2,TY-16,'α',{'font-size':11,fill:'var(--text-muted)','text-anchor':'end'});
+    txt(C3,TY-16,'S/S̄',{'font-size':11,fill:'var(--text-muted)','text-anchor':'end'});
+    put(g,'line',{x1:C1,y1:TY-10,x2:C3,y2:TY-10,stroke:'var(--line)','stroke-width':1});
+    BANDS.forEach((b,i)=>{
+      const y=TY+8+i*21;
+      txt(C1,y,b.n,{'font-size':12,fill:'var(--text-secondary)'});
+      txt(C2,y,b.a.toFixed(2),{'font-size':12,fill:'var(--text-primary)','text-anchor':'end'});
+      txt(C3,y,b.s.toFixed(2),{'font-size':12,fill:'var(--text-primary)','text-anchor':'end'});
+    });
+
+    /* The equator meets the limb at the widest point of the disc, where three
+       band boundaries converge; the tick says which one the label means. */
+    put(g,'line',{x1:cx-R-6,y1:cy,x2:cx-R+3,y2:cy,stroke:'var(--text-muted)','stroke-width':1});
+    txt(cx-R-11,cy+4,'equator',{'text-anchor':'end','font-size':10.5});
+
+    txt(20,20,'Each band balances its own radiation — badly. Transport between bands does the rest.',
+      {'font-size':12.5,fill:'var(--text-secondary)'});
+    txt(20,388,'surplus in the tropics  →  deficit at the poles: the transport term D carries about 5.9 PW across 35° latitude');
   })();
 
   /* ═══ 4 · model development history ═════════════════════════════ */
