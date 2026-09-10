@@ -753,15 +753,17 @@ Every figure on this page can be exported as PNG, and the underlying series as C
   function dMomentum(ctx,W,H){
     bg(ctx,W,H,'PLAN VIEW · NH');
     const m=M();
-    for(let i=0;i<5;i++){ const y=52+i*46; line(ctx,[[16,y],[W-16,y]],C('line'),1.2);
+    for(let i=0;i<5;i++){ const y=52+i*41; line(ctx,[[16,y],[W-16,y]],C('line'),1.2);
       txt(ctx,W-20,y-13,(1004+i*4)+' hPa',C('mut'),'9px '+MONO,'right'); }
     txt(ctx,18,26,'LOW',C('gcm'),'600 11px '+SANS);
-    txt(ctx,18,H-30,'HIGH',C('ebm'),'600 11px '+SANS);
+    /* HIGH sits below the last isobar, as LOW sits above the first; both
+       must clear the readout block that starts at H-58. */
+    txt(ctx,18,232,'HIGH',C('ebm'),'600 11px '+SANS);
     const cx=150, cy=150, k=Math.min(70/Math.max(m.pgf,1e-9),70/Math.max(Math.abs(m.cor),1e-9));
     const lp=Math.min(74,m.pgf*k), lc=Math.min(74,Math.abs(m.cor)*k), lw=Math.min(88,S.U*2.2);
     arrow(ctx,cx,cy,cx,cy-lp,3.2,C('gcm')); txt(ctx,cx-6,cy-lp-14,'−(1/ρ)∇p',C('gcm'),'9.5px '+MONO,'right');
-    arrow(ctx,cx,cy,cx-lc,cy,3.2,C('ebm')); txt(ctx,cx-lc,cy+8,'−2Ω×v',C('ebm'),'9.5px '+MONO,'left');
-    arrow(ctx,cx,cy,cx+lw,cy,4.2,C('emic')); txt(ctx,cx+lw-4,cy-20,'wind U',C('emic'),'600 10px '+MONO,'right');
+    arrow(ctx,cx,cy,cx,cy+lc,3.2,C('ebm')); txt(ctx,cx-6,cy+lc+4,'−2Ω×v',C('ebm'),'9.5px '+MONO,'right');
+    arrow(ctx,cx,cy,cx+lw,cy,4.2,C('emic')); txt(ctx,cx+10,cy-20,'wind U',C('emic'),'600 10px '+MONO);
     ctx.fillStyle=C('txt'); ctx.beginPath(); ctx.arc(cx,cy,4.5,0,7); ctx.fill();
     txt(ctx,16,H-58,'φ = '+f(S.lat,1)+'°   f = '+sci(m.f,2)+' s⁻¹',C('sec'),'10px '+MONO);
     txt(ctx,16,H-42,'geostrophic  u_g = '+f(m.ug,1)+' m s⁻¹',C('emic'),'600 10px '+MONO);
