@@ -87,7 +87,10 @@
   table.figs td:first-child { white-space: nowrap; font-weight: 600; color: var(--accent); }
   p.figs { margin: 0.85rem 0 0; font-size: 0.88rem; line-height: 1.5; }
   p.figs b { color: var(--accent); }
-  div.eqn { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.86rem; background: var(--bg); border-radius: 6px; padding: 0.45rem 0.7rem; margin: 0.35rem 0 0.2rem; overflow-x: auto; }
+  div.eqn { display: flex; align-items: center; gap: 0.8rem; font-family: "Cambria Math", "STIX Two Math", "STIX Two Text", "Latin Modern Math", "Times New Roman", serif; font-size: 1.12rem; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.55rem 0.9rem; margin: 0.8rem 0 0.25rem; overflow-x: auto; white-space: nowrap; }
+  div.eqn > span:first-child { flex: 1; text-align: center; }
+  div.eqn .eqno { flex: none; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8rem; color: var(--muted); }
+  p.eqnote { margin: 0.2rem 0 0; font-size: 0.88rem; line-height: 1.55; color: var(--muted); }
   ol.steps { margin: 0; padding-left: 1.3rem; }
   ol.steps li { margin-bottom: 0.75rem; font-size: 0.92rem; line-height: 1.55; }
   ol.steps li:last-child { margin-bottom: 0; }
@@ -117,16 +120,19 @@
     <ul>
       <li>As provided: solar constant <code>S<sub>0</sub> = 1361 W m&#8315;&#178;</code>, planetary albedo <code>α<sub>p</sub> = 0.30</code>, atmospheric emissivity <code>ε<sub>a</sub> = 0.5</code>, Stefan–Boltzmann constant <code>σ = 5.67 × 10&#8315;&#8312; W m&#8315;&#178; K&#8315;&#8308;</code>. Selecting an exercise in the lab restores whatever settings that exercise needs.</li>
     </ul>
-    <ol class="steps" style="margin-top:0.8rem">
-      <li><strong>Energy in = energy out</strong> at the top of the atmosphere (Goosse 2010, Fig. 2.5). Absorbed sunlight on the left; on the right, surface infrared that passes through the atmosphere plus what the atmosphere radiates to space:
-        <div class="eqn">¼(1−α<sub>p</sub>)S<sub>0</sub> = (1−ε<sub>a</sub>)σT<sub>s</sub><sup>4</sup> + ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> = σT<sub>e</sub><sup>4</sup></div></li>
-      <li><strong>The layer's own balance.</strong> It absorbs ε<sub>a</sub>σT<sub>s</sub><sup>4</sup> from the surface and radiates ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> twice, up and down. Absorptivity equals emissivity (Kirchhoff's law):
-        <div class="eqn">ε<sub>a</sub>σT<sub>s</sub><sup>4</sup> = 2ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> &nbsp;&rarr;&nbsp; T<sub>a</sub><sup>4</sup> = ½T<sub>s</sub><sup>4</sup></div></li>
-      <li><strong>Solve for the surface</strong> by putting step 2 into step 1 — so T<sub>s</sub> follows from S<sub>0</sub>, α<sub>p</sub> and ε<sub>a</sub> alone:
-        <div class="eqn">T<sub>s</sub> = {¼(1−α<sub>p</sub>)S<sub>0</sub> / [(1−ε<sub>a</sub>)σ + ½ε<sub>a</sub>σ]}<sup>&frac14;</sup> &nbsp;&nbsp;&nbsp; T<sub>a</sub> = (½)<sup>&frac14;</sup> T<sub>s</sub> &nbsp;(Goosse 2010, eq. 2.13)</div></li>
-      <li><strong>Where the greenhouse effect sits.</strong> The outgoing infrared can be rewritten as what the surface would radiate with no atmosphere, minus the part the atmosphere holds back; that second term is a measure of the greenhouse effect, GHE:
-        <div class="eqn">σT<sub>s</sub><sup>4</sup> − ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>), &nbsp;&nbsp; GHE = ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>)</div></li>
-    </ol>
+    <p class="prompt" style="margin-top:0.9rem">The whole lab rests on one small model, in six equations (the lab's <strong>Recap</strong> shows the same, with the terms coloured to match its flux diagram):</p>
+    <div class="eqn"><span>¼(1−α<sub>p</sub>)S<sub>0</sub> = (1−ε<sub>a</sub>)σT<sub>s</sub><sup>4</sup> + ε<sub>a</sub>σT<sub>a</sub><sup>4</sup></span><span class="eqno">(1)</span></div>
+    <p class="eqnote"><strong>Energy in = energy out</strong> at the top of the atmosphere (Goosse et al. 2010, Fig. 2.5): absorbed sunlight on the left; on the right, surface infrared that passes through the layer plus what the layer radiates to space. Together they equal σT<sub>e</sub><sup>4</sup>.</p>
+    <div class="eqn"><span>ε<sub>a</sub>σT<sub>s</sub><sup>4</sup> = 2ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> &nbsp;&rarr;&nbsp; T<sub>a</sub><sup>4</sup> = ½T<sub>s</sub><sup>4</sup></span><span class="eqno">(2)</span></div>
+    <p class="eqnote"><strong>The layer's own balance.</strong> It absorbs ε<sub>a</sub>σT<sub>s</sub><sup>4</sup> and radiates ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> both up and down; by Kirchhoff's law the same ε<sub>a</sub> sets both.</p>
+    <div class="eqn"><span>T<sub>s</sub> = {¼(1−α<sub>p</sub>)S<sub>0</sub> / [(1−ε<sub>a</sub>)σ + ½ε<sub>a</sub>σ]}<sup>&frac14;</sup></span><span class="eqno">(3)</span></div>
+    <p class="eqnote"><strong>Solve for the surface</strong> by putting (2) into (1): T<sub>s</sub> follows from S<sub>0</sub>, α<sub>p</sub> and ε<sub>a</sub> alone.</p>
+    <div class="eqn"><span>T<sub>a</sub> = (½)<sup>&frac14;</sup> T<sub>s</sub> ≈ 0.841 T<sub>s</sub></span><span class="eqno">(4)</span></div>
+    <p class="eqnote">The atmosphere follows the surface (Goosse et al. 2010, eq. 2.13).</p>
+    <div class="eqn"><span>(1−ε<sub>a</sub>)σT<sub>s</sub><sup>4</sup> + ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> = σT<sub>s</sub><sup>4</sup> − ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>)</span><span class="eqno">(5)</span></div>
+    <p class="eqnote">The outgoing side of (1), rearranged: what a bare surface would radiate, minus the part the atmosphere holds back.</p>
+    <div class="eqn"><span>GHE = ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>)</span><span class="eqno">(6)</span></div>
+    <p class="eqnote">That held-back part is a measure of the greenhouse effect, in W m&#8315;&#178;.</p>
     <p class="note">For a short introduction to the Earth's energy budget, see the video linked from the lab's intro slides: <a href="https://www.youtube.com/watch?v=el7ygWztQqA">Earth's energy budget</a> (7 min).</p>
   </section>
 
@@ -142,7 +148,7 @@
       <li>What does this value of ε<sub>a</sub> = 0.5 mean?</li>
       <li>Is this value representative for the present-day Earth? Explain your answer.</li>
     </ol>
-    <p class="figs"><b>Figure:</b> none for this exercise.</p>
+    <p class="figs"><b>Figure:</b> none for this exercise — answer the questions in words and numbers.</p>
   </section>
 
   <section class="ex">
@@ -155,18 +161,18 @@
       <li>A doubling of atmospheric CO₂ relative to preindustrial corresponds to ε<sub>a</sub> ≈ 0.82. What global warming of the Earth surface does this model then predict for 2×CO₂?</li>
       <li>In the case of global warming, is the basic assumption behind an EBM (incoming shortwave = outgoing longwave) valid? Explain your answer.</li>
     </ol>
-    <p class="figs"><b>Figure:</b> Fig2_1 — surface temperature T<sub>s</sub> and greenhouse effect GHE against ε<sub>a</sub>. One image: the lab plots T<sub>s</sub> on the left axis and GHE on the right, so label both.</p>
-    <p class="note">What ε<sub>a</sub> means here: this model has no convection and no water-vapour profile, so its ε<sub>a</sub> is an effective value standing in for the whole atmosphere at once. It is not the emissivity you would measure for real air, which is higher — Lecture 2 uses ε ≈ 0.97 and shows that a radiation-only model then overshoots the observed surface temperature by about 13 K. Expect the value you arrive at here to come out lower than the lecture's, and say why in your answer to (a).</p>
+    <p class="figs"><b>Figure:</b> Fig2_1 — surface temperature T<sub>s</sub> (left axis) and greenhouse effect GHE (right axis) against ε<sub>a</sub></p>
+    <p class="note">Fig2_1 is one image with two vertical axes, so label both. What ε<sub>a</sub> means here: this model has no convection and no water-vapour profile, so its ε<sub>a</sub> is an effective value standing in for the whole atmosphere at once. It is not the emissivity you would measure for real air, which is higher — Lecture 2 uses ε ≈ 0.97 and shows that a radiation-only model then overshoots the observed surface temperature by about 13 K. Expect the value you arrive at here to come out lower than the lecture's, and say why in your answer to (a).</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E3</span>What drives the greenhouse effect</h2>
-    <p class="prompt">The greenhouse effect is GHE = ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>) (step 4 above): it depends on the emissivity of the atmosphere and on how much colder the atmosphere is than the surface. Define T<sub>diff</sub> = T<sub>s</sub> − T<sub>a</sub>. The Tdiff tab traces T<sub>diff</sub> against GHE along the same ε<sub>a</sub> sweep of 0.0 → 1.0. Predict the shape of that curve, then reveal it.</p>
+    <p class="prompt">The greenhouse effect is GHE = ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>), equation (6) above: it depends on the emissivity of the atmosphere and on how much colder the atmosphere is than the surface. Define T<sub>diff</sub> = T<sub>s</sub> − T<sub>a</sub>. The Tdiff tab traces T<sub>diff</sub> against GHE along the same ε<sub>a</sub> sweep of 0.0 → 1.0. Predict the shape of that curve, then reveal it.</p>
     <ol class="qs">
       <li>How does T<sub>diff</sub> vary with different values of GHE? When is the GHE largest, and how do you explain this?</li>
       <li>Where in the atmosphere (at what height) is the greenhouse effect of CO₂ and other greenhouse gases most effective? Explain your answer.</li>
     </ol>
-    <p class="figs"><b>Figure:</b> Fig3_1 — temperature difference T<sub>diff</sub> = T<sub>s</sub> − T<sub>a</sub> against the greenhouse effect GHE.</p>
+    <p class="figs"><b>Figure:</b> Fig3_1 — temperature difference T<sub>diff</sub> = T<sub>s</sub> − T<sub>a</sub> against the greenhouse effect GHE</p>
   </section>
 
   <section class="ex">
@@ -177,7 +183,7 @@
       <li>Assume the Earth were totally covered by dark coniferous forest. What would α<sub>p</sub> be, and what would be the impact on T<sub>s</sub>?</li>
       <li>Consider present-day global warming. How is it affecting the planetary albedo, what changes in albedo would you expect in the 21st century, and what does the EBM suggest the impact on T<sub>s</sub> would be?</li>
     </ol>
-    <p class="figs"><b>Figure:</b> Fig4_1 — surface temperature T<sub>s</sub> against planetary albedo α<sub>p</sub>, at your present-day ε<sub>a</sub>.</p>
+    <p class="figs"><b>Figure:</b> Fig4_1 — surface temperature T<sub>s</sub> against planetary albedo α<sub>p</sub>, at your present-day ε<sub>a</sub></p>
   </section>
 
   <section class="ex">
@@ -189,20 +195,20 @@
       <li>4.5 billion years ago the sun was much weaker: total solar irradiance is estimated at 70% of its present-day value. What would the mean surface temperature be, with all other boundary conditions at modern values?</li>
       <li>And what would T<sub>s</sub> be if you adjust the planetary albedo to a value more appropriate for your answer to 5c?</li>
     </ol>
-    <p class="figs"><b>Figure:</b> Fig5_1 — surface temperature T<sub>s</sub> against the solar constant S<sub>0</sub> across the sunspot range.</p>
+    <p class="figs"><b>Figure:</b> Fig5_1 — surface temperature T<sub>s</sub> against the solar constant S<sub>0</sub> across the sunspot range</p>
     <p class="note">Read (a) and (b) off the temperature readout, which shows two decimals. For (c), type the value into the S<sub>0</sub> box: it lies outside the sunspot window, and the plot widens its axis to follow you.</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E6</span>Other planets</h2>
-    <p class="prompt">The same energy balance works elsewhere in the solar system. Mercury, the closest planet to the sun, has virtually no atmosphere (ε<sub>a</sub> ≈ 0), an albedo of 0.10 and S<sub>0</sub> = 9160 W m⁻². Mars has a very thin atmosphere, an albedo of 0.25 and S<sub>0</sub> = 580 W m⁻². The lab starts this exercise on Mercury with its temperatures hidden: work out Mercury's mean surface temperature by hand from step 3 above first, and the readings come back once you have committed to an answer. Then use the planet presets and change single parameters. The albedo tab, which plots T<sub>s</sub> against α<sub>p</sub> at the current S<sub>0</sub>, is the one to use for 6b.</p>
+    <p class="prompt">The same energy balance works elsewhere in the solar system. Mercury, the closest planet to the sun, has virtually no atmosphere (ε<sub>a</sub> ≈ 0), an albedo of 0.10 and S<sub>0</sub> = 9160 W m⁻². Mars has a very thin atmosphere, an albedo of 0.25 and S<sub>0</sub> = 580 W m⁻². The lab starts this exercise with its temperatures hidden: first write down your own estimates for the four numbers the questions ask about — Mercury's temperature, the albedo that would bring Mercury to about 15 °C, and Mars' temperature with and without εa = 1 — worked out from equation (3) above. Once all four are in, the readings come back, and the lab checks each estimate against the model as you set that case up. The estimates are not marked. Then use the planet presets and change single parameters. The albedo tab, which plots T<sub>s</sub> against α<sub>p</sub> at the current S<sub>0</sub>, is the one to use for 6b.</p>
     <ol class="qs">
       <li>What is the approximate average surface temperature of Mercury? Work it out by hand from the equation, showing your substitution, then check it against the model once the readings come back.</li>
       <li>By how much would the albedo of Mercury have to increase to produce a mean surface temperature T<sub>s</sub> similar to present-day Earth?</li>
       <li>What is the approximate average surface temperature T<sub>s</sub> of Mars?</li>
       <li>If the emissivity of Mars' atmosphere increased to 1.0, would this make the planet suitable for life as we know it on Earth? Explain your answer.</li>
     </ol>
-    <p class="figs"><b>Figure:</b> none for this exercise.</p>
+    <p class="figs"><b>Figure:</b> none for this exercise — answer the questions in words and numbers.</p>
     <p class="note">With ε<sub>a</sub> = 0 the atmosphere absorbs and emits nothing, so the model cannot give it a temperature, and the readout shows T<sub>a</sub> as undefined. That is correct, not a fault.</p>
   </section>
 </main>
