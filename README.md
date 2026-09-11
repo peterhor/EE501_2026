@@ -7,7 +7,7 @@ Live site:
 **[https://peterhor.github.io/EE501_2026/](https://peterhor.github.io/EE501_2026/)**
 
 Author and maintainer: [Peter Horvath](https://www.usn.no/kontakt-oss/ansatte/peter-horvath-1),
-Associate Professor, University of South-Eastern Norway
+ University of South-Eastern Norway
 ([ORCID 0000-0002-6017-5385](https://orcid.org/0000-0002-6017-5385)).
 
 The published site is a static GitHub Pages site served from `docs/`. It includes:
@@ -164,29 +164,5 @@ If you are unsure where to edit, start by deciding whether the change is:
 2. Lecture preparation or instructor-facing: inspect the relevant root-level `lecture-*` folder first
 3. Lab-specific: check both the root-level PC Lab source folder and the matching `docs/` folder
 
-## Cleanup progress
-
-Completed in the current cleanup pass:
-
-1. Renamed the root lecture folders to explicit lecture-numbered names
-2. Renamed the top-level published lecture folders in `docs/` to the same lecture-numbered scheme
-3. Merged `insolation` into the Lecture 2 umbrella in both the root source structure and `docs/`
-4. Merged `atmospheric-equations` into the Lecture 5 umbrella in both the root source structure and `docs/`
-5. Updated landing-page links and published cross-links to the new structure
-6. Updated `.gitignore` to the new folder names
-7. Updated the private teacher-outline links to the new published lecture paths
-8. Renamed the root and published lab folders to explicit `pc-lab-*` names and updated lab links
-9. Deduplicated the confirmed identical Lecture 2 insolation runtime assets by making the root preview reuse the canonical copies under `docs/`
-10. Added `teacher/index.html`, the index over the lecture outlines
-11. Un-ignored the eight teacher outlines and the hub so they are tracked in the repository, while leaving decks, answer keys and uploads excluded
-
-Still to do in the broader course cleanup:
-  Check the TODO.md file for more tasks
-
-## Key files
-
-1. `README.md`: repository overview and structure
-2. `TODO.md`: active project and content-cleanup tasks
-3. `docs/index.html`: live landing page and schedule
 4. `teacher/index.html`: index over the eight lecture outlines (tracked, but outside `docs/` so not on the site)
 5. `.gitignore`: local-only and instructor-only exclusions
