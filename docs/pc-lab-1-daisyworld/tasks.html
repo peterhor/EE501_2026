@@ -64,6 +64,9 @@
   ol.qs { margin: 0; padding-left: 1.3rem; }
   ol.qs li { margin-bottom: 0.5rem; font-size: 0.92rem; line-height: 1.5; }
   ol.qs li:last-child { margin-bottom: 0; }
+  ol.rules { margin: 0 0 0.85rem; padding-left: 1.3rem; }
+  ol.rules li { margin-bottom: 0.45rem; font-size: 0.92rem; line-height: 1.5; }
+  ol.rules code { background: var(--bg); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; white-space: nowrap; }
   section.prep { border-left: 3px solid var(--accent); }
   section.prep h2 { font-size: 1rem; }
   section.prep ul { margin: 0; padding-left: 1.3rem; }
@@ -104,6 +107,15 @@
   <section class="ex intro">
     <h2><span class="tag">Intro</span>A world of daisies</h2>
     <p class="prompt">A cloudless grey planet, seeded with light and dark daisies, orbits a slowly brightening sun. Each exercise runs in three steps: <strong>predict</strong> what will happen and draw the curve you expect, <strong>collect</strong> your own data points from the model, then <strong>reveal</strong> the model curve and compare.</p>
+    <p class="prompt">The model runs on six rules. The lab shows them in the Intro, and from E1 on its live equation panel shows the same six lines, numbered to match.</p>
+    <ol class="rules">
+      <li>A daisy population grows by its birth rate &#946; and shrinks by its death rate &#947;, and it can only spread onto land that is still free. <code>a&#8242; = a + a(x&#946; &#8722; &#947;)</code></li>
+      <li>The birth rate depends on the local temperature T<sub>l</sub> of that species' own patch. Both species share one growth curve. <code>&#946; = 1 &#8722; 0.003265 (22.5 &#8722; T<sub>l</sub>)&#178;</code></li>
+      <li>A patch is warmer or cooler than the planet by an amount set by how its albedo differs from the planetary albedo. A brighter patch is cooler. <code>T<sub>w</sub> = q(&alpha;<sub>p</sub> &#8722; &alpha;<sub>w</sub>) + T<sub>e</sub></code></li>
+      <li>The global temperature is set by the sun's luminosity L and the planetary albedo &alpha;<sub>p</sub>. <code>T<sub>e</sub> = (S&#183;L&#183;(1&#8722;&alpha;<sub>p</sub>)/&#963;)^&#188; &#8722; 273</code></li>
+      <li>The planetary albedo is the area-weighted mean of the three surfaces. Reference values: white 0.75, black 0.25, bare ground 0.50. <code>&alpha;<sub>p</sub> = x&#183;&alpha;<sub>g</sub> + a<sub>w</sub>&#183;&alpha;<sub>w</sub> + a<sub>b</sub>&#183;&alpha;<sub>b</sub></code></li>
+      <li>The free land is the fixed total, P = 1, minus whatever both species already cover. <code>x = P &#8722; (a<sub>w</sub> + a<sub>b</sub>)</code></li>
+    </ol>
   </section>
 
   <section class="ex">
