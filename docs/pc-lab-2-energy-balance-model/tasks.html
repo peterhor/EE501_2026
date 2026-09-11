@@ -70,88 +70,146 @@
   section.prep li { margin-bottom: 0.65rem; font-size: 0.92rem; line-height: 1.55; }
   section.prep li:last-child { margin-bottom: 0; }
   section.prep code { background: var(--bg); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; }
+  p.figure {
+    margin: 0.85rem 0 0;
+    padding: 0.6rem 0.8rem;
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  p.figure strong { color: var(--accent); }
+  p.note { margin: 0.85rem 0 0; font-size: 0.86rem; line-height: 1.55; color: var(--muted); }
+  table.figs { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  table.figs th, table.figs td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--card-border); vertical-align: top; }
+  table.figs th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  table.figs td:first-child { white-space: nowrap; font-weight: 600; color: var(--accent); }
+  p.figs { margin: 0.85rem 0 0; font-size: 0.88rem; line-height: 1.5; }
+  p.figs b { color: var(--accent); }
+  div.eqn { display: flex; align-items: center; gap: 0.8rem; font-family: "Cambria Math", "STIX Two Math", "STIX Two Text", "Latin Modern Math", "Times New Roman", serif; font-size: 1.12rem; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.55rem 0.9rem; margin: 0.8rem 0 0.25rem; overflow-x: auto; white-space: nowrap; }
+  div.eqn > span:first-child { flex: 1; text-align: center; }
+  div.eqn .eqno { flex: none; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8rem; color: var(--muted); }
+  p.eqnote { margin: 0.2rem 0 0; font-size: 0.88rem; line-height: 1.55; color: var(--muted); }
+  ol.steps { margin: 0; padding-left: 1.3rem; }
+  ol.steps li { margin-bottom: 0.75rem; font-size: 0.92rem; line-height: 1.55; }
+  ol.steps li:last-child { margin-bottom: 0; }
 </style>
 </head>
 <body>
 <main>
   <a class="back" href="../">&larr; EE501 course</a>
   <h1>PC Lab 2 — Energy Balance Model</h1>
-  <p class="subtitle">Tasks and report questions for every exercise. Work through them using the interactive lab, then write up your answers for the report.</p>
+  <p class="subtitle">Tasks and report questions for every exercise. Work through them in order using the interactive lab, then write up your answers for the report. Every question here is also shown inside the lab, next to the exercise it belongs to.</p>
   <a class="open-lab" href="./">Open the interactive lab &rarr;</a>
 
   <section class="ex prep">
     <h2>Preparation &amp; submission</h2>
     <ul>
-      <li>This lab is <strong>part 2</strong> of your report. Include a copy of every figure/plot the exercises ask you to make — each with a figure title, labeled x- and y-axes with units, and a legend where useful. Keep them in an <code>/EBM/figures</code> folder, named by exercise number (e.g. <code>Fig1_1</code>).</li>
-      <li>Submit as a single PDF through the Canvas assignment named <strong>EBM</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB2-EBM" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
+      <li>Every exercise lists what to hand in: <strong>questions to answer in your report</strong> and, for E2 to E5, a single <strong>figure to hand in</strong>. E1 and E6 need no figure — answer them in words and numbers.</li>
+      <li>From E2 on, each exercise starts with a <strong>prediction</strong>: you choose an answer and, in E2 to E5, draw the curve you expect on the empty axes. The prediction is <strong>not marked</strong> — it is there to make you commit to an expectation before you see the answer, and your drawn curve stays on your figure so you can see where you were right. In E2, E4 and E5 you then <strong>collect</strong> your own points from the model before it <strong>reveals</strong> its curve.</li>
+      <li>Work the exercises <strong>in order</strong>: E4 and E5 use the present-day emissivity you settle on in E2, and the lab will not let you start them until you have set it.</li>
+      <li>The lab draws the data, but <strong>every word on the figure is yours</strong>: the <strong>Prepare figure for the report</strong> button asks for the figure title, both axis labels with their units, and a caption that says which values the model was running with, and exports only what you typed. Nothing is filled in for you, and these are marked. Keep the files in an <code>/EBM/figures</code> folder, named as below.</li>
+      <li>You can also export <strong>your own recorded points</strong> as CSV. The model curve itself is not downloadable, so sample properly: at least 5 points, spread across the whole range, and more closely wherever the curve turns.</li>
+      <li>This lab is <strong>part 2 of 3</strong> of your report. Submit as a single PDF through the Canvas assignment named <strong>EBM</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB2-EBM" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
     </ul>
+  </section>
+
+  <section class="ex prep" style="border-left-color:#6b7cff">
+    <h2>Reference values and the model</h2>
+    <ul>
+      <li>As provided: solar constant <code>S<sub>0</sub> = 1361 W m&#8315;&#178;</code>, planetary albedo <code>α<sub>p</sub> = 0.30</code>, atmospheric emissivity <code>ε<sub>a</sub> = 0.5</code>, Stefan–Boltzmann constant <code>σ = 5.67 × 10&#8315;&#8312; W m&#8315;&#178; K&#8315;&#8308;</code>. Selecting an exercise in the lab restores whatever settings that exercise needs.</li>
+    </ul>
+    <p class="prompt" style="margin-top:0.9rem">The whole lab rests on one small model, in six equations (the lab's <strong>Recap</strong> shows the same, with the terms coloured to match its flux diagram):</p>
+    <div class="eqn"><span>¼(1−α<sub>p</sub>)S<sub>0</sub> = (1−ε<sub>a</sub>)σT<sub>s</sub><sup>4</sup> + ε<sub>a</sub>σT<sub>a</sub><sup>4</sup></span><span class="eqno">(1)</span></div>
+    <p class="eqnote"><strong>Energy in = energy out</strong> at the top of the atmosphere (Goosse et al. 2010, Fig. 2.5): absorbed sunlight on the left; on the right, surface infrared that passes through the layer plus what the layer radiates to space. Together they equal σT<sub>e</sub><sup>4</sup>.</p>
+    <div class="eqn"><span>ε<sub>a</sub>σT<sub>s</sub><sup>4</sup> = 2ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> &nbsp;&rarr;&nbsp; T<sub>a</sub><sup>4</sup> = ½T<sub>s</sub><sup>4</sup></span><span class="eqno">(2)</span></div>
+    <p class="eqnote"><strong>The layer's own balance.</strong> It absorbs ε<sub>a</sub>σT<sub>s</sub><sup>4</sup> and radiates ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> both up and down; by Kirchhoff's law the same ε<sub>a</sub> sets both.</p>
+    <div class="eqn"><span>T<sub>s</sub> = {¼(1−α<sub>p</sub>)S<sub>0</sub> / [(1−ε<sub>a</sub>)σ + ½ε<sub>a</sub>σ]}<sup>&frac14;</sup></span><span class="eqno">(3)</span></div>
+    <p class="eqnote"><strong>Solve for the surface</strong> by putting (2) into (1): T<sub>s</sub> follows from S<sub>0</sub>, α<sub>p</sub> and ε<sub>a</sub> alone.</p>
+    <div class="eqn"><span>T<sub>a</sub> = (½)<sup>&frac14;</sup> T<sub>s</sub> ≈ 0.841 T<sub>s</sub></span><span class="eqno">(4)</span></div>
+    <p class="eqnote">The atmosphere follows the surface (Goosse et al. 2010, eq. 2.13).</p>
+    <div class="eqn"><span>(1−ε<sub>a</sub>)σT<sub>s</sub><sup>4</sup> + ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> = σT<sub>s</sub><sup>4</sup> − ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>)</span><span class="eqno">(5)</span></div>
+    <p class="eqnote">The outgoing side of (1), rearranged: what a bare surface would radiate, minus the part the atmosphere holds back.</p>
+    <div class="eqn"><span>GHE = ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>)</span><span class="eqno">(6)</span></div>
+    <p class="eqnote">That held-back part is a measure of the greenhouse effect, in W m&#8315;&#178;.</p>
+    <p class="note">For a short introduction to the Earth's energy budget, see the video linked from the lab's intro slides: <a href="https://www.youtube.com/watch?v=el7ygWztQqA">Earth's energy budget</a> (7 min).</p>
   </section>
 
   <section class="ex intro">
     <h2><span class="tag">Intro</span>One planet, one balance</h2>
-    <p class="prompt">The simplest climate model of the Earth: absorbed sunlight ¼(1−αp)·S0 must equal outgoing infrared radiation at the top of the atmosphere. A single atmospheric layer absorbs a fraction εa of the infrared emitted by the surface and re-emits it — half upward to space, half back down. That returned half is the greenhouse effect. Work through the exercises below and answer each question in your report.</p>
+    <p class="prompt">The simplest climate model of the Earth rests on one assumption: the planet's energy budget is in balance, so the energy coming in equals the energy going out. At the top of the atmosphere, the absorbed sunlight ¼(1−α<sub>p</sub>)S<sub>0</sub> must equal the outgoing infrared radiation, (1−ε<sub>a</sub>)σT<sub>s</sub><sup>4</sup> + ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> — the part of the surface's own infrared that passes straight through the atmosphere, plus what the atmosphere itself radiates to space. A single atmospheric layer absorbs a fraction ε<sub>a</sub> of the infrared coming up from the surface and radiates ε<sub>a</sub>σT<sub>a</sub><sup>4</sup> both upward and downward.</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E1</span>A grey atmosphere</h2>
-    <p class="prompt">In the provided version of the model the atmospheric emissivity εa is fixed at 0.5, the planetary albedo αp at 0.30 and the solar constant S0 at 1361 W/m². The flux diagram shows how the surface infrared σTs⁴ is split: a fraction (1−εa) escapes directly to space, a fraction εa is absorbed by the atmosphere and re-emitted as εa·σTa⁴, both up and down.</p>
+    <p class="prompt">In the model as provided, the atmospheric emissivity ε<sub>a</sub> is fixed at 0.5, the planetary albedo α<sub>p</sub> at 0.30 and the solar constant S<sub>0</sub> at 1361 W m⁻². Follow the infrared σT<sub>s</sub><sup>4</sup> leaving the surface in the flux diagram and see where each part of it ends up.</p>
     <ol class="qs">
-      <li>What does this value of εa = 0.5 mean?</li>
+      <li>What does this value of ε<sub>a</sub> = 0.5 mean?</li>
       <li>Is this value representative for the present-day Earth? Explain your answer.</li>
     </ol>
+    <p class="figs"><b>Figure:</b> none for this exercise — answer the questions in words and numbers.</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E2</span>Varying the emissivity</h2>
-    <p class="prompt">Instead of keeping εa fixed at 0.5, sweep it from 0.0 to 1.0 in steps of 0.025 (41 values in all). The εa tab plots surface temperature Ts_C and greenhouse effect GHE against εa — the marker follows your εa slider. Use these two curves to answer the questions.</p>
+    <p class="prompt">Instead of keeping ε<sub>a</sub> fixed at 0.5, sweep it from 0.0 to 1.0 in steps of 0.025 (41 values in all), with α<sub>p</sub> = 0.30 and S<sub>0</sub> = 1361 W m⁻². The εa tab plots the surface temperature T<sub>s</sub> and the greenhouse effect GHE against ε<sub>a</sub>. Predict the shape of T<sub>s</sub>(ε<sub>a</sub>), then sample it and build the curve from your own points.</p>
     <ol class="qs">
-      <li>What is the likely value of the atmospheric emissivity εa for the present-day Earth, and why?</li>
-      <li>What does a value of εa = 0.0 mean?</li>
-      <li>What does a value of εa = 1.0 mean?</li>
-      <li>A doubling of atmospheric CO₂ relative to preindustrial corresponds to εa ≈ 0.82. What global warming of the Earth surface does this model then predict for 2×CO₂?</li>
+      <li>What is the likely value of the atmospheric emissivity ε<sub>a</sub> for the present-day Earth, and why?</li>
+      <li>What does a value of ε<sub>a</sub> = 0.0 mean?</li>
+      <li>What does a value of ε<sub>a</sub> = 1.0 mean?</li>
+      <li>A doubling of atmospheric CO₂ relative to preindustrial corresponds to ε<sub>a</sub> ≈ 0.82. What global warming of the Earth surface does this model then predict for 2×CO₂?</li>
       <li>In the case of global warming, is the basic assumption behind an EBM (incoming shortwave = outgoing longwave) valid? Explain your answer.</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig2_1 — surface temperature T<sub>s</sub> (left axis) and greenhouse effect GHE (right axis) against ε<sub>a</sub></p>
+    <p class="note">Fig2_1 is one image with two vertical axes, so label both. What ε<sub>a</sub> means here: this model has no convection and no water-vapour profile, so its ε<sub>a</sub> is an effective value standing in for the whole atmosphere at once. It is not the emissivity you would measure for real air, which is higher — Lecture 2 uses ε ≈ 0.97 and shows that a radiation-only model then overshoots the observed surface temperature by about 13 K. Expect the value you arrive at here to come out lower than the lecture's, and say why in your answer to (a).</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E3</span>What drives the greenhouse effect</h2>
-    <p class="prompt">The greenhouse effect is given by εa·σ(Ts⁴ − Ta⁴): it depends on the emissivity of the atmosphere and on the temperature difference between the surface and the atmosphere. Define Tdiff = Ts − Ta. The Tdiff tab traces Tdiff against GHE along the same εa sweep of 0.0 → 1.0.</p>
+    <p class="prompt">The greenhouse effect is GHE = ε<sub>a</sub>σ(T<sub>s</sub><sup>4</sup> − T<sub>a</sub><sup>4</sup>), equation (6) above: it depends on the emissivity of the atmosphere and on how much colder the atmosphere is than the surface. Define T<sub>diff</sub> = T<sub>s</sub> − T<sub>a</sub>. The Tdiff tab traces T<sub>diff</sub> against GHE along the same ε<sub>a</sub> sweep of 0.0 → 1.0. Predict the shape of that curve, then reveal it.</p>
     <ol class="qs">
-      <li>How does Tdiff vary with different values of GHE? When is the GHE largest, and how do you explain this?</li>
+      <li>How does T<sub>diff</sub> vary with different values of GHE? When is the GHE largest, and how do you explain this?</li>
       <li>Where in the atmosphere (at what height) is the greenhouse effect of CO₂ and other greenhouse gases most effective? Explain your answer.</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig3_1 — temperature difference T<sub>diff</sub> = T<sub>s</sub> − T<sub>a</sub> against the greenhouse effect GHE</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E4</span>Planetary albedo</h2>
-    <p class="prompt">Reset εa to the value you found for the present-day Earth in exercise 2a (preloaded here as 0.78 — adjust it if your answer differs). Now vary the planetary albedo αp from 0.0 to 1.0 in steps of 0.025. The albedo tab plots Ts_C against αp; the dashed green line marks the present-day 15 °C for reference.</p>
+    <p class="prompt">Set ε<sub>a</sub> to the value you found for the present-day Earth in exercise 2a, and leave it there for the whole exercise; the lab will not let you go on until you have set it. Then vary the planetary albedo α<sub>p</sub> from 0.0 to 1.0 in steps of 0.025. The albedo tab plots T<sub>s</sub> against α<sub>p</sub> at whatever ε<sub>a</sub> you have set. Table 1.3 of the textbook lists surface albedos; look up the surfaces each question describes.</p>
     <ol class="qs">
-      <li>Consider a "Snowball Earth", as likely occurred 650 million years ago (change only the albedo). What would the planetary albedo αp be, and what would be the impact on Ts_C?</li>
-      <li>Assume the Earth were totally covered by dark coniferous forest. What would αp be, and what would be the impact on Ts_C?</li>
-      <li>Consider present-day global warming. How is it affecting the planetary albedo, what changes in albedo would you expect in the 21st century, and what does the EBM suggest the impact on Ts_C would be?</li>
+      <li>Consider a “Snowball Earth”, as likely occurred 650 million years ago (change only the albedo). What would the planetary albedo α<sub>p</sub> be, and what would be the impact on T<sub>s</sub>?</li>
+      <li>Assume the Earth were totally covered by dark coniferous forest. What would α<sub>p</sub> be, and what would be the impact on T<sub>s</sub>?</li>
+      <li>Consider present-day global warming. How is it affecting the planetary albedo, what changes in albedo would you expect in the 21st century, and what does the EBM suggest the impact on T<sub>s</sub> would be?</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig4_1 — surface temperature T<sub>s</sub> against planetary albedo α<sub>p</sub>, at your present-day ε<sub>a</sub></p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E5</span>A variable sun</h2>
-    <p class="prompt">Reset αp to 0.30, keeping the present-day εa. The solar "constant" is not really constant: satellites show the 11-yr sunspot cycle varies total solar irradiance by ±0.08% around 1361 W/m². Use the fine buttons under the S0 control to set exact values, and the sunspot-zoom on the S0 tab to read off tiny temperature changes.</p>
+    <p class="prompt">Reset α<sub>p</sub> to 0.30, keeping the present-day ε<sub>a</sub>. The solar “constant” is not really constant: satellites show that the 11-year sunspot cycle varies the total solar irradiance by ±0.08% around 1361 W m⁻². Use the buttons under the S<sub>0</sub> control to set exact values, and the sunspot zoom on the S<sub>0</sub> tab to read off the changes precisely.</p>
     <ol class="qs">
-      <li>Vary S0 to include the ±0.08% variations of the 11-yr sunspot cycle. What variations in surface temperature Ts_C does the EBM suggest?</li>
-      <li>During the Maunder sunspot minimum (1645–1715 AD), which roughly coincided with the Little Ice Age, S0 may have been up to 0.18% lower than today. What reduction in Ts_C does the EBM suggest?</li>
+      <li>Vary S<sub>0</sub> to include the ±0.08% variations of the 11-yr sunspot cycle. What variations in surface temperature T<sub>s</sub> does the EBM suggest?</li>
+      <li>During the Maunder sunspot minimum (1645–1715 AD), which roughly coincided with the Little Ice Age, S<sub>0</sub> may have been up to 0.18% lower than today. What reduction in T<sub>s</sub> does the EBM suggest?</li>
       <li>4.5 billion years ago the sun was much weaker: total solar irradiance is estimated at 70% of its present-day value. What would the mean surface temperature be, with all other boundary conditions at modern values?</li>
-      <li>And what would Ts_C be if you adjust the planetary albedo to a value more appropriate for your answer to 5c?</li>
+      <li>And what would T<sub>s</sub> be if you adjust the planetary albedo to a value more appropriate for your answer to 5c?</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig5_1 — surface temperature T<sub>s</sub> against the solar constant S<sub>0</sub> across the sunspot range</p>
+    <p class="note">Read (a) and (b) off the temperature readout, which shows two decimals. For (c), type the value into the S<sub>0</sub> box: it lies outside the sunspot window, and the plot widens its axis to follow you.</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E6</span>Other planets</h2>
-    <p class="prompt">The same energy balance works elsewhere in the solar system. Mercury, the closest planet to the sun, has virtually no atmosphere (εa ≈ 0), an albedo of 0.10 and S0 = 9160 W/m². Mars has a very thin atmosphere, an albedo of 0.25 and S0 = 580 W/m². Use the planet presets, then adjust single parameters to answer the questions. The albedo tab (Ts vs αp at the current S0) is useful for 6b.</p>
+    <p class="prompt">The same energy balance works elsewhere in the solar system. Mercury, the closest planet to the sun, has virtually no atmosphere (ε<sub>a</sub> ≈ 0), an albedo of 0.10 and S<sub>0</sub> = 9160 W m⁻². Mars has a very thin atmosphere, an albedo of 0.25 and S<sub>0</sub> = 580 W m⁻². The lab starts this exercise with its temperatures hidden: first write down your own estimates for the four numbers the questions ask about — Mercury's temperature, the albedo that would bring Mercury to about 15 °C, and Mars' temperature with and without εa = 1 — worked out from equation (3) above. Once all four are in, the readings come back, and the lab checks each estimate against the model as you set that case up. The estimates are not marked. Then use the planet presets and change single parameters. The albedo tab, which plots T<sub>s</sub> against α<sub>p</sub> at the current S<sub>0</sub>, is the one to use for 6b.</p>
     <ol class="qs">
-      <li>What is the approximate average surface temperature of Mercury?</li>
-      <li>By how much would the albedo of Mercury have to increase to produce a mean surface temperature Ts_C similar to present-day Earth?</li>
-      <li>What is the approximate average surface temperature Ts_C of Mars?</li>
+      <li>What is the approximate average surface temperature of Mercury? Work it out by hand from the equation, showing your substitution, then check it against the model once the readings come back.</li>
+      <li>By how much would the albedo of Mercury have to increase to produce a mean surface temperature T<sub>s</sub> similar to present-day Earth?</li>
+      <li>What is the approximate average surface temperature T<sub>s</sub> of Mars?</li>
       <li>If the emissivity of Mars' atmosphere increased to 1.0, would this make the planet suitable for life as we know it on Earth? Explain your answer.</li>
     </ol>
+    <p class="figs"><b>Figure:</b> none for this exercise — answer the questions in words and numbers.</p>
+    <p class="note">With ε<sub>a</sub> = 0 the atmosphere absorbs and emits nothing, so the model cannot give it a temperature, and the readout shows T<sub>a</sub> as undefined. That is correct, not a fault.</p>
   </section>
 </main>
 </body>
