@@ -70,87 +70,125 @@
   section.prep li { margin-bottom: 0.65rem; font-size: 0.92rem; line-height: 1.55; }
   section.prep li:last-child { margin-bottom: 0; }
   section.prep code { background: var(--bg); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; }
+  p.figs { margin: 0.85rem 0 0; font-size: 0.9rem; color: var(--muted); }
+  p.figs b { color: var(--fg); }
+  p.note { margin: 0.6rem 0 0; font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+  .eqn { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.9rem; margin: 0.7rem 0 0.25rem; font-family: "Cambria Math","STIX Two Math","Times New Roman",serif; font-size: 1.05rem; overflow-x: auto; }
+  .eqn .eqno { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--muted); }
+  p.eqnote { margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
 </style>
 </head>
 <body>
 <main>
   <a class="back" href="../">&larr; EE501 course</a>
   <h1>PC Lab 3 — Abrupt Vegetation Change</h1>
-  <p class="subtitle">Tasks and report questions for every exercise. Work through them using the interactive lab, then write up your answers for the report.</p>
+  <p class="subtitle">Tasks and report questions for every exercise. Work through them in order using the interactive lab, then write up your answers for the report. Every question here is also shown inside the lab, next to the exercise it belongs to.</p>
   <a class="open-lab" href="./">Open the interactive lab &rarr;</a>
 
   <section class="ex prep">
     <h2>Preparation &amp; submission</h2>
     <ul>
-      <li>This lab is <strong>part 3</strong> of your report. Include a copy of every figure/plot the exercises ask you to make — each with a figure title, labeled x- and y-axes with units, and a legend where useful. Keep them in a <code>/Sahara/figures</code> folder, named by exercise number (e.g. <code>Fig1_1</code>).</li>
-      <li>Submit as a single PDF through the Canvas assignment named <strong>Sahara</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB3-Sahara" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
+      <li>Read Liu et al. (2006), <i>On the cause of abrupt vegetation collapse in North Africa during the Holocene: climate variability vs. vegetation feedback</i>, Geophys. Res. Lett. 33, L22709. A copy is on Canvas. Exercise 4 is answered from its sections 4 to 7.</li>
+      <li>Every exercise lists what to hand in: <strong>questions to answer in your report</strong> and, for E1 to E4, a <strong>figure to hand in</strong> (one each, two in E4). E5 needs no figure — answer it in words.</li>
+      <li>E1 to E3 each start with a <strong>prediction</strong>: you choose an answer and draw the vegetation curve you expect on the empty axes. The prediction is <strong>not marked</strong> — it is there to make you commit to an expectation before you see the answer, and your drawn curve stays on your figure. You then <strong>collect</strong> five readings of your own from the model, by dragging the model year, before it <strong>reveals</strong> its curves.</li>
+      <li>The random rainfall of model versions 2 and 3 comes from a fixed random number stream (seed 7), so everyone starts from the same run. You may draw new samples with the "new noise sample" button to see how much one realisation matters; say in your report which seed a figure used. The lab records the seed with every export.</li>
+      <li>The lab draws the data, but <strong>every word on the figure is yours</strong>: the <strong>Prepare figure for the report</strong> button asks for the figure title, both axis labels with their units, and a caption that says which model version, parameter values and seed the run used, and exports only what you typed. Nothing is filled in for you, and these are marked. Keep the files in a <code>/Sahara/figures</code> folder, named as below.</li>
+      <li>You can also export <strong>your own recorded readings</strong> as CSV. The model curves themselves are not downloadable, so sample properly: five readings spread over the 3000 years, closer together where you expect the curve to turn.</li>
+      <li>This lab is <strong>part 3 of 3</strong> of your report. Submit as a single PDF through the Canvas assignment named <strong>Sahara</strong>. This is an <strong>individual</strong> assignment and a plagiarism check applies — include your own name and "PC-LAB3-Sahara" in the file name. <strong>Deadline: see the Canvas assignment.</strong></li>
     </ul>
+  </section>
+
+  <section class="ex prep" style="border-left-color:#6b7cff">
+    <h2>Reference values and the model</h2>
+    <ul>
+      <li>As provided: vegetation feedback coefficient <code>D<sub>B</sub> = 150 mm/yr</code>, rainfall thresholds <code>P<sub>C1</sub> = 270</code> and <code>P<sub>C2</sub> = 370 mm/yr</code>, vegetation timescale <code>τ = 5 yr</code>, background rainfall at 6500 yr BP <code>P<sub>d0</sub> = 300 mm/yr</code> (version 1) or <code>150 mm/yr</code> (versions 2 and 3), maximum stochastic forcing, the largest random rainfall anomaly, <code>Stoch = 0</code> (version 1) or <code>300 mm/yr</code> (versions 2 and 3). Selecting an exercise in the lab restores the settings that exercise needs.</li>
+    </ul>
+    <p class="prompt" style="margin-top:0.9rem">The whole lab rests on one small model, in five equations stepped one year at a time from 6500 to 3500 yr BP (the lab's <strong>Recap</strong> shows the same, with the terms coloured to match its loop diagram):</p>
+    <div class="eqn"><span>P<sub>d</sub>(t) = P<sub>d0</sub> · (1 − (t + 6500)/3000)</span><span class="eqno">(1)</span></div>
+    <p class="eqnote"><strong>The orbital forcing.</strong> P<sub>d</sub>(t) is the background rainfall in year t, the rain the region would get with no vegetation; t is the model year in years relative to the present, from −6500 to −3500; P<sub>d0</sub> is the background rainfall at the start. It declines in a straight line to zero at 3500 yr BP.</p>
+    <div class="eqn"><span>P<sub>E</sub>(V, t) = P<sub>d</sub>(t) + D<sub>B</sub> · V</span><span class="eqno">(2)</span></div>
+    <p class="eqnote"><strong>The feedback.</strong> P<sub>E</sub> is the equilibrium rainfall, the rain the region receives on average at a vegetation cover V (a fraction from 0, desert, to 1, full grass cover); D<sub>B</sub> is the vegetation feedback coefficient, the rainfall a full cover adds, 150 mm/yr.</p>
+    <div class="eqn"><span>P(t) = max [ P<sub>E</sub>(t − 1) + P<sub>N</sub>(t), 0 ]</span><span class="eqno">(3)</span></div>
+    <p class="eqnote"><strong>The rainfall of one year</strong> is last year's equilibrium rainfall plus this year's random anomaly P<sub>N</sub>, drawn uniformly between 0 and the maximum stochastic forcing Stoch (version 2), replaced by its 10-year running mean (version 3), or zero (version 1). Because the anomaly has mean Stoch/2, versions 2 and 3 halve P<sub>d0</sub> so that the long-term mean rainfall is the same in all three.</p>
+    <div class="eqn"><span>V<sub>E</sub>(P) = 0 for P &lt; P<sub>C1</sub>; &nbsp;(P − P<sub>C1</sub>)/D<sub>C</sub> for P<sub>C1</sub> ≤ P ≤ P<sub>C2</sub>; &nbsp;1 for P &gt; P<sub>C2</sub></span><span class="eqno">(4)</span></div>
+    <p class="eqnote"><strong>The cover the rainfall can sustain.</strong> V<sub>E</sub> is the equilibrium cover a rainfall P sustains in the long run; P<sub>C1</sub> and P<sub>C2</sub> are the lower and upper rainfall thresholds, 270 and 370 mm/yr, and D<sub>C</sub> = P<sub>C2</sub> − P<sub>C1</sub> = 100 mm/yr the width of the ramp between them. Two stable states exist only when D<sub>B</sub> &gt; D<sub>C</sub> (Liu et al. 2006).</p>
+    <div class="eqn"><span>V(t) = V(t − 1) + [ V<sub>E</sub>(t − 1) − V(t − 1) ] / τ</span><span class="eqno">(5)</span></div>
+    <p class="eqnote"><strong>The vegetation follows with a lag:</strong> each year the cover V closes a fraction 1/τ of the gap to its equilibrium cover V<sub>E</sub>; τ is the e-folding time of the vegetation, 5 yr. The run starts at V = 1 and P = P<sub>d0</sub> + D<sub>B</sub>.</p>
+    <p class="eqnote"><strong>Three versions.</strong> Version 1 has no random anomaly (Stoch = 0, P<sub>d0</sub> = 300 mm/yr) and shows what the feedback does on its own. Version 2 adds an anomaly drawn afresh every year (Stoch = 300, P<sub>d0</sub> = 150 mm/yr): fast, year-to-year variability. Version 3 uses the 10-year running mean of the same draws: slow, decadal variability. All three share one sequence of random draws and the same D<sub>B</sub>, thresholds and τ.</p>
   </section>
 
   <section class="ex intro">
     <h2><span class="tag">Intro</span>The green Sahara</h2>
-    <p class="prompt">Between roughly 10 000 and 5 500 years ago the Sahara was a grassland dotted with lakes, hippos and people. Then, within a few centuries, it turned to desert. This conceptual model of Liu et al. (2006) has just two variables — annual rainfall P and vegetation cover V — coupled by one feedback. Work through the exercises below and answer each question in your report.</p>
+    <p class="prompt">Between roughly 10 000 and 5 500 years ago the Sahara was a grassland with lakes, rivers, hippos and people, because a stronger summer monsoon brought rain far north of where it reaches today. That monsoon was driven by the orbital forcing: more Northern Hemisphere summer insolation in the early Holocene, declining slowly over the following millennia. The conceptual model of Liu et al. (2006) has two variables, annual rainfall P and vegetation cover V, and one feedback between them. Three versions differ only in how the year-to-year rainfall variability is treated.</p>
   </section>
 
   <section class="ex">
-    <h2><span class="tag">E1</span>No stochastic forcing</h2>
-    <p class="prompt">Start with the stochastic rainfall forcing switched off (Stoch = 0), exactly as in tab 1_No_Stochastic. Plot annual rainfall P(Vt) against time, then switch to the Vegetation tab and plot V against time.</p>
+    <h2><span class="tag">E1</span>No random rainfall</h2>
+    <p class="prompt">Model version 1: no random rainfall (the maximum stochastic forcing Stoch is 0), D<sub>B</sub> = 150 mm/yr, thresholds 270 and 370 mm/yr, τ = 5 yr. The background rainfall declines from 300 mm/yr at 6500 yr BP to 0 at 3500 yr BP, and the run starts at full cover. Predict what the vegetation cover will do and draw it; then move the model year and record five readings of V and P before the model draws its curves.</p>
     <ol class="qs">
-      <li>What do the numbers on the time axis mean?</li>
       <li>How does the rainfall vary with time? What climate forcing is represented by the long-term decline in rainfall?</li>
-      <li>What does it mean for the rainfall variability that the stochastic forcing is switched off?</li>
-      <li>What causes the sudden reduction in rainfall about 815 years after the start?</li>
-      <li>Plot the vegetation cover V against time. Describe what happens to it.</li>
+      <li>What does it mean for the rainfall variability that Stoch = 0?</li>
+      <li>What causes the sudden reduction in rainfall about 800 years after the start?</li>
+      <li>Describe what happens to the vegetation cover V over the run.</li>
       <li>Why does the major shift in vegetation cover happen, and why does it happen at that moment in time?</li>
-      <li>What is the impact of the vegetation shift on P(Vt)? Describe the feedback between V and P(Vt).</li>
+      <li>What is the impact of the vegetation shift on the rainfall P? Describe the feedback between V and P.</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig1_1 — vegetation cover V (left axis) and annual rainfall P (right axis) against time, model version 1</p>
+    <p class="note">Fig1_1 is one image with two vertical axes, so label both.</p>
   </section>
 
   <section class="ex">
-    <h2><span class="tag">E2</span>Stochastic rainfall forcing</h2>
-    <p class="prompt">Switch to model version 2 (tab 2_Stochastic): the same long-term forcing, but each year now receives a random rainfall anomaly drawn uniformly between 0 and Stoch. Note that the background rainfall Pd0 is halved to 150 mm/yr so the long-term mean rainfall is unchanged.</p>
+    <h2><span class="tag">E2</span>Random rainfall</h2>
+    <p class="prompt">Model version 2: each year receives a random rainfall anomaly P<sub>N</sub> drawn uniformly between 0 and the maximum stochastic forcing, Stoch = 300 mm/yr, and P<sub>d0</sub> is halved to 150 mm/yr so that the long-term mean rainfall is unchanged. Everything else is as in E1. Predict what the cover does and draw it, then record five readings. After the reveal the same run with Stoch = 200 is drawn alongside, for questions (d) and (e).</p>
     <ol class="qs">
-      <li>Compare the rainfall with E1. What is the impact of the stochastic forcing on the interannual variability of P(Vt)?</li>
-      <li>Compare V with your result without stochastic forcing. What are the three most important differences?</li>
-      <li>What happened to the feedback between V and P(Vt) — is it stronger or weaker? Explain.</li>
-      <li>Set Stoch from 300 to 200 and plot again. What has changed in the annual rainfall P(Vt)?</li>
+      <li>Compare the rainfall with E1. What is the impact of the random anomaly on the interannual variability of P?</li>
+      <li>Compare V with your result without random rainfall. What are the three most important differences?</li>
+      <li>What happened to the feedback between V and P — is it stronger or weaker? Explain.</li>
+      <li>The run with Stoch = 200 is drawn alongside after the reveal. What has changed in the annual rainfall P?</li>
       <li>What has changed in the vegetation cover V? Explain the difference with Stoch = 300.</li>
       <li>Which model version do you consider more realistic, 1 or 2, and why?</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig2_1 — vegetation cover V and annual rainfall P against time for Stoch = 300, with your readings, and the Stoch = 200 run alongside</p>
+    <p class="note">The lab reports two numbers about each run after the reveal: the time the 21-year mean of V takes to fall from 0.9 to 0.1, and the mean cover over the last 500 years. Use them, with the plot, to make your comparisons concrete. If you draw a new noise sample, say which seed your figure used.</p>
   </section>
 
   <section class="ex">
-    <h2><span class="tag">E3</span>Filtered stochastic forcing</h2>
-    <p class="prompt">Switch to model version 3 (tab 3_Stochastic_filtered). The same random forcing is used, but filtered with a 10-year running mean before it enters the rainfall. Start on the Forcing tab to see both the raw and the filtered series.</p>
+    <h2><span class="tag">E3</span>Smoothed random rainfall</h2>
+    <p class="prompt">Model version 3: the same random anomaly as in E2, but each year the rainfall receives the 10-year running mean of the anomaly instead of the raw draw. The Forcing tab shows the raw and the smoothed series, for question (a). Predict what the cover does on the vegetation plot, draw it and record five readings. After the reveal the run with D<sub>B</sub> = 50 mm/yr is drawn alongside, for questions (e) and (f).</p>
     <ol class="qs">
-      <li>Plot both stochastic forcings (raw and filtered) against time. What is the main effect of the filtering on the values of the rainfall forcing?</li>
-      <li>Plot P(Vt) and V against time. What is the impact of the filtered forcing on the vegetation cover V?</li>
-      <li>How do you explain the difference between the results of versions 2_Stochastic and 3_Stochastic_filtered?</li>
-      <li>What happened to the feedback between V and P(Vt) — stronger or weaker than without filtering? Explain.</li>
-      <li>Change the vegetation feedback coefficient DB from 150 to 50 and plot again. What has changed in P(Vt)?</li>
-      <li>What has changed in the vegetation cover V? Explain the difference with DB = 150.</li>
+      <li>Look at the Forcing tab, raw and smoothed anomaly against time. What is the main effect of the smoothing on the values of the rainfall forcing?</li>
+      <li>What is the impact of the smoothed forcing on the vegetation cover V, compared with E2?</li>
+      <li>How do you explain the difference between the results of versions 2 and 3?</li>
+      <li>What happened to the feedback between V and P — stronger or weaker than without smoothing? Explain.</li>
+      <li>The run with D<sub>B</sub> = 50 mm/yr is drawn alongside after the reveal. What has changed in the annual rainfall P?</li>
+      <li>What has changed in the vegetation cover V? Explain the difference with D<sub>B</sub> = 150.</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig3_1 — vegetation cover V and annual rainfall P against time for D<sub>B</sub> = 150, with your readings, and the D<sub>B</sub> = 50 run alongside</p>
   </section>
 
   <section class="ex">
-    <h2><span class="tag">E4</span>Unstable vs. stable collapse</h2>
-    <p class="prompt">Liu et al. (2006) distinguish several types of vegetation decline. In an unstable collapse (UC) the system crosses a bifurcation and the feedback drives it, unforced, to the other state; in a stable collapse (SC) the transition follows the forcing and the noise, without a runaway. The Compare tab overlays the vegetation cover of all three model versions run with your current parameters.</p>
+    <h2><span class="tag">E4</span>Unstable and stable collapse</h2>
+    <p class="prompt">Liu et al. (2006), sections 4 to 6, distinguish three kinds of transition from grassland to desert: an unstable collapse (UC), a stable decline (SD) and a stable collapse (SC). The lab's Compare tab overlays five runs on one and the same random stream: versions 1, 2 and 3 with D<sub>B</sub> = 150 mm/yr, and versions 1 and 3 with D<sub>B</sub> = 50 mm/yr. Use the toggles above the plot to look at them one or two at a time, and read the paper's definitions before you answer. The table under the plot gives the two readouts for each run. This exercise hands in two figures, one for question (a) and one for (b): toggle on the run or runs you identify, and export each.</p>
     <ol class="qs">
       <li>In which experiment and figure(s) did you find an unstable collapse (UC)?</li>
       <li>And a stable collapse (SC)?</li>
       <li>What is the difference between the two types of collapse?</li>
       <li>Which of the two do you consider more likely to have occurred in North Africa during the Holocene, and why?</li>
     </ol>
+    <p class="figs"><b>Figure:</b> Fig4_1 — vegetation cover V against time for the run(s) you identify as an unstable collapse, toggled on the Compare tab (question a)</p>
+    <p class="figs"><b>Figure:</b> Fig4_2 — vegetation cover V against time for the run you identify as a stable collapse, toggled on the Compare tab (question b)</p>
+    <p class="note">Lecture 6 and Lecture 7 present the strong-feedback mechanism of Claussen et al. (1999); Liu et al. (2006) argue for weak feedback plus slow rainfall variability. The lab shows both, and section 7 of the paper says what evidence would decide between them.</p>
   </section>
 
   <section class="ex">
     <h2><span class="tag">E5</span>The Sahel under global change</h2>
-    <p class="prompt">Some climate projections suggest that rainfall in the Sahel/Sahara region will increase under an enhanced greenhouse effect — the forcing runs the other way, and much faster. Use the model to think about that, keeping its assumptions in mind.</p>
+    <p class="prompt">Some climate projections suggest that rainfall in the Sahel/Sahara region will increase under an enhanced greenhouse effect. Use the model, and its assumptions, to think about that.</p>
     <ol class="qs">
       <li>Discuss the relevance of the Sahara model for the future vegetation cover of the Sahel/Sahara region. Can the model be used for this purpose?</li>
       <li>What climatic processes would you suggest adding to the model to make it more realistic?</li>
       <li>What is the main difference between the conditions 6500 years ago and those at the end of the 21st century?</li>
     </ol>
+    <p class="figs"><b>Figure:</b> none for this exercise — answer the questions in words.</p>
   </section>
 </main>
 </body>

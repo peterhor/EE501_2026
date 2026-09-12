@@ -358,25 +358,36 @@ Modelling the climate system &middot; 4 of 5</p>
 
 <div class="card demo">
   <h3>Downscaling: the model says the region, you need the valley</h3>
-  <p class="cap">A cross-section through a coastal mountain range. The model does not have the mountain
-  &mdash; it has the grid-box mean of the mountain, from
+  <p class="cap">A cross-section through a coastal mountain range on one day. The model does not have the
+  mountain &mdash; it has the grid-box mean of the mountain, from
   <a href="what-is-a-model.html">page&nbsp;1</a> &mdash; so its surface temperature is wrong at every point
-  that is not at the mean elevation. Watch the bias at the two stations, and then correct it.</p>
+  that is not at the mean elevation. The true temperature is set by the weather on the day, not by the
+  model: choose the day, read the bias at the two stations, then correct it.</p>
 
   <div class="ctrls">
     <div class="ctrl">
       <label for="gdx"><span>Driving model grid spacing</span> <b id="gdxv">200 km</b></label>
       <input type="range" id="gdx" min="0" max="5" step="1" value="0">
-      <div class="hint">200 km GCM &rarr; 12 km regional model.</div>
+      <div class="hint">200 km GCM &rarr; 6 km regional model.</div>
     </div>
     <div class="ctrl">
-      <label for="lap"><span>Lapse rate &Gamma;</span> <b id="lapv">6.5 K km<sup>&minus;1</sup></b></label>
+      <label for="lap"><span>Lapse rate &Gamma; assumed by the correction</span> <b id="lapv">6.5 K km<sup>&minus;1</sup></b></label>
       <input type="range" id="lap" min="4" max="9" step="0.1" value="6.5">
-      <div class="hint">How fast temperature falls with height.</div>
+      <div class="hint">The number you bring. 6.5 K km<sup>&minus;1</sup> is the standard-atmosphere value.</div>
     </div>
   </div>
 
   <div class="rowbtns" style="margin-top:12px">
+    <span class="lbl">Weather on the day</span>
+    <div class="seg" id="segW">
+      <button data-w="mixed" aria-pressed="true">Overcast and windy</button>
+      <button data-w="sunny" aria-pressed="false">Sunny afternoon</button>
+      <button data-w="night" aria-pressed="false">Clear winter night</button>
+    </div>
+  </div>
+  <div class="hint" id="wHint" style="margin:-8px 0 12px"></div>
+
+  <div class="rowbtns">
     <span class="lbl">Correction</span>
     <div class="seg" id="segD">
       <button data-d="raw" aria-pressed="true">None &mdash; raw model</button>
@@ -385,38 +396,62 @@ Modelling the climate system &middot; 4 of 5</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 880 430" role="img" aria-label="Cross-section of true and model orography with the resulting surface temperature, before and after downscaling"><g id="dsG"></g></svg>
+  <svg id="dsSvg" viewBox="0 0 880 430" role="img" aria-label="Cross-section of true and model orography with the resulting surface temperature, before and after downscaling"><g id="dsG"></g></svg>
+  <svg id="dsFit" viewBox="0 0 880 300" role="img" style="display:none;margin-top:6px" aria-label="Statistical downscaling: for each station, the model grid-box temperature against the station record over 365 days, with the fitted straight line"><g id="dsFG"></g></svg>
 
   <div class="kpis">
     <div class="kpi"><div class="k">Valley station</div><div class="v" id="kV">&mdash;</div><div class="s" id="kVs">bias at the station</div></div>
     <div class="kpi"><div class="k">Summit station</div><div class="v" id="kS">&mdash;</div><div class="s" id="kSs">bias at the station</div></div>
     <div class="kpi"><div class="k">Elevation error</div><div class="v" id="kZ">&mdash;</div><div class="s">summit, model &minus; true</div></div>
-    <div class="kpi"><div class="k">Domain mean bias</div><div class="v" id="kM">&mdash;</div><div class="s">averaged over the section</div></div>
+    <div class="kpi"><div class="k">Domain mean bias</div><div class="v" id="kM">&mdash;</div><div class="s" id="kMs">averaged over the section</div></div>
   </div>
 
   <div class="readout" id="dsRo"></div>
+
+  <div class="eq" style="margin-top:16px"><b>Lapse-rate correction</b><br>
+    T<sub>corr</sub> &nbsp;=&nbsp; T<sub>model</sub> &nbsp;&minus;&nbsp; &Gamma; (z<sub>true</sub> &minus; z<sub>model</sub>)
+    <span class="u">&nbsp;&nbsp;an elevation adjustment, no fitting</span></div>
+  <div class="defs">
+    <div class="def"><b>T<sub>model</sub></b> the model&rsquo;s surface temperature for the grid box, &deg;C</div>
+    <div class="def"><b>z<sub>true</sub></b> the real elevation of the place, m</div>
+    <div class="def"><b>z<sub>model</sub></b> the elevation of the model&rsquo;s grid box, its area mean, m</div>
+    <div class="def"><b>&Gamma;</b> the assumed lapse rate, K per m of elevation</div>
+  </div>
+  <p class="note">The correction knows one thing: the model&rsquo;s surface is at the wrong height. It moves the
+  temperature down the assumed lapse rate to the right height. That is exactly right when the air really does
+  cool at &Gamma; from the coast to the summit, as it does on an overcast, windy day. It is wrong by the
+  difference in lapse rate on a sunny afternoon, and on a clear winter night, when cold air drains into the
+  valley and pools there, it is wrong by the whole depth of the pool &mdash; the correction moves the valley
+  estimate the wrong way, because the pool is not an elevation effect at all.</p>
 
   <div class="eq" style="margin-top:16px"><b>Statistical downscaling</b><br>
     T<sub>loc</sub> &nbsp;=&nbsp; a<sub>sd</sub> &nbsp;+&nbsp; b<sub>sd</sub> T<sub>GCM</sub>
     <span class="u">&nbsp;&nbsp;predictand from predictor</span></div>
   <div class="defs">
-    <div class="def"><b>T<sub>loc</sub></b> the local temperature being predicted &mdash; the predictand, K</div>
-    <div class="def"><b>T<sub>GCM</sub></b> the coarse-grid model temperature used as predictor, K</div>
+    <div class="def"><b>T<sub>loc</sub></b> the local temperature being predicted &mdash; the predictand, &deg;C</div>
+    <div class="def"><b>T<sub>GCM</sub></b> the coarse-grid model temperature used as predictor, &deg;C</div>
     <div class="def"><b>a<sub>sd</sub></b> intercept of the regression, fitted over a period with both model and station data, K</div>
     <div class="def"><b>b<sub>sd</sub></b> slope of the regression, dimensionless</div>
   </div>
-  <p class="note">The simplest possible statistical downscaling: fit a straight line between what the model
-  produces at the grid scale and what a station actually recorded, over a period where you have both, then
-  apply that line to the model&rsquo;s future output. It is cheap, it works well for temperature, and it can be
-  applied to every station you have &mdash; a regional model gives you one field at 12 km, a regression gives
-  you every valley for which somebody kept records.</p>
+  <p class="note">The simplest possible statistical downscaling: take a period where you have both the
+  model&rsquo;s grid-box temperature and the station&rsquo;s record &mdash; here 365 days &mdash; plot one
+  against the other, fit a straight line through the cloud by least squares, and then apply that line to
+  whatever the model says next. The scatter panels show the fit for each station. It is cheap, it works well
+  for temperature, and it can be applied to every station you have &mdash; a regional model gives you one field
+  at 12 km, a regression gives you every valley for which somebody kept records. The line is fitted per
+  station, so the valley and the summit get different lines even when the model gives them the same
+  temperature, and the line for the valley has a slope steeper than one: cold days in the record are the days
+  with a pool, so the regression has learned that the valley is colder than the model on cold days, without
+  knowing why. What it cannot learn is the pool on any particular night: the residual scatter around the line
+  is the part of the record the model&rsquo;s temperature does not explain.</p>
   <div class="warnbox"><b>And it rests on an assumption that cannot be tested.</b> a<sub>sd</sub> and
   b<sub>sd</sub> are fitted in today&rsquo;s climate and then used in a different one. If the relationship
   between the large scale and the local scale changes &mdash; and it will, whenever the mechanism linking them
-  changes, as it does when a valley stops having snow cover, or when the wind direction that brings rain
-  shifts &mdash; then the fitted coefficients are wrong in exactly the situation you built them for. A regional
-  climate model has no such problem, because it solves the physics rather than fitting a relationship. It just
-  costs a hundred times more, covers one domain, and inherits every error of the model driving it.</div>
+  changes, as it does when a valley stops having snow cover and its winter pools weaken, or when the wind
+  direction that brings rain shifts &mdash; then the fitted coefficients are wrong in exactly the situation you
+  built them for. A regional climate model has no such problem, because it solves the physics rather than
+  fitting a relationship. It just costs a hundred times more, covers one domain, and inherits every error of
+  the model driving it.</div>
 
   <p class="q"><b>Question.</b> A regional model at 12 km is nested inside a GCM at 200 km. The GCM has the
   storm track 400 km too far south. What does the regional model do about it?
@@ -448,8 +483,13 @@ day<sup>&minus;1</sup>; the ice surface temperature is taken equal to the air te
 simplification that makes the scheme &ldquo;zero-layer&rdquo;. Snow depth is prescribed for the freezing season
 rather than accumulated. The air temperature cycle is a sinusoid with a 18 K amplitude peaking in late July.
 Real ice also drifts, ridges and is exported, none of which is here. The downscaling section is a synthetic
-cross-section: elevations and the lapse rate are realistic, but the temperature field is constructed from the
-lapse rate alone so that the elevation error shows cleanly.
+cross-section. Elevations are realistic; the true temperature on the day is the sea-level temperature minus the
+day&rsquo;s lapse rate times elevation, minus a cold-air pool 300 m deep in the one closed basin on clear winter
+nights, and the model has the same atmosphere on the area-mean orography and no pool. The 365-day calibration
+record behind the statistical fit is generated the same way from a seeded random sequence of days, with a
+seasonal cycle of sea-level temperature, day-to-day weather, and clear days that carry a steeper lapse rate in
+summer and a pool in winter; the model in that record follows the observed weather, as a reanalysis-driven run
+would, with 0.8 K of noise of its own.
 &nbsp;&middot;&nbsp; Next: <a href="evaluation.html">does the model work? &rarr;</a></p>
 
 </div>
@@ -708,12 +748,65 @@ lapse rate alone so that the elevation error shows cleanly.
   const NF=1200, DF=DLX/NF;
   const ZT=new Float64Array(NF);
   for(let i=0;i<NF;i++) ZT[i]=ztrue((i+0.5)*DF);
-  const VALLEY=330, SUMMIT=250;                          // station positions, km
   const zAt=x=>ZT[Math.min(NF-1,Math.floor(x/DF))];
-  let dmode='raw';
+  /* the two stations sit on the crest of the main summit and on the floor of the
+     basin behind it, found from the terrain rather than typed in */
+  const argext=(x0,x1,max)=>{ let bi=-1,bv=max?-1e9:1e9;
+    for(let i=Math.floor(x0/DF);i<Math.floor(x1/DF);i++){ if(max?ZT[i]>bv:ZT[i]<bv){bv=ZT[i];bi=i;} }
+    return (bi+0.5)*DF; };
+  const SUMMIT=argext(200,300,true), VALLEY=argext(280,400,false), CREST2=argext(380,480,true);
+  /* cold-air pool: fills the one closed basin, between the summit crest and the
+     interior crest, to POOLD metres above its floor. P(x) is 1 on the floor, 0 at
+     the top of the pool and outside the basin. */
+  const POOLD=300, ZFLOOR=zAt(VALLEY);
+  const P=x=>(x<SUMMIT||x>CREST2)?0:Math.max(0,Math.min(1,(ZFLOOR+POOLD-zAt(x))/POOLD));
+
+  /* the weather on the day: sea-level temperature, the day's real lapse rate, and
+     the strength of the pool on the valley floor */
+  const WX={
+    mixed:{T0:8,  G:6.5, pool:0, name:'overcast and windy',
+           hint:'Sea-level air 8 °C. Cloud and wind keep the air mixed, so it cools at 6.5 K km⁻¹ from '+
+                'the coast to the summit and the standard value is the right one.'},
+    sunny:{T0:18, G:8.0, pool:0, name:'sunny afternoon',
+           hint:'Sea-level air 18 °C. Strong surface heating makes the air cool faster with height, '+
+                '8.0 K km⁻¹, steeper than the 6.5 the correction assumes.'},
+    night:{T0:-2, G:6.5, pool:8, name:'clear winter night',
+           hint:'Sea-level air −2 °C and 6.5 K km⁻¹ in the free air — but cold air drains off the '+
+                'slopes into the basin and pools 300 m deep, with the floor 8 K colder than the free air.'}
+  };
+  let dmode='raw', wmode='mixed';
+
+  /* ── the calibration record: 365 days, generated the same way as the day shown ──
+     seeded, so the fit is the same on every load and can be quoted */
+  function mulberry(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  const REC=(function(){
+    const rnd=mulberry(20260914), norm=()=>{ let u=rnd()||1e-9,v=rnd();
+      return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
+    const days=[]; let w=0;
+    for(let d=0;d<365;d++){
+      const c=(1+Math.cos(2*Math.PI*d/365))/2;             // 1 in midwinter, 0 in midsummer
+      w=0.7*w+2.5*norm();                                  // day-to-day weather, AR(1)
+      const T0=7-8*Math.cos(2*Math.PI*d/365)+w;            // −1 °C in January, 15 °C in July
+      const clear=rnd()<0.15+0.45*c;                       // clear calm days: 60% in winter, 15% in summer
+      const G=6.5+0.5*norm()+(clear?1.5*(1-c):0);          // clear summer days mix more steeply
+      const pool=clear?(3+6*rnd())*(0.3+0.7*c):0;          // clear winter nights pool
+      days.push({T0:T0,G:G,pool:pool,mn:0.8*norm(),clear:clear});
+    }
+    return days;
+  })();
+  function fit(xs,ys){
+    const n=xs.length; let sx=0,sy=0,sxx=0,sxy=0;
+    for(let i=0;i<n;i++){ sx+=xs[i]; sy+=ys[i]; sxx+=xs[i]*xs[i]; sxy+=xs[i]*ys[i]; }
+    const b=(n*sxy-sx*sy)/(n*sxx-sx*sx), a=(sy-b*sx)/n;
+    let ss=0; for(let i=0;i<n;i++){ const r=ys[i]-(a+b*xs[i]); ss+=r*r; }
+    return {a:a,b:b,sd:Math.sqrt(ss/(n-2))};
+  }
 
   function drawDS(){
-    const dx=DRES[+$('gdx').value], G=+$('lap').value/1000;   // K per m
+    const dx=DRES[+$('gdx').value], Gc=+$('lap').value/1000;   // assumed Γ, K per m
+    const W=WX[wmode], Gt=W.G/1000;
+    $('wHint').textContent=W.hint;
     const g=$('dsG'); clear(g);
     const nb=Math.max(1,Math.round(DLX/dx));
     const ZB=new Float64Array(nb);
@@ -724,15 +817,17 @@ lapse rate alone so that the elevation error shows cleanly.
       ZB[b]=s/n;
     }
     const zmod=x=>ZB[Math.min(nb-1,Math.floor(x/dx))];
-    const T0=14;                                         // sea-level temperature, °C
-    const Ttrue=x=>T0-G*zAt(x);
-    const Traw =x=>T0-G*zmod(x);
-    const Tlap =x=>Traw(x)-G*(zAt(x)-zmod(x));           // exact by construction
-    /* statistical downscaling is fitted per station, against that station's own record:
-       T_loc = a_sd + b_sd T_GCM.  With one predictor the slope comes out at 1 and the
-       intercept absorbs the elevation offset — so it repairs the stations and nothing else. */
-    const aV=Ttrue(VALLEY)-Traw(VALLEY), aS=Ttrue(SUMMIT)-Traw(SUMMIT);
-    const Tmod = dmode==='lapse'?Tlap:Traw;      /* 'stat' leaves the field raw, by construction */
+    const Ttrue=x=>W.T0-Gt*zAt(x)-W.pool*P(x);            // the day, on the real terrain
+    const Traw =x=>W.T0-Gt*zmod(x);                        // the same atmosphere on the model's terrain, no pool
+    const Tlap =x=>Traw(x)-Gc*(zAt(x)-zmod(x));            // elevation adjustment with the assumed Γ
+    /* statistical downscaling: one least-squares line per station through the
+       365-day record of (model grid-box T, station T) */
+    const rec=st=>{ const xs=[],ys=[],pl=[];
+      REC.forEach(d=>{ xs.push(d.T0-d.G/1000*zmod(st)+d.mn); ys.push(d.T0-d.G/1000*zAt(st)-d.pool*P(st)); pl.push(d.pool*P(st)>0.5); });
+      const f=fit(xs,ys); f.xs=xs; f.ys=ys; f.pl=pl; return f; };
+    const FV=rec(VALLEY), FS=rec(SUMMIT);
+    const Tds=(x,f)=>f.a+f.b*Traw(x);
+    const Tshow = dmode==='lapse'?Tlap:Traw;               // the field drawn; 'stat' leaves the field raw
 
     /* ── orography panel ── */
     const L=76,R=828, OT=40, OB=196;
@@ -748,6 +843,17 @@ lapse rate alone so that the elevation error shows cleanly.
     dt+=' L '+R+' '+Yz(0)+' Z';
     put(g,'path',{d:dt,fill:'var(--earth)',opacity:0.30});
     put(g,'path',{d:dt,fill:'none',stroke:'var(--earth)','stroke-width':1.8});
+    if(W.pool>0){
+      /* the pool: the basin below the pool top, drawn on the terrain */
+      let dp='', on=false;
+      for(let i=0;i<NF;i++){ const x=(i+0.5)*DF;
+        if(P(x)>0){ dp+=(on?' L ':'M ')+X(x).toFixed(1)+' '+Yz(ZFLOOR+POOLD).toFixed(1); on=true; } }
+      for(let i=NF-1;i>=0;i--){ const x=(i+0.5)*DF;
+        if(P(x)>0) dp+=' L '+X(x).toFixed(1)+' '+Yz(ZT[i]).toFixed(1); }
+      put(g,'path',{d:dp+' Z',fill:'var(--ebm)',opacity:0.35});
+      put(g,'text',{x:X(VALLEY)+52,y:Yz(ZFLOOR+POOLD)-6,'font-size':11.5,fill:'var(--ebm)','font-weight':600},
+        'cold-air pool, '+POOLD+' m deep');
+    }
     let dm='M '+L+' '+Yz(ZB[0]);
     for(let b=0;b<nb;b++){
       dm+=' L '+X(b*dx).toFixed(1)+' '+Yz(ZB[b]).toFixed(1)+
@@ -757,6 +863,8 @@ lapse rate alone so that the elevation error shows cleanly.
     put(g,'text',{x:L+8,y:OT+14,'font-size':12,fill:'var(--earth)','font-weight':600},'true orography');
     put(g,'text',{x:L+8,y:OT+30,'font-size':12,fill:'var(--gcm)','font-weight':600},
       'model orography at '+dx+' km');
+    put(g,'text',{x:R-6,y:OT+14,'text-anchor':'end','font-size':12,fill:'var(--text-secondary)','font-weight':600},
+      W.name);
 
     /* stations */
     [[SUMMIT,'summit station'],[VALLEY,'valley station']].forEach(st=>{
@@ -769,8 +877,11 @@ lapse rate alone so that the elevation error shows cleanly.
     /* ── temperature panel ── */
     const TT=248, TB=372;
     let tlo=99,thi=-99;
+    const est=x=>dmode==='stat'?Ttrue(x):Tshow(x);
     for(let i=0;i<NF;i++){ const x=(i+0.5)*DF;
-      [Ttrue(x),Tmod(x)].forEach(v=>{ if(v<tlo)tlo=v; if(v>thi)thi=v; }); }
+      [Ttrue(x),Tshow(x),Traw(x)].forEach(v=>{ if(v<tlo)tlo=v; if(v>thi)thi=v; }); }
+    if(dmode==='stat') [VALLEY,SUMMIT].forEach((x,i)=>{ const f=i?FS:FV;
+      [Tds(x,f)-f.sd,Tds(x,f)+f.sd].forEach(v=>{ if(v<tlo)tlo=v; if(v>thi)thi=v; }); });
     tlo=Math.floor(tlo-1); thi=Math.ceil(thi+1);
     const Yt=t=>TB-(TB-TT)*(t-tlo)/(thi-tlo);
     for(let t=tlo;t<=thi;t+=Math.max(1,Math.round((thi-tlo)/4))){
@@ -778,84 +889,166 @@ lapse rate alone so that the elevation error shows cleanly.
       put(g,'text',{x:L-9,y:Yt(t)+4,'text-anchor':'end','font-size':11.5,fill:'var(--text-muted)'},
         (t<0?'−':'')+Math.abs(t)+'°C');
     }
-    const line=(f,col,w,dash)=>{
+    const line=(f,col,w,dash,op)=>{
       let d='';
       for(let i=0;i<NF;i++){ const x=(i+0.5)*DF;
         d+=(i?' L ':'M ')+X(x).toFixed(1)+' '+Yt(f(x)).toFixed(1); }
-      put(g,'path',Object.assign({d:d,fill:'none',stroke:col,'stroke-width':w},
+      put(g,'path',Object.assign({d:d,fill:'none',stroke:col,'stroke-width':w,opacity:op||1},
         dash?{'stroke-dasharray':dash}:{}));
     };
     line(Ttrue,'var(--earth)',2.4);
-    line(Tmod, dmode==='lapse'?'var(--emic)':'var(--gcm)',2.6, dmode==='lapse'?'7 4':null);
-    put(g,'text',{x:R-6,y:TT+14,'text-anchor':'end','font-size':12,
-      fill:'var(--earth)','font-weight':600},'true surface temperature');
-    put(g,'text',{x:R-6,y:TT+30,'text-anchor':'end','font-size':12,
-      fill:dmode==='lapse'?'var(--emic)':'var(--gcm)','font-weight':600},
-      dmode==='lapse'?'lapse-rate corrected, everywhere'
-        :(dmode==='stat'?'model field, still uncorrected':'model, uncorrected'));
+    if(dmode==='lapse'){
+      line(Traw,'var(--gcm)',1.6,null,0.45);
+      line(Tlap,'var(--emic)',2.6,'7 4');
+    } else line(Traw,'var(--gcm)',2.6);
+    const leg=[['true surface temperature on the day','var(--earth)']];
+    if(dmode==='raw') leg.push(['model, uncorrected','var(--gcm)']);
+    else if(dmode==='lapse'){ leg.push(['model, uncorrected','var(--gcm)']);
+      leg.push(['lapse-rate corrected at '+(+$('lap').value).toFixed(1)+' K km⁻¹, everywhere','var(--emic)']); }
+    else { leg.push(['model field, still uncorrected','var(--gcm)']);
+      leg.push(['downscaled, at the two stations only','var(--emic)']); }
+    leg.forEach((l,i)=>put(g,'text',{x:R-6,y:TT+14+16*i,'text-anchor':'end','font-size':12,
+      fill:l[1],'font-weight':600},l[0]));
+    const estAt=x=>dmode==='stat'?Tds(x,x===VALLEY?FV:FS):Tshow(x);
     [SUMMIT,VALLEY].forEach(x=>{
       put(g,'line',{x1:X(x),y1:TT,x2:X(x),y2:TB,stroke:'var(--text-muted)',
         'stroke-width':1.2,'stroke-dasharray':'4 4'});
-      put(g,'line',{x1:X(x),y1:Yt(Ttrue(x)),x2:X(x),y2:Yt(Tmod(x)),
+      put(g,'line',{x1:X(x),y1:Yt(Ttrue(x)),x2:X(x),y2:Yt(estAt(x)),
         stroke:'var(--warn)','stroke-width':3});
     });
     if(dmode==='stat'){
-      [SUMMIT,VALLEY].forEach(x=>{
-        put(g,'circle',{cx:X(x),cy:Yt(Ttrue(x)),r:6,fill:'var(--emic)'});
+      [SUMMIT,VALLEY].forEach(x=>{ const f=x===VALLEY?FV:FS, t=Tds(x,f);
+        put(g,'line',{x1:X(x)+9,y1:Yt(t-f.sd),x2:X(x)+9,y2:Yt(t+f.sd),stroke:'var(--emic)','stroke-width':2});
+        [t-f.sd,t+f.sd].forEach(v=>put(g,'line',{x1:X(x)+5,y1:Yt(v),x2:X(x)+13,y2:Yt(v),stroke:'var(--emic)','stroke-width':2}));
+        put(g,'circle',{cx:X(x),cy:Yt(t),r:6,fill:'var(--emic)'});
       });
-      put(g,'text',{x:R-6,y:TT+46,'text-anchor':'end','font-size':12,
-        fill:'var(--emic)','font-weight':600},'downscaled — at the two stations only');
     }
     put(g,'text',{x:(L+R)/2,y:TB+34,'text-anchor':'middle','font-size':12,fill:'var(--text-muted)'},
-      'distance along the section, km  ·  orange bars are the station bias');
+      'distance along the section, km  ·  orange bars are the station bias'+
+      (dmode==='stat'?'  ·  green bars the residual scatter of the fit':''));
     for(let x=0;x<=DLX;x+=100)
       put(g,'text',{x:X(x),y:TB+18,'text-anchor':'middle','font-size':11.5,
         fill:'var(--text-muted)'},x);
 
+    /* ── the fit, in statistical mode: one scatter panel per station ── */
+    $('dsFit').style.display=dmode==='stat'?'block':'none';
+    if(dmode==='stat'){
+      const g=$('dsFG'); clear(g);
+      const ST=48, SB=248, PW=330, gap=(R-L-2*PW);
+      [[VALLEY,FV,'Valley station'],[SUMMIT,FS,'Summit station']].forEach((p,k)=>{
+        const st=p[0], f=p[1], x0=L+k*(PW+gap), x1=x0+PW;
+        let lo=1e9,hi=-1e9; f.xs.concat(f.ys).forEach(v=>{ if(v<lo)lo=v; if(v>hi)hi=v; });
+        const tx=Traw(st), ty=Ttrue(st); [tx,ty,Tds(st,f)].forEach(v=>{ if(v<lo)lo=v; if(v>hi)hi=v; });
+        lo=Math.floor(lo/5)*5-1; hi=Math.ceil(hi/5)*5+1;
+        const SX=v=>x0+(x1-x0)*(v-lo)/(hi-lo), SY=v=>SB-(SB-ST)*(v-lo)/(hi-lo);
+        put(g,'rect',{x:x0,y:ST,width:PW,height:SB-ST,fill:'none',stroke:'var(--line)','stroke-width':1});
+        for(let t=Math.ceil(lo/10)*10;t<=hi;t+=10){
+          put(g,'line',{x1:SX(t),y1:ST,x2:SX(t),y2:SB,stroke:'var(--grid)','stroke-width':1});
+          put(g,'line',{x1:x0,y1:SY(t),x2:x1,y2:SY(t),stroke:'var(--grid)','stroke-width':1});
+          put(g,'text',{x:SX(t),y:SB+16,'text-anchor':'middle','font-size':12,fill:'var(--text-muted)'},(t<0?'−':'')+Math.abs(t));
+          put(g,'text',{x:x0-6,y:SY(t)+4,'text-anchor':'end','font-size':12,fill:'var(--text-muted)'},(t<0?'−':'')+Math.abs(t));
+        }
+        /* one-to-one line, faint, then the points, then the fit */
+        put(g,'line',{x1:SX(lo),y1:SY(lo),x2:SX(hi),y2:SY(hi),stroke:'var(--text-muted)','stroke-width':1,'stroke-dasharray':'3 4',opacity:0.6});
+        for(let i=0;i<f.xs.length;i++)
+          put(g,'circle',{cx:SX(f.xs[i]),cy:SY(f.ys[i]),r:2.4,fill:f.pl[i]?'var(--ebm)':'var(--text-muted)',opacity:f.pl[i]?0.85:0.55});
+        /* the fit, clipped to the panel: enter and leave where the line crosses the box */
+        const xa=Math.max(lo,(lo-f.a)/f.b), xb=Math.min(hi,(hi-f.a)/f.b);
+        put(g,'line',{x1:SX(xa),y1:SY(f.a+f.b*xa),x2:SX(xb),y2:SY(f.a+f.b*xb),stroke:'var(--emic)','stroke-width':2.6});
+        /* today: the model's value on the x axis, the truth as a ring, the prediction on the line */
+        put(g,'line',{x1:SX(tx),y1:SB,x2:SX(tx),y2:SY(Math.max(ty,Tds(st,f))),stroke:'var(--warn)','stroke-width':1.4,'stroke-dasharray':'3 3'});
+        put(g,'line',{x1:SX(tx),y1:SY(ty),x2:SX(tx),y2:SY(Tds(st,f)),stroke:'var(--warn)','stroke-width':3});
+        put(g,'circle',{cx:SX(tx),cy:SY(Tds(st,f)),r:6,fill:'var(--emic)'});
+        put(g,'circle',{cx:SX(tx),cy:SY(ty),r:6,fill:'none',stroke:'var(--earth)','stroke-width':2.4});
+        put(g,'text',{x:x0,y:ST-10,'font-size':13.5,fill:'var(--text-primary)','font-weight':600},p[2]+': 365 days of record');
+        const sg=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(2);
+        const eqt=put(g,'text',{x:x1-8,y:SB-40,'text-anchor':'end','font-size':13.5,fill:'var(--emic)','font-weight':600});
+        [['T',0],['loc',3],[' = '+sg(f.a).replace('+','')+' + '+f.b.toFixed(2)+' T',-3],['GCM',3]].forEach(t=>{
+          const ts=el('tspan',t[1]?{dy:t[1],'font-size':t[1]>0?10:13.5}:{}); ts.textContent=t[0]; eqt.appendChild(ts); });
+        put(g,'text',{x:x1-8,y:SB-23,'text-anchor':'end','font-size':12.5,fill:'var(--text-muted)'},
+          'slope b = '+f.b.toFixed(2)+'   intercept a = '+sg(f.a)+' K');
+        put(g,'text',{x:x1-8,y:SB-8,'text-anchor':'end','font-size':12.5,fill:'var(--text-muted)'},
+          'residual scatter '+f.sd.toFixed(1)+' K   dashed: one-to-one');
+        put(g,'text',{x:(x0+x1)/2,y:SB+32,'text-anchor':'middle','font-size':12.5,fill:'var(--text-muted)'},
+          'model grid-box temperature, °C');
+      });
+      put(g,'text',{x:L-46,y:(ST+SB)/2,'text-anchor':'middle','font-size':12.5,fill:'var(--text-muted)',
+        transform:'rotate(-90 '+(L-46)+' '+((ST+SB)/2)+')'},'station temperature, °C');
+      put(g,'text',{x:(L+R)/2,y:ST-32,'text-anchor':'middle','font-size':12.5,fill:'var(--text-muted)'},
+        'each dot is one day of the record; blue dots are nights with a pool. Ring: today. Dot on the line: the downscaled value.');
+    }
+
     /* ── numbers ── */
-    const bV=dmode==='stat'?0:Tmod(VALLEY)-Ttrue(VALLEY),
-          bS=dmode==='stat'?0:Tmod(SUMMIT)-Ttrue(SUMMIT);
-    let mb=0; for(let i=0;i<NF;i++){ const x=(i+0.5)*DF; mb+=Tmod(x)-Ttrue(x); } mb/=NF;
+    const bV=estAt(VALLEY)-Ttrue(VALLEY), bS=estAt(SUMMIT)-Ttrue(SUMMIT);
+    let mb=0; for(let i=0;i<NF;i++){ const x=(i+0.5)*DF; mb+=Tshow(x)-Ttrue(x); } mb/=NF;
     const sgn=v=>(v>=0?'+':'&minus;')+Math.abs(v).toFixed(1);
+    const sg1=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(1);
     $('kV').innerHTML=sgn(bV)+'&nbsp;K';
     $('kS').innerHTML=sgn(bS)+'&nbsp;K';
     $('kZ').innerHTML=(zmod(SUMMIT)-zAt(SUMMIT)>=0?'+':'&minus;')+
       Math.abs(Math.round(zmod(SUMMIT)-zAt(SUMMIT)))+'&nbsp;m';
     $('kM').innerHTML=sgn(mb)+'&nbsp;K';
-    $('kVs').innerHTML='bias, '+Math.round(zAt(VALLEY))+' m a.s.l.';
-    $('kSs').innerHTML='bias, '+Math.round(zAt(SUMMIT))+' m a.s.l.';
+    $('kMs').textContent=dmode==='stat'?'the field, still uncorrected':'averaged over the section';
+    const what=dmode==='raw'?'bias':(dmode==='lapse'?'bias after correction':'bias after downscaling');
+    $('kVs').innerHTML=what+', '+Math.round(zAt(VALLEY))+' m a.s.l.';
+    $('kSs').innerHTML=what+', '+Math.round(zAt(SUMMIT))+' m a.s.l.';
 
+    const rV=Traw(VALLEY)-Ttrue(VALLEY), rS=Traw(SUMMIT)-Ttrue(SUMMIT);
     let s='';
     if(dmode==='raw'){
-      s='At <b>'+dx+' km</b> the model puts the summit at '+Math.round(zmod(SUMMIT))+
-        ' m instead of '+Math.round(zAt(SUMMIT))+' m, so it reports the summit as <b>'+sgn(bS)+
-        ' K</b> in error, and the valley behind it as <b>'+sgn(bV)+' K</b> in error &mdash; in the '+
-        '<em>opposite</em> direction. The domain mean bias is only '+sgn(mb)+' K. '+
-        '<b>That is the trap.</b> A model can have almost no average error over a region and still be several '+
-        'degrees wrong everywhere in it, because the errors are set by elevation and cancel in the mean. '+
-        'Any evaluation that only looks at area averages will call this model excellent.';
+      s='<b>'+W.name.charAt(0).toUpperCase()+W.name.slice(1)+', model at '+dx+' km.</b> The model puts the summit at '+
+        Math.round(zmod(SUMMIT))+' m instead of '+Math.round(zAt(SUMMIT))+' m, so it reports the summit as <b>'+
+        sgn(bS)+' K</b> in error, and the valley as <b>'+sgn(bV)+' K</b>. ';
+      if(W.pool>0){
+        s+='The valley error is small only by accident: the model is '+Math.round(zmod(VALLEY)-zAt(VALLEY))+
+           ' m too high there, which makes it '+sg1(-Gt*(zmod(VALLEY)-zAt(VALLEY)))+' K too cold, and it has no '+
+           'pool, which makes it '+sg1(W.pool)+' K too warm. Two errors from two different causes nearly cancel. ';
+      } else {
+        s+='The two errors have opposite signs because the smoothed summit is too low and the smoothed valley is too high. ';
+      }
+      s+='The domain mean bias is '+sgn(mb)+' K. <b>That is the trap.</b> A model can have almost no average error over '+
+        'a region and still be several degrees wrong everywhere in it, because the errors are set by elevation and '+
+        'cancel in the mean. Any evaluation that only looks at area averages will call this model excellent.';
     } else if(dmode==='lapse'){
-      s='<b>The lapse-rate correction</b> subtracts &Gamma; times the elevation error: '+
-        'T<sub>corr</sub> = T<sub>model</sub> &minus; &Gamma;(z<sub>true</sub> &minus; z<sub>model</sub>). '+
-        'Here it removes the bias almost exactly, because this synthetic temperature field was <em>built</em> '+
-        'from a constant lapse rate &mdash; so the correction is undoing precisely the assumption used to make '+
-        'the data. In the real world it works well for monthly mean temperature and badly for anything '+
-        'involving inversions: on a clear winter night the valley is <em>colder</em> than the summit, the '+
-        'lapse rate is the wrong sign, and this correction makes the answer worse. Drag &Gamma; and watch how '+
-        'completely the result depends on a number you had to assume.';
+      s='<b>The lapse-rate correction</b> subtracts &Gamma; times the elevation error, with &Gamma; = '+
+        (+$('lap').value).toFixed(1)+' K km<sup>&minus;1</sup>. Summit: '+sg1(rS)+' K before, <b>'+sg1(bS)+
+        ' K</b> after. Valley: '+sg1(rV)+' K before, <b>'+sg1(bV)+' K</b> after. ';
+      if(W.pool>0){
+        s+='<b>The summit is repaired and the valley is made worse.</b> The correction knows only that the model&rsquo;s '+
+           'surface is '+Math.round(zmod(VALLEY)-zAt(VALLEY))+' m above the valley floor, so it warms the valley by '+
+           sg1(Gc*(zmod(VALLEY)-zAt(VALLEY)))+' K. But tonight the valley floor sits under '+POOLD+' m of pooled '+
+           'cold air, '+W.pool.toFixed(0)+' K colder than the free air at that height, and the correction has no way '+
+           'to know it: a pool is not an elevation effect. Anything set by minimum temperature &mdash; frost, range '+
+           'limits, overwintering &mdash; is moved the wrong way. No grid spacing here fixes this: the pool is a '+
+           'boundary-layer process below every grid, and the model never had it.';
+      } else if(Math.abs(W.G-(+$('lap').value))>0.05){
+        s+='The air on this day cools at '+W.G.toFixed(1)+' K km<sup>&minus;1</sup> and the correction assumed '+
+           (+$('lap').value).toFixed(1)+', so what remains is the difference, '+
+           Math.abs(W.G-(+$('lap').value)).toFixed(1)+' K per km of elevation error. Set &Gamma; to '+W.G.toFixed(1)+
+           ' and the residual goes to zero: the method is exactly as good as your knowledge of the day&rsquo;s lapse rate.';
+      } else {
+        s+='On this day the air really does cool at the assumed rate all the way up, so the correction is exact '+
+           'everywhere, not only at the two stations. This is the case the method was built for: the only thing '+
+           'wrong with the model was the height of its surface. Now change the day.';
+      }
     } else {
-      s='<b>Statistical downscaling</b> is fitted <em>per station</em>, against that station&rsquo;s own '+
-        'record: T<sub>loc</sub> = a<sub>sd</sub> + b<sub>sd</sub> T<sub>GCM</sub>. Here that gives '+
-        'b<sub>sd</sub> = 1.00 with a<sub>sd</sub> = <b>'+(aV>=0?'+':'&minus;')+Math.abs(aV).toFixed(1)+
-        ' K</b> in the valley and <b>'+(aS>=0?'+':'&minus;')+Math.abs(aS).toFixed(1)+
-        ' K</b> at the summit. The two green dots sit exactly on the truth &mdash; and the model field behind '+
-        'them has not moved at all.<br><br>'+
-        '<b>That is the whole character of the method.</b> It repairs the places you have measurements for, '+
-        'and says nothing whatever about anywhere else. It is cheap enough to apply to every station in a '+
-        'country, which a regional model never is. But notice what it cannot do: the model reports nearly the '+
-        'same temperature for the summit and the valley, so <b>two places the model cannot tell apart cannot '+
-        'be given different answers by any function of the model output alone</b> &mdash; only by fitting each '+
-        'one separately, in advance, from data you already have.';
+      s='<b>Statistical downscaling</b> fits one straight line per station through 365 days of (model grid-box '+
+        'temperature, station temperature), by least squares, and reads today&rsquo;s value off the line. Valley: '+
+        'slope <b>'+FV.b.toFixed(2)+'</b>, intercept '+sg1(FV.a)+' K, residual scatter '+FV.sd.toFixed(1)+' K. Summit: '+
+        'slope <b>'+FS.b.toFixed(2)+'</b>, intercept '+sg1(FS.a)+' K, residual scatter '+FS.sd.toFixed(1)+' K. '+
+        'Today that gives <b>'+sg1(bV)+' K</b> at the valley and <b>'+sg1(bS)+' K</b> at the summit; the field '+
+        'between the stations has not moved at all.<br><br>'+
+        'Read the two panels. The summit line has a slope near one and a tight cloud: the model and the summit '+
+        'differ by a nearly constant offset, and the intercept is that offset. The valley line is steeper than one '+
+        'and its cloud is wide, because the blue days &mdash; clear winter nights with a pool &mdash; sit well below '+
+        'the line and are all at the cold end. The regression has <em>learned</em> that the valley is colder than '+
+        'the model says on cold days, without knowing anything about pools. What it cannot learn is the pool on any '+
+        'one night: today&rsquo;s ring sits '+Math.abs(bV).toFixed(1)+' K off the line, inside the '+FV.sd.toFixed(1)+
+        ' K of scatter the model&rsquo;s temperature does not explain.<br><br>'+
+        '<b>That is the whole character of the method.</b> It repairs the places you have measurements for, and says '+
+        'nothing whatever about anywhere else. It gives the summit and the valley different answers even when the '+
+        'model gives them the same temperature, because each line was fitted separately from that station&rsquo;s own '+
+        'record &mdash; the extra information came from the observations, not from the model.';
     }
     $('dsRo').innerHTML=s;
   }
@@ -867,6 +1060,11 @@ lapse rate alone so that the elevation error shows cleanly.
   $('segD').querySelectorAll('button').forEach(b=>b.onclick=()=>{
     dmode=b.dataset.d;
     $('segD').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
+    drawDS();
+  });
+  $('segW').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    wmode=b.dataset.w;
+    $('segW').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
     drawDS();
   });
 
