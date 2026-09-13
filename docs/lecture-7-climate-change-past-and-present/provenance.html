@@ -91,12 +91,12 @@
 <div class="wrap">
 
 <p class="crumb"><a href="../">&larr; EE501 course</a> &nbsp;&middot;&nbsp;
-appendix for Lectures 1, 7 and 8</p>
+appendix to all eight lectures</p>
 
 <header>
   <div>
     <h1>Appendix: what is data and what is not</h1>
-    <p class="sub">Every figure and every demonstration in Lectures 1, 7 and 8, and where its numbers come from.
+    <p class="sub">Every figure and every demonstration in the eight lectures, and where its numbers come from.
     Some of what you see on these pages is an exact calculation, some is a model you are running live, some is
     a drawing that carries a shape but no measurements &mdash; and it matters a great deal which is which.
     This page says, for each one.</p>
@@ -108,9 +108,11 @@ appendix for Lectures 1, 7 and 8</p>
   <h3>Why this page exists</h3>
   <p class="cap">It is not a disclaimer. It is part of the teaching.</p>
 
-  <p class="note" style="margin-top:0">These pages are built by hand and contain no observational datasets.
-  That is a deliberate constraint, not an oversight: a self-contained HTML page that loads no external data
-  cannot plot the EPICA ice core or HadCRUT. Faced with that, there are three honest options and one dishonest
+  <p class="note" style="margin-top:0">These pages are built by hand and load no external data. That is a
+  deliberate constraint, not an oversight: a self-contained HTML page cannot fetch the EPICA ice core or
+  HadCRUT. Where a page does plot measurements &mdash; the Mauna Loa record, the US Standard Atmosphere,
+  Oke&rsquo;s site budgets &mdash; they are a short table of published values typed into the page and cited at its
+  foot, not the full record. Faced with that constraint, there are three honest options and one dishonest
   one. The dishonest one &mdash; drawing a curve that <em>looks</em> like a measurement and letting you assume
   it is &mdash; is not used anywhere in these lectures.</p>
 
@@ -118,18 +120,20 @@ appendix for Lectures 1, 7 and 8</p>
     <div><span class="tag t-calc">Computed</span><br>Evaluated live in your browser from an equation or a
     published model, with parameters given. Reproducible, and correct to the precision of the inputs.</div>
     <div><span class="tag t-sch">Schematic</span><br>Drawn by hand to carry a <em>shape</em> or a
-    <em>sequence</em>. Carries a warning inside the figure and usually has no numeric value axis. Never read a
+    <em>sequence</em>. Carries a warning, in the figure or beside it, and often has no numeric value axis. Never read a
     number off one.</div>
-    <div><span class="tag t-data">Real values</span><br>Published numbers quoted in the text or used as model
-    parameters &mdash; protocol values, assessed trends, event dates. Sourced in the grey note at the foot of
+    <div><span class="tag t-data">Real values</span><br>Published numbers quoted in the text, used as model
+    parameters or plotted &mdash; protocol values, assessed trends, reference profiles, budgets, event dates. Sourced in the grey note at the foot of
     each page.</div>
     <div><span class="tag t-none">Not reproduced</span><br>Described in prose only, because it is an
     observational field or record that cannot be redrawn honestly. Your lecturer has the original.</div>
   </div>
 
-  <p class="note"><b>The rule, stated once.</b> If a figure on these pages has numbers on both axes, either it
-  was computed from an equation you are given, or it is labelled inside the figure as a schematic. There is no
-  third case.</p>
+  <p class="note"><b>The rule, stated once.</b> If a figure on these pages has numbers on both axes, it is one
+  of three things: computed from an equation you are given, a plot of published values named in the grey note
+  at the foot of its page, or a schematic. In Lectures&nbsp;1, 7 and&nbsp;8 a schematic carries its warning
+  inside the figure. In Lectures&nbsp;2 to&nbsp;6 many do not &mdash; the warning is in the caption or in the foot
+  note &mdash; and the tables below say where it is.</p>
 
   <div class="q"><b>How to use this page as a student.</b> When a figure surprises you, come here first and
   check what kind of object it is. A surprising result from a <em>computed</em> figure is telling you something
@@ -328,6 +332,571 @@ appendix for Lectures 1, 7 and 8</p>
       <tr><td class="nm">Land-cover maps; K&ouml;ppen world map</td>
         <td class="tg"><span class="tag t-none">Not reproduced</span></td>
         <td>Observational fields. Described in prose; the lecturer shows the originals.</td></tr>
+
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Lecture 2 &middot; The Earth&rsquo;s energy budget</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">Figure and equation numbers refer to Goosse et&nbsp;al., chapter&nbsp;2,
+  &sect;2.1, as they are used on the pages. Almost everything in this lecture is computed from a short list of
+  constants printed at the foot of each page &mdash; &sigma;, the solar constant, the planetary albedo, the radii of
+  the Sun and the Earth. The measured quantities it uses are the US Standard Atmosphere and the observed global
+  energy budget, and both are quoted, not recomputed.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; Four things that glow</td></tr>
+      <tr><td class="nm">Spectra, total flux and visible share</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Planck&rsquo;s law integrated numerically, with the visible band taken as 0.4&ndash;0.7&nbsp;&micro;m;
+        &sigma;T<sup>4</sup> and Wien&rsquo;s law for the totals and the peaks. Every emitter is treated as a
+        blackbody (&epsilon;&nbsp;=&nbsp;1) at a representative temperature &mdash; skin 306&nbsp;K, heater element
+        1100&nbsp;K, wood flame 1300&ndash;1500&nbsp;K, Sun 5772&nbsp;K. Real emitters have &epsilon;&nbsp;&lt;&nbsp;1
+        and flames radiate selectively, so the foot note calls these order-of-magnitude values.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; How much energy do the Sun and the Earth radiate?</td></tr>
+      <tr><td class="nm">Wave, hemisphere, three-way split, sphere and disc diagrams</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Diagrams of a geometry or a definition. Nothing to measure.</td></tr>
+      <tr><td class="nm">Flux against temperature; the worked examples</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>&sigma;T<sup>4</sup> with &sigma; from the 2019 SI definitions; solar luminosity
+        4&pi;R<sub>&#9737;</sub><sup>2</sup>&sigma;T<sub>&#9737;</sub><sup>4</sup> with T<sub>&#9737;</sub>&nbsp;=&nbsp;5772&nbsp;K;
+        the Earth&rsquo;s emission and T<sub>e</sub> from S<sub>0</sub>&nbsp;=&nbsp;1361&nbsp;W&nbsp;m<sup>&minus;2</sup>
+        and &alpha;<sub>p</sub>&nbsp;=&nbsp;0.30.</td></tr>
+      <tr><td class="nm">Power ladder: the Sun, the Earth, a human body</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>&sigma;T<sup>4</sup> times the emitting area in each case. The Earth&rsquo;s emission equals the
+        sunlight it absorbs by construction, which the ladder states.</td></tr>
+      <tr><td class="nm">Power ladder: human energy use, Earth&rsquo;s internal heat</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Rounded published estimates, about 2&times;10<sup>13</sup> and 4.4&times;10<sup>13</sup>&nbsp;W.
+        <b>No source is named on the page</b>, and its foot note says every figure is computed, which is not true
+        of these two.</td></tr>
+      <tr><td class="nm">Solar and terrestrial spectra</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Planck curves at 5772&nbsp;K and 255&nbsp;K, each scaled to the same height. The true ratio of the two
+        heights, 2.6&times;10<sup>5</sup>, is given in the caption.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; Why is the surface warmer than space?</td></tr>
+      <tr><td class="nm">Bare planet, opaque layer and leaky layer</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Goosse Eqs.&nbsp;2.1&ndash;2.13 with S<sub>0</sub>&nbsp;=&nbsp;1368&nbsp;W&nbsp;m<sup>&minus;2</sup>, the
+        value Goosse uses, and &alpha;<sub>p</sub>&nbsp;=&nbsp;0.30. Arrow widths are drawn to scale. A single
+        well-mixed layer: at &epsilon;&nbsp;&asymp;&nbsp;0.97 it overshoots the observed 288&nbsp;K by 13&nbsp;K, and the
+        page says why.</td></tr>
+      <tr><td class="nm">T<sub>s</sub> and T<sub>a</sub> against &epsilon;</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The exact curves of the same model. T<sub>a</sub> is dashed near &epsilon;&nbsp;=&nbsp;0, where the model
+        leaves it undefined.</td></tr>
+      <tr><td class="nm">Observed global energy budget</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Trenberth, Fasullo and Kiehl (2009), reproduced as Goosse Fig.&nbsp;2.19.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; From one layer to a real atmosphere</td></tr>
+      <tr><td class="nm">Vertical temperature profile</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>US Standard Atmosphere (1976). <b>A reference profile, not an observation</b> on any day or at any
+        place.</td></tr>
+      <tr><td class="nm">Emission-level diagram</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>T<sub>s</sub>&nbsp;=&nbsp;T<sub>e</sub>&nbsp;+&nbsp;&Gamma;z<sub>e</sub>, with outgoing longwave fixed at
+        239&nbsp;W&nbsp;m<sup>&minus;2</sup> by energy balance and &Gamma;&nbsp;=&nbsp;6.5&nbsp;K&nbsp;km<sup>&minus;1</sup>.</td></tr>
+      <tr><td class="nm">Stack of opaque layers</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Layer k sits at k<sup>1/4</sup>T<sub>e</sub>. The note under the figure states where the model is right
+        and where it is wrong.</td></tr>
+      <tr><td class="nm">Absorption bands by gas</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Labelled schematic in the caption, <b>not inside the figure</b>. Band positions and relative shapes are
+        right; the depths are not a radiative-transfer calculation.</td></tr>
+      <tr><td class="nm">Surface flux values</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Wild et&nbsp;al. (2013), as in IPCC AR5 WG1 Fig.&nbsp;2.11 &mdash; the set used on page&nbsp;7, not the
+        Trenberth set of page&nbsp;3. The foot note flags the difference.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 5 &middot; Insolation geometry</td></tr>
+      <tr><td class="nm">Orbit, geometry and sky-path views</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Positions from Goosse Eqs.&nbsp;2.14&ndash;2.24: present-day eccentricity and longitude of perihelion,
+        and the declination from the approximation of Eq.&nbsp;2.23, which ignores eccentricity. The orbit view has
+        an option, off by default, that exaggerates the eccentricity for display.</td></tr>
+      <tr><td class="nm">Daily insolation curve, seasonal map, annual totals</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Eqs.&nbsp;2.21&ndash;2.26 with S<sub>0</sub>&nbsp;=&nbsp;1361&nbsp;W&nbsp;m<sup>&minus;2</sup>. The
+        seasonal map is the equivalent of Fig.&nbsp;2.11, computed rather than copied.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 6 &middot; The geography of the budget</td></tr>
+      <tr><td class="nm">Zonal absorbed solar and outgoing longwave</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Annual zonal means rounded from satellite climatology (CERES EBAF) and <b>chosen so that the global
+        means and the transport come out right</b> &mdash; a teaching dataset, not a reanalysis. Absorbed solar is
+        then computed as Q(&phi;)(1&nbsp;&minus;&nbsp;&alpha;) from the second-Legendre insolation. The page prints its
+        global means beside the observed ones.</td></tr>
+      <tr><td class="nm">Six places</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Representative values built the same way as the zonal curves, not readings at the six sites.</td></tr>
+      <tr><td class="nm">Seasonal cycle of one column</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>One lumped column under a sinusoidal forcing of amplitude 130&nbsp;W&nbsp;m<sup>&minus;2</sup>, damped by
+        &lambda;&nbsp;=&nbsp;9&nbsp;W&nbsp;m<sup>&minus;2</sup>K<sup>&minus;1</sup>. A caricature for the land&ndash;ocean
+        ratio and the phase lag; the foot note says not to read absolute temperatures off it.</td></tr>
+      <tr><td class="nm">Northward energy transport</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The integral of the zonal net radiation. It fails to close at the North Pole by +1.09&nbsp;PW because
+        the tabulated curves are rounded, and the page prints the error.</td></tr>
+      <tr><td class="nm">Atmosphere and ocean shares of the transport</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Ocean component after Fasullo and Trenberth (2008); the atmospheric share is the residual.</td></tr>
+      <tr><td class="nm">Station temperatures</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>1991&ndash;2020 annual normals, rounded.</td></tr>
+      <tr><td class="nm">Observed radiation and temperature maps</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>The curves follow Goosse Figs.&nbsp;2.12&ndash;2.18, but the page draws no maps. The observed fields
+        (after Rayner et&nbsp;al., 2003) are described in prose; the lecturer shows the originals.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 7 &middot; The complete budget</td></tr>
+      <tr><td class="nm">Global energy budget diagram</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Wild et&nbsp;al. (2013), as in IPCC AR5 WG1 Fig.&nbsp;2.11 and Goosse Fig.&nbsp;2.19, rounded to whole
+        W&nbsp;m<sup>&minus;2</sup> so the balances close to about 1&nbsp;W&nbsp;m<sup>&minus;2</sup>. Arrow width is
+        proportional to flux. The 40&nbsp;W&nbsp;m<sup>&minus;2</sup> atmospheric window comes from Trenberth
+        et&nbsp;al. (2009), because the Wild budget does not separate it.</td></tr>
+      <tr><td class="nm">Solve for the missing arrow</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The closure arithmetic of the three balances, on the values above.</td></tr>
+      <tr><td class="nm">Energy imbalance and where it goes</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>+0.6&nbsp;W&nbsp;m<sup>&minus;2</sup> from the same budget; ocean-uptake fractions after von
+        Schuckmann et&nbsp;al. (2020).</td></tr>
+
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Lecture 3 &middot; Climate at a local scale</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">This lecture follows Oke, <i>Boundary Layer Climates</i> (2nd edn,
+  1987), not Goosse. Its site values are Oke&rsquo;s measurements, but where the lecture gave only part of a
+  budget the pages close it with representative values. Measured and constructed numbers therefore sit in the
+  same table, and the rows below say which is which.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; Where the energy goes at the surface</td></tr>
+      <tr><td class="nm">Eight sites: flux arrows, waterfall, Bowen ratios, table</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Oke (1987). <b>Only some terms are measurements</b>: the Matador radiative budget, the Agassiz energy
+        balance, the Antarctic albedo and F<sub>NR</sub>, the barley albedo, the Douglas fir radiation terms and
+        two Bowen ratios. The remaining terms are representative values chosen so that each balance closes
+        exactly. The foot note lists which is which.</td></tr>
+      <tr><td class="nm">Day and night comparison</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A diagram of which way each flux points. Labelled inside the figure: the night-time magnitudes are
+        indicative.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; Sensible and latent heat</td></tr>
+      <tr><td class="nm">Flux bars, wind lines, Bowen-ratio regime map</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The two bulk formulas with &rho;&nbsp;=&nbsp;1.15&nbsp;kg&nbsp;m<sup>&minus;3</sup>,
+        c<sub>p</sub>&nbsp;=&nbsp;1004&nbsp;J&nbsp;kg<sup>&minus;1</sup>K<sup>&minus;1</sup> and
+        L<sub>v</sub>&nbsp;=&nbsp;2.50&times;10<sup>6</sup>&nbsp;J&nbsp;kg<sup>&minus;1</sup>. Heat and vapour are assumed
+        to have the same transfer coefficient, which holds near neutral stability and fails in a strong
+        inversion.</td></tr>
+      <tr><td class="nm">Surface presets</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Plausible midday conditions chosen to reproduce the Bowen ratios quoted in the lecture. <b>The Bowen
+        ratios are published; the temperatures and humidities behind them are not measurements.</b></td></tr>
+      <tr><td class="nm">Oasis effect</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A diagram of a mechanism.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; Heat in the ground</td></tr>
+      <tr><td class="nm">Depth&ndash;time map, four depths, the profile</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The analytic solution for a sinusoidal surface temperature over a uniform, semi-infinite, dry solid,
+        with thermal properties from Oke Table&nbsp;2.1. No layering, no moving moisture and no freeze&ndash;thaw,
+        as the foot note states.</td></tr>
+      <tr><td class="nm">Central Sahara, one summer day</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Redrawn from the measured record shown in the lecture (Oke, 1987, after Peel). The dry-sand curves at
+        depth use the computed dry-sand damping depth.</td></tr>
+      <tr><td class="nm">Thermal properties table</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Oke (1987), Table&nbsp;2.1. &kappa; is recomputed as k/C, so it may differ from the printed column in the
+        last digit.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; What the surface does to the radiation</td></tr>
+      <tr><td class="nm">Albedo and emissivity ranges</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Oke (1987), Table&nbsp;1.1.</td></tr>
+      <tr><td class="nm">Albedo against solar altitude</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Smooth fits of the form &alpha;&nbsp;=&nbsp;&alpha;<sub>&infin;</sub>&nbsp;+&nbsp;b&thinsp;e<sup>&minus;h/h<sub>0</sub></sup>
+        to the six measured curves shown in the lecture, sources in the foot note. Each is drawn only over the
+        solar altitudes for which there are data.</td></tr>
+      <tr><td class="nm">Direct and diffuse light through a canopy</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Beer&ndash;Lambert extinction, k&nbsp;=&nbsp;0.65 for the direct beam and 0.33 for diffuse light, through a
+        beta-shaped foliage profile. The foot note calls it a teaching idealisation, not a radiative transfer
+        model.</td></tr>
+      <tr><td class="nm">Photon trapping in a canopy</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A diagram of a mechanism.</td></tr>
+      <tr><td class="nm">Spruce forest profiles</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Drawn from the shape of the measured figure in the lecture (Oke, 1987). Labelled inside the figure: the
+        scale bar gives an interval, not an absolute value.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 5 &middot; Local energy balance explorer</td></tr>
+      <tr><td class="nm">Insolation panels</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The same calculation as Lecture&nbsp;2 page&nbsp;5: Goosse Eqs.&nbsp;2.21&ndash;2.26 with
+        S<sub>0</sub>&nbsp;=&nbsp;1361&nbsp;W&nbsp;m<sup>&minus;2</sup>.</td></tr>
+      <tr><td class="nm">Surface energy budget by surface type</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>F<sub>solar</sub> from the solar geometry through a fixed clear-sky transmissivity of 0.75;
+        F<sub>IR&uarr;</sub> from &epsilon;&sigma;T<sup>4</sup>. <b>The inputs are illustrative presets, not
+        measurements</b>: each surface type has a chosen albedo, emissivity and downward longwave, and a surface
+        temperature that follows a cosine with a set mean, amplitude and lag. The contrast between surfaces is
+        real; the numbers are not Oke&rsquo;s site data, which are on page&nbsp;1. <b>The explorer does not say this
+        on screen.</b></td></tr>
+
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Lecture 4 &middot; Global cycles: water and carbon</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">Figure numbers refer to Goosse et&nbsp;al., chapter&nbsp;2,
+  &sect;2.2&ndash;2.3. This lecture plots more observed quantities than any other: the reservoir inventories, the
+  Mauna Loa and methane records and the carbon budgets are published values typed into the pages. Where a zonal
+  profile or a map would need a gridded dataset, the page draws a smoothed representative curve instead, and the
+  warning is in the grey note at the foot rather than in the figure. Those rows are marked.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; The global water balance</td></tr>
+      <tr><td class="nm">The cycle drawn to scale; reservoir bars</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Trenberth, Smith, Qian, Dai and Fasullo (2007), as in Goosse Fig.&nbsp;2.21.</td></tr>
+      <tr><td class="nm">Residence times</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Volume divided by throughflow, from the same numbers, so they agree with the diagram. Where a reservoir
+        has several outflows the dominant one is used, and the table says so.</td></tr>
+      <tr><td class="nm">Soil water bucket</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>One bucket, daily time step, spun up to a repeating year. Rainfall is generated from each preset&rsquo;s
+        seasonal shape with a fixed seed, so <b>no day in it is an observed day</b>; the presets carry place names,
+        but their annual totals are round numbers for the climate type, not station records. The page calls it a
+        teaching model, not a land surface scheme.</td></tr>
+      <tr><td class="nm">Zonal E&nbsp;&minus;&nbsp;P and surface salinity</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Smoothed representative profiles drawn to reproduce the structure of Goosse Fig.&nbsp;2.24 and the
+        observed salinity pattern. Read for shape, not for a value at any latitude. <b>The warning is in the foot
+        note only.</b></td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; The global carbon budget</td></tr>
+      <tr><td class="nm">CO<sub>2</sub> and CH<sub>4</sub> records</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Published annual means &mdash; the Mauna Loa CO<sub>2</sub> record (Scripps and NOAA) and the NOAA global
+        marine-surface CH<sub>4</sub> mean &mdash; <b>with an idealised seasonal cycle added</b>. Read for shape and
+        magnitude, not for any particular month.</td></tr>
+      <tr><td class="nm">Seasonal amplitude against latitude</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Peak-to-trough amplitudes at eleven background stations from Alert to the South Pole, with the
+        vegetated-land fraction of each 10&deg; band behind them. <b>No source is named on the page for
+        either.</b></td></tr>
+      <tr><td class="nm">Carbon stocks and fluxes</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Ciais et&nbsp;al. (2013), IPCC AR5 WG1 Fig.&nbsp;6.1 &mdash; the source of Goosse
+        Figs.&nbsp;2.25&ndash;2.26.</td></tr>
+      <tr><td class="nm">The budget and its presets</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>AR5 Table&nbsp;6.1 for the 1960s to the 2000s; the Global Carbon Budget 2024 (Friedlingstein et&nbsp;al.)
+        for 2014&ndash;2023, with its budget-imbalance term folded into the land sink so the five terms close. The
+        <em>Lecture arithmetic</em> preset reproduces the sum on the slide and <b>leaves out land-use change on
+        purpose</b>; the gap it leaves is the exercise.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; The oceanic carbon cycle</td></tr>
+      <tr><td class="nm">Zonal air&ndash;sea CO<sub>2</sub> flux</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A smoothed representative curve with the structure of the Takahashi et&nbsp;al. climatology:
+        equatorial source, mid-latitude sinks. Read for shape. <b>The warning is in the foot note only.</b></td></tr>
+      <tr><td class="nm">Carbonate system solver</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>A real equilibrium calculation.</b> It bisects on pH until the alkalinity equation is satisfied,
+        then reports speciation, pCO<sub>2</sub>, the Revelle factor and the saturation states. Constants from
+        Mehrbach et&nbsp;al. (1973) as refitted by Dickson and Millero (1987), Weiss (1974), Lyman (1956), Millero
+        (1995) and Mucci (1983). No pressure, phosphate or silicate, and salinity fixed at 35: accurate enough to
+        teach with, not to publish with.</td></tr>
+      <tr><td class="nm">DIC and alkalinity profiles for the three pumps</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Six-depth profiles for a stirred ocean and for each pump added in turn. <b>Illustrative values, with no
+        source named on the page</b>; the direction of each change is the content. The surface pCO<sub>2</sub>
+        quoted for them comes from the solver above.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; Land, rock and methane</td></tr>
+      <tr><td class="nm">GPP to NBP cascade</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Representative global values consistent with Ciais et&nbsp;al. (2013): GPP 123&nbsp;PgC&nbsp;yr<sup>&minus;1</sup>,
+        about half of it respired by the plants, and an NBP equal to the land sink on page&nbsp;2.</td></tr>
+      <tr><td class="nm">NPP by latitude and month</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td><b>Generated from a smooth function</b> of latitude and season, weighted by land fraction. It has the
+        structure of Goosse Fig.&nbsp;2.28 and is not satellite data. <b>The warning is in the foot note
+        only.</b></td></tr>
+      <tr><td class="nm">Soil carbon pools</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Stocks and turnover times for seven pools, from litter to permafrost, as rounded magnitudes. <b>No source
+        is named on the page.</b></td></tr>
+      <tr><td class="nm">Fire emissions by region</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>The Global Fire Emissions Database pattern as presented by Randerson et&nbsp;al. (2018), the update to
+        Fig.&nbsp;2.29. Regional totals rounded and scaled to 2.2&nbsp;PgC&nbsp;yr<sup>&minus;1</sup>.</td></tr>
+      <tr><td class="nm">Long-term inorganic carbon cycle</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>The three reactions of the lecture&rsquo;s Fig.&nbsp;2.30, with order-of-magnitude flux labels.</td></tr>
+      <tr><td class="nm">Methane box model</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>One well-mixed box starting from a 2024 burden of 5310&nbsp;Tg. <b>The 9.2-year base lifetime is
+        tuned</b> so that the AR5 budget gives the near-zero growth of the 2000s. With the OH feedback on, the
+        lifetime scales as (B/B<sub>0</sub>)<sup>0.28</sup>, which reproduces the published perturbation lifetime of
+        about 12&nbsp;years.</td></tr>
+      <tr><td class="nm">Methane sources and sinks</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>The AR5 top-down estimate for 2000&ndash;2009 (Ciais et&nbsp;al., 2013, Table&nbsp;6.8), adjusted slightly
+        so the terms sum to the published totals of 548 and 540&nbsp;Tg&nbsp;yr<sup>&minus;1</sup>; the published
+        sub-terms have overlapping ranges and do not sum.</td></tr>
+      <tr><td class="nm">Fig. 2.28 &mdash; satellite NPP map</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Replaced by the latitude&ndash;month field above.</td></tr>
+
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Lecture 5 &middot; Modelling the climate system</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">Figure and equation numbers refer to Goosse et&nbsp;al.,
+  chapter&nbsp;3. This is a lecture about models, so most of its demonstrations run a small model on
+  <b>deliberately synthetic input</b> &mdash; an invented landscape, a seeded ensemble, a generated station record.
+  The arithmetic applied to that input is what a real model or evaluation does; the input is not a place and
+  not a dataset.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; Discretising the planet</td></tr>
+      <tr><td class="nm">One grid cell</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>After the grid diagram of McGuffie and Henderson-Sellers (1997).</td></tr>
+      <tr><td class="nm">Coarsening a landscape</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>The landscape is synthetic</b>, built to make the coarsening visible. The grid-box averaging applied
+        to it is what a model does to real orography. The cost readout assumes an explicit CFL limit with an
+        80&nbsp;m&nbsp;s<sup>&minus;1</sup> signal speed; other time-stepping schemes change the numbers, not the
+        exponent.</td></tr>
+      <tr><td class="nm">Resolution by IPCC generation</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Characteristic atmospheric grid spacings for each report, not the grid of any single model; CMIP6
+        after Eyring et&nbsp;al. (2016).</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; The model hierarchy</td></tr>
+      <tr><td class="nm">Complexity against simulated years</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Positions are orders of magnitude, not benchmarks.</td></tr>
+      <tr><td class="nm">Zero-dimensional energy balance model</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Integrated live with a bulk infrared transmissivity. A CO<sub>2</sub> doubling is a
+        3.7&nbsp;W&nbsp;m<sup>&minus;2</sup> cut in outgoing longwave; the volcano is a 3&nbsp;W&nbsp;m<sup>&minus;2</sup>
+        pulse decaying over a year. <b>The 1.1&nbsp;K it returns is the Planck-only response</b>, correct for this
+        model and not an estimate of climate sensitivity.</td></tr>
+      <tr><td class="nm">One-dimensional model in latitude bands</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A diagram of the model&rsquo;s structure.</td></tr>
+      <tr><td class="nm">Components by IPCC generation</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>When each component became standard in comprehensive models, from the first report to AR6. <b>No
+        source is named on the page.</b></td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; The governing equations</td></tr>
+      <tr><td class="nm">Equation diagram and live plot</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Each plot evaluates the equation above it with the slider values: scale analysis, geostrophic wind,
+        advection at a station, continuity, humidity, parcel ascent, buoyancy, density and thickness. Bolton&rsquo;s
+        saturation vapour pressure, the standard saturated adiabat, the ICAO standard atmosphere and the
+        125&nbsp;m&nbsp;K<sup>&minus;1</sup> condensation-level rule. Presets are typical situations, not
+        observations; the scale-analysis magnitudes are orders of magnitude.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; Components, coupling and scale</td></tr>
+      <tr><td class="nm">Coupled model; land surface bucket</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Diagrams of a structure. Nothing to measure.</td></tr>
+      <tr><td class="nm">Sea-ice column</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>A zero-layer Semtner-type model with the constants listed in the foot note. Snow depth is prescribed and
+        the air temperature is a sinusoid of 18&nbsp;K amplitude. No drift, ridging or export.</td></tr>
+      <tr><td class="nm">Downscaling cross-section and statistical fit</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>A synthetic cross-section and a synthetic 365-day record</b> generated from a seeded sequence of days,
+        with realistic elevations, lapse rates and a winter cold-air pool. No real station. The lapse-rate
+        correction and the regression are the methods they are named after.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 5 &middot; Does the model work?</td></tr>
+      <tr><td class="nm">Ensemble against observations; error by member</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>Synthetic</b>: an idealised observed profile, and model errors built as one shared pattern plus
+        independent per-model patterns, from a fixed seed. The 1/&radic;N cancellation is a property of averaging
+        and holds for any errors independent between members. Stated in the foot note, not in the figure.</td></tr>
+      <tr><td class="nm">Typical error by variable</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Indicative magnitudes from the CMIP5 and CMIP6 evaluation chapters (Flato et&nbsp;al., 2013; Eyring
+        et&nbsp;al., 2021). Labelled inside the figure: bar length is an indicative severity, and the units differ
+        from row to row.</td></tr>
+      <tr><td class="nm">Bias correction</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>A synthetic annual series with an &ldquo;observed&rdquo; record to 2020 and a projection to 2100, corrected
+        by offset, drift and trend as in Goosse &sect;3.5.3.</td></tr>
+      <tr><td class="nm">Figs. 3.19&ndash;3.25 &mdash; published model evaluations</td>
+        <td class="tg"><span class="tag t-none">Not reproduced</span></td>
+        <td>Real models against real observations. The demonstrations make the same arguments with synthetic
+        numbers.</td></tr>
+
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sec">Lecture 6 &middot; Response of the climate system to perturbations</h2>
+
+<div class="card">
+  <p class="cap" style="margin-bottom:10px">Figure and equation numbers refer to Goosse et&nbsp;al.,
+  chapter&nbsp;4. The feedback values are those of Soden and Held (2006) as quoted by Goosse, and the forcings are
+  the AR5 assessment; both are used as parameters, so most figures here are computed from real values. Goosse
+  uses 3.8&nbsp;W&nbsp;m<sup>&minus;2</sup> for a CO<sub>2</sub> doubling; these pages use 3.7, matching AR5 and
+  AR6.</p>
+  <table>
+    <thead><tr><th>Figure or demonstration</th><th class="tg">Kind</th><th>Provenance</th></tr></thead>
+    <tbody>
+
+      <tr class="pg"><td colspan="3">Page 1 &middot; Forcing and feedback</td></tr>
+      <tr><td class="nm">Forcing against feedback; the definition of radiative forcing</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Diagrams of definitions, the second after Goosse Fig.&nbsp;4.1.</td></tr>
+      <tr><td class="nm">Greenhouse-gas forcing curve and bar</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The standard IPCC simplified expressions, Goosse Eqs.&nbsp;4.1&ndash;4.3, against the 1750 concentrations
+        of Forster et&nbsp;al. (2007). Good to a few per cent over the slider range, not outside it.</td></tr>
+      <tr><td class="nm">Concentration presets</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Law Dome ice cores and the Mauna Loa record; for 2024, 422&nbsp;ppm, 1930&nbsp;ppb and 337&nbsp;ppb.</td></tr>
+      <tr><td class="nm">Signal-flow graphs and the loop builder</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Goosse&rsquo;s sign convention. The sign of a loop is the product of the signs on its arrows; no
+        magnitude is attached to any arrow.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 2 &middot; The forcing agents</td></tr>
+      <tr><td class="nm">Forcing by agent, 1750&ndash;2011</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>The AR5 assessment (Myhre et&nbsp;al., 2013, Table&nbsp;8.6 and Fig.&nbsp;8.15): aerosol terms as effective
+        radiative forcing, the rest as radiative forcing. Bars show the published 5&ndash;95&nbsp;% ranges. The listed
+        terms sum to 2.25 against the published total of 2.29.</td></tr>
+      <tr><td class="nm">Aerosol interactions</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>A diagram of mechanisms.</td></tr>
+      <tr><td class="nm">Land-use albedo calculator</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td><b>Deliberately crude</b>: three factors, with a surface insolation of 185&nbsp;W&nbsp;m<sup>&minus;2</sup>
+        from the Lecture&nbsp;2 budget and an upward transmission of 0.85, plotted beside the assessed
+        &minus;0.15&nbsp;W&nbsp;m<sup>&minus;2</sup>.</td></tr>
+      <tr><td class="nm">Volcanic, solar and anthropogenic forcing, 1850&ndash;2020</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td><b>A reconstruction, not a published series.</b> Eruption years and approximate peak optical depths are
+        real (after Gao et&nbsp;al., 2008), with a one-year decay; the solar cycle is an 11-year sinusoid of
+        &plusmn;0.09&nbsp;W&nbsp;m<sup>&minus;2</sup>; the anthropogenic curve is interpolated through AR5 values.
+        <b>The dates are the reliable part; the amplitudes are approximate.</b> The warning is in the foot note
+        only.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 3 &middot; The feedback parameter</td></tr>
+      <tr><td class="nm">Imbalance against warming</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Straight lines &Delta;R&nbsp;=&nbsp;&Delta;Q&nbsp;+&nbsp;&lambda;<sub>f</sub>&Delta;T for three values of
+        &lambda;<sub>f</sub>.</td></tr>
+      <tr><td class="nm">Building &lambda;<sub>f</sub> and the sensitivity</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The sum of the Soden and Held (2006) values as quoted by Goosse, converted to warming by
+        &Delta;T&nbsp;=&nbsp;&minus;&Delta;Q/&lambda;<sub>f</sub>. The resulting 2.9&nbsp;K per doubling is not tuned. The
+        &plusmn;0.42 adds the spreads in quadrature, which assumes the terms are independent; the glacial preset is
+        illustrative.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 4 &middot; The physical feedbacks</td></tr>
+      <tr><td class="nm">Signal-flow graphs</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>After Goosse Figs.&nbsp;4.9&ndash;4.13. Signs, not magnitudes.</td></tr>
+      <tr><td class="nm">Lapse-rate profiles</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>&lambda;<sub>L</sub>&nbsp;=&nbsp;&lambda;<sub>0</sub>(r&nbsp;&minus;&nbsp;1) with
+        &lambda;<sub>0</sub>&nbsp;=&nbsp;&minus;3.2. The global r&nbsp;=&nbsp;1.25 is chosen to reproduce
+        &lambda;<sub>L</sub>&nbsp;=&nbsp;&minus;0.8; the tropical and polar values of 1.4 and 0.6 are
+        illustrative.</td></tr>
+      <tr><td class="nm">Water vapour against lapse rate, across models</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td><b>Synthetic</b>: generated from a fixed seed with an imposed correlation of &minus;0.9, to show the shape
+        of the anticorrelation reported by Soden and Held (2006) and Bony et&nbsp;al. (2006). <b>Not any real
+        ensemble.</b> The warning is in the foot note only.</td></tr>
+      <tr><td class="nm">Cloud radiative effect calculator</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>Longwave from the higher of the cloud top and a 4&nbsp;km clear-sky emission level, 6.5&nbsp;K&nbsp;km<sup>&minus;1</sup>
+        from a 288&nbsp;K surface, clear-sky albedo 0.15 and a factor 0.75 on the shortwave term. The global preset
+        returns a net effect near &minus;20&nbsp;W&nbsp;m<sup>&minus;2</sup>, matching the observed value; the
+        individual cloud types are representative.</td></tr>
+      <tr><td class="nm">The five feedbacks together</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Soden and Held (2006) as quoted by Goosse, with their ranges.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 5 &middot; The transient response</td></tr>
+      <tr><td class="nm">Two climates under the same forcing</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>C<sub>s</sub>&thinsp;dT/dt&nbsp;=&nbsp;&Delta;Q&nbsp;+&nbsp;&lambda;<sub>f</sub>&Delta;T integrated with a
+        fortnightly step, which recovers the analytic solution for a step forcing. Defaults are Goosse&rsquo;s worked
+        example: C<sub>s</sub>&nbsp;=&nbsp;8.36&times;10<sup>8</sup>&nbsp;J&nbsp;K<sup>&minus;1</sup>m<sup>&minus;2</sup>,
+        &lambda;<sub>f</sub> of &minus;1.85 and &minus;0.93. The volcanic and solar scenarios are idealised.</td></tr>
+      <tr><td class="nm">Two-layer ocean</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Qualitative, as the foot note states.</td></tr>
+      <tr><td class="nm">Present-day forcing, warming and imbalance</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Approximate current values: anthropogenic ERF and observed warming since 1850&ndash;1900 from AR6, and an
+        Earth energy imbalance near 0.9&nbsp;W&nbsp;m<sup>&minus;2</sup> from the ocean heat content record.</td></tr>
+
+      <tr class="pg"><td colspan="3">Page 6 &middot; Biogeochemical and biogeophysical feedbacks</td></tr>
+      <tr><td class="nm">Where emitted carbon ends up</td>
+        <td class="tg"><span class="tag t-calc">Computed</span></td>
+        <td>The &beta;&ndash;&gamma; framework of Friedlingstein et&nbsp;al. (2006), with parameters close to the C4MIP
+        multi-model means; the &gamma;<sub>L</sub> slider spans the factor-of-four spread between models. <b>A
+        steady-state diagnostic, not a projection</b>: its airborne fraction is not comparable with the observed
+        value of about 0.45.</td></tr>
+      <tr><td class="nm">Tundra and taiga, Sahara, weathering and erosion loops</td>
+        <td class="tg"><span class="tag t-sch">Schematic</span></td>
+        <td>Signal-flow graphs, plus a drawing of snow-covered forest beside snow-covered tundra.</td></tr>
+      <tr><td class="nm">Ocean carbonate budget</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Sarmiento and Gruber (2006), as Goosse Fig.&nbsp;4.13. <b>The saturation-horizon depths are a schematic
+        mapping</b> that puts today&rsquo;s horizon near 3500&nbsp;m: the direction of change is physics, the depths
+        are illustrative. The 30&nbsp;ppm response to doubled river input is Goosse&rsquo;s estimate.</td></tr>
+      <tr><td class="nm">Feedbacks by timescale</td>
+        <td class="tg"><span class="tag t-data">Real values</span></td>
+        <td>Order-of-magnitude ranges compiled from the whole of chapter&nbsp;4, on a logarithmic axis.</td></tr>
 
     </tbody>
   </table>
@@ -750,8 +1319,8 @@ appendix for Lectures 1, 7 and 8</p>
   threshold of 0.35&nbsp;Sv is chosen, not measured; treat it as an illustration of <em>structure</em>. But the
   <em>existence</em> of two stable states and a hysteresis loop follows from the equations, not from the
   tuning, and would survive any parameter choice in a wide range. The same distinction applies throughout:
-  ask whether a conclusion depends on the numbers or on the shape of the equations. The conclusions this
-  lecture asks you to remember are all of the second kind.</div>
+  ask whether a conclusion depends on the numbers or on the shape of the equations. The conclusions these
+  lectures ask you to remember are all of the second kind.</div>
 
   <div class="q"><b>And the honest limit of the whole approach.</b> A demonstration that reproduces a
   published result is evidence about the method, not independent confirmation of the result. Nothing on these
@@ -762,31 +1331,39 @@ appendix for Lectures 1, 7 and 8</p>
 <h2 class="sec">Scope</h2>
 
 <div class="card">
-  <p class="note" style="margin-top:0">This appendix covers <b>Lectures&nbsp;1, 7 and&nbsp;8</b>. The
-  interactive material for Lectures&nbsp;2 to&nbsp;6 carries the same kind of sourcing in the grey note at the
-  foot of each page, and those pages contain a much higher proportion of closed-form calculation and a much
-  lower proportion of palaeoclimate proxy material &mdash; there is very little in them that could be mistaken
-  for a measurement. As the rest of the course material is revised, its figures will be added to this
-  table.</p>
+  <p class="note" style="margin-top:0">This appendix covers <b>all eight lectures</b>. It does not cover the
+  three PC labs.</p>
 
-  <p class="note"><b>The three lectures are not alike in this respect, and the difference is worth
-  noticing.</b> Lecture&nbsp;1 describes a system whose physics is largely closed-form &mdash; hydrostatics,
-  Coriolis, Ekman, the equation of state &mdash; so almost everything in it is <em>computed</em> from stated
-  constants, and the observational maps in its source deck are deliberately left to the lecturer rather than
-  redrawn. Lecture&nbsp;7 asks about the past, where the evidence is proxy records and reconstructed fields
-  that a self-contained page cannot honestly redraw &mdash; so it contains a good deal of labelled schematic.
-  Lecture&nbsp;8 asks about the future, where there is no data at all, only models &mdash; so almost everything
-  in it is computed, and several of its demonstrations can be checked against published assessed numbers on
-  screen. Three subjects, three honest strategies for the same constraint.</p>
+  <p class="note"><b>The lectures are not alike in this respect, and the difference is worth noticing.</b>
+  Lectures&nbsp;1 to&nbsp;3 describe physics that is largely closed-form &mdash; radiation, hydrostatics, Coriolis,
+  Ekman, the equation of state, the surface energy balance &mdash; so almost everything in them is
+  <em>computed</em> from stated constants, with a few reference values such as the US Standard Atmosphere and
+  Oke&rsquo;s site measurements quoted. Lecture&nbsp;4 plots more observed quantities than any other, as short
+  tables of published values, and draws smoothed representative curves where a gridded field would be needed.
+  Lecture&nbsp;5 is about models, so it runs them on deliberately synthetic input. Lecture&nbsp;6 computes with
+  published feedback and forcing values as its parameters. Lecture&nbsp;7 asks about the past, where the evidence
+  is proxy records and reconstructed fields that a self-contained page cannot honestly redraw &mdash; so it
+  contains a good deal of labelled schematic. Lecture&nbsp;8 asks about the future, where there is no data at
+  all, only models &mdash; so almost everything in it is computed, and several of its demonstrations can be
+  checked against published assessed numbers on screen. Different subjects, different strategies for the same
+  constraint.</p>
+
+  <p class="note"><b>Where the pages fall short of their own rule.</b> Five figures quote values with no source
+  named on their page: two markers on the power ladder in Lecture&nbsp;2, the CO<sub>2</sub> seasonal
+  amplitudes, the soil carbon pools and the ocean pump profiles in Lecture&nbsp;4, and the chronology of model
+  components in Lecture&nbsp;5. The Lecture&nbsp;3 explorer does not say on screen that its surface inputs are
+  presets, and several representative curves in Lectures&nbsp;4 and&nbsp;6 carry their warning only in the foot
+  note. All of these are marked in the tables above.</p>
   <p class="note">If you find a figure anywhere in this course that you cannot classify into one of the four
   kinds above, that is a defect and worth reporting.</p>
 </div>
 
-<p class="foot">Sources for every value quoted are in the grey note at the foot of the page the figure appears
-on. The textbook throughout is Goosse et&nbsp;al., <i>Introduction to Climate Dynamics and Climate
-Modelling</i>, chapters&nbsp;5 and&nbsp;6. Published models used live on these pages: Lorenz (1963); Stommel
-(1961); Imbrie and Imbrie (1980); Stocker and Johnsen (2003); Joos et&nbsp;al. (2013); Geoffroy et&nbsp;al.
-(2013); Schoof (2007). Orbital parameters follow Berger (1978) by way of the PMIP protocols. Assessed values
+<p class="foot">Sources are in the grey note at the foot of the page the figure appears on, except
+where a row above says none is named. The textbook throughout is Goosse et&nbsp;al., <i>Introduction to Climate
+Dynamics and Climate Modelling</i>, chapters&nbsp;1 to&nbsp;6; Lecture&nbsp;3 follows Oke, <i>Boundary Layer
+Climates</i> (2nd edn, 1987). Published models used live on these pages: Friedlingstein et&nbsp;al. (2006);
+Lorenz (1963); Stommel (1961); Imbrie and Imbrie (1980); Stocker and Johnsen (2003); Joos et&nbsp;al. (2013);
+Geoffroy et&nbsp;al. (2013); Schoof (2007). Orbital parameters follow Berger (1978) by way of the PMIP protocols. Assessed values
 quoted in Lecture&nbsp;8 are from IPCC AR6 WG1 (2021) unless otherwise stated at the foot of the page they
 appear on.
 &nbsp;&middot;&nbsp; Back to the <a href="../">course page</a>.</p>

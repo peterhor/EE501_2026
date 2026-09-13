@@ -419,6 +419,8 @@ longwave effect, which is the physically important simplification), a lapse rate
 from a 288 K surface, a clear-sky albedo of 0.15, and a factor 0.75 on the shortwave term for solar geometry.
 With the global-mean preset it returns a net cloud radiative effect near &minus;20 W m<sup>&minus;2</sup>,
 matching the observed value; the individual cloud types are representative rather than exact.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
 &nbsp;&middot;&nbsp; Next: <a href="transient-response.html">the transient response &rarr;</a></p>
 
 <div class="nav">
@@ -436,11 +438,16 @@ matching the observed value; the individual cloud types are representative rathe
     for(const k in a) e.setAttribute(k,a[k]);
     if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
   function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  /* arrowhead only: tip at (x,y), pointing along unit vector (ux,uy) - for the ends of curves */
+  function head(g,x,y,ux,uy,col){
+    const h=8.5;
+    put(g,'polygon',{points:[[x,y],[x-ux*h-uy*4.4,y-uy*h+ux*4.4],[x-ux*h+uy*4.4,y-uy*h-ux*4.4]]
+      .map(p=>p.join(',')).join(' '),fill:col});
+  }
   function arrow(g,x1,y1,x2,y2,col,w){
     const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1, ux=dx/L, uy=dy/L, h=8.5;
     put(g,'line',{x1:x1,y1:y1,x2:x2-ux*h,y2:y2-uy*h,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
-    put(g,'polygon',{points:[[x2,y2],[x2-ux*h-uy*4.4,y2-uy*h+ux*4.4],[x2-ux*h+uy*4.4,y2-uy*h-ux*4.4]]
-      .map(p=>p.join(',')).join(' '),fill:col});
+    head(g,x2,y2,ux,uy,col);
   }
 
   /* a reusable 4-node signal flow graph */
@@ -463,8 +470,8 @@ matching the observed value; the individual cloud types are representative rathe
         'font-weight':700},signs[i]>0?'+':'−');
     }
     const sc3=signs[3]>0?'var(--pos)':'var(--neg)';
-    put(g,'path',{d:'M 736 132 C 736 182, 86 182, 86 134',fill:'none',stroke:sc3,'stroke-width':2});
-    arrow(g,150,172,88,136,sc3,2);
+    put(g,'path',{d:'M 736 132 C 736 182, 86 182, 86 141',fill:'none',stroke:sc3,'stroke-width':2});
+    head(g,86,133,0,-1,sc3);
     put(g,'text',{x:411,y:196,'text-anchor':'middle','font-size':17,fill:sc3,'font-weight':700},
       signs[3]>0?'+':'−');
     put(g,'circle',{cx:411,cy:46,r:17,fill:'none',stroke:col,'stroke-width':2});

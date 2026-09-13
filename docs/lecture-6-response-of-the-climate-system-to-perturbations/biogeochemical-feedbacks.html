@@ -496,6 +496,8 @@ a schematic linear mapping from the preserved fraction, chosen to put the presen
 direction and the rebalancing are the physics, the depths are illustrative. The 30 ppm response to a doubled
 river input is Goosse's quoted estimate. Timescales in the closing ladder are order-of-magnitude ranges compiled
 from the whole chapter.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
 &nbsp;&middot;&nbsp; Back to the <a href="../">course page</a>.</p>
 
 <div class="nav">
@@ -513,11 +515,16 @@ from the whole chapter.
     for(const k in a) e.setAttribute(k,a[k]);
     if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
   function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  /* arrowhead only: tip at (x,y), pointing along unit vector (ux,uy) - for the ends of curves */
+  function head(g,x,y,ux,uy,col){
+    const h=8.5;
+    put(g,'polygon',{points:[[x,y],[x-ux*h-uy*4.4,y-uy*h+ux*4.4],[x-ux*h+uy*4.4,y-uy*h-ux*4.4]]
+      .map(p=>p.join(',')).join(' '),fill:col});
+  }
   function arrow(g,x1,y1,x2,y2,col,w){
     const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1, ux=dx/L, uy=dy/L, h=8.5;
     put(g,'line',{x1:x1,y1:y1,x2:x2-ux*h,y2:y2-uy*h,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
-    put(g,'polygon',{points:[[x2,y2],[x2-ux*h-uy*4.4,y2-uy*h+ux*4.4],[x2-ux*h+uy*4.4,y2-uy*h-ux*4.4]]
-      .map(p=>p.join(',')).join(' '),fill:col});
+    head(g,x2,y2,ux,uy,col);
   }
   /* compact 4-node flow graph, scalable to a chosen width */
   function flow(g,x0,W,nodes,signs,title,yTop){
@@ -541,9 +548,9 @@ from the whole chapter.
     }
     const sc3=signs[3]>0?'var(--pos)':'var(--neg)';
     const yl=yb+34;
-    put(g,'path',{d:'M '+xs[3]+' '+yb+' C '+xs[3]+' '+yl+', '+xs[0]+' '+yl+', '+xs[0]+' '+(yb+2),
+    put(g,'path',{d:'M '+xs[3]+' '+yb+' C '+xs[3]+' '+yl+', '+xs[0]+' '+yl+', '+xs[0]+' '+(yb+10),
       fill:'none',stroke:sc3,'stroke-width':1.8});
-    arrow(g,xs[0]+34,yl-8,xs[0]+2,yb+4,sc3,1.8);
+    head(g,xs[0],yb+2,0,-1,sc3);
     put(g,'text',{x:(xs[0]+xs[3])/2,y:yl+2,'text-anchor':'middle','font-size':15,fill:sc3,
       'font-weight':700},signs[3]>0?'+':'−');
     put(g,'circle',{cx:(xs[0]+xs[3])/2,cy:yt-22,r:14,fill:'none',stroke:col,'stroke-width':1.8});

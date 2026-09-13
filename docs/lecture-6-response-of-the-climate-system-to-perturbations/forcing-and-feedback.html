@@ -316,6 +316,10 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
     at the head.</li>
     <li>A <b style="color:var(--neg)">&minus;</b> on an arrow: an increase at the tail produces a
     <em>decrease</em> at the head.</li>
+    <li>A sign belongs to the <em>link</em>, not to the direction anything is moving. To follow a change
+    round the loop, keep its direction across a <b style="color:var(--pos)">+</b> and reverse it across a
+    <b style="color:var(--neg)">&minus;</b>. A <b style="color:var(--pos)">+</b> link can carry a decrease:
+    less snow and ice cover, lower surface albedo.</li>
     <li>The <b>sign of the loop</b> is the <b>product</b> of the signs around it. Positive &rarr; the loop
     amplifies the original change. Negative &rarr; it damps it.</li>
     <li>The circled sign in the middle states the answer, so you can check yourself.</li>
@@ -350,8 +354,9 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
   <p class="q"><b>Question.</b> Load <b>Snow&ndash;ice albedo</b> and flip the sign on the
   <i>surface albedo &rarr; absorbed solar</i> link from &minus; to +. The loop turns negative. What world would
   that be, and why is it not ours?
-  <span style="color:var(--text-muted)">One in which a brighter surface absorbed <em>more</em> sunlight, which
-  is a contradiction in terms. The exercise is worth doing anyway, because it shows that the sign of a feedback
+  <span style="color:var(--text-muted)">One in which a higher surface albedo, a brighter surface, absorbed
+  <em>more</em> sunlight. That is a contradiction in terms: albedo is the fraction reflected, so what is
+  absorbed is the rest. The exercise is worth doing anyway, because it shows that the sign of a feedback
   is not a property of the diagram &mdash; it is a claim about physics on every single link, and each link can
   be measured and argued about separately. That is exactly how disagreements about cloud feedback are actually
   conducted.</span></p>
@@ -394,6 +399,8 @@ for a doubling is quoted as 3.7 throughout this lecture, matching AR5 and AR6; G
 which is why his climate sensitivities are a shade larger than the ones here. Preset concentrations are observed
 global means from Law Dome ice cores and the Mauna Loa record; the 2024 values used are 422 ppm, 1930 ppb and
 337 ppb. The signal-flow convention is Goosse's own, used unchanged in his Figs. 4.9, 4.12, 4.14 and 4.16.
+&nbsp;&middot;&nbsp; What on these pages is data and what is not:
+<a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
 &nbsp;&middot;&nbsp; Next: <a href="forcing-agents.html">the forcing agents &rarr;</a></p>
 
 <div class="nav">
@@ -411,11 +418,16 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
     for(const k in a) e.setAttribute(k,a[k]);
     if(txt!==undefined) e.textContent=txt; p.appendChild(e); return e;}
   function clr(g){while(g.firstChild) g.removeChild(g.firstChild);}
+  /* arrowhead only: tip at (x,y), pointing along unit vector (ux,uy) - for the ends of curves */
+  function head(g,x,y,ux,uy,col){
+    const h=9;
+    put(g,'polygon',{points:[[x,y],[x-ux*h-uy*4.6,y-uy*h+ux*4.6],[x-ux*h+uy*4.6,y-uy*h-ux*4.6]]
+      .map(p=>p.join(',')).join(' '),fill:col});
+  }
   function arrow(g,x1,y1,x2,y2,col,w){
     const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1, ux=dx/L, uy=dy/L, h=9;
     put(g,'line',{x1:x1,y1:y1,x2:x2-ux*h,y2:y2-uy*h,stroke:col,'stroke-width':w||2,'stroke-linecap':'round'});
-    put(g,'polygon',{points:[[x2,y2],[x2-ux*h-uy*4.6,y2-uy*h+ux*4.6],[x2-ux*h+uy*4.6,y2-uy*h-ux*4.6]]
-      .map(p=>p.join(',')).join(' '),fill:col});
+    head(g,x2,y2,ux,uy,col);
   }
 
   /* 1 - forcing vs feedback schematic */
@@ -427,7 +439,7 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
       'letter-spacing':'.08em'},'THE CLIMATE SYSTEM');
     const cx=440, cy=158, rx=96, ry=30;
     put(g,'ellipse',{cx:cx,cy:cy,rx:rx,ry:ry,fill:'none',stroke:'var(--pos)','stroke-width':2.2});
-    arrow(g,cx+rx-3,cy-8,cx+rx+1,cy+12,'var(--pos)',2.2);
+    head(g,cx+rx,cy+5,0,1,'var(--pos)');
     put(g,'text',{x:cx,y:cy+5,'text-anchor':'middle','font-size':13.5,fill:'var(--pos)',
       'font-weight':600},'feedback');
     put(g,'text',{x:cx,y:cy+50,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
@@ -637,8 +649,8 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
       put(g,'text',{x:(N[i].x+N[i+1].x)/2,y:100,'text-anchor':'middle','font-size':17,
         fill:'var(--pos)','font-weight':700},'+');
     }
-    put(g,'path',{d:'M 736 140 C 736 192, 82 192, 82 142',fill:'none',stroke:'var(--pos)','stroke-width':2});
-    arrow(g,140,180,84,144,'var(--pos)',2);
+    put(g,'path',{d:'M 736 140 C 736 192, 82 192, 82 150',fill:'none',stroke:'var(--pos)','stroke-width':2});
+    head(g,82,141,0,-1,'var(--pos)');
     put(g,'text',{x:409,y:206,'text-anchor':'middle','font-size':17,fill:'var(--pos)','font-weight':700},'+');
     put(g,'circle',{cx:409,cy:52,r:17,fill:'none',stroke:'var(--pos)','stroke-width':2});
     put(g,'text',{x:409,y:59,'text-anchor':'middle','font-size':20,fill:'var(--pos)','font-weight':700},'+');
@@ -652,25 +664,38 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
       wv:{name:'Water vapour',
           nodes:['surface temperature','evaporation','water vapour','longwave trapped'],
           truth:[1,1,1,1],
-          why:'Warmer air holds exponentially more moisture at constant relative humidity, and water vapour is the strongest greenhouse gas in the atmosphere. Four positive links, so an amplifying loop - and the largest of all the direct physical feedbacks.'},
+          why:'Warmer air holds exponentially more moisture at constant relative humidity, and water vapour is the strongest greenhouse gas in the atmosphere. Zero minus signs, an even number: positive, and the largest of the direct physical feedbacks.'},
       ice:{name:'Snow–ice albedo',
           nodes:['surface temperature','snow and ice cover','surface albedo','absorbed solar'],
           truth:[-1,1,-1,1],
-          why:'Warming melts ice; less ice means a darker surface; a darker surface absorbs more sunlight; more absorbed sunlight warms further. Two minus signs - an even number - so the loop is positive.'},
+          why:'Warming melts snow and ice and exposes the darker ground or ocean beneath, so the surface albedo, the fraction of sunlight reflected, falls. A lower albedo reflects less sunlight and absorbs more, and the extra absorbed sunlight warms the surface further. Two minus signs, an even number: positive.'},
       planck:{name:'Planck response',
           nodes:['surface temperature','emitting temperature','outgoing longwave','energy retained'],
           truth:[1,1,-1,1],
-          why:'A warmer body radiates more, and steeply - σT⁴. That extra loss is subtracted from the surplus driving the warming. One minus sign, so a negative loop. This is the feedback that makes climate stable at all, and page 3 puts a number on it.'},
+          why:'A warmer body radiates more, and steeply - σT⁴. That extra loss is subtracted from the surplus driving the warming. One minus sign, an odd number: negative. This is the feedback that makes climate stable at all, and page 3 puts a number on it.'},
       weather:{name:'Weathering thermostat',
           nodes:['atmospheric CO₂','temperature and rainfall','silicate weathering','CO₂ consumed'],
           truth:[1,1,1,-1],
-          why:'More CO₂ warms and wets the continents; warm wet rock weathers faster; weathering consumes CO₂. One minus sign, so a stabilising loop - and the reason Earth has stayed habitable for four billion years. It works over hundreds of thousands of years, which is exactly why it is no help now.'},
+          why:'More CO₂ warms and wets the continents; warm wet rock weathers faster; weathering consumes CO₂. One minus sign, an odd number: negative, a stabilising loop - and the leading explanation for why Earth has stayed habitable for about four billion years. It works over hundreds of thousands of years, which is exactly why it is no help now.'},
       sahara:{name:'Sahara vegetation',
           nodes:['vegetation cover','surface albedo','absorbed solar','monsoon rainfall'],
-          truth:[-1,-1,1,1],
-          why:'Less vegetation means a brighter surface, less absorbed sunlight, a weaker monsoon and so still less vegetation. Two minus signs - positive, and strong enough to have flipped the Sahara from green to desert in a few centuries. You will simulate exactly this in PC Lab 3.'}
+          truth:[-1,-1,1,1], start:-1,
+          why:'Bare sand is brighter than plants, so losing vegetation raises the albedo; a higher albedo absorbs less sunlight; less absorbed sunlight weakens the ascent that drives the monsoon; less rain supports less vegetation. Two minus signs, an even number: positive, and strong enough to have flipped the Sahara from green to desert in a few centuries. You will simulate exactly this in PC Lab 3.'}
     };
     let cur='wv', signs=LOOPS.wv.truth.slice();
+
+    /* walk a change round the loop from its real signs: a + link keeps the direction, a − reverses it */
+    function chain(L){
+      const d0=L.start||1, dir=d=>d>0?'up':'down';
+      let d=d0, s=L.nodes[0]+' '+dir(d);
+      L.truth.forEach((t,i)=>{
+        d*=t;
+        s+=' → <span style="color:var('+(t>0?'--pos':'--neg')+');white-space:nowrap">('+
+          (t>0?'+ link: same':'− link: opposite')+')</span> → '+L.nodes[(i+1)%4]+' '+dir(d);
+      });
+      s+=d===d0?', reinforcing the original change.':', opposing the original change.';
+      return s.charAt(0).toUpperCase()+s.slice(1);
+    }
 
     function drawRow(){
       const row=$('signRow');
@@ -729,7 +754,7 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
         ? '<span style="color:var(--warn)">You have changed a link, so this is no longer the real feedback.</span> '+
           'As drawn the product is <b>'+(prod>0?'positive':'negative')+'</b>, so the loop '+
           (prod>0?'amplifies':'damps')+' any change. Reload the preset to restore the physics.'
-        : L.why);
+        : '<span style="display:block;margin:4px 0 8px">'+chain(L)+'</span>'+L.why);
     }
     document.querySelectorAll('[data-loop]').forEach(b=>{
       b.onclick=()=>{
