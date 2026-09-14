@@ -670,9 +670,9 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
           truth:[-1,1,-1,1],
           why:'Warming melts snow and ice and exposes the darker ground or ocean beneath, so the surface albedo, the fraction of sunlight reflected, falls. A lower albedo reflects less sunlight and absorbs more, and the extra absorbed sunlight warms the surface further. Two minus signs, an even number: positive.'},
       planck:{name:'Planck response',
-          nodes:['surface temperature','emitting temperature','outgoing longwave','energy retained'],
+          nodes:['surface temperature','emitting temperature','outgoing longwave','energy imbalance'],
           truth:[1,1,-1,1],
-          why:'A warmer body radiates more, and steeply - σT⁴. That extra loss is subtracted from the surplus driving the warming. One minus sign, an odd number: negative. This is the feedback that makes climate stable at all, and page 3 puts a number on it.'},
+          why:'Suppose something nudges surface temperature up. The emitting temperature, the temperature of the layer that radiates to space, rises with it, so outgoing longwave increases, steeply, as σT⁴. More energy leaving means the energy imbalance at the top of the atmosphere shrinks, so the warming tendency weakens. The loop returns a cooling tendency against the original warming. One minus sign, an odd number: negative. This is the feedback that makes climate stable at all, and page 3 puts a number on it.'},
       weather:{name:'Weathering thermostat',
           nodes:['atmospheric CO₂','temperature and rainfall','silicate weathering','CO₂ consumed'],
           truth:[1,1,1,-1],
@@ -684,16 +684,18 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
     };
     let cur='wv', signs=LOOPS.wv.truth.slice();
 
-    /* walk a change round the loop from its real signs: a + link keeps the direction, a − reverses it */
+    /* walk a change round the loop from its real signs: a + link keeps the direction, a − reverses it.
+       What comes back to the starting variable is a push (a tendency), not a new value. */
     function chain(L){
       const d0=L.start||1, dir=d=>d>0?'up':'down';
       let d=d0, s=L.nodes[0]+' '+dir(d);
       L.truth.forEach((t,i)=>{
         d*=t;
         s+=' → <span style="color:var('+(t>0?'--pos':'--neg')+');white-space:nowrap">('+
-          (t>0?'+ link: same':'− link: opposite')+')</span> → '+L.nodes[(i+1)%4]+' '+dir(d);
+          (t>0?'+ link: same':'− link: opposite')+')</span> → '+L.nodes[(i+1)%4]+
+          (i===3?' pushed ':' ')+dir(d);
       });
-      s+=d===d0?', reinforcing the original change.':', opposing the original change.';
+      s+=': a tendency that '+(d===d0?'reinforces':'opposes')+' the original '+(d0>0?'rise':'fall')+'.';
       return s.charAt(0).toUpperCase()+s.slice(1);
     }
 
