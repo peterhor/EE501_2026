@@ -130,7 +130,7 @@ Response of the climate system to perturbations &middot; 4 of 6</p>
   <p class="note">Two facts, and the feedback follows from them.</p>
   <ul class="pl">
     <li><b>Saturation vapour pressure rises quasi-exponentially with temperature.</b> About
-    <b>7&thinsp;% per kelvin</b> near room temperature. That is the Clausius&ndash;Clapeyron relation, and it
+    <b>7&thinsp;% per kelvin</b> at the temperatures of the lower atmosphere. That is the Clausius&ndash;Clapeyron relation, and it
     is thermodynamics, not climatology.</li>
     <li><b>Relative humidity stays roughly constant.</b> This one is an observation, supported by models rather
     than derived. It means the actual vapour content tracks the saturation value, so the atmosphere really does
@@ -200,8 +200,8 @@ Response of the climate system to perturbations &middot; 4 of 6</p>
 
   <div class="readout" id="lrRO"></div>
 
-  <p class="q"><b>Question.</b> The Arctic warms two to three times as fast as the global mean, and almost all
-  of that warming is at the surface. That gives a <em>positive</em> lapse-rate feedback there. So why is the
+  <p class="q"><b>Question.</b> The Arctic has warmed nearly four times as fast as the global mean since 1979
+  (Rantanen et al., 2022), and almost all of that warming is at the surface. That gives a <em>positive</em> lapse-rate feedback there. So why is the
   global &lambda;<sub>L</sub> negative?
   <span style="color:var(--text-muted)">Area and radiative leverage. The tropics are half the planet's surface
   and emit far more longwave than the poles do, so the tropical top-heavy profile dominates the global mean.
@@ -280,7 +280,7 @@ Response of the climate system to perturbations &middot; 4 of 6</p>
   The two effects nearly cancel. Is that a coincidence?
   <span style="color:var(--text-muted)">Not entirely. A deep tower is both very bright and very cold, so it
   maximises both effects at once, and in the tropics they land within a few W m<sup>&minus;2</sup> of each
-  other. It is close enough to have been noticed and argued about for forty years, and it means the net effect
+  other. It is close enough to have been noticed and argued about for decades, and it means the net effect
   of tropical deep convection on the budget is a small difference between two large numbers &mdash; which is
   exactly the arithmetic that makes a quantity hard to compute.</span></p>
 
@@ -803,16 +803,16 @@ matching the observed value; the individual cloud types are representative rathe
            '<b>Low cloud cools, unambiguously</b> — and it is the cloud type models disagree about most.';
       else if(c.net>5)
         m+='A cold top emits far less than the surface it hides, and a thin one barely reflects. '+
-           '<b>High thin cloud warms.</b> Cirrus is the only common cloud whose net effect is a warming, and '+
+           '<b>High thin cloud warms.</b> Thin cirrus is the common cloud type with a clear net warming, and '+
            'it is the reason contrails appear as a positive term on <a href="forcing-agents.html">page 2</a>.';
       else if(Math.abs(c.net)<8)
         m+='The two effects have nearly cancelled. Tropical deep convection sits close to this point, which '+
-           'means its net contribution is a small residual between two terms of order 50 W m⁻² — an '+
+           'means its net contribution is a small residual between two terms each of order 100 W m⁻² where the towers are — an '+
            'uncomfortable position to compute from.';
       else
         m+='Reflection wins. For comparison, the observed <b>global</b> net cloud radiative effect is about '+
-           '<b>−20 W m⁻²</b>: clouds cool the present-day Earth, by roughly five times the entire '+
-           'anthropogenic forcing. What matters for feedback, though, is not this number but how it '+
+           '<b>−20 W m⁻²</b>: clouds cool the present-day Earth, by roughly nine times the entire '+
+           'anthropogenic forcing of +2.25 W m⁻². What matters for feedback, though, is not this number but how it '+
            '<em>changes</em> with warming.';
       $('cldRO').innerHTML=m;
     }

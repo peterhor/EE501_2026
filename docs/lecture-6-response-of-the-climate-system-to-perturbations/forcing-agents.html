@@ -119,7 +119,7 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
     <h1>The forcing agents</h1>
     <p class="sub">Everything that has pushed on the Earth's radiative budget since 1750, converted into the
     one currency from <a href="forcing-and-feedback.html">page&nbsp;1</a> and laid side by side. Some are
-    positive, some negative, and the surprising thing is how nearly they cancel.</p>
+    positive, some negative, and the cooling agents cancel about a third of the warming ones.</p>
   </div>
   <button class="toggle" id="themeBtn">Dark</button>
 </header>
@@ -155,8 +155,8 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
   <p class="q"><b>Question.</b> Switch on <b>CO<sub>2</sub></b> alone: 1.82 W m<sup>&minus;2</sup>. Now switch on
   everything anthropogenic: about 2.3. But the greenhouse gases alone come to roughly 3.3. Where did a whole
   watt per square metre go?
-  <span style="color:var(--text-muted)">Aerosols, almost all of it. They have been cancelling something like a
-  third of the greenhouse forcing for a century, and nobody chose that &mdash; it is a side-effect of burning
+  <span style="color:var(--text-muted)">Aerosols, most of it: &minus;0.86 of the &minus;1.00, with land use supplying most of the rest. By
+  2011 aerosols were cancelling about a quarter of the greenhouse forcing, and nobody chose that &mdash; it is a side-effect of burning
   dirty fuel. It also means the warming we have seen is the response to a forcing substantially smaller than
   the greenhouse forcing, which is why cleaning up air pollution, an unambiguously good thing to do, unmasks
   warming that was already paid for.</span></p>
@@ -177,7 +177,7 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
   <p class="cap">Long-lived, well mixed, and computable from a formula.</p>
   <p class="note" style="margin-top:0">CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O and the halocarbons stay
   in the atmosphere for decades to centuries, which is long enough for circulation to mix them almost uniformly.
-  Hemispheric differences are a per cent or two. That homogeneity is exactly why a single global-mean number
+  Differences between the hemispheres are a few per cent at most. That homogeneity is exactly why a single global-mean number
   describes them well, and why <a href="forcing-and-feedback.html">the formulas on page&nbsp;1</a> work at all.
   Everything else on this page is worse behaved.</p>
   <p class="note"><b>Ozone is the exception that proves the rule.</b> It lives for weeks, so its concentration
@@ -221,8 +221,9 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
 
   <div class="warnbox"><b>Optical depth, in one line.</b> Aerosol amount is usually reported as
   <b>aerosol optical depth</b>, a measure of how much of a beam survives the passage through the atmosphere:
-  zero means perfectly transparent, and the transmitted fraction is e<sup>&minus;&tau;</sup>. Typical clean
-  background values are 0.05; heavily polluted air or a fresh volcanic cloud reaches 0.2&ndash;0.3.</div>
+  zero means perfectly transparent, and the transmitted fraction is e<sup>&minus;&tau;</sup>. Clean background
+  values are about 0.05; the stratospheric aerosol from Pinatubo reached about 0.1&ndash;0.15 in the
+  global mean; heavily polluted air can exceed 1.</div>
 
   <p class="q"><b>Question.</b> Aerosols have a lifetime of about a week. Greenhouse gases last for a century or
   more. What follows for policy from that one fact?
@@ -256,14 +257,14 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
     <div class="ctrl">
       <label for="area"><span>Area converted</span> <b id="areav">18 M km&sup2;</b></label>
       <input type="range" id="area" min="0" max="40" step="0.5" value="18">
-      <div class="hint">Cropland and pasture together cover about 48 M km&sup2; today; roughly 18 of that was
-      forest in 1700.</div>
+      <div class="hint">Cropland and pasture together cover about 48 M km&sup2; today; cropland alone
+      was 15&ndash;18 M km&sup2; in 1990 (Ramankutty and Foley, 1999).</div>
     </div>
     <div class="ctrl">
       <label for="dal"><span>Albedo change &Delta;&alpha;<sub>s</sub></span> <b id="dalv">+0.08</b></label>
       <input type="range" id="dal" min="0" max="0.30" step="0.005" value="0.08">
       <div class="hint">Conifer forest 0.12 &rarr; cropland 0.20. In snow season the contrast is far larger:
-      0.15 &rarr; 0.75.</div>
+      0.20 &rarr; 0.75.</div>
     </div>
     <div class="ctrl">
       <label for="snowf"><span>Fraction snow-covered</span> <b id="snowfv">0 %</b></label>
@@ -276,8 +277,8 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
 
   <div class="readout" id="luRO"></div>
 
-  <p class="q"><b>Question.</b> Land clearance also released carbon &mdash; roughly 180 PgC since 1750, most of
-  the cumulative land-use emission in <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture&nbsp;4</a>'s budget.
+  <p class="q"><b>Question.</b> Land clearance also released carbon &mdash; roughly 180 PgC from 1750 to 2011 (AR5), the
+  land-use term in <a href="../lecture-4-global-cycles-water-and-carbon/carbon-budget.html">Lecture&nbsp;4</a>'s budget.
   So does deforestation warm the planet or cool it?
   <span style="color:var(--text-muted)">Both, and which wins depends on latitude. In the boreal zone the albedo
   effect dominates &mdash; removing dark conifers that mask snow is a real cooling, and afforestation there
@@ -298,7 +299,7 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
     <div>
       <p class="note" style="margin:0"><b>The Sun.</b> Total solar irradiance has been measured from satellites
       since 1978 and varies by about <b>1 W m<sup>&minus;2</sup> out of 1361</b> over the eleven-year sunspot
-      cycle &mdash; a tenth of a per cent.</p>
+      cycle &mdash; under a tenth of a per cent (0.07&thinsp;%).</p>
       <div class="eq" style="font-size:14.5px;margin-top:10px">&Delta;Q<sub>solar</sub> =
         &Delta;S<sub>0</sub> (1 &minus; &alpha;<sub>p</sub>) / 4 &asymp; 0.175 &middot; &Delta;S<sub>0</sub></div>
       <div class="defs">
@@ -314,7 +315,7 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
         <li>So a 1 W m<sup>&minus;2</sup> cycle in irradiance is only <b>0.18 W m<sup>&minus;2</sup></b> of
         forcing.</li>
         <li>The estimated secular change since 1750 is about <b>+0.05</b> W m<sup>&minus;2</sup> &mdash;
-        smaller than the cycle, and a fortieth of the anthropogenic total.</li>
+        smaller than the cycle, and about 2&thinsp;% of the anthropogenic total.</li>
       </ul>
     </div>
     <div>
@@ -361,8 +362,8 @@ Response of the climate system to perturbations &middot; 2 of 6</p>
   W m<sup>&minus;2</sup> &mdash; comfortably larger than the whole secular solar trend since 1750. Why can you
   barely see an eleven-year cycle in the global temperature record?
   <span style="color:var(--text-muted)">Because the ocean is a low-pass filter. A forcing that reverses every
-  five and a half years does not have time to warm a 50&nbsp;m mixed layer, let alone anything below it &mdash;
-  the response is roughly 0.05 K, at the edge of detectability. The same physics explains why Pinatubo cooled
+  five and a half years is too brief to warm even a 50&nbsp;m mixed layer much: on such a layer the model
+  of page 5 gives about &plusmn;0.02 K, far below the year-to-year variability of about 0.1 K. The same physics explains why Pinatubo cooled
   the planet by far less than its instantaneous forcing implies, and it is exactly the heat-capacity argument
   from <a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture&nbsp;5</a>. Slow forcings get their full response;
   fast ones do not. <a href="transient-response.html">Page&nbsp;5</a> makes this quantitative.</span></p>
@@ -388,7 +389,7 @@ uses a global-mean surface insolation of 185 W m<sup>&minus;2</sup> from the bud
 and it will not reproduce the assessed &minus;0.15 W m<sup>&minus;2</sup> unless you use an effective albedo
 change well below the forest-to-crop contrast &mdash; which is the real situation, since much cleared land was
 grassland to begin with. The 1850&ndash;2020 timeline is a reconstruction, not a published series: eruption years
-and their approximate peak optical depths are real (Krakatau 1883, Santa Mar&iacute;a 1902, Katmai 1912, Agung
+and their approximate relative sizes are real (Krakatau 1883, Santa Mar&iacute;a 1902, Katmai 1912, Agung
 1963, El Chich&oacute;n 1982, Pinatubo 1991, after Gao et al. 2008), the aerosol decay is a one-year e-folding,
 the solar cycle is an 11-year sinusoid of &plusmn;0.09 W m<sup>&minus;2</sup> on a small rising trend, and the
 anthropogenic curve is interpolated through AR5 anchor values. Use it to compare shapes and magnitudes, not to
@@ -432,9 +433,9 @@ read off individual years.
     {id:'aci',  n:'Aerosol–cloud',              v:-0.45, lo:-1.20, hi: 0.00, c:'var(--aer)',  grp:'aer'},
     {id:'bcsn', n:'Black carbon on snow',       v: 0.04, lo: 0.02, hi: 0.09, c:'var(--bc)',   grp:'aer'},
     {id:'lu',   n:'Land use albedo',            v:-0.15, lo:-0.25, hi:-0.05, c:'var(--lu)',   grp:'lu'},
-    {id:'cont', n:'Contrails and cirrus',       v: 0.01, lo: 0.00, hi: 0.05, c:'var(--cloud)',grp:'aer'},
+    {id:'cont', n:'Contrails',                  v: 0.01, lo: 0.005,hi: 0.03, c:'var(--cloud)',grp:'aer'},
     {id:'solar',n:'Solar irradiance',           v: 0.05, lo: 0.00, hi: 0.10, c:'var(--sol)',  grp:'nat'},
-    {id:'volc', n:'Volcanic (2011, quiet year)',v:-0.06, lo:-0.15, hi: 0.00, c:'var(--volc)', grp:'nat'}
+    {id:'volc', n:'Volcanic (2008–2011 mean)', v:-0.11, lo:-0.15, hi:-0.08, c:'var(--volc)', grp:'nat'}
   ];
   const SETS={
     none:[], co2:['co2'],
@@ -525,13 +526,13 @@ read off individual years.
       msg='CO₂ alone: <span class="big">+1.82 W m⁻²</span>, half a doubling. If nothing else had changed, this '+
         'is the number the whole of climate policy would be about.';
     else if(sel.every(a=>a.grp==='ghg') && sel.length>3)
-      msg='All greenhouse gases: <span class="big">+'+net.toFixed(2)+' W m⁻²</span> — comfortably more than '+
-        'one CO₂ doubling. Now add the aerosols and watch a third of it disappear.';
+      msg='All greenhouse gases: <span class="big">+'+net.toFixed(2)+' W m⁻²</span> — '+(net/3.7).toFixed(2)+' of a CO₂ '+
+        'doubling. Switch on everything anthropogenic and watch nearly a third of it disappear.';
     else
       msg='<span class="big">'+(net>=0?'+':'')+net.toFixed(2)+' W m⁻²</span> net, from '+
         '<b>+'+pos.toFixed(2)+'</b> of warming agents and <b>'+neg.toFixed(2)+'</b> of cooling agents. '+
         'That is <b>'+(net/3.7).toFixed(2)+'</b> CO₂ doublings. '+
-        'Two agents supply nearly all the cooling and they are the two with the widest uncertainty bars.';
+        'Two aerosol terms supply most of the cooling, and they have the widest uncertainty bars.';
     $('barRO').innerHTML=msg;
   }
   drawBars();
@@ -610,7 +611,7 @@ read off individual years.
       el.a.parentNode.querySelector('b').textContent=A.toFixed(1)+' M km²';
       $('dalv').textContent='+'+da.toFixed(3);
       $('snowfv').textContent=(sf*100).toFixed(0)+' %';
-      // snow-season contrast is much larger: forest 0.15 vs open snow 0.75
+      // snow-season contrast is much larger: snow-covered forest 0.20 vs open snow 0.75
       const daEff=(1-sf)*da + sf*0.55;
       const dQ=-daEff*S*(A/A_EARTH)*TAU;
 

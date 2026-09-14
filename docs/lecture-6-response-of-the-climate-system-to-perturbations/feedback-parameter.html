@@ -114,7 +114,7 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     <h1>The feedback parameter</h1>
     <p class="sub">One equation collapses every feedback in the climate system into a single number, and that
     number turns a forcing in W m<sup>&minus;2</sup> into a temperature in kelvin. This page builds it out of
-    five terms and shows why the last one ruins everything.</p>
+    five terms and shows why one of them, cloud, carries most of the uncertainty.</p>
   </div>
   <button class="toggle" id="themeBtn">Dark</button>
 </header>
@@ -146,7 +146,7 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     <li><b>&lambda;<sub>f</sub>&Delta;T<sub>s</sub></b> is what the system does back. All of it, every feedback,
     condensed into one slope.</li>
     <li><b>&Delta;R</b> is what is left over &mdash; the energy currently accumulating in the system. It is not
-    a bookkeeping term: it is measurable, it is about 0.9 W m<sup>&minus;2</sup> today, and almost all of it is
+    a bookkeeping term: it is measurable, it averaged about 0.8 W m<sup>&minus;2</sup> over 2006&ndash;2018 (AR6), and almost all of it is
     going into the ocean.</li>
   </ul>
 
@@ -221,8 +221,9 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
   tropopause budget through physics on a timescale of years to decades. Changes in ocean and atmospheric
   circulation are not in it. Neither are the carbon-cycle and vegetation feedbacks of
   <a href="biogeochemical-feedbacks.html">page&nbsp;6</a>, nor ice sheets, which are far too slow. When you
-  read a number for &ldquo;climate sensitivity&rdquo;, check which of these it includes &mdash; the answer
-  changes by a factor of two between the narrow and broad definitions.</p>
+  read a number for &ldquo;climate sensitivity&rdquo;, check which of these it includes &mdash; a sensitivity that includes the slow ice-sheet and vegetation
+  feedbacks, the Earth system sensitivity, is estimated from the Pliocene at 30 to 50&nbsp;% larger than the
+  one that excludes them (Lunt et al., 2010).</p>
 </div>
 
 <div class="card">
@@ -259,7 +260,7 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
     <div class="def"><b>&Delta;T<sub>s,0</sub></b> the reference (Planck-only) warming, K</div>
   </div>
 
-  <p class="note"><b>This is the 1.1 K from <a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture&nbsp;5</a>.</b>
+  <p class="note"><b>This is why the model of <a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture&nbsp;5</a> warmed about 1.1 K.</b>
   The zero-dimensional model on that page had exactly one feedback &mdash; this one &mdash; because
   &alpha;<sub>p</sub> and &tau;<sub>a</sub> were fixed numbers you set by hand. Every kelvin of the difference
   between 1.16 and the 3 K that models give is contributed by the four remaining terms.</p>
@@ -306,7 +307,7 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
   <p class="q"><b>Question.</b> Start from <b>Planck only</b> and add water vapour. The warming goes from 1.16 K
   to about 2.6 K &mdash; an increase of 1.5 K from one feedback worth +1.8 W m<sup>&minus;2</sup>
   K<sup>&minus;1</sup>. Now, from the full five-term estimate, add another +0.4 to the cloud term. The warming
-  jumps by nearly a kelvin, from an addition less than a quarter the size. Why is the second addition worth so
+  jumps by 1.36 K, from 2.94 to 4.30 K, from an addition less than a quarter the size. Why is the second addition worth so
   much more?
   <span style="color:var(--text-muted)">Because &Delta;T = &minus;&Delta;Q/&lambda;<sub>f</sub> is a
   <em>hyperbola</em>, not a line. Equal steps in &lambda;<sub>f</sub> produce increasingly large steps in
@@ -427,8 +428,8 @@ K<sup>&minus;1</sup>, and the &plusmn;0.1 spread on the combined water-vapour-pl
 inter-model standard deviation. The total &plusmn;0.42 is those spreads added in quadrature, which assumes the
 cloud and albedo terms are independent of the others &mdash; a convenient assumption rather than a demonstrated
 one. Summing the best estimates gives &lambda;<sub>f</sub> = &minus;1.26 W m<sup>&minus;2</sup> K<sup>&minus;1</sup>
-and 2.9 K for a 3.7 W m<sup>&minus;2</sup> doubling, which sits in the middle of the assessed 1.5&ndash;4.5 K
-range without having been tuned to. The glacial preset raises &lambda;<sub>&alpha;</sub> to +0.6 and is
+and 2.9 K for a 3.7 W m<sup>&minus;2</sup> doubling, which is within 0.1 K of AR6's best
+estimate of 3 K and inside its likely range of 2.5&ndash;4 K, without having been tuned to either. The glacial preset raises &lambda;<sub>&alpha;</sub> to +0.6 and is
 illustrative of state dependence, not a published estimate. Goosse's text uses &Delta;Q = 3.8 W m<sup>&minus;2</sup>
 and &lambda;<sub>0</sub> &asymp; &minus;3.8 from the envelope calculation, so his numbers differ slightly from
 these in the second decimal place.
@@ -626,11 +627,11 @@ these in the second decimal place.
         put(g,'text',{x:X2(v),y:B2+16,'text-anchor':'middle','font-size':10.5,
           fill:'var(--text-muted)'},v.toFixed(1));
       }
-      // assessed band 1.5-4.5 K
-      put(g,'rect',{x:L2,y:Y2(4.5),width:R2-L2,height:Y2(1.5)-Y2(4.5),
+      // AR6 likely range 2.5-4 K
+      put(g,'rect',{x:L2,y:Y2(4),width:R2-L2,height:Y2(2.5)-Y2(4),
         fill:'var(--acc)',opacity:.10});
-      put(g,'text',{x:R2-6,y:Y2(4.5)+14,'text-anchor':'end','font-size':10.5,fill:'var(--acc)'},
-        'assessed 1.5–4.5 K');
+      put(g,'text',{x:R2-6,y:Y2(4)-6,'text-anchor':'end','font-size':10.5,fill:'var(--acc)'},
+        'AR6 likely range 2.5–4 K');
       let d='';
       for(let i=0;i<=300;i++){
         const v=lmin+(lmax-lmin)*i/300;
@@ -688,22 +689,22 @@ these in the second decimal place.
           'which is <b>'+ff.toFixed(2)+' ×</b> the bare blackbody response of '+t0.toFixed(2)+' K. ';
         if(Math.abs(sum)<0.05)
           m+='With only the Planck response active this is the model from '+
-             '<a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture 5</a> — physically correct, and about a third '+
-             'of the real answer.';
+             '<a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture 5</a> — physically correct, and about 40 % '+
+             'of the 2.9 K the five feedbacks give together.';
         else if(Math.abs(cur.w-1.8)<0.05 && Math.abs(cur.l)<0.05 && Math.abs(cur.c)<0.05)
           m+='Water vapour alone more than doubles the response. This one feedback is the reason the greenhouse '+
              'effect of CO₂ is not the whole story: CO₂ sets the temperature, and the temperature sets the water '+
              'vapour, which does most of the trapping.';
-        else if(ecs>4.5)
-          m+='<b>Above the assessed range.</b> Note how little it took: the cloud term alone can carry you here. '+
-             'A model with this λf is not obviously wrong — it is at the edge of what the observed record can '+
-             'exclude, which is precisely the problem.';
-        else if(ecs<1.5)
-          m+='<b>Below the assessed range.</b> To get here you have had to suppress the amplifiers to values no '+
-             'model produces. It is much easier to make the climate too sensitive than not sensitive enough.';
+        else if(ecs>4)
+          m+='<b>Above the AR6 likely range of 2.5–4 K'+(ecs>5?', and above its very likely range of 2–5 K':'')+'.</b> '+
+             'Note how little it took: the cloud term alone can carry you here. Several CMIP6 models are this '+
+             'sensitive; AR6, weighing other lines of evidence as well, judged values above 5 K very unlikely.';
+        else if(ecs<2.5)
+          m+='<b>Below the AR6 likely range of 2.5–4 K'+(ecs<2?', and below its very likely range of 2–5 K':'')+'.</b> '+
+             'Moving the cloud term to the low end of its model spread is enough to get here.';
         else
-          m+='This sits inside the assessed 1.5–4.5 K. Now nudge only λ<sub>c</sub>, by ±0.4 — the published '+
-             'inter-model spread — and watch how much of that entire range one uncertain term can cover.';
+          m+='This sits inside the AR6 likely range of 2.5–4 K. Now nudge only λ<sub>c</sub>, by ±0.4 — the '+
+             'published inter-model spread — and watch one uncertain term carry the answer outside it on both sides.';
       }
       $('asmRO').innerHTML=m;
     }

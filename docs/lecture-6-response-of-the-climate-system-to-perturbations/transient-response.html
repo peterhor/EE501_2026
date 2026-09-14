@@ -110,8 +110,8 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
   <div>
     <h1>The transient response</h1>
     <p class="sub">Everything so far has been about equilibrium &mdash; where the system ends up. Nobody lives
-    at equilibrium. This page adds the one term that turns an answer into a trajectory, and explains why forty
-    years of warming still does not tell you the climate sensitivity.</p>
+    at equilibrium. This page adds the one term that turns an answer into a trajectory, and explains why
+    decades of observed warming alone cannot pin down the climate sensitivity.</p>
   </div>
   <button class="toggle" id="themeBtn">Dark</button>
 </header>
@@ -223,20 +223,21 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
 
   <div class="readout" id="trRO"></div>
 
-  <p class="q"><b>Question.</b> With the default settings the two curves are almost on top of each other for the
-  first fifteen years, and one of them is heading for twice the warming of the other. What is the practical
+  <p class="q"><b>Question.</b> With the default settings the two curves stay within 0.2 K of each other for the
+  first eleven years, and one of them is heading for twice the warming of the other. What is the practical
   consequence?
   <span style="color:var(--text-muted)">That watching the early response of the climate system does not
   identify the sensitivity. The initial slope is &Delta;Q/C<sub>s</sub>, which contains no
-  &lambda;<sub>f</sub> at all. This is the technical reason why several decades of excellent
-  observations have not collapsed the 1.5&ndash;4.5 K range, and it should be your answer whenever someone
+  &lambda;<sub>f</sub> at all. This is one technical reason why decades of excellent
+  observations alone did not narrow AR5's 1.5&ndash;4.5 K range; AR6 narrowed it to 2.5&ndash;4 K by
+  combining them with process understanding and palaeoclimate evidence, and it should be your answer whenever someone
   says the uncertainty must be carelessness.</span></p>
 
   <p class="q"><b>Question.</b> Load <b>Volcanic eruption</b>. The forcing peaks at &minus;3
-  W m<sup>&minus;2</sup>, comparable in size to a CO<sub>2</sub> doubling, yet the cooling is only a few tenths
-  of a kelvin. Where did the response go?
+  W m<sup>&minus;2</sup>, comparable in size to a CO<sub>2</sub> doubling, yet the cooling in climate A is less than a
+  tenth of a kelvin. Where did the response go?
   <span style="color:var(--text-muted)">Nowhere &mdash; it never had time to develop. The forcing is gone in
-  about three years and &tau; is fifteen or more, so the system realises only a small fraction of the
+  about three years and &tau; is fourteen or more, so the system realises only a small fraction of the
   equilibrium response before the push is withdrawn. Set the slab depth to 10 m and the cooling becomes much
   larger and sharper: a shallow system responds quickly to a brief forcing. This is the same argument as the
   eleven-year solar cycle on <a href="forcing-agents.html">page&nbsp;2</a>, and it is why volcanoes make the
@@ -246,11 +247,13 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
   what happens if concentrations stop rising. The temperature keeps climbing for decades afterwards. What is
   that warming, and can it be avoided?
   <span style="color:var(--text-muted)">It is <b>committed warming</b> &mdash; the part of the equilibrium
-  response already forced but not yet realised, currently in transit into the ocean. It cannot be avoided by
-  emitting less, because it has already been paid for; only by reducing the forcing itself. The radiative
-  imbalance in the lower panel is the measurable signature of it, and it is about
-  <b>0.9 W m<sup>&minus;2</sup></b> in the real world today, almost all of it going into the
-  ocean.</span></p>
+  response already forced but not yet realised, currently in transit into the ocean. It is the warming committed at
+  <em>constant concentration</em>. Cutting emissions part of the way does not remove it; lowering the forcing
+  does, and that needs emissions low enough for the sinks to draw the concentration down. If CO<sub>2</sub>
+  emissions stop entirely the concentration falls, and AR6 assesses the further warming as close to zero.
+  The radiative imbalance in the lower panel is the measurable signature of committed warming; in the real
+  world it averaged about <b>0.8 W m<sup>&minus;2</sup></b> over 2006&ndash;2018 (AR6), almost all of it
+  going into the ocean.</span></p>
 </div>
 
 <h2 class="sec">Two numbers, not one</h2>
@@ -265,7 +268,7 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
         <td>Warming after the system has fully re-equilibrated to a doubled CO<sub>2</sub> concentration.</td>
         <td>Warming averaged over years 60&ndash;80 of a run in which CO<sub>2</sub> increases at
         1&thinsp;% per year, reaching double at year 70.</td></tr>
-      <tr><td class="nm">Typical range</td><td class="num">1.5&ndash;4.5 K</td><td class="num">1.4&ndash;2.5 K</td></tr>
+      <tr><td class="nm">Likely range, AR6</td><td class="num">2.5&ndash;4 K</td><td class="num">1.4&ndash;2.2 K</td></tr>
       <tr><td class="nm">Depends on</td><td>&lambda;<sub>f</sub> only.</td>
         <td>&lambda;<sub>f</sub> <em>and</em> how fast the ocean takes up heat.</td></tr>
       <tr><td class="nm">Better constrained?</td><td>No &mdash; it requires an extrapolation nobody can
@@ -276,9 +279,9 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
         <td>For this century: it is roughly what you get by 2100 under a rising forcing.</td></tr>
     </tbody>
   </table>
-  <p class="note"><b>TCR is always smaller than ECS</b>, and the gap is set entirely by ocean heat uptake. Run
+  <p class="note"><b>In this model TCR is always smaller than ECS</b>, and the gap is set by ocean heat uptake. Run
   the demonstration with <b>1&thinsp;%/yr to 2&times;</b> and compare the warming at year 70 with the
-  equilibrium value: the ratio is typically 0.5&ndash;0.7. That missing half is not gone. It is in the pipeline,
+  equilibrium value: the ratio is 0.80 for climate A and 0.64 for climate B. That missing fifth to third is not gone. It is in the pipeline,
   and the ocean is holding it.</p>
 </div>
 
@@ -296,7 +299,8 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
     rest.</li>
     <li><b>The consequence.</b> Fit a single exponential to the first fifty years of a warming and you will
     underestimate the eventual equilibrium, because you have measured the fast timescale and assumed it is the
-    only one. Estimates of ECS from the historical record are biased low for exactly this reason.</li>
+    only one. Estimates of ECS from the historical record are biased low partly for this reason, and partly
+    because of the pattern effect below.</li>
     <li><b>And &lambda;<sub>f</sub> itself drifts.</b> Feedbacks depend on <em>where</em> the warming is,
     not just how much of it there is. In the first decades the warming is concentrated where the ocean mixes
     least &mdash; and that pattern engages different cloud feedbacks from the eventual, more uniform one. The
@@ -317,24 +321,27 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
   <h3>Forcing, response and what is still owed</h3>
   <p class="cap">The three numbers to leave the lecture with.</p>
   <div class="kpis">
-    <div class="kpi"><div class="k">Net forcing today</div><div class="v">&asymp; 2.7</div>
-      <div class="s">W m<sup>&minus;2</sup>, vs 1750</div></div>
-    <div class="kpi"><div class="k">Warming realised</div><div class="v">&asymp; 1.2</div>
-      <div class="s">K, observed</div></div>
-    <div class="kpi"><div class="k">Imbalance</div><div class="v">&asymp; 0.9</div>
-      <div class="s">W m<sup>&minus;2</sup>, into the ocean</div></div>
-    <div class="kpi"><div class="k">Still owed</div><div class="v">&asymp; 0.7</div>
-      <div class="s">K at today's forcing</div></div>
+    <div class="kpi"><div class="k">Net forcing</div><div class="v">&asymp; 2.7</div>
+      <div class="s">W m<sup>&minus;2</sup>, 2019 vs 1750</div></div>
+    <div class="kpi"><div class="k">Warming realised</div><div class="v">&asymp; 1.1</div>
+      <div class="s">K, 2011&ndash;2020 vs 1850&ndash;1900</div></div>
+    <div class="kpi"><div class="k">Imbalance</div><div class="v">&asymp; 0.8</div>
+      <div class="s">W m<sup>&minus;2</sup>, 2006&ndash;2018, into the ocean</div></div>
+    <div class="kpi"><div class="k">Still owed</div><div class="v">&asymp; 0.5</div>
+      <div class="s">K at that forcing</div></div>
   </div>
   <p class="note">Put those together and the arithmetic of
   <a href="feedback-parameter.html">page&nbsp;3</a> checks out: &Delta;R = &Delta;Q +
-  &lambda;<sub>f</sub>&Delta;T<sub>s</sub> gives 0.9 &asymp; 2.7 + &lambda;<sub>f</sub> &times; 1.2, so
-  &lambda;<sub>f</sub> &asymp; &minus;1.5 W m<sup>&minus;2</sup> K<sup>&minus;1</sup>, and an equilibrium
-  warming of about 1.9 K for the forcing already applied. That is a climate sensitivity estimated from three
-  measurements and one linear equation &mdash; and it lands inside the assessed range.</p>
+  &lambda;<sub>f</sub>&Delta;T<sub>s</sub> gives 0.8 &asymp; 2.7 + &lambda;<sub>f</sub> &times; 1.1, so
+  &lambda;<sub>f</sub> &asymp; &minus;1.7 W m<sup>&minus;2</sup> K<sup>&minus;1</sup>, an equilibrium
+  warming of about 1.6 K for the forcing already applied, and 3.7 / 1.7 &asymp; 2.1 K for a doubling. That is
+  a climate sensitivity estimated from three measurements and one linear equation, and it lands at the low
+  edge of AR6's very likely range of 2&ndash;5 K.</p>
   <p class="note"><b>Then read the caveats and mistrust it slightly.</b> The forcing has the aerosol
-  uncertainty of <a href="forcing-agents.html">page&nbsp;2</a> in it, and the pattern effect above says the
-  &lambda;<sub>f</sub> you infer this way is probably too negative. Both corrections push the answer upward.
+  uncertainty of <a href="forcing-agents.html">page&nbsp;2</a> in it, which widens the answer in both
+  directions and, through the hyperbola, more on the high side. The pattern effect above says the
+  &lambda;<sub>f</sub> you infer this way is probably too negative, which pushes the answer up, towards
+  AR6's best estimate of 3 K.
   The calculation is worth doing precisely because you can see every assumption in it.</p>
 </div>
 
@@ -348,8 +355,9 @@ W m<sup>&minus;2</sup> K<sup>&minus;1</sup>, giving 2 K and 4 K for a doubling. 
 W m<sup>&minus;2</sup>; 3.7 is used here for consistency with the rest of these pages. The volcanic scenario is
 a 3 W m<sup>&minus;2</sup> reduction decaying with a one-year e-folding, roughly Pinatubo; the solar scenario is
 a &plusmn;0.09 W m<sup>&minus;2</sup> eleven-year sinusoid. The present-day figures in the closing card are
-approximate current values: net anthropogenic ERF and observed warming relative to 1850&ndash;1900 from AR6, and
-an Earth energy imbalance near 0.9 W m<sup>&minus;2</sup> from the ocean heat content record. The two-layer
+approximate current values: net anthropogenic ERF for 2019 (2.72 W m<sup>&minus;2</sup>),
+observed warming for 2011&ndash;2020 relative to 1850&ndash;1900 (1.09 K) and the Earth energy imbalance for
+2006&ndash;2018 (0.79 W m<sup>&minus;2</sup>), all from AR6. The two-layer
 schematic is qualitative.
 &nbsp;&middot;&nbsp; What on these pages is data and what is not:
 <a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
@@ -533,7 +541,8 @@ schematic is qualitative.
         if(c) m+='Transient climate response — the mean of years 60 to 80 — is <b>'+(sA/c).toFixed(2)+
           ' K</b> for A and <b>'+(sB/c).toFixed(2)+' K</b> for B, against equilibrium values of '+
           eqA.toFixed(2)+' and '+eqB.toFixed(2)+
-          '. <b>TCR is roughly half to two-thirds of ECS</b>, and the gap is the ocean.';
+          '. <b>TCR is '+(sA/c/eqA).toFixed(2)+' of ECS for A and '+(sB/c/eqB).toFixed(2)+
+          ' for B</b>, and the gap is the ocean.';
         else m+='Extend the run past year 80 to read off the transient climate response.';
       } else if(scen==='volc'){
         let mn=0; for(let i=0;i<=A.n;i++) mn=Math.min(mn,A.T[i]);
@@ -542,7 +551,8 @@ schematic is qualitative.
            'Almost none of the equilibrium response is realised, because the forcing lasts ~3 years and '+
            'τ is '+tauA.toFixed(0)+'. Drag the slab depth down to 10 m and watch the response grow.';
       } else if(scen==='solar'){
-        let mx=0; for(let i=0;i<=A.n;i++) mx=Math.max(mx,Math.abs(A.T[i]));
+        // amplitude over the last cycle, after the start-up transient has died away
+        let mx=0; for(let i=Math.max(0,A.n-Math.round(11/dt));i<=A.n;i++) mx=Math.max(mx,Math.abs(A.T[i]));
         m+='The temperature swings by only <b>±'+mx.toFixed(3)+' K</b> — the ocean filters out a forcing '+
            'that reverses every five and a half years. This is why an eleven-year cycle is so hard to detect '+
            'in the temperature record even though the forcing is real and regular.';
@@ -576,7 +586,7 @@ schematic is qualitative.
   (function(){
     const g=$('boxG');
     put(g,'text',{x:20,y:24,'font-size':12.5,fill:'var(--text-secondary)'},
-      'One slab gives one timescale. The ocean has at least two, and they differ by a factor of about thirty.');
+      'One slab gives one timescale. The ocean has at least two, and they differ by one to two orders of magnitude.');
     // atmosphere
     put(g,'rect',{x:60,y:52,width:340,height:34,rx:8,fill:'var(--surface-2)',stroke:'var(--line-soft)'});
     put(g,'text',{x:230,y:74,'text-anchor':'middle','font-size':12.5,

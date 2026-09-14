@@ -197,8 +197,8 @@ Climate change: past and present &middot; 4 of 6</p>
     great depth.</li>
     <li><b>The circulation carries heat.</b> Warm surface water flows north, releases heat to the atmosphere,
     sinks, and returns south at depth. The northward heat transport in the Atlantic is of order
-    1&nbsp;PW &mdash; comparable to the entire anthropogenic energy imbalance many times over, delivered to
-    one region.</li>
+    1&nbsp;PW &mdash; about two and a half times the whole Earth&rsquo;s energy imbalance of about
+    0.4&nbsp;PW (0.79&nbsp;W&nbsp;m<sup>&minus;2</sup>, AR6), delivered to one region.</li>
     <li><b>The circulation carries salt, too</b>, and that is what makes it interesting. Northward flow brings
     salty subtropical water into the North Atlantic, which keeps the surface dense, which keeps the flow
     going. <b>A positive feedback</b> &mdash; and by the sign rule of
@@ -249,8 +249,9 @@ Climate change: past and present &middot; 4 of 6</p>
       <label for="fw"><span>Freshwater flux to the northern North Atlantic, H</span> <b id="fwv">0.10 Sv</b></label>
       <input type="range" id="fw" min="0" max="0.6" step="0.005" value="0.10">
       <div class="hint">1&nbsp;Sv = 10<sup>6</sup>&nbsp;m<sup>3</sup>&nbsp;s<sup>&minus;1</sup>. Present-day
-      net export of fresh water to the region is of order 0.1&nbsp;Sv; a Heinrich event delivers several
-      tenths on top of that.</div>
+      net export of fresh water to the region is of order 0.1&nbsp;Sv; a Heinrich event added of order
+      0.1&ndash;0.3&nbsp;Sv on top of that. The model&rsquo;s pulse below adds 0.4&nbsp;Sv, more than that,
+      because its threshold is only illustrative.</div>
     </div>
   </div>
 
@@ -274,7 +275,7 @@ Climate change: past and present &middot; 4 of 6</p>
 
   <div class="rowbtns">
     <span class="lbl">Experiment</span>
-    <button class="ghost" data-ex="heinrich" aria-pressed="true">Heinrich event: 0.5 Sv for 800 yr</button>
+    <button class="ghost" data-ex="heinrich" aria-pressed="true">Heinrich-like pulse: 0.5 Sv for 800 yr</button>
     <button class="ghost" data-ex="small">A smaller pulse: 0.25 Sv for 800 yr</button>
     <button class="ghost" data-ex="sweep">Slow ramp up, then back down</button>
     <button class="ghost" data-ex="ramp">Gradual increase, held</button>
@@ -405,9 +406,11 @@ Climate change: past and present &middot; 4 of 6</p>
     </tbody>
   </table>
 
-  <p class="note"><b>The summary for a modern audience.</b> Greenland and West Antarctic meltwater is
-  freshening the North Atlantic now, and the observed circulation has probably weakened. Comprehensive models
-  project further weakening through this century and mostly do <em>not</em> project a collapse; they also
+  <p class="note"><b>The summary for a modern audience.</b> Greenland meltwater and a growing
+  freshwater export from the Arctic are freshening the North Atlantic now; whether the circulation has already
+  weakened is uncertain (AR6: low confidence in the observed twentieth-century trend). Comprehensive models
+  project a weakening through this century (AR6: very likely) and mostly do <em>not</em> project a collapse
+  before 2100; they also
   disagree with each other and with the palaeo record about how easily the real ocean switches states, which
   is itself a reason for caution rather than comfort. The palaeoclimate contribution is not a prediction. It
   is the demonstration that the possibility is physical.</p>
@@ -428,7 +431,7 @@ et&nbsp;al. (2013); the Ruddiman (2001) presentation of the same material is the
 <b>The overturning demonstration is the two-box model of Stommel (1961)</b>, in the standard formulation with
 a fast-restored temperature contrast and a prognostic salinity contrast; the equilibrium branches shown are
 the exact roots of the resulting quadratic, and the time integration uses a 5-year step with an adjustment
-volume chosen to give a present-day adjustment time of about 270&nbsp;years. The parameters are tuned so
+volume chosen to give a present-day adjustment time of about 120&nbsp;years. The parameters are tuned so
 that the &ldquo;on&rdquo; state carries about 18&nbsp;Sv and collapses near 0.35&nbsp;Sv of added fresh
 water; both are plausible values but neither is a measurement, and the caveat box above says so explicitly.
 The heat transport quoted alongside is a simple proportionality to q anchored at about 1&nbsp;PW for the
@@ -893,7 +896,7 @@ sequence of events; no axis on them should be read as data.
     curve(t=>0.15+0.85*sig(t,15.5,2.6),'var(--frc)',T+6,T+62,
       '65°N summer insolation — the trigger',T+18,1.8);
     curve(t=>0.08+0.92*sig(t,14.2,2.2),'var(--acc)',T+74,T+130,
-      'CO₂: 180 → 265 ppm',T+86,2);
+      'CO₂: about 190 → 265 ppm',T+86,2);
     curve(t=>0.08+0.92*sig(t,15.0,2.4),'var(--ocean)',T+142,T+198,
       'Antarctic temperature — rises with CO₂',T+154,2);
     curve(t=>{

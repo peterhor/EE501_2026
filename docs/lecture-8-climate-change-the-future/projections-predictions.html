@@ -469,10 +469,10 @@ Hawkins and Sutton (2012) and with the &sigma; table on
       // computed across an ensemble of start dates via the analytic expectation
       function skill(initialised){
         const out=[];
-        for(let L=1;L<=20;L++){
+        for(let L=1;L<=40;L++){
           // predictable signal retained after L years
           const a = initialised ? q*Math.pow(rs,L) : 0;
-          const num = a*ss*ss;
+          const num = a*Math.pow(rs,L)*ss*ss;   // cov(ensemble mean, truth) = q rho^2L sigma_s^2
           const den = Math.sqrt((a*a*ss*ss + (1-q*q*Math.pow(rs,2*L))*ss*ss/N + sf*sf/N)*(ss*ss+sf*sf));
           out.push(den>0?num/den:0);
         }
@@ -543,7 +543,7 @@ Hawkins and Sutton (2012) and with the &sigma; table on
         if(dash) at['stroke-dasharray']=dash;
         put(g,'path',at);
       }
-      sline(skU,'var(--text-muted)',1.8,'5 3'); sline(skI,'var(--acc)',2.4);
+      sline(skU.slice(0,20),'var(--text-muted)',1.8,'5 3'); sline(skI.slice(0,20),'var(--acc)',2.4);
       put(g,'text',{x:L1,y:T2-3,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
         'Correlation skill for the internal component, against lead time');
       for(let L=5;L<=20;L+=5) put(g,'text',{x:X2(L),y:B2+15,'text-anchor':'middle','font-size':10.5,
@@ -559,10 +559,10 @@ Hawkins and Sutton (2012) and with the &sigma; table on
         'With this ocean memory the initialised ensemble keeps useful skill for <span class="big">'+
         (lead>0?lead:0)+'</span> years, after which its correlation with the internal component of the '+
         '&ldquo;observations&rdquo; is indistinguishable from the uninitialised runs&rsquo; zero. '+
-        'The skill decays as <b>&rho;<sup>L</sup></b> with &rho; = exp(&minus;1/'+mem+') = '+
-        rs.toFixed(3)+' &mdash; so it is the <b>ocean memory alone</b> that sets the horizon. Doubling the '+
-        'ensemble size raises the curve slightly by averaging away the unpredictable part, but it cannot '+
-        'move where the curve falls off.';
+        'The predictable part of the signal decays as <b>&rho;<sup>L</sup></b> with &rho; = exp(&minus;1/'+mem+') = '+
+        rs.toFixed(3)+', so the <b>ocean memory</b> sets how fast the skill falls. Doubling the '+
+        'ensemble size raises the curve by averaging away the unpredictable part and moves the horizon out '+
+        'by about a year; it cannot stop the decay.';
     }
     Object.values(S).forEach(el=>el.addEventListener('input',draw));
     draw();

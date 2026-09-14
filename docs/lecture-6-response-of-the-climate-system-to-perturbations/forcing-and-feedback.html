@@ -287,7 +287,7 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
   already saturated, so adding CO<sub>2</sub> can only widen its wings, and the width grows like the logarithm
   of the amount. Each doubling adds about <b>3.7 W m<sup>&minus;2</sup></b> &mdash; the single most reused
   constant in this lecture. The good news is that the forcing does not run away with concentration; the bad
-  news is that reversing it means <em>halving</em> the excess, not trimming it.</span></p>
+  news is that undoing a doubling means <em>halving</em> the concentration, not trimming it.</span></p>
 
   <p class="q"><b>Question.</b> A molecule of CH<sub>4</sub> is a far more effective absorber than a molecule of
   CO<sub>2</sub>, yet its bar is much shorter. Why?
@@ -384,8 +384,7 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
     </tbody>
   </table>
   <p class="note"><b>The number to carry with you.</b> <a href="../lecture-5-modelling-the-climate-system/hierarchy.html">Lecture&nbsp;5</a>
-  ended with a zero-dimensional model that warmed <b>1.1&nbsp;K</b> for a CO<sub>2</sub> doubling, while every
-  general circulation model gives <b>2.5&ndash;4.5&nbsp;K</b> for the same 3.7 W m<sup>&minus;2</sup>. That gap
+  ended with a zero-dimensional model that warmed <b>1.1&nbsp;K</b> for a CO<sub>2</sub> doubling, while general circulation models give about <b>3&nbsp;K</b> for a doubling (the CMIP6 models span 1.8&ndash;5.6&nbsp;K; Zelinka et al., 2020). That gap
   is not a discrepancy to be explained away. It is the subject of this lecture, and by
   <a href="feedback-parameter.html">page&nbsp;3</a> you will have built it out of five terms.</p>
 </div>
@@ -395,7 +394,8 @@ Response of the climate system to perturbations &middot; 1 of 6</p>
 with the 1750 reference concentrations of Forster et al. (2007). Those formulas are the standard IPCC
 approximations to a full radiative transfer calculation, good to a few per cent across the range of
 concentrations offered here and not to be trusted outside it. 5.4&thinsp;ln&thinsp;2 = 3.74 W m<sup>&minus;2</sup>
-for a doubling is quoted as 3.7 throughout this lecture, matching AR5 and AR6; Goosse's text uses the older 3.8,
+for a doubling is quoted as 3.7 throughout this lecture, the AR5 value (AR6 assesses 3.9 W m<sup>&minus;2</sup>,
+because its effective radiative forcing includes tropospheric adjustments); Goosse's text uses the older 3.8,
 which is why his climate sensitivities are a shade larger than the ones here. Preset concentrations are observed
 global means from Law Dome ice cores and the Mauna Loa record; the 2024 values used are 422 ppm, 1930 ppb and
 337 ppb. The signal-flow convention is Goosse's own, used unchanged in his Figs. 4.9, 4.12, 4.14 and 4.16.
@@ -602,8 +602,9 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
              'throughout as 3.7. Every climate sensitivity you will meet is defined against this number.';
       else if(c<250)
         msg+='Glacial CO₂ is a <em>negative</em> forcing relative to pre-industrial — about '+
-             '−2.2 W m⁻² from CO₂ alone, roughly a third of what is needed to explain a '+
-             '4–5 K colder world. The rest came from ice-sheet albedo and dust, amplified by exactly the '+
+             '−2.2 W m⁻² from CO₂ alone. With the feedbacks of page 3 (λf = −1.26) that cools the planet by about '+
+             '1.7 K: a quarter to a third of the 5–7 K by which the glacial world was colder (AR6). '+
+             'The rest came from ice-sheet albedo and dust, amplified by exactly the '+
              'same feedbacks that amplify warming today.';
       else if(tot>3.7)
         msg+='Note that the greenhouse forcing alone already exceeds one doubling, and yet observed warming is '+
@@ -680,7 +681,7 @@ global means from Law Dome ice cores and the Mauna Loa record; the 2024 values u
       sahara:{name:'Sahara vegetation',
           nodes:['vegetation cover','surface albedo','absorbed solar','monsoon rainfall'],
           truth:[-1,-1,1,1], start:-1,
-          why:'Bare sand is brighter than plants, so losing vegetation raises the albedo; a higher albedo absorbs less sunlight; less absorbed sunlight weakens the ascent that drives the monsoon; less rain supports less vegetation. Two minus signs, an even number: positive, and strong enough to have flipped the Sahara from green to desert in a few centuries. You will simulate exactly this in PC Lab 3.'}
+          why:'Bare sand is brighter than plants, so losing vegetation raises the albedo; a higher albedo absorbs less sunlight; less absorbed sunlight weakens the ascent that drives the monsoon; less rain supports less vegetation. Two minus signs, an even number: positive, and strong enough to have turned the Sahara from green to desert far faster than the orbital forcing changed. You will simulate exactly this in PC Lab 3.'}
     };
     let cur='wv', signs=LOOPS.wv.truth.slice();
 
