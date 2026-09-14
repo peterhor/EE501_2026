@@ -322,8 +322,11 @@ Modelling the climate system &middot; 5 of 5</p>
 <div class="card demo">
   <h3>Correct a model you cannot fix</h3>
   <p class="cap">The model has a constant offset, it underestimates the observed trend, and it was started
-  from a state that was not in equilibrium so it is still drifting. All three are common. Each has its own
-  correction, each correction rests on an assumption, and the assumptions are where the trouble is.</p>
+  from a state that was not in equilibrium so it is still drifting. All three are common. Goosse (ch. 3.5.3,
+  Figs. 3.24 and 3.25) gives four ways to correct such a model: a <b>constant correction</b>, a <b>variable
+  correction</b> that scales the trend, and two non-stationary corrections for a model far from its own
+  equilibrium &mdash; removing its <b>drift</b>, or <b>initialising it from observations</b> and correcting by
+  lead time. Each rests on an assumption, and the assumptions are where the trouble is.</p>
 
   <div class="ctrls">
     <div class="ctrl">
@@ -347,17 +350,18 @@ Modelling the climate system &middot; 5 of 5</p>
     <span class="lbl">Correction</span>
     <div class="seg" id="segB">
       <button data-b="raw" aria-pressed="true">Raw output</button>
-      <button data-b="delta" aria-pressed="false">Constant offset</button>
-      <button data-b="drift" aria-pressed="false">Offset + drift</button>
-      <button data-b="trend" aria-pressed="false">Offset + drift + trend</button>
+      <button data-b="delta" aria-pressed="false">Constant correction</button>
+      <button data-b="drift" aria-pressed="false">+ drift removed</button>
+      <button data-b="trend" aria-pressed="false">+ trend scaled (variable correction)</button>
+      <button data-b="init" aria-pressed="false">Initialised from observations</button>
     </div>
   </div>
 
   <svg viewBox="0 0 880 380" role="img" aria-label="A model temperature time series with a bias, a drift and a trend error, before and after correction"><g id="bcG"></g></svg>
 
   <div class="kpis">
-    <div class="kpi"><div class="k">Reference-period bias</div><div class="v" id="kRb">&mdash;</div><div class="s">1981&ndash;2010 mean, model &minus; observed</div></div>
-    <div class="kpi"><div class="k">Reference-period RMSE</div><div class="v" id="kRr">&mdash;</div><div class="s">annual values, 1981&ndash;2010</div></div>
+    <div class="kpi"><div class="k" id="kRbL">Reference-period bias</div><div class="v" id="kRb">&mdash;</div><div class="s" id="kRbS">1981&ndash;2010 mean, model &minus; observed</div></div>
+    <div class="kpi"><div class="k" id="kRrL">Reference-period RMSE</div><div class="v" id="kRr">&mdash;</div><div class="s" id="kRrS">annual values, 1981&ndash;2010</div></div>
     <div class="kpi"><div class="k">Projected 2100</div><div class="v" id="kP">&mdash;</div><div class="s" id="kPs">&mdash;</div></div>
     <div class="kpi"><div class="k">Error at 2100</div><div class="v" id="kPe">&mdash;</div><div class="s">against the true trajectory</div></div>
   </div>
@@ -431,8 +435,10 @@ set of errors that are independent between members. Typical error magnitudes in 
 indicative values from the CMIP5 and CMIP6 evaluation chapters (Flato et al. 2013; Eyring et al. 2021), not
 precise statistics. The bias-correction demonstration uses a synthetic annual mean series with an
 observational record to 2020 and a projection to 2100; corrections are applied as described in Goosse ch. 3.5.3
-&mdash; a constant offset from the reference-period means, a linear drift estimated from a control run, and a
-multiplicative adjustment of the long-term trend.
+(online edition, Figs. 3.24 and 3.25) &mdash; a constant offset from the reference-period means, a linear drift
+estimated from a control run, a multiplicative adjustment of the long-term trend, and initialisation from the
+observed state with an e-folding adjustment time of 12 years, corrected by the mean error of hindcasts started
+every 5 years from 1950 at the same lead time.
 &nbsp;&middot;&nbsp; What on these pages is data and what is not:
 <a href="../lecture-7-climate-change-past-and-present/provenance.html">the provenance appendix</a>.
 &nbsp;&middot;&nbsp; Back to the <a href="../">course page</a>.</p>
@@ -657,21 +663,37 @@ multiplicative adjustment of the long-term trend.
     const bObs=fit(obs), bMod=fit(ddc);
     const amp=Math.abs(bMod)>1e-6 ? bObs/bMod : 1;
 
+    /* initialised from observations: the model is started from the observed state and
+       relaxes back to its own free run with an e-folding time TAU. Past starts every
+       HSTEP years are the hindcasts; their mean error at each lead time is the bias
+       that is subtracted from a run started at the end of the observations. */
+    const TAU=12, HSTEP=5;
+    const initRun=(y0,end)=>{ const gap=raw[y0-Y0]-obs[y0-Y0]; const out=raw.map(()=>null);
+      for(let y=y0;y<=end;y++) out[y-Y0]=raw[y-Y0]-gap*Math.exp(-(y-y0)/TAU); return out; };
+    const hind=[]; for(let y0=Y0;y0<=YOBS-HSTEP;y0+=HSTEP) hind.push({y0:y0,v:initRun(y0,YOBS)});
+    const LMAX=YOBS-Y0, lead=[], nlead=[];
+    for(let L=0;L<=LMAX;L++){ let sb=0,n=0;
+      hind.forEach(h=>{ const y=h.y0+L; if(y<=YOBS){ sb+=h.v[y-Y0]-obs[y-Y0]; n++; } });
+      lead.push(n?sb/n:null); nlead.push(n); }
+    const cur=initRun(YOBS,Y1);
+    const bAt=L=>lead[Math.min(L,LMAX)];           /* beyond the longest hindcast, held */
     const cor=raw.map((v,i)=>{
       if(bmode==='raw') return v;
+      if(bmode==='init') return cur[i]===null?null:cur[i]-bAt(Y0+i-YOBS);
       /* every correction is the delta method applied to some version of the model anomaly */
       if(bmode==='delta') return mObs + (v - mRaw);
       const a = ddc[i] - mDdc;                       /* drift removed, then anomaly */
       return mObs + (bmode==='trend' ? amp*a : a);
     });
-    return {yrs:yrs, obs:obs, raw:raw, cor:cor, dOff:dOff, amp:amp, drf:drf};
+    return {yrs:yrs, obs:obs, raw:raw, cor:cor, dOff:dOff, amp:amp, drf:drf,
+            hind:hind, lead:lead, nlead:nlead, cur:cur, tau:TAU, lmax:LMAX};
   }
   function drawBC(){
     const r=bcRun(), g=$('bcG'); clear(g);
     const L=76,R=828,T=34,B=306;
     let lo=99,hi=-99;
     const all=r.raw.concat(r.cor, r.yrs.map(y=>truth(y)));
-    all.forEach(v=>{ if(v<lo)lo=v; if(v>hi)hi=v; });
+    all.forEach(v=>{ if(v===null) return; if(v<lo)lo=v; if(v>hi)hi=v; });
     lo=Math.floor(lo-0.6); hi=Math.ceil(hi+0.6);
     const X=y=>L+(R-L)*(y-Y0)/(Y1-Y0), Y=t=>B-(B-T)*(t-lo)/(hi-lo);
     const st=Math.max(1,Math.round((hi-lo)/6));
@@ -703,17 +725,26 @@ multiplicative adjustment of the long-term trend.
     line(r.yrs.map(y=>truth(y)),'var(--obs)',2.2,'8 5');
     line(r.obs,'var(--obs)',2.8);
     if(bmode!=='raw') line(r.raw,'var(--gcm)',1.6,'4 4');
+    if(bmode==='init'){
+      r.hind.forEach(h=>line(h.v,'var(--rcm)',1.1));
+      line(r.cur,'var(--rcm)',2.2);
+    }
     line(r.cor, bmode==='raw'?'var(--gcm)':'var(--emic)',2.8);
 
-    put(g,'text',{x:L+8,y:T+16,'font-size':12,fill:'var(--obs)','font-weight':600},
-      'observations, and the true trajectory beyond them');
-    put(g,'text',{x:L+8,y:T+32,'font-size':12,
-      fill:bmode==='raw'?'var(--gcm)':'var(--emic)','font-weight':600},
-      bmode==='raw'?'raw model output'
-        :(bmode==='delta'?'offset corrected'
-        :(bmode==='drift'?'offset and drift corrected':'offset, drift and trend corrected')));
-    if(bmode!=='raw')
-      put(g,'text',{x:L+8,y:T+48,'font-size':12,fill:'var(--gcm)'},'raw model, for comparison');
+    const legend=[['observations, and the true trajectory beyond them','var(--obs)']];
+    if(bmode==='raw') legend.push(['raw model output','var(--gcm)']);
+    else if(bmode==='init'){
+      legend.push(['started from the observed state in '+YOBS+', corrected by lead time','var(--emic)']);
+      legend.push(['the same run uncorrected, and past starts every '+(r.hind[1].y0-r.hind[0].y0)+' years drifting back to the free run','var(--rcm)']);
+      legend.push(['free run, for comparison','var(--gcm)']);
+    } else {
+      legend.push([bmode==='delta'?'constant correction'
+        :(bmode==='drift'?'constant correction, drift removed'
+        :'variable correction: drift removed, trend scaled'),'var(--emic)']);
+      legend.push(['raw model, for comparison','var(--gcm)']);
+    }
+    legend.forEach((l,i)=>put(g,'text',{x:L+8,y:T+16+16*i,'font-size':12,fill:l[1],
+      'font-weight':i&&l[1]==='var(--gcm)'?400:600},l[0]));
     put(g,'text',{x:(L+R)/2,y:B+42,'text-anchor':'middle','font-size':12,fill:'var(--text-muted)'},
       'global mean surface temperature');
 
@@ -723,8 +754,21 @@ multiplicative adjustment of the long-term trend.
     const bias=sb/n, rmse=Math.sqrt(sq/n);
     const p2100=r.cor[r.cor.length-1], t2100=truth(Y1);
     const sgn=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(2);
-    $('kRb').innerHTML=sgn(bias)+'&nbsp;K';
-    $('kRr').innerHTML=rmse.toFixed(2)+'&nbsp;K';
+    if(bmode==='init'){
+      $('kRbL').textContent='Hindcast bias, 10-year lead';
+      $('kRb').innerHTML=sgn(r.lead[10])+'&nbsp;K';
+      $('kRbS').textContent='mean of '+r.nlead[10]+' past starts';
+      $('kRrL').textContent='Hindcast bias, 50-year lead';
+      $('kRr').innerHTML=sgn(r.lead[50])+'&nbsp;K';
+      $('kRrS').textContent='mean of '+r.nlead[50]+' past starts';
+    } else {
+      $('kRbL').textContent='Reference-period bias';
+      $('kRb').innerHTML=sgn(bias)+'&nbsp;K';
+      $('kRbS').innerHTML='1981&ndash;2010 mean, model &minus; observed';
+      $('kRrL').textContent='Reference-period RMSE';
+      $('kRr').innerHTML=rmse.toFixed(2)+'&nbsp;K';
+      $('kRrS').innerHTML='annual values, 1981&ndash;2010';
+    }
     $('kP').innerHTML=p2100.toFixed(2)+'&nbsp;°C';
     $('kPs').innerHTML='truth '+t2100.toFixed(2)+' °C';
     $('kPe').innerHTML=sgn(p2100-t2100)+'&nbsp;K';
@@ -757,6 +801,22 @@ multiplicative adjustment of the long-term trend.
         'are now gone, and what is left is a real physical failure: this model responds to forcing '+
         ((+$('tr').value)<100?'too weakly':'too strongly')+', and no amount of shifting the curve up or down '+
         'will repair that.';
+    } else if(bmode==='init'){
+      const L2100=Y1-YOBS;
+      s='<b>Initialised from observations.</b> Instead of running the model freely, start it from the observed '+
+        'state and let it go. It does not stay there: within a few times its adjustment time of '+r.tau+
+        ' years it has drifted back to its own free run, offset, weak trend and all. The thin purple lines are '+
+        'past starts every '+(r.hind[1].y0-r.hind[0].y0)+' years, the hindcasts. Their mean error at each lead '+
+        'time is the bias: '+sgn(r.lead[10])+' K at 10 years, '+sgn(r.lead[30])+' K at 30, '+
+        sgn(r.lead[50])+' K at 50. Subtract it from a run started in '+YOBS+' and the error at 2100 is <b>'+
+        sgn(p2100-t2100)+' K</b>.<br><br>'+
+        '<b>What this buys and what it costs.</b> The correction never had to separate offset, drift and trend: '+
+        'whatever the model gets wrong over L years is in the hindcast error at lead L, and the observed state '+
+        'anchors the first decade. That is how decadal prediction is done. But the bias at lead L can only be '+
+        'learned from starts at least L years old: the 2100 value is at lead '+L2100+' years, the longest '+
+        'hindcast reaches '+r.lmax+', and the correction there rests on a single start and is held constant '+
+        'beyond it. And it assumes, once more, that the error the model made at that lead in the past is the '+
+        'error it will make in the future.';
     } else {
       s='<b>Correcting the trend as well.</b> The model reproduces '+$('tr').value+
         ' % of the observed warming rate over the reference period, so its long-term change is scaled by '+
