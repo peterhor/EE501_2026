@@ -93,6 +93,15 @@
   code{background:var(--surface-2);padding:1px 5px;border-radius:5px;font-size:13.5px}
   .crumb{font-size:13px;color:var(--text-muted);margin:0 0 18px}
   .crumb a{color:var(--text-muted)}
+  .chain{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;margin:16px 0 6px}
+  .panels{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px}
+  .panels svg{flex:1 1 230px;max-width:320px;margin:0}
+  .chain .step{background:var(--surface-2);border-radius:10px;padding:9px 12px;text-align:center;min-width:96px}
+  .chain .step b{display:block;font-size:19px;color:var(--text-primary);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .chain .step b small{font-size:12px;font-weight:500}
+  .chain .step span{font-size:12px;color:var(--text-muted)}
+  .chain .step.key{background:var(--sun-soft)} .chain .step.key b{color:var(--sun-deep)}
+  .chain .op{font-size:13px;color:var(--text-secondary);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -529,7 +538,7 @@
     <p>This is the single step students most often get wrong. Earth <em>intercepts</em> sunlight over its
     cross-sectional area πR², because sunlight arrives as a parallel beam. It <em>radiates</em> over its full
     surface 4πR², because thermal emission goes in all directions from the whole globe. Hence the famous
-    factor of 4.</p>
+    factor of 4, which turns S₀ = 1361 W/m² into 340 W/m² (worked through below).</p>
 
     <figure>
       <svg viewBox="0 0 800 260" role="img" aria-label="Earth absorbs over a disc of area pi R squared and emits over a sphere of area 4 pi R squared">
@@ -572,6 +581,106 @@
       <div class="def"><b>T<sub>e</sub></b> effective emission temperature, K</div>
     </div>
 
+    <h3 style="margin-top:22px">Where 340 W/m² comes from</h3>
+    <p>S₀ = 1361 W/m² is measured on a surface held face-on to the Sun. Almost none of Earth's surface is
+    face-on: the day side curves away from the beam, and half the globe is in night. Averaged over the whole
+    surface and a full day, each square metre receives S₀/4 = <strong>340 W/m²</strong>. The four can be
+    seen in two equivalent ways.</p>
+
+    <figure>
+      <div class="panels">
+      <svg viewBox="10 0 260 280" role="img" aria-label="A sphere's surface equals four discs of the same radius, so the intercepted sunlight spread over the sphere is one quarter of S0">
+        <text x="140" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text-muted)" letter-spacing=".06em">BY AREA</text>
+        <!-- panel 1: sphere = four shadow discs -->
+        <circle cx="52" cy="134" r="33" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width="2"/>
+        <ellipse cx="52" cy="134" rx="12" ry="33" fill="none" stroke="var(--earth)" stroke-width="1" opacity=".6"/>
+        <ellipse cx="52" cy="134" rx="33" ry="10" fill="none" stroke="var(--earth)" stroke-width="1" opacity=".6"/>
+        <text x="106" y="141" text-anchor="middle" font-size="22" fill="var(--text-secondary)">=</text>
+        <g fill="var(--sun)" fill-opacity=".22" stroke="var(--sun-deep)" stroke-width="1.6">
+          <circle cx="160" cy="98"  r="33"/><circle cx="230" cy="98"  r="33"/>
+          <circle cx="160" cy="170" r="33"/><circle cx="230" cy="170" r="33"/>
+        </g>
+        <g font-size="12" fill="var(--sun-deep)" text-anchor="middle" font-weight="600">
+          <text x="160" y="102">πR²</text><text x="230" y="102">πR²</text>
+          <text x="160" y="174">πR²</text><text x="230" y="174">πR²</text>
+        </g>
+        <text x="52" y="186" text-anchor="middle" font-size="12" fill="var(--earth-deep)" font-weight="600">4πR²</text>
+        <text x="140" y="238" text-anchor="middle" font-size="13" fill="var(--text-secondary)">sphere surface = 4 × shadow disc</text>
+        <text x="140" y="260" text-anchor="middle" font-size="13" fill="var(--text-primary)">S₀ · πR² / 4πR² = S₀ / 4</text>
+      </svg>
+      <svg viewBox="270 0 260 280" role="img" aria-label="Two beams of equal width; the one striking where the Sun is 60 degrees from overhead covers twice the ground, so the flux there is 680 instead of 1361 W per square metre, and the day side averages 680">
+        <text x="400" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text-muted)" letter-spacing=".06em">÷ 2 · SLANTING RAYS</text>
+        <!-- panel 2: same beam width, twice the footprint at 60 degrees -->
+        <circle cx="455" cy="140" r="62" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width="2"/>
+        <path d="M288 134 L393.29 134 A62 62 0 0 0 393.29 146 L288 146 Z" fill="var(--sun)" opacity=".45"/>
+        <path d="M288 80.31 L438.25 80.31 A62 62 0 0 0 415.39 92.31 L288 92.31 Z" fill="var(--sun)" opacity=".45"/>
+        <path d="M393.29 134 A62 62 0 0 0 393.29 146" fill="none" stroke="var(--sun-deep)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M438.25 80.31 A62 62 0 0 0 415.39 92.31" fill="none" stroke="var(--sun-deep)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="455" y1="140" x2="393" y2="140" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="455" y1="140" x2="424" y2="86.31" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3 3"/>
+        <path d="M435 140 A20 20 0 0 1 445 122.68" fill="none" stroke="var(--text-muted)" stroke-width="1"/>
+        <text x="446" y="134" font-size="11" fill="var(--text-muted)">θ</text>
+        <g font-size="12" fill="var(--sun-deep)" font-weight="600">
+          <text x="292" y="58">θ = 60°</text><text x="292" y="73">680 W/m²</text>
+          <text x="292" y="163">overhead</text><text x="292" y="178">1361 W/m²</text>
+        </g>
+        <text x="400" y="238" text-anchor="middle" font-size="13" fill="var(--text-secondary)">same beam, twice the ground at 60°</text>
+        <text x="400" y="260" text-anchor="middle" font-size="13" fill="var(--text-primary)">day-side mean = S₀ / 2 = 680 W/m²</text>
+      </svg>
+      <svg viewBox="530 0 260 280" role="img" aria-label="The night hemisphere receives nothing, halving the day-side average of 680 to a global mean of 340 W per square metre">
+        <text x="660" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text-muted)" letter-spacing=".06em">÷ 2 · NIGHT SIDE</text>
+        <!-- panel 3: night hemisphere receives nothing -->
+        <g stroke="var(--sun)" stroke-width="2" marker-end="url(#ar)" opacity=".85">
+          <line x1="560" y1="95"  x2="656" y2="95"/>
+          <line x1="560" y1="117" x2="641" y2="117"/>
+          <line x1="560" y1="140" x2="637" y2="140"/>
+          <line x1="560" y1="163" x2="641" y2="163"/>
+          <line x1="560" y1="185" x2="656" y2="185"/>
+        </g>
+        <circle cx="705" cy="140" r="62" fill="var(--earth-soft)"/>
+        <path d="M705 78 A62 62 0 0 0 705 202 Z" fill="var(--sun)" opacity=".28"/>
+        <path d="M705 78 A62 62 0 0 1 705 202 Z" fill="#000" opacity=".38"/>
+        <circle cx="705" cy="140" r="62" fill="none" stroke="var(--earth)" stroke-width="2"/>
+        <text x="675" y="144" text-anchor="middle" font-size="12" fill="var(--sun-deep)" font-weight="600">day</text>
+        <text x="736" y="144" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="600">night</text>
+        <text x="736" y="160" text-anchor="middle" font-size="11" fill="#ffffff">0 W/m²</text>
+        <text x="660" y="238" text-anchor="middle" font-size="13" fill="var(--text-secondary)">half the globe gets nothing</text>
+        <text x="660" y="260" text-anchor="middle" font-size="13" fill="var(--text-primary)">global mean = 680 / 2 = 340 W/m²</text>
+      </svg>
+      </div>
+      <figcaption>The first panel is the area argument; the second and third split the same factor of 4 into
+      its two physical causes, each worth 2. θ is the solar zenith angle, the Sun's angle from directly
+      overhead.</figcaption>
+    </figure>
+
+    <ul>
+      <li><strong>By area.</strong> Earth intercepts S₀ · πR² = 1.74 × 10<sup>17</sup> W. Spread over its
+      whole surface, 4πR² = 5.10 × 10<sup>14</sup> m², that is 340 W/m². A sphere's surface is exactly four
+      times its shadow disc, so the ratio is 1/4 for every planet.</li>
+      <li><strong>By cause.</strong> A beam arriving at zenith angle θ covers 1/cos θ times more ground, so the
+      flux there is S₀ cos θ: 1361 W/m² with the Sun overhead, 680 W/m² at θ = 60°, zero at the day–night
+      boundary. Averaged over the day hemisphere this is S₀/2 = 680 W/m². The night hemisphere receives
+      nothing, which halves it again to S₀/4 = 340 W/m².</li>
+    </ul>
+
+    <div class="chain" role="list" aria-label="From the solar constant to absorbed sunlight">
+      <div class="step" role="listitem"><b>1361 <small>W/m²</small></b><span>face-on</span></div>
+      <div class="op">÷ 2 slant →</div>
+      <div class="step" role="listitem"><b>680 <small>W/m²</small></b><span>day-side mean</span></div>
+      <div class="op">÷ 2 night →</div>
+      <div class="step key" role="listitem"><b>340 <small>W/m²</small></b><span>global 24-h mean</span></div>
+      <div class="op">× 0.70 →</div>
+      <div class="step" role="listitem"><b>238 <small>W/m²</small></b><span>absorbed</span></div>
+    </div>
+
+    <div class="callout">
+      <b>340 W/m² is an average, not a flux measured at any one place.</b> At any instant the point under
+      the Sun receives 1361 W/m² and the night side 0. 340 W/m² is the value for a global, annual-mean
+      budget, which is why it is the incoming arrow at the top of
+      <a href="global-budget.html">the global energy budget</a>. Albedo then reflects 30 % of it, leaving
+      238 W/m² absorbed.
+    </div>
+
     <h3 style="margin-top:22px">Try it</h3>
     <div class="ctl">
       <label for="aSlider">Albedo α<sub>p</sub></label>
@@ -580,7 +689,7 @@
     </div>
     <div class="two">
       <div class="tile"><div class="lab">Absorbed, global mean</div><div class="val" id="absRead">238 W/m²</div>
-        <div class="note">= S₀(1 − α<sub>p</sub>)/4, averaged over the whole globe, day and night</div></div>
+        <div class="note">= S₀(1 − α<sub>p</sub>)/4 = 340 × (1 − α<sub>p</sub>), averaged over the whole globe, day and night</div></div>
       <div class="tile earthv"><div class="lab">Radiating temperature T<sub>e</sub></div><div class="val" id="teffRead">255 K</div>
         <div class="note" id="teffNote">−18 °C · what an infrared telescope in space measures</div></div>
     </div>
