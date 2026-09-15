@@ -129,7 +129,7 @@ Climate change: past and present &middot; 4 of 6</p>
   gradual cooling over centuries to a few thousand years, and then an abrupt return to the cold state. They
   are named after Willi Dansgaard and Hans Oeschger, and they are numbered.</p>
 
-  <svg viewBox="0 0 880 300" role="img" aria-label="Schematic of the sawtooth shape of Dansgaard-Oeschger events in a Greenland ice core, with Heinrich events and the corresponding Antarctic signal"><g id="doG"></g></svg>
+  <svg viewBox="0 0 880 320" role="img" aria-label="Schematic of the sawtooth shape of Dansgaard-Oeschger events in a Greenland ice core, with Heinrich events and the corresponding Antarctic signal"><g id="doG"></g></svg>
 
   <table>
     <thead><tr><th>Feature</th><th>What it rules out</th></tr></thead>
@@ -479,8 +479,9 @@ sequence of events; no axis on them should be read as data.
       EV.forEach(e=>{ if(t<=e){ const d=e-t; v=Math.max(v,Math.exp(-d/1.4)); } });
       return v;
     }
-    const T1=48,B1=150;
-    put(g,'text',{x:L,y:22,'font-size':12,fill:'var(--warn)','font-weight':600},
+    // labels sit in their own rows above each band, never on the curves
+    const T1=50,B1=150;
+    put(g,'text',{x:L,y:18,'font-size':12,fill:'var(--warn)','font-weight':600},
       'SCHEMATIC — shape and sequence only, not ice-core data');
     put(g,'rect',{x:L,y:T1,width:R-L,height:B1-T1,fill:'var(--surface-2)',opacity:.55});
     let d='';
@@ -490,13 +491,13 @@ sequence of events; no axis on them should be read as data.
       d+=(i?'L':'M')+X(t).toFixed(1)+' '+y.toFixed(1);
     }
     put(g,'path',{d:d,fill:'none',stroke:'var(--hi)','stroke-width':1.6});
-    put(g,'text',{x:L+6,y:T1+16,'font-size':11.5,fill:'var(--hi)','font-weight':600},
+    put(g,'text',{x:L,y:T1-9,'font-size':11.5,fill:'var(--hi)','font-weight':600},
       'Greenland temperature — abrupt on, gradual off');
-    put(g,'text',{x:R-6,y:T1+16,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},
+    put(g,'text',{x:R,y:T1-9,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},
       'each jump 8–16 K in a few decades');
 
     // southern integral
-    const T2=176,B2=252;
+    const T2=182,B2=258;
     put(g,'rect',{x:L,y:T2,width:R-L,height:B2-T2,fill:'var(--surface-2)',opacity:.55});
     let s=0,d2='';
     const tau=1.1;
@@ -506,22 +507,23 @@ sequence of events; no axis on them should be read as data.
       d2+=(i?'L':'M')+X(t).toFixed(1)+' '+(( (T2+B2)/2 ) - s*54).toFixed(1);
     }
     put(g,'path',{d:d2,fill:'none',stroke:'var(--ocean)','stroke-width':2});
-    put(g,'text',{x:L+6,y:T2+16,'font-size':11.5,fill:'var(--ocean)','font-weight':600},
+    put(g,'text',{x:L,y:T2-9,'font-size':11.5,fill:'var(--ocean)','font-weight':600},
       'Antarctic temperature — smooth, out of phase, smaller');
 
-    // Heinrich markers
+    // Heinrich markers: dashed within the bands only, so they skip the label row between them
     [16.8,24,31,38,45].forEach((h,i)=>{
-      put(g,'line',{x1:X(h),y1:T1-8,x2:X(h),y2:B2+6,stroke:'var(--deep)','stroke-dasharray':'3 4'});
-      put(g,'text',{x:X(h),y:T1-12,'text-anchor':'middle','font-size':10.5,
+      [[T1,B1],[T2,B2+6]].forEach(([y1,y2])=>
+        put(g,'line',{x1:X(h),y1:y1,x2:X(h),y2:y2,stroke:'var(--deep)','stroke-dasharray':'3 4'}));
+      put(g,'text',{x:X(h),y:B2+18,'text-anchor':'middle','font-size':10.5,
         fill:'var(--deep)','font-weight':600},'H'+(i+1));
     });
     for(let t=0;t<=60;t+=10){
-      put(g,'text',{x:X(t),y:B2+22,'text-anchor':'middle','font-size':10.5,
+      put(g,'text',{x:X(t),y:B2+34,'text-anchor':'middle','font-size':10.5,
         fill:'var(--text-muted)'},t===0?'now':t);
     }
-    put(g,'text',{x:(L+R)/2,y:B2+40,'text-anchor':'middle','font-size':11,
+    put(g,'text',{x:(L+R)/2,y:B2+52,'text-anchor':'middle','font-size':11,
       fill:'var(--text-muted)'},'thousands of years before present');
-    put(g,'text',{x:L,y:B2+40,'font-size':11,fill:'var(--deep)'},
+    put(g,'text',{x:L,y:B2+52,'font-size':11,fill:'var(--deep)'},
       'H = Heinrich event (iceberg discharge)');
   })();
 
