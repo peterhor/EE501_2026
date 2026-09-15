@@ -396,7 +396,7 @@ Response of the climate system to perturbations &middot; 4 of 6</p>
 <div class="card">
   <h3>The five terms, back together</h3>
   <p class="cap">Where each one comes from, in one place.</p>
-  <svg viewBox="0 0 880 250" role="img" aria-label="Summary bar chart of the five physical feedback parameters with their uncertainty ranges"><g id="sumG"></g></svg>
+  <svg viewBox="0 0 880 268" role="img" aria-label="Summary bar chart of the five physical feedback parameters with their uncertainty ranges"><g id="sumG"></g></svg>
   <p class="note"><b>Read the whiskers, not the bars.</b> The bars say what we think the feedbacks are. The
   whiskers say how much of that we can defend. On that reading the ordering changes completely: water vapour is
   the largest feedback and one of the best constrained; cloud is a third the size and carries four times the
@@ -863,9 +863,14 @@ matching the observed value; the individual cloud types are representative rathe
         put(g,'line',{x1:xv,y1:y+5,x2:xv,y2:y+rh-10,stroke:'var(--text-primary)',
           'stroke-width':1.5,opacity:.75});
       });
-      put(g,'text',{x:(d.v>=0?X(d.v+d.e)+8:X(d.v-d.e)-8),y:y+20,
-        'text-anchor':d.v>=0?'start':'end','font-size':11.5,fill:'var(--text-primary)',
-        'font-variant-numeric':'tabular-nums'},(d.v>=0?'+':'')+d.v.toFixed(2)+' ± '+d.e.toFixed(2));
+      // a label left of a long negative bar would run into the row name, so
+      // it goes inside the bar instead
+      const lab=(d.v>=0?'+':'')+d.v.toFixed(2)+' ± '+d.e.toFixed(2);
+      const inside=d.v<0 && X(d.v-d.e)-8-lab.length*7 < L;
+      put(g,'text',{x:inside?X(d.v+d.e)+8:(d.v>=0?X(d.v+d.e)+8:X(d.v-d.e)-8),y:y+20,
+        'text-anchor':inside||d.v>=0?'start':'end','font-size':11.5,
+        fill:inside?'#fff':'var(--text-primary)','font-weight':inside?600:400,
+        'font-variant-numeric':'tabular-nums'},lab);
     });
     put(g,'text',{x:20,y:T+D.length*rh+30,'font-size':11.5,fill:'var(--text-muted)'},
       'W m⁻² K⁻¹. Whiskers are inter-model spread; the water-vapour and lapse-rate whiskers apply to their sum, not to each alone.');

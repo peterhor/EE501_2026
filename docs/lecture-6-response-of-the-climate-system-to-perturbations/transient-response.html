@@ -212,7 +212,7 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 880 420" role="img" aria-label="Forcing and temperature response over time for two climates of different sensitivity, with the radiative imbalance below"><g id="trG"></g></svg>
+  <svg viewBox="0 0 880 434" role="img" aria-label="Forcing and temperature response over time for two climates of different sensitivity, with the radiative imbalance below"><g id="trG"></g></svg>
 
   <div class="kpis">
     <div class="kpi"><div class="k">&tau;, climate A</div><div class="v" id="kTauA">&mdash;</div><div class="s">years</div></div>
@@ -437,8 +437,11 @@ schematic is qualitative.
       }
       put(g,'path',{d:df,fill:'none',stroke:'var(--frc)','stroke-width':2.2});
       put(g,'text',{x:L,y:fT-8,'font-size':12,fill:'var(--text-secondary)'},'Forcing ΔQ, W m⁻²');
-      put(g,'text',{x:L-8,y:FY(fmax)+10,'text-anchor':'end','font-size':10.5,
+      // axis extremes are labelled only where they clear the zero label
+      if(FY(0)-FY(fmax)>18) put(g,'text',{x:L-8,y:FY(fmax)+10,'text-anchor':'end','font-size':10.5,
         fill:'var(--text-muted)'},fmax.toFixed(1));
+      if(FY(fmin)-FY(0)>18) put(g,'text',{x:L-8,y:FY(fmin),'text-anchor':'end','font-size':10.5,
+        fill:'var(--text-muted)'},fmin.toFixed(1));
       put(g,'text',{x:L-8,y:FY(0)+4,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},'0');
 
       /* temperature panel */
@@ -490,6 +493,8 @@ schematic is qualitative.
       line(A,'var(--lo)'); line(B,'var(--hi)');
       put(g,'text',{x:L,y:tT-10,'font-size':12,fill:'var(--text-secondary)'},
         'Surface temperature change, K');
+      // backdrop so the equilibrium and slope lines do not run through the legend
+      put(g,'rect',{x:L+2,y:tT-2,width:152,height:38,rx:4,fill:'var(--surface-1)',opacity:.92});
       put(g,'rect',{x:L+8,y:tT+6,width:12,height:3,fill:'var(--lo)'});
       put(g,'text',{x:L+26,y:tT+11,'font-size':11,fill:'var(--text-secondary)'},
         'A: λf = '+lamA.toFixed(2)+', τ = '+tauA.toFixed(0)+' yr');
