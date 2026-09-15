@@ -165,16 +165,31 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
   <p class="cap">Not a convention, and not an assumption &mdash; a condition for the planet to have a climate
   at all.</p>
 
-  <svg viewBox="0 0 880 330" role="img" aria-label="Radiative imbalance plotted against surface temperature change for three values of the feedback parameter, showing where each reaches equilibrium"><g id="lineG"></g></svg>
+  <svg viewBox="0 0 880 342" role="img" aria-label="Radiative imbalance plotted against surface temperature change for three values of the feedback parameter, showing where each reaches equilibrium"><g id="lineG"></g></svg>
 
-  <p class="note"><b>Read it as a restoring force.</b> Each line starts at &Delta;R = &Delta;Q when the
-  temperature has not yet moved, and the system warms as long as &Delta;R &gt; 0. If &lambda;<sub>f</sub> is
-  negative the line slopes down, crosses zero, and the warming stops there. The steeper the slope, the sooner
-  it crosses, and the smaller the warming.</p>
+  <p class="note"><b>How to read it.</b> The horizontal axis is how much the planet has warmed so far. The
+  vertical axis is the imbalance &Delta;R: how much more energy the planet absorbs than it loses. While
+  &Delta;R is above zero the planet keeps warming; where its line reaches zero, the warming stops. Each line
+  is one planet with one value of &lambda;<sub>f</sub>.</p>
 
-  <p class="note">If &lambda;<sub>f</sub> were <em>positive</em>, the line would slope up and away: warming
-  would increase the imbalance, which would increase the warming. Nothing would stop it until some process
-  outside this linearisation intervened. That is a runaway, it is what happened to Venus, and the fact that
+  <p class="note"><b>Worked example: the best estimate, &lambda;<sub>f</sub> = &minus;1.26 (green).</b>
+  Double the CO<sub>2</sub>, and before any warming the planet gains 3.7 W m<sup>&minus;2</sup> more than it
+  loses. Each kelvin of warming raises its net energy loss by 1.26 W m<sup>&minus;2</sup>, so the imbalance
+  shrinks by that amount per kelvin:</p>
+  <ul class="pl">
+    <li>after 1 K: 3.7 &minus; 1.26 = <b>2.44</b> W m<sup>&minus;2</sup>, still warming</li>
+    <li>after 2 K: 3.7 &minus; 2.52 = <b>1.18</b> W m<sup>&minus;2</sup>, still warming</li>
+    <li>after 2.94 K: 3.7 &minus; 3.7 = <b>0</b>, warming stops. The end point is 3.7 / 1.26 = 2.94 K.</li>
+  </ul>
+
+  <p class="note">The blue planet loses 2.5 W m<sup>&minus;2</sup> more per kelvin, so it closes the same
+  3.7 W m<sup>&minus;2</sup> gap after 3.7 / 2.5 = 1.5 K. The orange planet loses only 0.82 per kelvin and
+  needs 3.7 / 0.82 = 4.5 K. <b>A steeper line means less warming.</b></p>
+
+  <p class="note">If &lambda;<sub>f</sub> were <em>positive</em> (red, +0.3), each kelvin would add
+  0.3 W m<sup>&minus;2</sup> to the imbalance instead: 4.0 after 1 K, 4.3 after 2 K. The line slopes up, never
+  reaches zero, and the warming keeps feeding itself until some process outside this linearisation
+  intervenes. That is a runaway, it is what happened to Venus, and the fact that
   Earth's temperature has stayed within a few tens of kelvin for four billion years is a strong empirical claim
   that &lambda;<sub>f</sub> &lt; 0 across a wide range of states.</p>
 
@@ -477,8 +492,10 @@ these in the second decimal place.
       {lam: 0.3, c:'var(--pos)',  n:'λf = +0.3  runaway'}
     ];
     CASES.forEach(cs=>{
-      const t2=tmax, r2=dQ+cs.lam*t2;
-      put(g,'line',{x1:X(0),y1:Y(dQ),x2:X(t2),y2:Y(Math.max(rmin,Math.min(rmax,r2))),
+      // end the line where it leaves the plot box, keeping its true slope
+      const rEdge=cs.lam<0?rmin:rmax;
+      const t2=Math.min(tmax,(rEdge-dQ)/cs.lam), r2=dQ+cs.lam*t2;
+      put(g,'line',{x1:X(0),y1:Y(dQ),x2:X(t2),y2:Y(r2),
         stroke:cs.c,'stroke-width':2.4});
       if(cs.lam<0){
         const te=-dQ/cs.lam;
@@ -507,7 +524,7 @@ these in the second decimal place.
     put(g,'text',{x:706,y:228,'font-size':11.5,fill:'var(--text-muted)'},'no equilibrium to');
     put(g,'text',{x:706,y:244,'font-size':11.5,fill:'var(--text-muted)'},'reach.');
     put(g,'text',{x:L,y:B+62,'font-size':11.5,fill:'var(--text-muted)'},
-      'Halving |λf| doubles the eventual warming. The line does not get longer — it gets flatter, and takes far longer to cross.');
+      'Halving |λf| doubles the eventual warming: blue (−2.5) stops at 1.5 K, green (−1.26) at 2.9 K.');
   })();
 
   /* ── 2 · the feedback assembler ─────────────────────────────── */
