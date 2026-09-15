@@ -13,6 +13,7 @@
     --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#78776f;
     --pos:#c8443a; --neg:#2a78d6; --acc:#1baf7a; --warn:#d98324;
     --hi:#c8443a; --lo:#2a78d6; --frc:#d98324; --ocean:#1f6fb2; --deep:#3f6f8f; --ice:#7fb3d5;
+    --obl:#7a55c7; --ecc:#b8398a;
   }
   :root[data-theme="dark"]{
     color-scheme: dark;
@@ -21,6 +22,7 @@
     --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#94938a;
     --pos:#d9564c; --neg:#3987e5; --acc:#199e70; --warn:#e09a44;
     --hi:#d9564c; --lo:#3987e5; --frc:#e09a44; --ocean:#2f83c9; --deep:#5b8dad; --ice:#6fa2c4;
+    --obl:#a084e6; --ecc:#dd65a8;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--surface-0);color:var(--text-primary);
@@ -381,7 +383,7 @@ Climate change: past and present &middot; 3 of 6</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 880 430" role="img" aria-label="Idealised orbital parameters, the resulting 65 degrees north June insolation, and the simulated ice volume over the last 800,000 years"><g id="iceG"></g></svg>
+  <svg viewBox="0 0 880 452" role="img" aria-label="Idealised orbital parameters, the resulting 65 degrees north June insolation, and the simulated ice volume over the last 800,000 years"><g id="iceG"></g></svg>
 
   <h3 style="font-size:15px;margin:18px 0 2px">The spectra &mdash; this is the result</h3>
   <p class="cap">The same two series, decomposed by period. Read the input on the left, the output on the
@@ -906,7 +908,7 @@ discrete Fourier transform.
       for(let t=0;t<=800;t+=100)
         put(g,'text',{x:X(t),y:426,'text-anchor':'middle','font-size':10.5,
           fill:'var(--text-muted)'},t===0?'now':t);
-      put(g,'text',{x:(L+R)/2,y:412,'text-anchor':'middle','font-size':11,
+      put(g,'text',{x:(L+R)/2,y:446,'text-anchor':'middle','font-size':11,
         fill:'var(--text-muted)'},'thousands of years before present');
       put(g,'text',{x:L,y:20,'font-size':11,fill:'var(--warn)','font-weight':600},
         'IDEALISED orbital synthesis — dominant periods only, not the Berger (1978) solution');
@@ -924,13 +926,13 @@ discrete Fourier transform.
         put(g,'text',{x:lx+19,y:T1-10,'font-size':10.5,fill:col,'font-weight':600},lab);
       }
       put(g,'rect',{x:L,y:T1,width:R-L,height:B1-T1,fill:'var(--surface-2)',opacity:.5});
-      series(i=>orbit(i).o,'var(--ocean)',1.2,22.2,24.3,'obliquity  22.2° – 24.3°',L);
-      series(i=>orbit(i).e*28+22.5,'var(--frc)',1.2,22.2,24.3,'eccentricity  0.004 – 0.054',L+230);
+      series(i=>orbit(i).o,'var(--obl)',1.2,22.2,24.3,'obliquity  22.2° – 24.3°',L);
+      series(i=>orbit(i).e*28+22.5,'var(--ecc)',1.2,22.2,24.3,'eccentricity  0.004 – 0.054',L+230);
       series(i=>{const o=orbit(i);return 23.25+o.e*Math.sin(o.p*D2R)*18;},
         'var(--acc)',1,22.2,24.3,'climatic precession  e sin ω̄',L+470);
 
       // panel 2: insolation
-      const T2=156,B2=252;
+      const T2=184,B2=270;
       const fmin=Math.min(...F.raw), fmax=Math.max(...F.raw);
       let d2='';
       for(let i=0;i<NT;i++){
@@ -938,13 +940,13 @@ discrete Fourier transform.
         d2+=(i?'L':'M')+X(i).toFixed(1)+' '+y.toFixed(1);
       }
       put(g,'path',{d:d2,fill:'none',stroke:'var(--frc)','stroke-width':1.4});
-      put(g,'text',{x:L+4,y:T2+13,'font-size':11,fill:'var(--frc)','font-weight':600},
+      put(g,'text',{x:L+4,y:T2-8,'font-size':11,fill:'var(--frc)','font-weight':600},
         '65°N insolation at the June solstice');
-      put(g,'text',{x:R-4,y:T2+13,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},
+      put(g,'text',{x:R-4,y:T2-8,'text-anchor':'end','font-size':10.5,fill:'var(--text-muted)'},
         fmin.toFixed(0)+' – '+fmax.toFixed(0)+' W m⁻²');
 
       // panel 3: ice volume
-      const T3=272,B3=396;
+      const T3=302,B3=410;
       const imin=Math.min(...ICE), imax=Math.max(...ICE);
       let d3='', dArea='M'+X(0).toFixed(1)+' '+B3;
       for(let i=0;i<NT;i++){
@@ -955,7 +957,7 @@ discrete Fourier transform.
       dArea+='L'+X(800).toFixed(1)+' '+B3+'Z';
       put(g,'path',{d:dArea,fill:'var(--ice)',opacity:.35});
       put(g,'path',{d:d3,fill:'none',stroke:'var(--ocean)','stroke-width':1.8});
-      put(g,'text',{x:L+4,y:T3+14,'font-size':11,fill:'var(--ocean)','font-weight':600},
+      put(g,'text',{x:L+4,y:T3-8,'font-size':11,fill:'var(--ocean)','font-weight':600},
         'simulated ice volume  (more ice downward)');
 
       // spectra
