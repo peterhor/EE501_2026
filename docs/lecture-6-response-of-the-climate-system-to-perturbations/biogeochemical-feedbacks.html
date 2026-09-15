@@ -249,7 +249,7 @@ Response of the climate system to perturbations &middot; 6 of 6</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 880 330" role="img" aria-label="Where emitted carbon ends up, split between atmosphere, ocean and land, with and without the climate-carbon feedback"><g id="ccG"></g></svg>
+  <svg viewBox="0 0 880 352" role="img" aria-label="Where emitted carbon ends up, split between atmosphere, ocean and land, with and without the climate-carbon feedback"><g id="ccG"></g></svg>
 
   <div class="kpis">
     <div class="kpi"><div class="k">Airborne fraction</div><div class="v" id="kAF">&mdash;</div><div class="s">of what was emitted</div></div>
@@ -603,7 +603,10 @@ from the whole chapter.
 
       const g=$('ccG'); clr(g);
       const L=70, R=470, T=62, B=286;
-      const scale=(B-T)/(CE*1.15);
+      // scale to the taller of the emitted line and either stack, so a stack that
+      // overshoots the emissions (land turned net source) stays below the legend
+      const top=s=>s?Math.max(s.dA,0)+Math.max(s.dO,0)+Math.max(s.dL,0):0;
+      const scale=(B-T)/(Math.max(CE,top(S),top(S0))*1.15);
       function stack(x,w,S,lab,sub){
         let acc=0;
         const parts=[
@@ -618,14 +621,16 @@ from the whole chapter.
             'font-size':11.5,fill:'#fff','font-weight':600},p.v.toFixed(0));
           acc+=p.v;
         });
-        // negative land/ocean (a source)
-        [{v:S.dL,c:'var(--land)'},{v:S.dO,c:'var(--oce)'}].forEach((p,i)=>{
+        // negative land/ocean (a source): a stub below the axis, capped so it
+        // stops above the bar labels, and one label beside the bar
+        let src=false;
+        [{v:S.dL,c:'var(--land)'},{v:S.dO,c:'var(--oce)'}].forEach(p=>{
           if(p.v<0){
-            put(g,'rect',{x:x,y:B,width:w,height:Math.min(-p.v*scale,B*0.18),fill:p.c,opacity:.5});
-            put(g,'text',{x:x+w/2,y:B+16+i*14,'text-anchor':'middle','font-size':10.5,
-              fill:'var(--pos)'},'net source');
+            put(g,'rect',{x:x,y:B,width:w,height:Math.min(-p.v*scale,16),fill:p.c,opacity:.5});
+            src=true;
           }
         });
+        if(src) put(g,'text',{x:x+w+6,y:B+12,'font-size':10.5,fill:'var(--pos)'},'net source');
         put(g,'text',{x:x+w/2,y:B+34,'text-anchor':'middle','font-size':12.5,
           fill:'var(--text-primary)','font-weight':600},lab);
         put(g,'text',{x:x+w/2,y:B+50,'text-anchor':'middle','font-size':11.5,
@@ -634,7 +639,10 @@ from the whole chapter.
       put(g,'line',{x1:L-16,y1:B,x2:R,y2:B,stroke:'var(--text-muted)','stroke-width':1.2});
       put(g,'line',{x1:L+8,y1:B-CE*scale,x2:R,y2:B-CE*scale,stroke:'var(--text-muted)',
         'stroke-width':1.2,'stroke-dasharray':'5 4'});
-      put(g,'text',{x:R,y:B-CE*scale-6,'text-anchor':'end','font-size':11,
+      // the β-only stack always sums to the emissions, so an overshooting β-and-γ
+      // stack moves the label over to the left, where nothing crosses it
+      const over=top(S)>CE*1.001;
+      put(g,'text',{x:over?L+8:R,y:B-CE*scale-6,'text-anchor':over?'start':'end','font-size':11,
         fill:'var(--text-muted)'},'emitted '+CE+' PgC');
       if(S0) stack(L+20,120,S0,'β only','no warming response');
       if(S)  stack(L+220,120,S,'β and γ','the real case');
