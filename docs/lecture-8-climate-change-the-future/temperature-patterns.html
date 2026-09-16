@@ -458,8 +458,9 @@ ordering of polar-amplification mechanisms follows Pithan and Mauritsen, <i>Natu
         put(gS,'text',{x:x+w/2,y:236,'text-anchor':'middle','font-size':12.5,
           fill:'var(--text-primary)','font-weight':600},c[0]);
         // mixing arrow
-        arrow(gS,x+w/2,212,x+w/2,86,'var(--text-muted)',1.6);
-        put(gS,'text',{x:x+w/2,y:104,'text-anchor':'middle','font-size':10.5,
+        // beside the column, so it does not cross the bar or the ΔT label
+        arrow(gS,x-12,232,x-12,86,'var(--text-muted)',1.6);
+        put(gS,'text',{x:x-16,y:104,'text-anchor':'end','font-size':10.5,
           fill:'var(--text-muted)'},'Δh');
         // partition bar: how the same Δh splits
         const dT=c[3], TC = c[0]==='land'?+S.Tl.value:+S.To.value;
@@ -484,7 +485,7 @@ ordering of polar-amplification mechanisms follows Pithan and Mauritsen, <i>Natu
 
     function drawCurve(r){
       clr(gR);
-      const L=52,R=414,T=26,B=248;
+      const L=52,R=374,T=26,B=248;
       const X=rh=>L+(rh-10)/(100-10)*(R-L);
       const ymax=2.4, ymin=0.8;
       const Y=v=>B-(v-ymin)/(ymax-ymin)*(B-T);
@@ -506,6 +507,7 @@ ordering of polar-amplification mechanisms follows Pithan and Mauritsen, <i>Natu
       put(gR,'line',{x1:L,y1:Y(1),x2:R,y2:Y(1),stroke:'var(--text-muted)','stroke-width':1,
         'stroke-dasharray':'3 3'});
       const To=+S.To.value, Tl=+S.Tl.value;
+      const tags=[];
       [[60,.35],[80,1],[95,.35]].forEach(o=>{
         let d='';
         for(let rh=10;rh<=100;rh+=1){
@@ -514,9 +516,17 @@ ordering of polar-amplification mechanisms follows Pithan and Mauritsen, <i>Natu
         }
         put(gR,'path',{d:d,fill:'none',stroke:'var(--sea)','stroke-width':o[1]>0.5?2.4:1.5,
           opacity:o[1]>0.5?1:0.45});
-        put(gR,'text',{x:X(13),y:Y(Math.min(ymax,ratio(Tl,To,0.13,o[0]/100)))-5,'font-size':10,
-          fill:'var(--sea)',opacity:o[1]>0.5?1:0.6},'RH ocean '+o[0]+'%');
+        tags.push({y:Y(Math.min(ymax,Math.max(ymin,ratio(Tl,To,1,o[0]/100))))+4,
+          rh:o[0],txt:o[0]+'%',op:o[1]>0.5?1:0.6});
       });
+      // curve labels at the right-hand end, spread so they never overlap
+      tags.sort((a,b)=>a.y-b.y||b.rh-a.rh);
+      tags[0].y=Math.max(tags[0].y,T+12);
+      for(let i=1;i<tags.length;i++) tags[i].y=Math.max(tags[i].y,tags[i-1].y+12);
+      const shift=Math.max(0,tags[tags.length-1].y-(B+4));
+      tags.forEach(t=>put(gR,'text',{x:R+6,y:t.y-shift,'font-size':10,
+        fill:'var(--sea)',opacity:t.op},t.txt));
+      put(gR,'text',{x:R+6,y:T-6,'font-size':10,fill:'var(--sea)'},'RH ocean');
       const rhl=+S.RHl.value;
       put(gR,'circle',{cx:X(rhl),cy:Y(Math.min(ymax,Math.max(ymin,r))),r:5,
         fill:'var(--pos)',stroke:'var(--surface-1)','stroke-width':1.6});

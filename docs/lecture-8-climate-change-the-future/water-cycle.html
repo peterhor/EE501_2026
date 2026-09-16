@@ -314,23 +314,26 @@ Climate change: the future &middot; 4 of 7</p>
 
 <div class="card">
   <h3>The circulation moves, and where it moves to decides who gets rain</h3>
-  <p class="cap">Textbook Fig.&nbsp;6.16 in three parts. This is the <em>dynamic</em> contribution, and it is
-  where the model spread lives.</p>
+  <p class="cap">Textbook Fig.&nbsp;6.16, redrawn: the present-day Hadley circulation (a) and three ways warming
+  changes it (b&ndash;d). Each panel reads the same way: the circulation carries moisture from the subtropics to
+  the equator, so the equator is wet where the air rises and the subtropics are dry where it sinks. Panel b is
+  the <em>thermodynamic</em> contribution; c and d are the <em>dynamic</em> contribution, and they are where
+  the model spread lives.</p>
 
-  <svg viewBox="0 0 880 300" role="img" aria-label="Schematic of three changes to the Hadley circulation under warming: more moisture in the same circulation, a weaker overturning, and a poleward shift of the subsidence zone"><g id="hadG"></g></svg>
+  <svg viewBox="0 0 880 330" role="img" aria-label="Schematic of the Hadley circulation in four panels: present day, more humid air, a weaker overturning, and a poleward shift of the subsidence zone, with the resulting wet and dry changes at 30 degrees south, the equator and 30 degrees north"><g id="hadG"></g></svg>
 
   <ul class="pl">
-    <li><b>More moisture in the same circulation</b> &mdash; the thermodynamic term of the previous card. It
+    <li><b>(b) More moisture in the same circulation</b> &mdash; the thermodynamic term of the previous card. It
     intensifies the existing wet and dry belts. Robust across models.</li>
-    <li><b>A weaker overturning</b> &mdash; the number your demonstration computed above, a few per cent per
+    <li><b>(c) A weaker overturning</b> &mdash; the number your demonstration computed above, a few per cent per
     kelvin. It <em>reduces</em> both the tropical rainfall maximum and the subtropical drying, partly cancelling
     the first term. Robust in sign, uncertain in size, and larger for the Walker circulation across the Pacific
     than for the Hadley cells.</li>
-    <li><b>A poleward shift</b> &mdash; the descending branch of the Hadley cell and the mid-latitude storm
+    <li><b>(d) A poleward shift</b> &mdash; the descending branch of the Hadley cell and the mid-latitude storm
     tracks move poleward as the planet warms, a shift found in most models. Where that happens, the change
-    in rainfall is enormous and it is a <em>displacement</em>, not an intensification: the Mediterranean and
-    southern Australia are projected to dry substantially because the subtropical dry zone arrives on top of
-    them.</li>
+    in rainfall is large and it is a <em>displacement</em>, not an intensification: it is one reason the
+    Mediterranean and southern Australia are projected to dry, as the edge of the subtropical dry zone and
+    the storm tracks move away from them.</li>
   </ul>
 
   <p class="note">The three terms have different reliability, and that difference is why the precipitation maps
@@ -461,11 +464,11 @@ and ecological drought increases follow IPCC AR6 WG1 ch.&nbsp;8 and ch.&nbsp;11.
 
       /* --- bars --- */
       clr(gB);
-      const L=112,R=418,T=34;
+      const L=112,R=366,T=34;
       const span=Math.max(9,Math.ceil(Math.max(q,Math.abs(m))));
       const X=v=>L+(v+span)/(2*span)*(R-L);
       put(gB,'line',{x1:X(0),y1:T-8,x2:X(0),y2:T+206,stroke:'var(--text-muted)','stroke-width':1.2});
-      put(gB,'text',{x:X(0),y:T-14,'text-anchor':'middle','font-size':10.5,fill:'var(--text-muted)'},'0');
+      put(gB,'text',{x:X(0)+5,y:T-1,'font-size':10.5,fill:'var(--text-muted)'},'0');
       const bars=[
         ['water vapour',q,'var(--moist)','Clausius–Clapeyron'],
         ['precipitation',p,'var(--precip)','energy budget'],
@@ -509,7 +512,7 @@ and ecological drought increases follow IPCC AR6 WG1 ch.&nbsp;8 and ch.&nbsp;11.
       put(gC,'path',{d:d,fill:'none',stroke:'var(--moist)','stroke-width':2.4});
       [[27,'tropics'],[15,'global mean'],[-5,'Arctic']].forEach(m2=>{
         put(gC,'circle',{cx:X2(m2[0]),cy:Y2(ccRate(m2[0])),r:3.6,fill:'var(--text-muted)'});
-        put(gC,'text',{x:X2(m2[0]),y:Y2(ccRate(m2[0]))-8,'text-anchor':'middle','font-size':10,
+        put(gC,'text',{x:X2(m2[0])+6,y:Y2(ccRate(m2[0]))-9,'font-size':10,
           fill:'var(--text-muted)'},m2[1]);
       });
       put(gC,'circle',{cx:X2(TC),cy:Y2(q),r:5.5,fill:'var(--pos)',stroke:'var(--surface-1)','stroke-width':1.6});
@@ -586,16 +589,20 @@ and ecological drought increases follow IPCC AR6 WG1 ch.&nbsp;8 and ch.&nbsp;11.
       curve(amp,'var(--moist)',2.4);
       put(g,'text',{x:L,y:T-8,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
         'Zonal mean P − E');
-      put(g,'text',{x:X(0),y:Y(1.0)-8,'text-anchor':'middle','font-size':10.5,
+      const top=l=>Y(Math.max(-M,Math.min(M,Math.max(pe(l),amp*pe(l)))));
+      const bot=l=>Y(Math.max(-M,Math.min(M,Math.min(pe(l),amp*pe(l)))));
+      put(g,'text',{x:X(0),y:top(0)-7,'text-anchor':'middle','font-size':10.5,
         fill:'var(--precip)'},'surplus — ITCZ');
-      put(g,'text',{x:X(26),y:Y(-0.55)+18,'text-anchor':'middle','font-size':10.5,
+      put(g,'text',{x:X(25),y:bot(25)+17,'text-anchor':'middle','font-size':10.5,
         fill:'var(--dry)'},'deficit — subtropics');
-      put(g,'text',{x:X(53),y:Y(0.42)-8,'text-anchor':'middle','font-size':10.5,
+      put(g,'text',{x:X(52),y:top(52)-7,'text-anchor':'middle','font-size':10.5,
         fill:'var(--precip)'},'storm track');
-      put(g,'text',{x:R,y:T+14,'text-anchor':'end','font-size':11,fill:'var(--moist)'},
-        'warmed by '+dT.toFixed(1)+' K  ×'+amp.toFixed(2));
-      put(g,'text',{x:R,y:T+29,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},
-        'present day');
+      put(g,'line',{x1:X(-66),y1:T+14,x2:X(-60),y2:T+14,stroke:'var(--moist)','stroke-width':2.4});
+      put(g,'text',{x:X(-59),y:T+18,'font-size':11,fill:'var(--moist)'},
+        'warmed by '+dT.toFixed(1)+' K, ×'+amp.toFixed(2));
+      put(g,'line',{x1:X(-66),y1:T+29,x2:X(-60),y2:T+29,stroke:'var(--text-muted)','stroke-width':1.8,
+        'stroke-dasharray':'5 3'});
+      put(g,'text',{x:X(-59),y:T+33,'font-size':11,fill:'var(--text-muted)'},'present day');
       // in-figure provenance label
       put(g,'text',{x:L,y:B+38,'font-size':11,fill:'var(--warn)','font-weight':600},
         'SCHEMATIC — sign and relative shape only. No value axis: do not read a number off this figure.');
@@ -606,58 +613,73 @@ and ecological drought increases follow IPCC AR6 WG1 ch.&nbsp;8 and ch.&nbsp;11.
     draw();
   })();
 
-  /* ── 3 · Hadley cell response schematic ─────────────────────── */
+  /* ── 3 · Hadley cell response schematic, after textbook Fig. 6.16 ── */
   (function(){
     const g=$('hadG'); if(!g) return;
+    // [title, overturning width, dashed, moisture width, sinking-branch shift, effect labels S/Eq/N, convergence note]
     const panels=[
-      ['1 · more moisture','same circulation,\nwetter air','var(--moist)'],
-      ['2 · weaker overturning','mass flux falls\na few % per K','var(--circ)'],
-      ['3 · poleward shift','subsidence moves\npoleward','var(--warn)']
+      ['a · present day',     2.6,false,5, 0,['dry','wet','dry'],            'moisture convergence'],
+      ['b · more humid air',  2.6,false,10,0,['drier','wetter','drier'],     'stronger convergence'],
+      ['c · weaker overturning',1.4,true,3,0,['less dry','less wet','less dry'],'weaker convergence'],
+      ['d · shifted circulation',2.6,false,5,15,['dry','wet','dry'],         'dry belts move poleward']
     ];
-    const PW=272, gap=(880-40-3*PW)/2;
+    const PW=202, gap=(880-2*10-4*PW)/3;
+    const yTop=62, yBot=178, yMoist=194;
+    function head(x,y,dir,col,sz){ // dir: 'u','d','l','r'
+      const h=sz||7, v={u:[0,-1],d:[0,1],l:[-1,0],r:[1,0]}[dir], n=[-v[1],v[0]];
+      put(g,'polygon',{points:[x+v[0]*h,y+v[1]*h, x+n[0]*h*.7,y+n[1]*h*.7, x-n[0]*h*.7,y-n[1]*h*.7].join(' '),fill:col});
+    }
+    function cell(xe,xp,col,w,dash,op){ // rising at xe, sinking at xp
+      const at={d:'M '+xe+' '+yBot+' L '+xe+' '+yTop+' L '+xp+' '+yTop+' L '+xp+' '+yBot+' Z',
+        fill:'none',stroke:col,'stroke-width':w,'stroke-linejoin':'round',opacity:op};
+      if(dash) at['stroke-dasharray']='4 3';
+      put(g,'path',at);
+      if(op<1) return;
+      const sgn=Math.sign(xp-xe), mid=(xe+xp)/2;
+      head(xe,(yTop+yBot)/2-4,'u',col); head(xp,(yTop+yBot)/2+4,'d',col);
+      head(mid+sgn*4,yTop,sgn>0?'r':'l',col); head(mid-sgn*4,yBot,sgn>0?'l':'r',col);
+    }
     panels.forEach((p,i)=>{
-      const x0=20+i*(PW+gap), yTop=44, yB=214;
-      put(g,'rect',{x:x0,y:yTop-24,width:PW,height:yB-yTop+52,rx:11,
-        fill:'var(--surface-2)',opacity:.5,stroke:'var(--line-soft)'});
-      put(g,'text',{x:x0+12,y:yTop-6,'font-size':12.5,fill:p[2],'font-weight':600},p[0]);
-      // ground
-      put(g,'line',{x1:x0+16,y1:yB,x2:x0+PW-16,y2:yB,stroke:'var(--text-muted)','stroke-width':1.4});
-      put(g,'text',{x:x0+22,y:yB+16,'font-size':10,fill:'var(--text-muted)'},'equator');
-      put(g,'text',{x:x0+PW-22,y:yB+16,'text-anchor':'end','font-size':10,fill:'var(--text-muted)'},'subtropics');
-      // cell: rising left, sinking right
-      const xr=x0+52, xs=x0+PW-62+(i===2?16:0);
-      const w=(i===1?2.0:3.4);
-      put(g,'path',{d:'M '+xr+' '+(yB-6)+' C '+xr+' '+(yTop+30)+', '+xs+' '+(yTop+30)+', '+xs+' '+(yB-6),
-        fill:'none',stroke:p[2],'stroke-width':w,opacity:.9});
-      // arrows on the cell
-      put(g,'polygon',{points:[xr,yTop+42,xr-5,yTop+54,xr+5,yTop+54].join(' '),fill:p[2]});
-      put(g,'polygon',{points:[xs,yB-14,xs-5,yB-26,xs+5,yB-26].join(' '),fill:p[2],
-        transform:'rotate(180 '+xs+' '+(yB-20)+')'});
-      // rain
-      const rn=(i===0?7:5);
-      for(let k=0;k<rn;k++){
-        const rx=xr-18+k*6;
-        put(g,'line',{x1:rx,y1:yB-52,x2:rx-3,y2:yB-14,stroke:'var(--moist)',
-          'stroke-width':(i===0?2.0:1.3),opacity:.85});
-      }
-      // dryness marker
-      put(g,'text',{x:xs,y:yTop+16,'text-anchor':'middle','font-size':10.5,
-        fill:'var(--dry)'},'dry');
-      if(i===2){
-        put(g,'path',{d:'M '+(xs-42)+' '+(yB-6)+' l 30 0 l -7 -6 m 7 6 l -7 6',
-          fill:'none',stroke:'var(--warn)','stroke-width':1.6});
-        put(g,'text',{x:xs-26,y:yB-14,'text-anchor':'middle','font-size':10,
-          fill:'var(--warn)'},'shift');
-      }
-      p[1].split('\n').forEach((ln,j)=>put(g,'text',{x:x0+12,y:yB+34+j*14,'font-size':11,
-        fill:'var(--text-secondary)'},ln));
+      const x0=10+i*(PW+gap), xc=x0+PW/2;
+      const xs=x0+34-p[4], xn=x0+PW-34+p[4];
+      put(g,'rect',{x:x0,y:30,width:PW,height:246,rx:10,fill:'var(--surface-2)',opacity:.5,
+        stroke:'var(--line-soft)'});
+      put(g,'text',{x:x0+10,y:48,'font-size':12,fill:'var(--text-primary)','font-weight':600},p[0]);
+      // grey reference: the present-day cells, where the panel changes their position
+      if(p[4]){ cell(xc-8,x0+34,'var(--text-muted)',1.6,false,.35); cell(xc+8,x0+PW-34,'var(--text-muted)',1.6,false,.35); }
+      cell(xc-8,xs,'var(--circ)',p[1],p[2],1);
+      cell(xc+8,xn,'var(--circ)',p[1],p[2],1);
+      // moisture: converging at the surface, rising at the equator
+      const mw=p[3];
+      const gapM=12+mw;
+      put(g,'line',{x1:xs,y1:yMoist,x2:xc-gapM,y2:yMoist,stroke:'var(--moist)','stroke-width':mw});
+      head(xc-gapM+mw*.6,yMoist,'r','var(--moist)',mw+5);
+      put(g,'line',{x1:xn,y1:yMoist,x2:xc+gapM,y2:yMoist,stroke:'var(--moist)','stroke-width':mw});
+      head(xc+gapM-mw*.6,yMoist,'l','var(--moist)',mw+5);
+      put(g,'line',{x1:xc,y1:yBot-4,x2:xc,y2:yTop+22,stroke:'var(--moist)','stroke-width':mw});
+      head(xc,yTop+22-mw*.6,'u','var(--moist)',mw+5);
+      // latitude and effect rows
+      // latitudes stay put; the effect labels sit under the sinking branch wherever it is
+      [[x0+34,xs,'30°S'],[xc,xc,'equator'],[x0+PW-34,xn,'30°N']].forEach((t,j)=>{
+        put(g,'text',{x:t[0],y:222,'text-anchor':'middle','font-size':10.5,fill:'var(--text-muted)'},t[2]);
+        put(g,'text',{x:t[1],y:240,'text-anchor':'middle','font-size':11,'font-weight':600,
+          fill:j===1?'var(--precip)':'var(--dry)'},p[5][j]);
+      });
+      put(g,'text',{x:xc,y:262,'text-anchor':'middle','font-size':10.5,
+        fill:i===3?'var(--warn)':'var(--moist)'},p[6]);
     });
-    put(g,'text',{x:20,y:22,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
-      'Three changes to the tropical overturning — after textbook Fig. 6.16');
-    put(g,'text',{x:860,y:22,'text-anchor':'end','font-size':11,fill:'var(--warn)','font-weight':600},
+    put(g,'text',{x:10,y:18,'font-size':11.5,fill:'var(--text-secondary)','font-weight':600},
+      'The Hadley circulation and three changes to it, after textbook Fig. 6.16');
+    put(g,'text',{x:870,y:18,'text-anchor':'end','font-size':11,fill:'var(--warn)','font-weight':600},
       'SCHEMATIC — no numeric axis');
-    put(g,'text',{x:20,y:288,'font-size':11,fill:'var(--text-muted)'},
-      'Terms 1 and 2 partly cancel in the tropics. Term 3 is a displacement, and it is what dries the Mediterranean.');
+    [['var(--circ)','overturning circulation (dashed: weaker)'],['var(--moist)','moisture flux (width: amount)'],
+     ['var(--text-muted)','present-day position (grey, panel d)']].forEach((l,j)=>{
+      const lx=10+j*290;
+      put(g,'line',{x1:lx,y1:294,x2:lx+22,y2:294,stroke:l[0],'stroke-width':3});
+      put(g,'text',{x:lx+28,y:298,'font-size':11,fill:'var(--text-secondary)'},l[1]);
+    });
+    put(g,'text',{x:10,y:320,'font-size':11,fill:'var(--text-muted)'},
+      'b and c partly cancel in the tropics. d is a displacement: the dry belt arrives where it was not dry before.');
   })();
 
   /* ── reveal-answer buttons ──────────────────────────────────── */
