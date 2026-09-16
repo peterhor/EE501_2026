@@ -342,9 +342,15 @@ Climate change: past and present &middot; 3 of 6</p>
   <p class="cap">Drive a deliberately crude ice model with the insolation you just computed, and watch a
   rhythm appear in the output that is not in the input.</p>
 
-  <p class="note" style="margin-top:0">The model is the simplest one that does the job, after Imbrie and
-  Imbrie (1980): ice volume relaxes towards whatever the current summer insolation implies, but it
-  <b>melts faster than it grows</b>. That single asymmetry is the whole mechanism.</p>
+  <p class="note" style="margin-top:0"><b>In plain words:</b> this checks whether the ice can produce a
+  rhythm that the sunshine driving it does not contain.</p>
+
+  <p class="note"><b>What the model does.</b> Ice volume keeps chasing a target set by northern summer
+  sunshine at 65&deg;N: weak summer sun means &ldquo;more ice&rdquo;, strong summer sun means &ldquo;less
+  ice&rdquo;. The ice cannot jump to the target; it creeps towards it, closing about two-thirds of the gap
+  in 17&nbsp;000 years. The one extra ingredient is that it <b>melts faster than it grows</b>. This is the
+  simplest model that does the job, after Imbrie and Imbrie (1980), and that single asymmetry is the whole
+  of its mechanism.</p>
 
   <div class="eq">d<i>y</i>/d<i>t</i> = (<i>x</i> &minus; <i>y</i>) / &tau; &nbsp;&nbsp;with&nbsp;&nbsp;
     &tau; = &tau;<sub>0</sub>/(1 + <i>b</i>) when melting, &nbsp; &tau;<sub>0</sub>/(1 &minus; <i>b</i>) when
@@ -357,7 +363,16 @@ Climate change: past and present &middot; 3 of 6</p>
     <div class="def"><b><i>t</i></b> time, kyr</div>
     <div class="def"><b>&tau;</b> response time, shorter when melting than when growing, kyr</div>
     <div class="def"><b>&tau;<sub>0</sub></b> mean response time, about 17 kyr</div>
-    <div class="def"><b><i>b</i></b> melt/growth asymmetry, 0&ndash;1 &mdash; the whole mechanism of the 100-kyr cycle</div>
+    <div class="def"><b><i>b</i></b> melt/growth asymmetry, 0&ndash;1 &mdash; the whole mechanism of this model&rsquo;s 100-kyr peak</div>
+  </div>
+
+  <p class="note"><b>What <i>b</i> does.</b> It sets how lopsided the creeping is. Real ice sheets are
+  lopsided in this way: snow piles up slowly, over tens of thousands of years, while a sheet can collapse
+  in a few thousand, as the ice cores above show.</p>
+  <div class="defs">
+    <div class="def"><b><i>b</i> = 0</b> building and melting go at the same pace: the system is symmetric</div>
+    <div class="def"><b><i>b</i> = 0.3</b> melting about twice as fast as building (response times of about 13 and 24&nbsp;kyr)</div>
+    <div class="def"><b><i>b</i> = 0.6</b> the default: melting four times as fast as building (about 11 against 42&nbsp;kyr)</div>
   </div>
 
   <div class="ctrls">
@@ -384,20 +399,27 @@ Climate change: past and present &middot; 3 of 6</p>
   </div>
 
   <svg viewBox="0 0 880 452" role="img" aria-label="Idealised orbital parameters, the resulting 65 degrees north June insolation, and the simulated ice volume over the last 800,000 years"><g id="iceG"></g></svg>
+  <p class="cap"><b>What to look at.</b> Top: the three orbital parameters. Middle: the summer sunshine at
+  65&deg;N that they produce. Bottom: the ice. Does the ice curve look like the sunshine curve, only
+  smoother, or does it develop slow build-ups and fast collapses &mdash; the &ldquo;sawtooth&rdquo;?</p>
 
   <h3 style="font-size:15px;margin:18px 0 2px">The spectra &mdash; this is the result</h3>
-  <p class="cap">The same two series, decomposed by period. Read the input on the left, the output on the
-  right.</p>
+  <p class="cap">The same two series split into their rhythms: the sunshine, the input, on the left; the
+  ice, the output, on the right. The height of each peak shows how much of the wobbling happens at that
+  period. The sunshine has peaks only at 19&ndash;23&nbsp;kyr (precession) and 41&nbsp;kyr (obliquity).
+  The green band near 100&nbsp;kyr is marked &ldquo;not in the forcing&rdquo;: the sunshine has
+  essentially nothing there. <b>The number to watch is how much of the ice&rsquo;s wobbling falls inside
+  that band.</b></p>
   <svg viewBox="0 0 880 250" role="img" aria-label="Power spectra of the insolation forcing and of the simulated ice volume, showing a 100 kyr peak in the output that is absent from the input"><g id="specG"></g></svg>
 
   <div class="readout" id="iceRead"></div>
 
-  <div class="q"><b>The experiment to run.</b> Set the asymmetry <i>b</i> to zero. The ice volume becomes a
-  smoothed copy of the insolation: 23 and 41&nbsp;kyr in, 23 and 41&nbsp;kyr out, no sawtooth, no 100-kyr
-  peak. Now raise <i>b</i> towards 0.6 and watch two things happen at once &mdash; the time series develops
-  its sawtooth shape, and a peak grows in the spectrum at a period that is <em>not present in the
-  forcing</em>. A non-linear system does not just amplify its input frequencies; it creates new ones. That
-  is the single most important thing on this page.</div>
+  <div class="q"><b>The experiment to run.</b> Set the asymmetry <i>b</i> to zero. The ice becomes a
+  smoothed copy of the sunshine: 23 and 41&nbsp;kyr in, 23 and 41&nbsp;kyr out, no sawtooth, nothing in the
+  green band. Now raise <i>b</i> towards 0.6 and watch two things happen at once &mdash; the ice curve
+  turns into a sawtooth, and a peak grows in the green band, at a period the sunshine <em>does not
+  contain</em>. A symmetric system passes on the rhythms it is given; a lopsided, non-linear one can make
+  new ones. That is the single most important thing on this page.</div>
 
   <div class="warnbox"><b>And now the caveat, which is equally important.</b> This model is too easy to
   believe. It produces a 100-kyr rhythm, but it does so by responding to the <em>eccentricity envelope</em> of

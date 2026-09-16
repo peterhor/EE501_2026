@@ -282,6 +282,84 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
 </div>
 
 <div class="card demo">
+  <h3>Energy kept against energy shed</h3>
+  <p class="cap">The equilibrium equation drawn as two lines instead of one. The planet warms while it keeps more
+  energy than it sheds, and stops where the two lines cross.</p>
+
+  <p class="note" style="margin-top:0">Sort the five feedbacks by sign. The forcing and the three amplifying
+  feedbacks set how much extra energy the planet keeps as it warms; the two damping feedbacks set how much extra
+  it sheds:</p>
+  <div class="eq">kept = &Delta;Q + (&lambda;<sub>w</sub> + &lambda;<sub>c</sub> + &lambda;<sub>&alpha;</sub>)&thinsp;&Delta;T<sub>s</sub>
+    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+    shed = &minus;(&lambda;<sub>0</sub> + &lambda;<sub>L</sub>)&thinsp;&Delta;T<sub>s</sub>
+    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+    <b>&Delta;R = kept &minus; shed</b>
+    <span class="u"><br>with the values on this page: kept = 3.7 + 2.74&thinsp;&Delta;T<sub>s</sub>, shed =
+    4.00&thinsp;&Delta;T<sub>s</sub>. The slopes differ by 2.74 &minus; 4.00 = &minus;1.26 = &lambda;<sub>f</sub>,
+    and the lines cross at 3.7 / 1.26 = 2.94 K.</span></div>
+
+  <div class="rowbtns" style="margin-top:14px">
+    <span class="lbl">Preset</span>
+    <button class="ghost" data-k="best" aria-pressed="true">Best estimate</button>
+    <button class="ghost" data-k="highc">High cloud feedback</button>
+    <button class="ghost" data-k="run">Amplifiers outrun damping</button>
+    <button class="ghost" data-k="thr">Add a threshold (illustrative)</button>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="ksQ"><span>Forcing &Delta;Q, W m<sup>&minus;2</sup></span> <b id="ksQv"></b></label>
+      <input type="range" id="ksQ" min="0" max="6" step="0.05" value="3.7" style="accent-color:var(--pos)">
+      <div class="hint">Where the kept line starts at &Delta;T<sub>s</sub> = 0.</div>
+    </div>
+    <div class="ctrl">
+      <label for="ksA"><span>Kept per kelvin, &lambda;<sub>w</sub>+&lambda;<sub>c</sub>+&lambda;<sub>&alpha;</sub></span> <b id="ksAv"></b></label>
+      <input type="range" id="ksA" min="0" max="5" step="0.02" value="2.74" style="accent-color:var(--pos)">
+      <div class="hint">Slope of the red line. Best estimate 1.8 + 0.68 + 0.26 = 2.74.</div>
+    </div>
+    <div class="ctrl">
+      <label for="ksD"><span>Shed per kelvin, &minus;(&lambda;<sub>0</sub>+&lambda;<sub>L</sub>)</span> <b id="ksDv"></b></label>
+      <input type="range" id="ksD" min="2" max="5.5" step="0.02" value="4" style="accent-color:var(--neg)">
+      <div class="hint">Slope of the blue line. Best estimate 3.2 + 0.8 = 4.00.</div>
+    </div>
+  </div>
+  <div class="rowbtns" style="margin:10px 0 0">
+    <label class="chk"><input type="checkbox" id="ksThr"> Threshold in the kept line (illustrative shape)</label>
+    <button class="ghost" id="ksReset">Restart the planet from &Delta;T<sub>s</sub> = 0</button>
+  </div>
+
+  <svg viewBox="0 0 880 380" role="img" aria-label="Energy kept and energy shed plotted against surface warming; the planet warms where kept exceeds shed and settles where the lines cross"><g id="ksG"></g></svg>
+
+  <div class="readout" id="ksRO"></div>
+
+  <p class="note"><b>The same geometry in population ecology.</b> Replace &Delta;T<sub>s</sub> with population
+  density N, energy kept with the per-capita birth rate b(N) and energy shed with the per-capita death rate d(N).
+  The population grows while b &gt; d and settles where the two curves cross. That crossing is stable only if
+  deaths rise faster than births through it, d(b &minus; d)/dN &lt; 0: the condition &lambda;<sub>f</sub> &lt; 0
+  in another variable. A strong Allee effect is the opposite case. At low density, births rise faster than deaths as density increases
+  (mates become easier to find), so the crossing there is unstable and a population pushed below it declines to
+  extinction. The open circles in the threshold preset are crossings of the same kind.</p>
+
+  <p class="q"><b>Question.</b> Load <b>Amplifiers outrun damping</b>: kept rises by 4.20 W m<sup>&minus;2</sup>
+  per kelvin, shed by 4.00. Where do the lines cross?
+  <span style="color:var(--text-muted)">Nowhere to the right of zero. The kept line starts 3.7 W m<sup>&minus;2</sup>
+  higher and gains another 0.20 W m<sup>&minus;2</sup> on the shed line for every kelvin, so the gap widens as the
+  planet warms. The slope difference is &lambda;<sub>f</sub> = +0.20: the runaway case from
+  &ldquo;Why &lambda;<sub>f</sub> must be negative&rdquo;. Damping feedbacks are not required to be large, only to
+  rise faster than the amplifying ones.</span></p>
+
+  <p class="q"><b>Question.</b> Load <b>Add a threshold</b>. The planet sits at 3.0 K. Raise &Delta;Q step by step
+  to 4.10, then bring it back to 3.70. Where is the planet now, and what does it take to return it to 3.0 K?
+  <span style="color:var(--text-muted)">At &Delta;Q = 4.05 the lower stable crossing disappears and the planet
+  jumps to the upper one, 5.2 K. Back at 3.70 it stays on the upper branch at 4.8 K, although the forcing is the
+  one that gave 3.0 K before. It returns to the lower branch only when &Delta;Q falls below about 3.6, where the
+  upper crossing disappears in turn. The same forcing gives two climates, and which one depends on the path taken:
+  hysteresis. A single &lambda;<sub>f</sub> cannot describe this, which is limitation 4 below and the subject of
+  PC Lab 2. The shape of the threshold is chosen to show the geometry; it is not an estimate of any real
+  feedback.</span></p>
+</div>
+
+<div class="card demo">
   <h3>Assemble the climate sensitivity</h3>
   <p class="cap">Add the feedbacks one at a time. The waterfall on the left builds &lambda;<sub>f</sub>; the
   curve on the right converts it into a warming. Watch what happens to the <em>spacing</em> of the steps as you
@@ -397,6 +475,62 @@ Response of the climate system to perturbations &middot; 3 of 6</p>
   <em>and</em> a large positive water-vapour feedback, because it is putting extra moisture exactly where the
   atmosphere is driest and most sensitive to it. The errors cancel. This is the single most useful thing to
   know about feedback uncertainty, and it is why the pair is nearly always quoted together.</p>
+</div>
+
+<div class="card demo">
+  <h3>Where the factor of 2.5 comes from, round by round</h3>
+  <p class="cap">The feedback factor written as a sum. Each round of warming changes water vapour, lapse rate,
+  cloud and albedo, and that change warms the planet again by a smaller amount.</p>
+
+  <div class="eq">g = &minus;(&lambda;<sub>L</sub>+&lambda;<sub>w</sub>+&lambda;<sub>c</sub>+&lambda;<sub>&alpha;</sub>)/&lambda;<sub>0</sub>
+    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+    <b>&Delta;T<sub>s</sub> = &Delta;T<sub>s,0</sub>&thinsp;(1 + g + g<sup>2</sup> + g<sup>3</sup> + &hellip;)
+    = &Delta;T<sub>s,0</sub> / (1 &minus; g)</b>
+    <span class="u"><br>best estimate: g = 1.94 / 3.2 = 0.61, so 1/(1 &minus; g) = 2.54 = f<sub>f</sub>, and
+    1.16 K &times; 2.54 = 2.94 K</span></div>
+  <div class="defs">
+    <div class="def"><b>g</b> fraction of each round's warming that the four non-Planck feedbacks return as
+    further warming (dimensionless). Roe and Baker (2007) call g the feedback factor; the names vary between texts,
+    the arithmetic does not.</div>
+  </div>
+
+  <p class="note" style="margin-top:6px">Round 0 is the Planck response to the forcing, &Delta;T<sub>s,0</sub> =
+  1.16 K. That warming changes the other four variables, which act as an extra forcing of
+  (&lambda;<sub>L</sub>+&lambda;<sub>w</sub>+&lambda;<sub>c</sub>+&lambda;<sub>&alpha;</sub>)&thinsp;&times;&thinsp;1.16
+  = 2.24 W m<sup>&minus;2</sup>. The Planck response to that is 2.24 / 3.2 = 0.70 K, which is g &times; 1.16 K.
+  Every later round repeats the step. The total is finite only while g &lt; 1.</p>
+
+  <div class="rowbtns" style="margin-top:14px">
+    <span class="lbl">Preset</span>
+    <button class="ghost" data-g="0">Planck only</button>
+    <button class="ghost" data-g="0.5625">+ water vapour</button>
+    <button class="ghost" data-g="0.60625" aria-pressed="true">All five (best estimate)</button>
+    <button class="ghost" data-g="0.73125">High cloud feedback</button>
+  </div>
+  <div class="ctrls">
+    <div class="ctrl">
+      <label for="rbG"><span>g</span> <b id="rbGv"></b></label>
+      <input type="range" id="rbG" min="0" max="0.95" step="0.00125" value="0.60625" style="accent-color:var(--pos)">
+      <div class="hint">Presets: (sum of the non-Planck terms) / 3.2. High cloud adds 0.4 to &lambda;<sub>c</sub>.</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 880 330" role="img" aria-label="Bars showing the warming added in each round of feedback, shrinking geometrically, with the running total approaching the equilibrium warming"><g id="rbG_"></g></svg>
+
+  <div class="readout" id="rbRO"></div>
+
+  <div class="warnbox"><b>Rounds are not years.</b> The feedbacks act at the same time, continuously; the rounds are
+  a way of doing the algebra, not a sequence of events. How long the approach to equilibrium takes is set by the
+  heat capacity of the ocean, on <a href="transient-response.html">page&nbsp;5</a>. The same property does carry
+  over, though: the weaker the net damping, the longer the approach.</div>
+
+  <p class="q"><b>Question.</b> Compare <b>All five</b> with <b>High cloud feedback</b>. What share of the final
+  warming does round 0 supply in each, and how many rounds does each need to reach 90&nbsp;% of its total?
+  <span style="color:var(--text-muted)">Round 0 is 1.16 K in both. It is 1.16 / 2.94 = 39&nbsp;% of the best
+  estimate, and 1.16 / 4.30 = 27&nbsp;% of the high-cloud case. Ninety per cent takes rounds 0 to 4 at g = 0.61,
+  and rounds 0 to 7 at g = 0.73. As g approaches 1 each round returns nearly all of the one before, so more of the
+  total sits in the long tail of later rounds, and each of those depends on g again. That is the hyperbola of the
+  assembler above, written as a sum.</span></p>
 </div>
 
 <h2 class="sec">The limits of the framework</h2>
@@ -725,6 +859,242 @@ these in the second decimal place.
       }
       $('asmRO').innerHTML=m;
     }
+    draw();
+  })();
+
+  /* ── 3 · energy kept against energy shed ────────────────────── */
+  (function(){
+    const THR={A:2.5, Ts:4, w:0.3};   // illustrative threshold shape, not an estimate
+    const PRE={
+      best:{q:3.7, a:2.74, d:4.0, thr:false},
+      highc:{q:3.7, a:3.14, d:4.0, thr:false},
+      run:{q:3.7, a:4.2, d:4.0, thr:false},
+      thr:{q:3.7, a:2.74, d:4.0, thr:true}
+    };
+    const sig=x=>1/(1+Math.exp(-x));
+    let Tp=0;
+    const P=()=>({q:+$('ksQ').value, a:+$('ksA').value, d:+$('ksD').value, thr:$('ksThr').checked});
+    const kept=(p,t)=>p.q+p.a*t+(p.thr?THR.A*(sig((t-THR.Ts)/THR.w)-sig(-THR.Ts/THR.w)):0);
+    const shed=(p,t)=>p.d*t;
+    const net=(p,t)=>kept(p,t)-shed(p,t);
+    function roots(p){
+      const r=[]; const h=0.005; let t0=0, v0=net(p,0);
+      if(Math.abs(v0)<1e-9 && net(p,h)<0) r.push({t:0,stable:true});
+      for(let i=1;i<=6000;i++){
+        const t1=i*h, v1=net(p,t1);
+        if(v0>0 && v1<=0 || v0<0 && v1>=0){
+          r.push({t:t0+h*v0/(v0-v1), stable:v1<v0});
+        }
+        t0=t1; v0=v1;
+      }
+      return r;
+    }
+    function settle(p,rs){
+      if(!isFinite(Tp)) Tp=0;
+      const f=net(p,Tp);
+      if(Math.abs(f)<1e-9) return;
+      if(f>0){
+        const up=rs.filter(r=>r.stable && r.t>Tp-1e-6);
+        Tp=up.length?up[0].t:Infinity;
+      } else {
+        const dn=rs.filter(r=>r.t<Tp+1e-6);
+        Tp=dn.length?dn[dn.length-1].t:0;
+      }
+    }
+
+    function draw(){
+      const p=P(), rs=roots(p);
+      settle(p,rs);
+      $('ksQv').textContent=p.q.toFixed(2);
+      $('ksAv').textContent=p.a.toFixed(2);
+      $('ksDv').textContent=p.d.toFixed(2);
+      const g=$('ksG'); clr(g);
+      const L=70,R=640,T=40,B=300, tmax=7, ymax=28;
+      const X=t=>L+(R-L)*t/tmax, Y=v=>B-(B-T)*v/ymax;
+      const cp=put(g,'clipPath',{id:'ksClip'});
+      put(cp,'rect',{x:L,y:T,width:R-L,height:B-T});
+      for(let v=0;v<=ymax;v+=4){
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+      }
+      for(let t=0;t<=tmax;t++){
+        put(g,'line',{x1:X(t),y1:T,x2:X(t),y2:B,stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:X(t),y:B+18,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},t);
+      }
+      const cg=put(g,'g',{'clip-path':'url(#ksClip)'});
+      // shading between the lines: red where kept > shed (warms), blue where shed > kept (cools)
+      const n=210;
+      for(let i=0;i<n;i++){
+        const ta=tmax*i/n, tb=tmax*(i+1)/n, tm=(ta+tb)/2;
+        const pts=[[ta,kept(p,ta)],[tb,kept(p,tb)],[tb,shed(p,tb)],[ta,shed(p,ta)]]
+          .map(q=>X(q[0]).toFixed(1)+','+Y(q[1]).toFixed(1)).join(' ');
+        put(cg,'polygon',{points:pts,fill:net(p,tm)>0?'var(--pos)':'var(--neg)',opacity:.13});
+      }
+      let dk='', ds='';
+      for(let i=0;i<=n;i++){
+        const t=tmax*i/n;
+        dk+=(i?'L':'M')+X(t).toFixed(1)+' '+Y(kept(p,t)).toFixed(1);
+        ds+=(i?'L':'M')+X(t).toFixed(1)+' '+Y(shed(p,t)).toFixed(1);
+      }
+      put(cg,'path',{d:ds,fill:'none',stroke:'var(--neg)','stroke-width':2.6});
+      put(cg,'path',{d:dk,fill:'none',stroke:'var(--pos)','stroke-width':2.6});
+      // direction of drift along the warming axis
+      for(let t=0.25;t<tmax;t+=0.5){
+        const v=net(p,t);
+        put(g,'text',{x:X(t),y:B-8,'text-anchor':'middle','font-size':13,
+          fill:v>0?'var(--pos)':'var(--neg)','font-weight':700},v>0?'→':'←');
+      }
+      // crossings
+      rs.filter(r=>r.t<=tmax).forEach(r=>{
+        const y=Y(shed(p,r.t));
+        put(g,'line',{x1:X(r.t),y1:y,x2:X(r.t),y2:B,stroke:'var(--text-muted)','stroke-width':1,
+          'stroke-dasharray':'3 3'});
+        put(g,'circle',{cx:X(r.t),cy:y,r:6,fill:r.stable?'var(--text-primary)':'var(--surface-1)',
+          stroke:'var(--text-primary)','stroke-width':2});
+        put(g,'text',{x:X(r.t)-9,y:y-9,'text-anchor':'end','font-size':11.5,fill:'var(--text-primary)',
+          'font-weight':600},r.t.toFixed(2)+' K');
+      });
+      // the planet
+      if(isFinite(Tp) && Tp<=tmax){
+        put(g,'circle',{cx:X(Tp),cy:B,r:8,fill:'var(--acc)',stroke:'var(--surface-1)','stroke-width':2.5});
+        put(g,'text',{x:X(Tp),y:B+36,'text-anchor':'middle','font-size':11.5,fill:'var(--acc)',
+          'font-weight':700},'planet');
+      } else {
+        put(g,'text',{x:R-4,y:B+36,'text-anchor':'end','font-size':11.5,fill:'var(--pos)',
+          'font-weight':700},'planet: off the scale, still warming →');
+      }
+      put(g,'text',{x:L,y:T-16,'font-size':12,fill:'var(--text-secondary)'},
+        'Extra energy kept and shed, W m⁻², against the warming so far');
+      put(g,'text',{x:(L+R)/2,y:B+56,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
+        'ΔTs, K');
+      // legend
+      const lx=664;
+      [[0,'var(--pos)','kept: ΔQ + amplifying feedbacks'],[1,'var(--neg)','shed: damping feedbacks']]
+        .forEach(e=>{
+          put(g,'rect',{x:lx,y:58+e[0]*24,width:14,height:3,fill:e[1]});
+          put(g,'text',{x:lx+22,y:64+e[0]*24,'font-size':11.5,fill:'var(--text-secondary)'},e[2]);
+        });
+      put(g,'rect',{x:lx,y:112,width:14,height:12,fill:'var(--pos)',opacity:.25});
+      put(g,'text',{x:lx+22,y:122,'font-size':11.5,fill:'var(--text-secondary)'},'kept > shed: warms');
+      put(g,'rect',{x:lx,y:136,width:14,height:12,fill:'var(--neg)',opacity:.25});
+      put(g,'text',{x:lx+22,y:146,'font-size':11.5,fill:'var(--text-secondary)'},'shed > kept: cools');
+      put(g,'circle',{cx:lx+7,cy:172,r:5,fill:'var(--text-primary)'});
+      put(g,'text',{x:lx+22,y:176,'font-size':11.5,fill:'var(--text-secondary)'},'stable crossing');
+      put(g,'circle',{cx:lx+7,cy:196,r:5,fill:'var(--surface-1)',stroke:'var(--text-primary)','stroke-width':2});
+      put(g,'text',{x:lx+22,y:200,'font-size':11.5,fill:'var(--text-secondary)'},'unstable crossing');
+      put(g,'circle',{cx:lx+7,cy:220,r:6,fill:'var(--acc)'});
+      put(g,'text',{x:lx+22,y:224,'font-size':11.5,fill:'var(--text-secondary)'},'where the planet settles');
+
+      // readout
+      const lam=p.a-p.d;
+      let m='Kept rises by <b>'+p.a.toFixed(2)+'</b> and shed by <b>'+p.d.toFixed(2)+'</b> W m⁻² per kelvin'+
+        (p.thr?' (away from the threshold)':'')+', so λ<sub>f</sub> = '+p.a.toFixed(2)+' − '+p.d.toFixed(2)+
+        ' = <b>'+(lam>=0?'+':'−')+Math.abs(lam).toFixed(2)+'</b> W m⁻² K⁻¹. ';
+      if(!p.thr){
+        if(lam<0)
+          m+='The lines cross at '+p.q.toFixed(2)+' / '+(-lam).toFixed(2)+' = <span class="big">'+
+            (p.q/-lam).toFixed(2)+' K</span>. The crossing is stable: to its left kept exceeds shed and the '+
+            'planet warms towards it, to its right shed exceeds kept and it cools back.';
+        else
+          m+='<b style="color:var(--pos)">The kept line is at least as steep as the shed line</b>, so it stays '+
+            'above it at every warming. There is no crossing and no equilibrium: the runaway case.';
+      } else {
+        const list=rs.map(r=>r.t.toFixed(2)+' K ('+(r.stable?'stable':'unstable')+')');
+        m+='Crossings: <b>'+list.join(', ')+'</b>. ';
+        m+=isFinite(Tp)?'The planet is at <span class="big">'+Tp.toFixed(2)+' K</span>. ':'';
+        if(rs.some(r=>!r.stable))
+          m+='The open circle is a threshold: a planet on either side of it moves away from it, towards a '+
+            'different stable crossing. Where the planet ends up now depends on where it has been.';
+        else
+          m+='Only one stable crossing at this forcing, so the planet has one place to go.';
+      }
+      $('ksRO').innerHTML=m;
+    }
+
+    ['ksQ','ksA','ksD','ksThr'].forEach(id=>$(id).addEventListener('input',()=>{
+      if(id!=='ksQ' || !$('ksThr').checked)
+        document.querySelectorAll('[data-k]').forEach(o=>o.setAttribute('aria-pressed',false));
+      draw();
+    }));
+    document.querySelectorAll('[data-k]').forEach(b=>{
+      b.onclick=()=>{
+        const p=PRE[b.dataset.k];
+        $('ksQ').value=p.q; $('ksA').value=p.a; $('ksD').value=p.d; $('ksThr').checked=p.thr;
+        document.querySelectorAll('[data-k]').forEach(o=>o.setAttribute('aria-pressed',o===b));
+        Tp=0; draw();
+      };
+    });
+    $('ksReset').onclick=()=>{Tp=0; draw();};
+    draw();
+  })();
+
+  /* ── 4 · amplification round by round ───────────────────────── */
+  (function(){
+    const T0=3.7/3.2, N=15;
+    function draw(){
+      const gg=+$('rbG').value;
+      $('rbGv').textContent=gg.toFixed(3);
+      const g=$('rbG_'); clr(g);
+      const L=70,R=820,T=40,B=270, ymax=8;
+      const Y=v=>B-(B-T)*Math.min(v,ymax)/ymax;
+      for(let v=0;v<=ymax;v+=2){
+        put(g,'line',{x1:L,y1:Y(v),x2:R,y2:Y(v),stroke:'var(--grid)','stroke-width':1});
+        put(g,'text',{x:L-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:'var(--text-muted)'},v);
+      }
+      const total=T0/(1-gg);
+      const bw=(R-L)/N*0.7, step=(R-L)/N;
+      let s=0;
+      for(let k=0;k<N;k++){
+        const add=T0*Math.pow(gg,k), x=L+k*step+(step-bw)/2;
+        const y0=Y(s), y1=Y(s+add);
+        if(s<ymax)
+          put(g,'rect',{x:x,y:y1,width:bw,height:Math.max(y0-y1,add>0.005?1.2:0),
+            fill:k===0?'var(--planck)':'var(--pos)',opacity:k===0?.9:Math.max(.35,.9-k*.04)});
+        if(k>0 && s<ymax) put(g,'line',{x1:x-(step-bw),y1:y0,x2:x,y2:y0,stroke:'var(--text-muted)',
+          'stroke-width':1,'stroke-dasharray':'3 3'});
+        if(y0-y1>14)
+          put(g,'text',{x:x+bw/2,y:(y0+y1)/2+4,'text-anchor':'middle','font-size':10.5,
+            fill:'var(--surface-1)','font-weight':600},'+'+add.toFixed(2));
+        put(g,'text',{x:x+bw/2,y:B+16,'text-anchor':'middle','font-size':11,fill:'var(--text-muted)'},k);
+        s+=add;
+      }
+      if(total<=ymax){
+        put(g,'line',{x1:L,y1:Y(total),x2:R,y2:Y(total),stroke:'var(--pos)','stroke-width':1.4,
+          'stroke-dasharray':'6 4'});
+        put(g,'text',{x:R,y:Y(total)-7,'text-anchor':'end','font-size':12,fill:'var(--pos)','font-weight':700},
+          'limit ΔTs,0 / (1 − g) = '+total.toFixed(2)+' K');
+      } else {
+        put(g,'text',{x:R,y:T+14,'text-anchor':'end','font-size':12,fill:'var(--pos)','font-weight':700},
+          'limit '+total.toFixed(1)+' K, above this scale');
+      }
+      put(g,'text',{x:L,y:T-16,'font-size':12,fill:'var(--text-secondary)'},
+        'Running total of the warming, K, for ΔQ = 3.7 W m⁻²; each bar is one round');
+      put(g,'text',{x:(L+R)/2,y:B+40,'text-anchor':'middle','font-size':11.5,fill:'var(--text-muted)'},
+        'round (0 = Planck response alone)');
+
+      const ff=1/(1-gg);
+      let k90=0; while(1-Math.pow(gg,k90+1)<0.9) k90++;
+      let m='g = <b>'+gg.toFixed(3)+'</b>, equivalent to λ<sub>f</sub> = −3.2 × (1 − g) = <b>'+
+        '−'+(3.2*(1-gg)).toFixed(2)+'</b> W m⁻² K⁻¹. Round 0 gives '+T0.toFixed(2)+' K';
+      if(gg>0)
+        m+=', round 1 adds '+(T0*gg).toFixed(2)+' K, round 2 adds '+(T0*gg*gg).toFixed(2)+' K. The sum converges on '+
+          '<span class="big">'+total.toFixed(2)+' K</span>, f<sub>f</sub> = '+ff.toFixed(2)+'. Round 0 is '+
+          (100/ff).toFixed(0)+' % of the total; reaching 90 % takes rounds 0 to '+k90+'.';
+      else
+        m+=' and nothing is returned: the total is the Planck response, f<sub>f</sub> = 1.';
+      $('rbRO').innerHTML=m;
+    }
+    $('rbG').addEventListener('input',()=>{
+      document.querySelectorAll('[data-g]').forEach(o=>o.setAttribute('aria-pressed',false));
+      draw();
+    });
+    document.querySelectorAll('[data-g]').forEach(b=>{
+      b.onclick=()=>{
+        $('rbG').value=b.dataset.g;
+        document.querySelectorAll('[data-g]').forEach(o=>o.setAttribute('aria-pressed',o===b));
+        draw();
+      };
+    });
     draw();
   })();
 

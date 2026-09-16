@@ -174,8 +174,10 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
 
 <div class="card demo">
   <h3>Run it</h3>
-  <p class="cap">Two climates, differing only in sensitivity, driven by the same forcing. Watch them separate
-  &mdash; and notice how long it takes before they do.</p>
+  <p class="cap">Two climates, differing only in sensitivity, driven by the same forcing. At the default
+  settings <b style="color:var(--lo)">climate A is the less sensitive</b> (2 K per CO<sub>2</sub> doubling) and
+  <b style="color:var(--hi)">climate B the more sensitive</b> (4 K). A larger |&lambda;<sub>f</sub>| means a
+  less sensitive climate. Watch them separate &mdash; and notice how long it takes before they do.</p>
 
   <div class="rowbtns">
     <span class="lbl">Forcing</span>
@@ -189,13 +191,13 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
 
   <div class="ctrls">
     <div class="ctrl">
-      <label for="lamA"><span>&lambda;<sub>f</sub>, climate A</span> <b id="lamAv">&minus;1.85</b></label>
+      <label for="lamA"><span>&lambda;<sub>f</sub>, climate A, <span id="roleA">less sensitive</span></span> <b id="lamAv">&minus;1.85</b></label>
       <input type="range" id="lamA" min="-3" max="-0.5" step="0.01" value="-1.85"
         style="accent-color:var(--lo)">
       <div class="hint">&minus;1.85 gives 2 K for a doubling.</div>
     </div>
     <div class="ctrl">
-      <label for="lamB"><span>&lambda;<sub>f</sub>, climate B</span> <b id="lamBv">&minus;0.93</b></label>
+      <label for="lamB"><span>&lambda;<sub>f</sub>, climate B, <span id="roleB">more sensitive</span></span> <b id="lamBv">&minus;0.93</b></label>
       <input type="range" id="lamB" min="-3" max="-0.5" step="0.01" value="-0.93"
         style="accent-color:var(--hi)">
       <div class="hint">&minus;0.93 gives 4 K &mdash; twice as sensitive.</div>
@@ -215,8 +217,8 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
   <svg viewBox="0 0 880 434" role="img" aria-label="Forcing and temperature response over time for two climates of different sensitivity, with the radiative imbalance below"><g id="trG"></g></svg>
 
   <div class="kpis">
-    <div class="kpi"><div class="k">&tau;, climate A</div><div class="v" id="kTauA">&mdash;</div><div class="s">years</div></div>
-    <div class="kpi"><div class="k">&tau;, climate B</div><div class="v" id="kTauB">&mdash;</div><div class="s">years</div></div>
+    <div class="kpi"><div class="k">&tau;, climate A</div><div class="v" id="kTauA">&mdash;</div><div class="s">years; <span id="kRoleA">less sensitive</span></div></div>
+    <div class="kpi"><div class="k">&tau;, climate B</div><div class="v" id="kTauB">&mdash;</div><div class="s">years; <span id="kRoleB">more sensitive</span></div></div>
     <div class="kpi"><div class="k">Years to tell apart</div><div class="v" id="kSep">&mdash;</div><div class="s">until they differ by 0.2 K</div></div>
     <div class="kpi"><div class="k">Realised at the end</div><div class="v" id="kReal">&mdash;</div><div class="s">fraction of equilibrium, A / B</div></div>
   </div>
@@ -234,7 +236,7 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
   says the uncertainty must be carelessness.</span></p>
 
   <p class="q"><b>Question.</b> Load <b>Volcanic eruption</b>. The forcing peaks at &minus;3
-  W m<sup>&minus;2</sup>, comparable in size to a CO<sub>2</sub> doubling, yet the cooling in climate A is less than a
+  W m<sup>&minus;2</sup>, comparable in size to a CO<sub>2</sub> doubling, yet the cooling in climate A, the less sensitive one, is less than a
   tenth of a kelvin. Where did the response go?
   <span style="color:var(--text-muted)">Nowhere &mdash; it never had time to develop. The forcing is gone in
   about three years and &tau; is fourteen or more, so the system realises only a small fraction of the
@@ -281,7 +283,7 @@ Response of the climate system to perturbations &middot; 5 of 6</p>
   </table>
   <p class="note"><b>In this model TCR is always smaller than ECS</b>, and the gap is set by ocean heat uptake. Run
   the demonstration with <b>1&thinsp;%/yr to 2&times;</b> and compare the warming at year 70 with the
-  equilibrium value: the ratio is 0.80 for climate A and 0.64 for climate B. That missing fifth to third is not gone. It is in the pipeline,
+  equilibrium value: the ratio is 0.80 for climate A (less sensitive) and 0.64 for climate B (more sensitive). That missing fifth to third is not gone. It is in the pipeline,
   and the ocean is holding it.</p>
 </div>
 
@@ -419,6 +421,12 @@ schematic is qualitative.
       const dt=Math.max(0.02, YRS/3000);
       const A=integrate(lamA,Cs,YRS,dt), B=integrate(lamB,Cs,YRS,dt);
       const tauA=-Cs/lamA/YR, tauB=-Cs/lamB/YR;
+      // a more negative λf is a less sensitive climate; the sliders can swap the roles
+      const role=Math.abs(lamA-lamB)<0.005 ? ['equally sensitive','equally sensitive']
+        : (lamA<lamB ? ['less sensitive','more sensitive'] : ['more sensitive','less sensitive']);
+      $('roleA').textContent=$('kRoleA').textContent=role[0];
+      $('roleB').textContent=$('kRoleB').textContent=role[1];
+      const nA='climate A ('+role[0]+')', nB='climate B ('+role[1]+')';
 
       const g=$('trG'); clr(g);
       const L=70,R=830;
@@ -480,7 +488,7 @@ schematic is qualitative.
         const t1=Math.min(YRS*0.35, tmax/sl);
         put(g,'line',{x1:X(0),y1:TY(0),x2:X(t1),y2:TY(sl*t1),stroke:'var(--text-muted)',
           'stroke-width':1.3,'stroke-dasharray':'3 3'});
-        put(g,'text',{x:X(t1)+6,y:TY(sl*t1),'font-size':10.5,fill:'var(--text-muted)'},
+        put(g,'text',{x:Math.max(X(t1)+6,L+192),y:TY(sl*t1),'font-size':10.5,fill:'var(--text-muted)'},
           'initial slope ΔQ/Cs — the same for both');
       }
       function line(S,col){
@@ -494,13 +502,13 @@ schematic is qualitative.
       put(g,'text',{x:L,y:tT-10,'font-size':12,fill:'var(--text-secondary)'},
         'Surface temperature change, K');
       // backdrop so the equilibrium and slope lines do not run through the legend
-      put(g,'rect',{x:L+2,y:tT-2,width:152,height:38,rx:4,fill:'var(--surface-1)',opacity:.92});
+      put(g,'rect',{x:L+2,y:tT-2,width:182,height:38,rx:4,fill:'var(--surface-1)',opacity:.92});
       put(g,'rect',{x:L+8,y:tT+6,width:12,height:3,fill:'var(--lo)'});
       put(g,'text',{x:L+26,y:tT+11,'font-size':11,fill:'var(--text-secondary)'},
-        'A: λf = '+lamA.toFixed(2)+', τ = '+tauA.toFixed(0)+' yr');
+        'A, '+role[0]+': τ = '+tauA.toFixed(0)+' yr');
       put(g,'rect',{x:L+8,y:tT+24,width:12,height:3,fill:'var(--hi)'});
       put(g,'text',{x:L+26,y:tT+29,'font-size':11,fill:'var(--text-secondary)'},
-        'B: λf = '+lamB.toFixed(2)+', τ = '+tauB.toFixed(0)+' yr');
+        'B, '+role[1]+': τ = '+tauB.toFixed(0)+' yr');
 
       /* imbalance panel */
       const rT=352, rB=404;
@@ -534,8 +542,8 @@ schematic is qualitative.
 
       let m='Driving both climates with '+FORC[scen].n+'. ';
       if(scen==='step'){
-        m+='Climate A reaches <b>'+A.T[A.n].toFixed(2)+' K</b> of its '+eqA.toFixed(2)+
-           ' K equilibrium; climate B reaches <b>'+B.T[B.n].toFixed(2)+' K</b> of '+eqB.toFixed(2)+
+        m+='C'+nA.slice(1)+' reaches <b>'+A.T[A.n].toFixed(2)+' K</b> of its '+eqA.toFixed(2)+
+           ' K equilibrium; '+nB+' reaches <b>'+B.T[B.n].toFixed(2)+' K</b> of '+eqB.toFixed(2)+
            '. Note the response times: '+tauA.toFixed(0)+' and '+tauB.toFixed(0)+
            ' years. <b>The more sensitive climate is also the slower one</b>, because τ = −Cs/λf. '+
            'They stay within 0.2 K of each other for '+(sep==='never'?'the whole run':sep+' years')+'.';
@@ -544,14 +552,14 @@ schematic is qualitative.
         let sA=0,sB=0,c=0;
         for(let i=0;i<=A.n;i++){ const t=i*dt; if(t>=60&&t<=80){sA+=A.T[i];sB+=B.T[i];c++;} }
         if(c) m+='Transient climate response — the mean of years 60 to 80 — is <b>'+(sA/c).toFixed(2)+
-          ' K</b> for A and <b>'+(sB/c).toFixed(2)+' K</b> for B, against equilibrium values of '+
+          ' K</b> for A ('+role[0]+') and <b>'+(sB/c).toFixed(2)+' K</b> for B ('+role[1]+'), against equilibrium values of '+
           eqA.toFixed(2)+' and '+eqB.toFixed(2)+
           '. <b>TCR is '+(sA/c/eqA).toFixed(2)+' of ECS for A and '+(sB/c/eqB).toFixed(2)+
           ' for B</b>, and the gap is the ocean.';
         else m+='Extend the run past year 80 to read off the transient climate response.';
       } else if(scen==='volc'){
         let mn=0; for(let i=0;i<=A.n;i++) mn=Math.min(mn,A.T[i]);
-        m+='Peak cooling in climate A is <span class="big">'+mn.toFixed(2)+
+        m+='Peak cooling in '+nA+' is <span class="big">'+mn.toFixed(2)+
            ' K</span> from a forcing that briefly reached −3 W m⁻² — comparable to a CO₂ doubling. '+
            'Almost none of the equilibrium response is realised, because the forcing lasts ~3 years and '+
            'τ is '+tauA.toFixed(0)+'. Drag the slab depth down to 10 m and watch the response grow.';
@@ -563,7 +571,7 @@ schematic is qualitative.
            'in the temperature record even though the forcing is real and regular.';
       } else if(scen==='stop'){
         const dTend=A.T[A.n]-A.T[Math.round(80/dt)];
-        m+='The forcing stops rising at year 80, and climate A keeps warming by a further <b>'+
+        m+='The forcing stops rising at year 80, and '+nA+' keeps warming by a further <b>'+
            dTend.toFixed(2)+' K</b> after that. That is <b>committed warming</b>: already forced, not yet '+
            'realised. The imbalance panel shows it draining away as the system catches up.';
       } else {
