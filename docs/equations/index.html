@@ -175,7 +175,7 @@
         <div class="eqttl">Surface energy balance</div>
         <div class="eqmath">$$F_{NR} = F_{solar} - \alpha F_{solar} + F_{IR}^{\downarrow} - F_{IR}^{\uparrow}$$</div>
         <div class="eqmath">$$F_{NR} = F_{SH} + F_{LH} + F_{cond}$$</div>
-        <div class="eqdesc">The first line is the radiation the surface keeps; the second is what it does with it: heat the air, evaporate water and heat the ground. Radiative terms are positive towards the surface, F<sub>SH</sub>, F<sub>LH</sub> and F<sub>cond</sub> positive away from it. Heat stored in the thin surface layer is left out here; the <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3 page</a> adds it. Part II writes the latent heat flux as F<sub>LE</sub>.</div>
+        <div class="eqdesc">The first line is the radiation the surface keeps; the second is what it does with it: heat the air, evaporate water and heat the ground. Radiative terms are positive towards the surface, F<sub>SH</sub>, F<sub>LH</sub> and F<sub>cond</sub> positive away from it. Heat stored in the thin surface layer is left out here; the <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3 page</a> adds it.</div>
       </div>
       <div class="eqsyms">F<sub>NR</sub> — net radiation at the surface<br />αF<sub>solar</sub> — reflected solar flux<br />F<sub>IR↓</sub> — infrared from the atmosphere<br />F<sub>IR↑</sub> — infrared from the surface<br />F<sub>SH</sub> — sensible heat flux<br />F<sub>LH</sub> — latent heat flux<br />F<sub>cond</sub> — conduction into the ground<br />all in W m⁻²<div class="eqnote">700 − 140 + 330 − 420 = 470<br />= 150 + 280 + 40</div></div>
     </div>
@@ -371,37 +371,37 @@
 
 <section id="p2">
   <h2 class="sec"><span class="pk">Part II</span> Heat balance at the surface<span class="rng">2.34 – 2.37</span></h2>
-  <p class="intro">Turbulent exchange between surface and air, and the full budget that a model actually solves to obtain the surface temperature \(T_s\).</p>
+  <p class="intro">Turbulent exchange between surface and air, and the full budget that a model actually solves to obtain the surface temperature \(T_s\). The two turbulent fluxes are written \(F_{SH}\) and \(F_{LH}\) throughout this page, the names the textbook uses in its own text; its printed equations 2.34&ndash;2.36 switch to \(F_{LE}\) and \(F_{SE}\) for the same two fluxes.</p>
   <div class="eqlist">
 
     <div class="eqrow">
       <div class="eqno">2.34</div>
       <div class="eqmain">
         <div class="eqttl">Latent heat flux — bulk formula</div>
-        <div class="eqmath">$$F_{LE} = L_v\,\rho_a\,c_L\,U_a\left(q_s - q_a\right)$$</div>
-        <div class="eqdesc">Evaporation cools the surface in proportion to wind speed and the humidity deficit. Its companion is the sensible heat flux (Eq. 2.33), \(F_{SH} = \rho_a c_p c_h U_a (T_s - T_a)\). Because \(q_s\) follows Clausius–Clapeyron, \(F_{LE}\) is far larger in the tropics.</div>
+        <div class="eqmath">$$F_{LH} = L_v\,\rho_a\,c_L\,U_a\left(q_s - q_a\right)$$</div>
+        <div class="eqdesc">Evaporation cools the surface in proportion to wind speed and the humidity deficit. Its companion is the sensible heat flux (Eq. 2.33), \(F_{SH} = \rho_a c_p c_h U_a (T_s - T_a)\). Because \(q_s\) follows Clausius–Clapeyron, \(F_{LH}\) is far larger in the tropics.</div>
       </div>
-      <div class="eqsyms">F<sub>LE</sub> — latent heat flux, W m⁻²<br />L<sub>v</sub> — latent heat of vaporisation, 2.5×10⁶ J kg⁻¹<br />ρ<sub>a</sub> — air density, ≈1.2 kg m⁻³<br />c<sub>L</sub> — bulk transfer coefficient for moisture<br />U<sub>a</sub> — wind speed at 10 m, m s⁻¹<br />q<sub>s</sub> — surface specific humidity, kg kg⁻¹<br />q<sub>a</sub> — air specific humidity at 2 m, kg kg⁻¹</div>
+      <div class="eqsyms">F<sub>LH</sub> — latent heat flux, W m⁻²<br />L<sub>v</sub> — latent heat of vaporisation, 2.5×10⁶ J kg⁻¹<br />ρ<sub>a</sub> — air density, ≈1.2 kg m⁻³<br />c<sub>L</sub> — bulk transfer coefficient for moisture<br />U<sub>a</sub> — wind speed at 10 m, m s⁻¹<br />q<sub>s</sub> — surface specific humidity, kg kg⁻¹<br />q<sub>a</sub> — air specific humidity at 2 m, kg kg⁻¹</div>
     </div>
 
     <div class="eqrow">
       <div class="eqno">2.35</div>
       <div class="eqmain">
         <div class="eqttl">Bowen ratio</div>
-        <div class="eqmath">$$B_o = \frac{F_{SH}}{F_{LE}}$$</div>
+        <div class="eqmath">$$B_o = \frac{F_{SH}}{F_{LH}}$$</div>
         <div class="eqdesc">How the surface splits its turbulent heat loss. \(B_o \ll 1\) over warm ocean, \(B_o \gg 1\) over dry land where water availability limits evaporation.</div>
       </div>
-      <div class="eqsyms">B<sub>o</sub> — Bowen ratio, dimensionless<br />F<sub>SH</sub> — sensible heat flux, W m⁻²<br />F<sub>LE</sub> — latent heat flux, W m⁻²<div class="eqnote">B<sub>o</sub> ≈ 1 — high-latitude ocean<br />B<sub>o</sub> &gt; 1 — arid land</div></div>
+      <div class="eqsyms">B<sub>o</sub> — Bowen ratio, dimensionless<br />F<sub>SH</sub> — sensible heat flux, W m⁻²<br />F<sub>LH</sub> — latent heat flux, W m⁻²<div class="eqnote">B<sub>o</sub> ≈ 1 — high-latitude ocean<br />B<sub>o</sub> &gt; 1 — arid land</div></div>
     </div>
 
     <div class="eqrow">
       <div class="eqno">2.36</div>
       <div class="eqmain">
         <div class="eqttl">Full surface heat balance</div>
-        <div class="eqmath">$$\begin{aligned}\rho\,c_p\,h_{su}\frac{\partial T_s}{\partial t} =\;& \left(1-\alpha\right)F_{sol} + F_{IR}^{\downarrow} + F_{IR}^{\uparrow} \\ &+ F_{SE} + F_{LE} + F_{cond}\end{aligned}$$</div>
-        <div class="eqdesc">Heat storage in a thin surface layer of thickness \(h_{su}\) equals the sum of all fluxes. This is how \(T_s\) is obtained in practice. The textbook writes the sensible heat flux \(F_{SE}\) here and \(F_{SH}\) in 2.33&ndash;2.35; they are the same flux. Over snow or ice it holds only while \(T_s\) is below freezing; at the melting point a latent-heat-of-fusion term is added instead.</div>
+        <div class="eqmath">$$\begin{aligned}\rho\,c_p\,h_{su}\frac{\partial T_s}{\partial t} =\;& \left(1-\alpha\right)F_{sol} + F_{IR}^{\downarrow} + F_{IR}^{\uparrow} \\ &+ F_{SH} + F_{LH} + F_{cond}\end{aligned}$$</div>
+        <div class="eqdesc">Heat storage in a thin surface layer of thickness \(h_{su}\) equals the sum of all fluxes. This is how \(T_s\) is obtained in practice. Over snow or ice it holds only while \(T_s\) is below freezing; at the melting point a latent-heat-of-fusion term is added instead.</div>
       </div>
-      <div class="eqsyms">ρ — density of the surface layer, kg m⁻³<br />c<sub>p</sub> — specific heat capacity, J kg⁻¹ K⁻¹<br />h<sub>su</sub> — surface layer thickness, m<br />T<sub>s</sub> — surface temperature, K · t — time, s<br />α — surface albedo, 0–1<br />F<sub>sol</sub> — incoming solar at the surface, W m⁻²<br />F<sub>IR</sub><sup>↓</sup> — downward longwave, 333 W m⁻²<br />F<sub>IR</sub><sup>↑</sup> — upward longwave, −396 W m⁻²<br />F<sub>SE</sub> — sensible heat flux, W m⁻²<br />F<sub>LE</sub> — latent heat flux, W m⁻²<br />F<sub>cond</sub> — conduction from below, W m⁻²</div>
+      <div class="eqsyms">ρ — density of the surface layer, kg m⁻³<br />c<sub>p</sub> — specific heat capacity, J kg⁻¹ K⁻¹<br />h<sub>su</sub> — surface layer thickness, m<br />T<sub>s</sub> — surface temperature, K · t — time, s<br />α — surface albedo, 0–1<br />F<sub>sol</sub> — incoming solar at the surface, W m⁻²<br />F<sub>IR</sub><sup>↓</sup> — downward longwave, 333 W m⁻²<br />F<sub>IR</sub><sup>↑</sup> — upward longwave, −396 W m⁻²<br />F<sub>SH</sub> — sensible heat flux, W m⁻²<br />F<sub>LH</sub> — latent heat flux, W m⁻²<br />F<sub>cond</sub> — conduction from below, W m⁻²</div>
     </div>
 
     <div class="eqrow">
@@ -805,7 +805,7 @@
 <div class="card">
   <h3>Notes on scope</h3>
   <p>This page covers the equations the lectures actually use, not everything the textbook numbers. Parts I&ndash;V follow Chapters 2 and 4 of Goosse et al. (2010) and keep the textbook's own equation numbers, so a number here is the number there. Chapter 2 ends at Eq. 2.49 and Chapter 3 at Eq. 3.30; Chapter 3's model equations are set out on the <a href="../lecture-5-modelling-the-climate-system/atmospheric-equations/">governing equations</a> page instead.</p>
-  <p>Equations 4.2 and 4.3 are written here with square roots, the standard IPCC form for CH₄ and N₂O. All numerical values in Parts I&ndash;V are as printed in Goosse et al. (2010) unless a note says otherwise.</p>
+  <p>Equations 4.2 and 4.3 are written here with square roots, the standard IPCC form for CH₄ and N₂O. All numerical values in Parts I&ndash;V are as printed in Goosse et al. (2010) unless a note says otherwise. Symbols follow the textbook too, with one exception: the sensible and latent heat fluxes are written F<sub>SH</sub> and F<sub>LH</sub> everywhere here, whereas the textbook's printed equations 2.34&ndash;2.36 switch to F<sub>LE</sub> and F<sub>SE</sub> for the fluxes its own text names F<sub>SH</sub> and F<sub>LH</sub>.</p>
   <p>Part VI is a companion to Lecture 7 rather than a transcription of Chapter 5, which sets out the physics of variability and of past climates largely in words. The insolation integral and the global annual mean are standard results of orbital mechanics; the signal-to-noise scaling is the argument behind Fig. 5.1 written out; the Stommel, seesaw and Imbrie–Imbrie relations are the published conceptual models named in the right-hand column, used on the teaching pages to make Chapter 5's qualitative statements quantitative; and the regression is the detection and attribution formulation given in Goosse (2015), the printed Cambridge edition, whose Fig. 5.43 is the worked illustration &mdash; that section is not in the 2010 online edition, so it is the one place on this page where the two editions differ.</p>
   <p>Part VII is likewise a companion to Lecture 8 rather than a transcription of Chapter 6. The impulse response, the two-layer energy balance and the grounding-line flux law are published models used live on the teaching pages, named in the right-hand column; Clausius–Clapeyron and the Gaussian tail are exact; the precipitation constraint uses representative values of k and f rather than measured ones. Assessed quantities — TCRE, the remaining budgets, the sea level ranges, the extreme-event multipliers — are from IPCC AR6 WG1 (2021) and are quoted, not derived here. Which figure on which page is computed, schematic, quoted or omitted is set out in the <a href="../lecture-7-climate-change-past-and-present/provenance.html" style="color:#b0431f;">provenance appendix</a>.</p>
   <p>Part V uses ΔQ = 3.7 W m⁻² for a CO₂ doubling and λ<sub>0</sub> = −3.2 W m⁻² K⁻¹, following AR5 and the values Goosse quotes from Soden and Held (2006). The textbook's own worked examples use 3.8 for both, so its climate sensitivities come out slightly larger. Equations 4.6, 4.8, 4.9, 4.11 and 4.12 are intermediate steps and are folded into the entries above rather than listed separately.</p>
