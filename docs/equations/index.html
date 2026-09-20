@@ -76,6 +76,20 @@
     .eqsyms{grid-column:1 / -1;border-left:0;border-top:1px solid var(--line);padding:12px 0 0}
   }
 
+  /* the minimum */
+  #p0 h2.sec{margin-top:10px}
+  #p0 .eqrow{border:1px solid var(--line);border-left:3px solid var(--acc)}
+  .ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin:14px 0 0}
+  .idea{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:12px;padding:14px 16px;
+    font-size:14px;line-height:1.55;color:var(--text-secondary);min-width:0;overflow-wrap:anywhere}
+  .idea b{color:var(--text-primary)}
+  .idea .src{display:block;margin-top:6px;font-size:12.5px;color:var(--text-muted)}
+  @media(max-width:600px){
+    #p0 .eqrow{grid-template-columns:minmax(0,1fr);gap:12px;padding:16px}
+    #p0 .eqmath .katex{font-size:.95em}
+  }
+  h3.sub3{font-size:15.5px;font-weight:600;margin:26px 0 0;color:var(--text-primary)}
+
   .card{background:var(--surface-1);border:1px solid var(--line-soft);border-radius:14px;
     padding:20px 22px;margin-top:30px}
   .card h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
@@ -109,6 +123,7 @@
 </header>
 
 <div class="parts">
+  <a class="ptile" href="#p0"><span class="pk">Start here</span><span class="pt">The minimum</span><span class="pr">5 relations, 6 ideas</span></a>
   <a class="ptile" href="#p1"><span class="pk">Part I</span><span class="pt">The Earth's energy budget</span><span class="pr">2.1 – 2.13 + §2.1.2, §2.1.5</span></a>
   <a class="ptile" href="#p2"><span class="pk">Part II</span><span class="pt">Heat balance at the surface</span><span class="pr">2.34 – 2.37</span></a>
   <a class="ptile" href="#p3"><span class="pk">Part III</span><span class="pt">The carbon cycle</span><span class="pr">2.40 – 2.49</span></a>
@@ -117,6 +132,75 @@
   <a class="ptile" href="#p6"><span class="pk">Part VI</span><span class="pt">Variability, orbits and attribution</span><span class="pr">Chapter 5</span></a>
   <a class="ptile" href="#p7"><span class="pk">Part VII</span><span class="pt">Projecting the future</span><span class="pr">Chapter 6</span></a>
 </div>
+
+<section id="p0">
+  <h2 class="sec"><span class="pk">Start here</span> The minimum<span class="rng">5 relations, 6 ideas</span></h2>
+  <p class="intro">Most of this page is reference. The five relations below are the ones to know by heart and to use with a calculator; each needs one line of algebra. The six ideas after them are to be understood and explained in words, not calculated. Everything further down shows where these come from and what the models do with them. Temperatures in every relation are in kelvin: T(K) = T(°C) + 273.15.</p>
+  <div class="eqlist">
+
+    <div class="eqrow">
+      <div class="eqno">M1</div>
+      <div class="eqmain">
+        <div class="eqttl">Stefan–Boltzmann, both ways</div>
+        <div class="eqmath">$$F = \sigma T^{4}$$</div>
+        <div class="eqmath">$$T = \left(\frac{F}{\sigma}\right)^{1/4}$$</div>
+        <div class="eqdesc">A surface with an emissivity close to 1 radiates σT⁴. Read the other way, a measured upward infrared flux gives the temperature of the surface that emitted it. Same law as 2.1.</div>
+      </div>
+      <div class="eqsyms">F — emitted flux, W m⁻²<br />σ — 5.67×10⁻⁸ W m⁻² K⁻⁴<br />T — temperature, K<div class="eqnote">F = 400 W m⁻² ⇒ T = 289.8 K = 16.7 °C</div></div>
+    </div>
+
+    <div class="eqrow">
+      <div class="eqno">M2</div>
+      <div class="eqmain">
+        <div class="eqttl">Planetary energy balance</div>
+        <div class="eqmath">$$\tfrac{1}{4} S_0 \left(1 - \alpha_p\right) = \sigma T_e^{4}$$</div>
+        <div class="eqdesc">Absorbed sunlight equals emitted infrared. The ¼ is geometry: sunlight is intercepted by a disc of area πR², but the whole sphere, 4πR², radiates. Solve for T<sub>e</sub> with M1. Same as 2.3 and 2.4.</div>
+      </div>
+      <div class="eqsyms">S₀ — solar constant, 1361 W m⁻² (measured; Part I quotes the textbook's 1368)<br />α<sub>p</sub> — planetary albedo, 0.3<br />T<sub>e</sub> — effective emission temperature, K<div class="eqnote">T<sub>e</sub> = 254.6 K = −18.6 °C<br />observed surface mean ≈ 288 K</div></div>
+    </div>
+
+    <div class="eqrow">
+      <div class="eqno">M3</div>
+      <div class="eqmain">
+        <div class="eqttl">Albedo</div>
+        <div class="eqmath">$$\alpha = \frac{\text{reflected solar flux}}{\text{incoming solar flux}}$$</div>
+        <div class="eqdesc">The fraction of incoming sunlight a surface reflects, between 0 and 1. On surface flux diagrams the reflected flux is labelled αF<sub>solar</sub>, so the albedo is that flux divided by F<sub>solar</sub>.</div>
+      </div>
+      <div class="eqsyms">α — surface albedo, dimensionless<br />F<sub>solar</sub> — incoming solar flux at the surface, W m⁻²<div class="eqnote">140 of 700 W m⁻² reflected ⇒ α = 0.20<br />Antarctic snow 0.80, pine forest 0.08 (Lecture 3)</div></div>
+    </div>
+
+    <div class="eqrow">
+      <div class="eqno">M4</div>
+      <div class="eqmain">
+        <div class="eqttl">Surface energy balance</div>
+        <div class="eqmath">$$F_{NR} = F_{solar} - \alpha F_{solar} + F_{IR}^{\downarrow} - F_{IR}^{\uparrow}$$</div>
+        <div class="eqmath">$$F_{NR} = F_{SH} + F_{LH} + F_{cond}$$</div>
+        <div class="eqdesc">The first line is the radiation the surface keeps; the second is what it does with it: heat the air, evaporate water and heat the ground. Radiative terms are positive towards the surface, F<sub>SH</sub>, F<sub>LH</sub> and F<sub>cond</sub> positive away from it. Heat stored in the thin surface layer is left out here; the <a href="../lecture-3-climate-at-a-local-scale/energy-balance.html">Lecture 3 page</a> adds it. Part II writes the latent heat flux as F<sub>LE</sub>.</div>
+      </div>
+      <div class="eqsyms">F<sub>NR</sub> — net radiation at the surface<br />αF<sub>solar</sub> — reflected solar flux<br />F<sub>IR↓</sub> — infrared from the atmosphere<br />F<sub>IR↑</sub> — infrared from the surface<br />F<sub>SH</sub> — sensible heat flux<br />F<sub>LH</sub> — latent heat flux<br />F<sub>cond</sub> — conduction into the ground<br />all in W m⁻²<div class="eqnote">700 − 140 + 330 − 420 = 470<br />= 150 + 280 + 40</div></div>
+    </div>
+
+    <div class="eqrow">
+      <div class="eqno">M5</div>
+      <div class="eqmain">
+        <div class="eqttl">Bowen ratio</div>
+        <div class="eqmath">$$B_o = \frac{F_{SH}}{F_{LH}}$$</div>
+        <div class="eqdesc">How the surface splits the energy it hands to the air. A low value means water is available to evaporate: moist soil, transpiring vegetation, open water. A value above 1 means a dry surface that mostly heats the air. It turns negative when the air heats the surface while evaporation continues. Same as 2.35.</div>
+      </div>
+      <div class="eqsyms">B<sub>o</sub> — Bowen ratio, dimensionless<br />F<sub>SH</sub> — sensible heat flux, W m⁻²<br />F<sub>LH</sub> — latent heat flux, W m⁻²<div class="eqnote">150 / 280 ⇒ B<sub>o</sub> = 0.54</div></div>
+    </div>
+  </div>
+
+  <h3 class="sub3">Six ideas to explain in words</h3>
+  <div class="ideas">
+    <div class="idea"><b>One-layer greenhouse.</b> An atmosphere that absorbs infrared sends part of it back down, so the surface is warmer than T<sub>e</sub>. For a fully opaque layer T<sub>s</sub> = 2<sup>1/4</sup>T<sub>e</sub>; the more infrared the layer absorbs, the warmer the surface.<span class="src">2.8 and 2.12, <a href="#p1">Part I</a></span></div>
+    <div class="idea"><b>Forcing and sensitivity.</b> Equilibrium warming is the forcing multiplied by the climate sensitivity, ΔT<sub>s</sub> = −ΔQ/λ<sub>f</sub>. Feedbacks set λ<sub>f</sub>: a positive feedback makes λ<sub>f</sub> less negative and the warming larger.<span class="src">4.5, <a href="#p5">Part V</a></span></div>
+    <div class="idea"><b>CO₂ forcing is logarithmic.</b> Each doubling of CO₂ adds the same forcing: 3.7 W m⁻² in Part V, 3.9 W m⁻² in AR6. The number in a scenario name such as SSP2-4.5 is its approximate forcing in 2100, in W m⁻².<span class="src">4.1, <a href="#p4">Part IV</a></span></div>
+    <div class="idea"><b>Dissolved inorganic carbon.</b> Carbon dissolved in seawater is present in three forms, DIC = [H₂CO₃] + [HCO₃⁻] + [CO₃²⁻]. Most of it is bicarbonate, HCO₃⁻.<span class="src">2.42, <a href="#p3">Part III</a></span></div>
+    <div class="idea"><b>Warmer air holds more water vapour.</b> Saturation vapour pressure rises by about 7 % per K near 0 °C and 6.5 % per K near 15 °C (Clausius–Clapeyron). This drives the water vapour feedback and heavier extreme precipitation.<span class="src"><a href="#p7">Part VII</a></span></div>
+    <div class="idea"><b>Warming follows cumulative emissions.</b> Global warming is roughly proportional to the total CO₂ emitted since pre-industrial times, ΔT ≈ TCRE × E<sub>cum</sub>. That is what makes a remaining carbon budget a meaningful quantity.<span class="src"><a href="#p7">Part VII</a></span></div>
+  </div>
+</section>
 
 <section id="p1">
   <h2 class="sec"><span class="pk">Part I</span> The Earth's energy budget<span class="rng">2.1 – 2.13 + §2.1.2, §2.1.5</span></h2>
