@@ -39,9 +39,6 @@ animations/*
 # support.js/doc-page.js to render and duplicate the self-contained
 # "(Student)" bundles used for the public site. Kept out to avoid confusion.
 *.dc.html
-!lecture-5-modelling-the-climate-system/atmospheric-equations/Governing Equations of the Atmosphere.dc.html
-!lecture-2-earths-energy-budget/insolation/Earth Insolation v2.dc.html
-!lecture-3-climate-at-a-local-scale/explorer-standalone-src.dc.html
 doc-page.js
 support.js
 
